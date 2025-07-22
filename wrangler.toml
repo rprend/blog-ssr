@@ -1,0 +1,12 @@
+name = "blog-2025"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "./dist"
+
+# D1 database for guestbook entries
+[[d1_databases]]
+binding = "GUESTBOOK_DB"
+database_name = "guestbook-db"
+database_id = "your-d1-database-id"
+
+[env.production]
+vars = { NODE_ENV = "production" }
