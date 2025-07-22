@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
-    "start": "vinxi start"
+    "start": "vinxi start",
+    "deploy": "npm run build && npx wrangler deploy"
   },
   "dependencies": {
     "@solidjs/meta": "^0.29.4",

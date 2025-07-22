@@ -1,6 +1,11 @@
 import { Title } from "@solidjs/meta";
 import { createSignal, Show, For, ErrorBoundary } from "solid-js";
-import { query, createAsync, type RouteDefinition } from "@solidjs/router";
+import {
+  query,
+  createAsync,
+  type RouteDefinition,
+  revalidate,
+} from "@solidjs/router";
 import Nav from "~/components/Nav";
 import GuestbookModal from "~/components/GuestbookModal";
 import {
@@ -26,6 +31,8 @@ export default function Guestbook() {
   const handleSubmit = async (name: string, message: string) => {
     try {
       await submitGuestbookEntry(name, message);
+      // Revalidate the query cache to refresh the data
+      await revalidate("guestbook");
       // Close the modal after successful submission
       setIsModalOpen(false);
     } catch (error) {

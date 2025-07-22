@@ -60,13 +60,6 @@ export default function Home() {
           .
         </p>
       </main>
-
-      {/* Right-side asterisk element */}
-      <div class="fixed right-6 top-1/2 transform -translate-y-1/2">
-        <div class="w-6 h-6 bg-gray-800 flex items-center justify-center rounded-sm">
-          <span class="text-yellow-400 text-sm font-bold">*</span>
-        </div>
-      </div>
     </div>
   );
 }

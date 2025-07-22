@@ -47,10 +47,18 @@ export async function getGuestbookEntries(): Promise<GuestbookEntry[]> {
       const db = (globalThis as any).env.GUESTBOOK_DB;
       const result = await db
         .prepare(
-          "SELECT id, name, message, date, timestamp FROM guestbook ORDER BY timestamp DESC"
+          "SELECT id, name, message, created_at FROM guestbook_entries ORDER BY created_at DESC"
         )
         .all();
-      return result.results as GuestbookEntry[];
+
+      // Transform the database results to match our interface
+      return result.results.map((entry: any) => ({
+        id: entry.id?.toString() || `guestbook_${entry.created_at}`,
+        name: entry.name,
+        message: entry.message,
+        date: new Date(entry.created_at).toISOString().split("T")[0],
+        timestamp: new Date(entry.created_at).getTime(),
+      })) as GuestbookEntry[];
     } catch (error) {
       console.error("Error fetching from D1 database:", error);
       return mockEntries;
@@ -65,18 +73,46 @@ export async function submitGuestbookEntry(
   name: string,
   message: string
 ): Promise<GuestbookEntry> {
-  // For now, just add to mock data
-  // In production, this would insert into the D1 database
-  const newEntry: GuestbookEntry = {
-    id: `guestbook_${Date.now()}`,
-    name,
-    message,
-    date: new Date().toISOString().split("T")[0],
-    timestamp: Date.now(),
-  };
+  try {
+    // Try to submit to the API endpoint
+    const response = await fetch("/api/guestbook", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, message }),
+    });
 
-  mockEntries.unshift(newEntry);
-  return newEntry;
+    if (response.ok) {
+      const data = await response.json();
+      // Create a new entry object from the response
+      const newEntry: GuestbookEntry = {
+        id: data.id?.toString() || `guestbook_${Date.now()}`,
+        name,
+        message,
+        date: new Date().toISOString().split("T")[0],
+        timestamp: Date.now(),
+      };
+      return newEntry;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to submit entry");
+    }
+  } catch (error) {
+    console.error("Error submitting to API:", error);
+
+    // Fallback to mock data
+    const newEntry: GuestbookEntry = {
+      id: `guestbook_${Date.now()}`,
+      name,
+      message,
+      date: new Date().toISOString().split("T")[0],
+      timestamp: Date.now(),
+    };
+
+    mockEntries.unshift(newEntry);
+    return newEntry;
+  }
 }
 
 export function formatDate(dateString: string): string {
