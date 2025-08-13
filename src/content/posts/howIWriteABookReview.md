@@ -1,8 +1,11 @@
 ---
-title: "Book Reviews"
+title: "How I write a book review"
 date: "05-08-2024"
-slug: "book-reviews"
+author: "Ryan Prendergast"
+slug: "how-i-write-a-book-review"
 ---
+
+# How I write a book review
 
 I publish book reviews. They are not like the kind you'll see in newspapers, so I thought I'd explain how I write them.
 

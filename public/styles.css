@@ -64,13 +64,18 @@ nav a.active {
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
 }
-
 .blog-post-item {
   display: flex;
   align-items: baseline;
   margin-bottom: 0.5rem;
   font-size: 1.4rem;
   line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .blog-post-item {
+    line-height: 1.5;
+  }
 }
 
 .blog-date {
@@ -310,11 +315,11 @@ button:hover {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .guestbook-entry {
     max-width: 100%;
   }
-  
+
   .modal-content {
     margin: 1rem;
     padding: 1.5rem;

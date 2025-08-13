@@ -45,7 +45,9 @@ app.get("/blog", async (c) => {
   // Group posts by year
   const postsByYear: { [year: string]: typeof posts } = {};
   posts.forEach((post) => {
-    const year = new Date(post.date.split("-").reverse().join("-"))
+    // Parse MM-DD-YYYY format to YYYY-MM-DD for proper Date parsing
+    const parts = post.date.split("-");
+    const year = new Date(`${parts[2]}-${parts[0]}-${parts[1]}`)
       .getFullYear()
       .toString();
     if (!postsByYear[year]) postsByYear[year] = [];

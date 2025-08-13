@@ -1,5 +1,6 @@
 ---
 title: "Contra Thematic Analysis"
+subtitle: "Or: How I learned to stop worrying and memorize facts"
 date: "08-14-2024"
 author: "Ryan Prendergast"
 slug: "contra-thematic-analysis"
