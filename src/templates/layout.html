@@ -7,6 +7,14 @@
   <meta name="description" content="{{description}}">
   <meta name="author" content="Ryan Prendergast">
   <link rel="icon" href="/favicon.ico">
+  
+  <!-- Preload critical resources to break the chain -->
+  <link rel="preload" href="/tufte.css" as="style">
+  <link rel="preload" href="/et-book-roman-line-figures/et-book-roman-line-figures.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/et-book-bold-line-figures/et-book-bold-line-figures.woff" as="font" type="font/woff" crossorigin>
+  
+  <!-- Load stylesheets in parallel -->
+  <link href="/tufte.css" rel="stylesheet">
   <link href="/styles.css" rel="stylesheet">
   
   <!-- Open Graph meta tags for social sharing -->
