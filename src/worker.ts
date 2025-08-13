@@ -479,44 +479,83 @@ app.get("/styles.css", async (c) => {
   return c.env.ASSETS.fetch(new Request("https://dummy/styles.css"));
 });
 
-// 404 handler - must come before the fallback static asset handler
-app.notFound((c) => {
-  const content = `
-    <section>
-      <h1>404 - Page Not Found</h1>
-      <p>The page you're looking for doesn't exist.</p>
-      <p><a href="/">← Go home</a> or <a href="/blog">browse the blog</a></p>
-    </section>
-  `;
-  
-  const structuredData = `
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "404 - Page Not Found",
-      "description": "The requested page could not be found",
-      "url": "https://ryan-prendergast.com${c.req.path}",
-      "author": {
-        "@type": "Person",
-        "name": "Ryan Prendergast"
-      }
-    }
-    </script>
-  `;
-
-  return c.html(
-    renderPage("404 - Page Not Found | Ryan Prendergast", content, "", {
-      description: "The requested page could not be found on Ryan Prendergast's website",
-      structuredData
-    }),
-    404
-  );
-});
-
-// Fallback to serve other static assets
+// Fallback handler for static assets and 404s
 app.get("/*", async (c) => {
-  return c.env.ASSETS.fetch(c.req.raw);
+  try {
+    // Try to fetch the static asset first
+    const response = await c.env.ASSETS.fetch(c.req.raw);
+    
+    // If the asset is not found (404), show our custom 404 page
+    if (response.status === 404) {
+      const content = `
+        <section>
+          <h1>404 - Page Not Found</h1>
+          <p>The page you're looking for doesn't exist.</p>
+          <p><a href="/">← Go home</a> or <a href="/blog">browse the blog</a></p>
+        </section>
+      `;
+
+      const structuredData = `
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "404 - Page Not Found",
+          "description": "The requested page could not be found",
+          "url": "https://ryan-prendergast.com${c.req.path}",
+          "author": {
+            "@type": "Person",
+            "name": "Ryan Prendergast"
+          }
+        }
+        </script>
+      `;
+
+      return c.html(
+        renderPage("404 - Page Not Found | Ryan Prendergast", content, "", {
+          description: "The requested page could not be found on Ryan Prendergast's website",
+          structuredData,
+        }),
+        404
+      );
+    }
+    
+    // Return the static asset if it exists
+    return response;
+  } catch (error) {
+    // If there's an error fetching the asset, also show 404
+    const content = `
+      <section>
+        <h1>404 - Page Not Found</h1>
+        <p>The page you're looking for doesn't exist.</p>
+        <p><a href="/">← Go home</a> or <a href="/blog">browse the blog</a></p>
+      </section>
+    `;
+
+    const structuredData = `
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "404 - Page Not Found",
+        "description": "The requested page could not be found",
+        "url": "https://ryan-prendergast.com${c.req.path}",
+        "author": {
+          "@type": "Person",
+          "name": "Ryan Prendergast"
+        }
+      }
+      </script>
+    `;
+
+    return c.html(
+      renderPage("404 - Page Not Found | Ryan Prendergast", content, "", {
+        description: "The requested page could not be found on Ryan Prendergast's website",
+        structuredData,
+      }),
+      404
+    );
+  }
 });
 
 export default app;
