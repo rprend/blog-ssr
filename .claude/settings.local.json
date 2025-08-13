@@ -11,7 +11,8 @@
       "Bash(grep:*)",
       "Bash(curl:*)",
       "Bash(true)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npx wrangler d1 execute:*)"
     ],
     "deny": []
   }
