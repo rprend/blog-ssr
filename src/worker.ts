@@ -16,8 +16,19 @@ interface Bindings {
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-// Helper function to render page with navigation
-function renderPage(title: string, content: string, currentPage: string = "") {
+// Helper function to render page with navigation and SEO data
+function renderPage(
+  title: string,
+  content: string,
+  currentPage: string = "",
+  seoData: {
+    description?: string;
+    ogType?: string;
+    ogImage?: string;
+    structuredData?: string;
+    canonicalUrl?: string;
+  } = {}
+) {
   const navData = {
     homeActive: currentPage === "/" ? "active" : "",
     blogActive: currentPage === "/blog" ? "active" : "",
@@ -25,17 +36,56 @@ function renderPage(title: string, content: string, currentPage: string = "") {
     contactActive: currentPage === "/contact" ? "active" : "",
   };
 
+  const baseUrl = "https://ryan-prendergast.com";
+
   return layout({
     title,
     nav: nav(navData),
     content,
+    description:
+      seoData.description || "Ryan Prendergast's personal website and blog",
+    ogType: seoData.ogType || "website",
+    canonicalUrl: seoData.canonicalUrl || `${baseUrl}${currentPage}`,
+    ogImage: seoData.ogImage || "",
+    twitterImage: seoData.ogImage || "",
+    structuredData: seoData.structuredData || "",
   });
 }
 
 // Home Page
 app.get("/", (c) => {
   const content = home();
-  return c.html(renderPage("Ryan Prendergast", content, "/"));
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ryan Prendergast",
+      "url": "https://ryan-prendergast.com",
+      "sameAs": [
+        "https://github.com/rprend",
+        "https://linkedin.com/in/rprendergast",
+        "https://instagram.com/r.prendie",
+        "https://youtube.com/@rprend",
+        "https://letterboxd.com/rprend"
+      ],
+      "jobTitle": "Co founder",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Zenobia Pay"
+      }
+    }
+    </script>
+  `;
+
+  return c.html(
+    renderPage("Ryan Prendergast", content, "/", {
+      description:
+        "Ryan Prendergast is the co-founder of Zenobia Pay, with interests in filmmaking, music, and writing.",
+      ogType: "profile",
+      structuredData,
+    })
+  );
 });
 
 // Blog List Page
@@ -77,7 +127,29 @@ app.get("/blog", async (c) => {
     });
 
   const content = blogList({ postsHtml });
-  return c.html(renderPage("Blog | Ryan Prendergast", content, "/blog"));
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Ryan Prendergast's Blog",
+      "description": "Essays and thoughts on business, technology, and life",
+      "url": "https://ryan-prendergast.com/blog",
+      "author": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
+      }
+    }
+    </script>
+  `;
+
+  return c.html(
+    renderPage("Blog | Ryan Prendergast", content, "/blog", {
+      description:
+        "Essays and thoughts on business, technology, and life by Ryan Prendergast",
+      structuredData,
+    })
+  );
 });
 
 // Individual Blog Post Page
@@ -101,13 +173,48 @@ app.get("/blog/:slug", async (c) => {
   const content = blogPost({
     title: post.title,
     date: post.date,
-    subtitle: post.subtitle ? `<p class="subtitle">${post.subtitle}</p>` : '',
-    author: post.author ? ` • ${post.author}` : '',
+    subtitle: post.subtitle ? `<p class="subtitle">${post.subtitle}</p>` : "",
+    author: post.author ? ` • ${post.author}` : "",
     content: post.content,
   });
 
+  // Parse date for structured data
+  const parts = post.date.split("-");
+  const isoDate = `${parts[2]}-${parts[0]}-${parts[1]}`;
+
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "${post.title.replace(/"/g, '\\"')}",
+      "description": "${(post.excerpt || "").replace(/"/g, '\\"')}",
+      "author": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
+      },
+      "datePublished": "${isoDate}",
+      "dateModified": "${isoDate}",
+      "url": "https://ryan-prendergast.com/blog/${post.slug}",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ryan-prendergast.com/blog/${post.slug}"
+      }
+    }
+    </script>
+  `;
+
   return c.html(
-    renderPage(`${post.title} - Ryan Prendergast`, content, "/blog")
+    renderPage(`${post.title} - Ryan Prendergast`, content, "/blog", {
+      description: post.excerpt || `${post.title} by Ryan Prendergast`,
+      ogType: "article",
+      canonicalUrl: `https://ryan-prendergast.com/blog/${post.slug}`,
+      structuredData,
+    })
   );
 });
 
@@ -244,8 +351,28 @@ app.get("/guestbook", async (c) => {
       </script>
     `;
 
+    const structuredData = `
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Guestbook",
+        "description": "Sign Ryan Prendergast's guestbook and see messages from visitors",
+        "url": "https://ryan-prendergast.com/guestbook",
+        "author": {
+          "@type": "Person",
+          "name": "Ryan Prendergast"
+        }
+      }
+      </script>
+    `;
+
     return c.html(
-      renderPage("Guestbook - Ryan Prendergast", content, "/guestbook")
+      renderPage("Guestbook - Ryan Prendergast", content, "/guestbook", {
+        description:
+          "Sign Ryan Prendergast's guestbook and see messages from visitors",
+        structuredData,
+      })
     );
   } catch (error) {
     console.error("Error loading guestbook:", error);
@@ -264,12 +391,127 @@ app.get("/guestbook", async (c) => {
 // Contact Page
 app.get("/contact", (c) => {
   const content = contact();
-  return c.html(renderPage("Contact - Ryan Prendergast", content, "/contact"));
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contact Ryan Prendergast",
+      "url": "https://ryan-prendergast.com/contact",
+      "about": {
+        "@type": "Person",
+        "name": "Ryan Prendergast",
+        "email": "rprendergast1121@gmail.com"
+      }
+    }
+    </script>
+  `;
+
+  return c.html(
+    renderPage("Contact - Ryan Prendergast", content, "/contact", {
+      description:
+        "Get in touch with Ryan Prendergast. Connect via email or social media.",
+      structuredData,
+    })
+  );
+});
+
+// SEO files
+app.get("/robots.txt", (c) => {
+  const robotsTxt = `User-agent: *
+Allow: /
+
+Sitemap: https://ryan-prendergast.com/sitemap.xml`;
+
+  return c.text(robotsTxt, 200, {
+    "Content-Type": "text/plain",
+  });
+});
+
+app.get("/sitemap.xml", async (c) => {
+  const posts = await getBlogPosts();
+  const baseUrl = "https://ryan-prendergast.com";
+
+  const staticPages = [
+    { url: "", changefreq: "weekly", priority: "1.0" },
+    { url: "/blog", changefreq: "weekly", priority: "0.9" },
+    { url: "/contact", changefreq: "monthly", priority: "0.7" },
+    { url: "/guestbook", changefreq: "weekly", priority: "0.6" },
+  ];
+
+  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+  // Add static pages
+  staticPages.forEach((page) => {
+    sitemap += `
+  <url>
+    <loc>${baseUrl}${page.url}</loc>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`;
+  });
+
+  // Add blog posts
+  posts.forEach((post) => {
+    const parts = post.date.split("-");
+    const isoDate = `${parts[2]}-${parts[0]}-${parts[1]}`;
+
+    sitemap += `
+  <url>
+    <loc>${baseUrl}/blog/${post.slug}</loc>
+    <lastmod>${isoDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+  });
+
+  sitemap += `
+</urlset>`;
+
+  return c.text(sitemap, 200, {
+    "Content-Type": "application/xml",
+  });
 });
 
 // Serve static assets (CSS, images, etc.)
 app.get("/styles.css", async (c) => {
   return c.env.ASSETS.fetch(new Request("https://dummy/styles.css"));
+});
+
+// 404 handler - must come before the fallback static asset handler
+app.notFound((c) => {
+  const content = `
+    <section>
+      <h1>404 - Page Not Found</h1>
+      <p>The page you're looking for doesn't exist.</p>
+      <p><a href="/">← Go home</a> or <a href="/blog">browse the blog</a></p>
+    </section>
+  `;
+  
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "404 - Page Not Found",
+      "description": "The requested page could not be found",
+      "url": "https://ryan-prendergast.com${c.req.path}",
+      "author": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
+      }
+    }
+    </script>
+  `;
+
+  return c.html(
+    renderPage("404 - Page Not Found | Ryan Prendergast", content, "", {
+      description: "The requested page could not be found on Ryan Prendergast's website",
+      structuredData
+    }),
+    404
+  );
 });
 
 // Fallback to serve other static assets
