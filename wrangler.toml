@@ -1,4 +1,4 @@
-name = "blog-2025"
+name = "ryan-prendergast"
 main = "src/worker.ts"
 compatibility_date = "2025-06-01"
 compatibility_flags = ["nodejs_compat", "no_nodejs_compat_v2"]
@@ -10,7 +10,7 @@ database_name = "guestbook_entries"
 database_id = "c8d26c5f-6c73-4886-87c7-2cc78afef0b0"
 
 [assets]
-directory = ".output/public"
+directory = "public"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 
@@ -21,7 +21,7 @@ command = "npm run build"
 enabled = true
 
 [env.production]
-name = "landing-page"
+name = "ryan-prendergast"
 
 [env.staging]
-name = "landing-page-staging"
+name = "ryan-prendergast-staging"
