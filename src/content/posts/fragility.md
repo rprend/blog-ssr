@@ -1,12 +1,10 @@
 ---
-title: 'Bad moods as a fragility test'
-date: '04-20-2024'
-slug: 'fragility'
+title: "Bad moods as a fragility test"
+date: "04-20-2024"
+slug: "fragility"
 ---
 
-# Bad moods as a fragility test
-
-Let's say you want to read more, to go to the gym, to study scientific papers in your free time, to make music. There's a style of advice that many people give. It's especially pronounced with hustlers and hustle culture.  The advice goes something like this:
+Let's say you want to read more, to go to the gym, to study scientific papers in your free time, to make music. There's a style of advice that many people give. It's especially pronounced with hustlers and hustle culture. The advice goes something like this:
 
 > Just wake up at 4 AM. Just force yourself to go to the gym. Just write a song. Just make yourself do extra math homework.
 
@@ -16,7 +14,7 @@ This technique fails on most people, because it is too hard. Musicians don't sta
 
 Paul Graham [wrote](https://paulgraham.com/greatwork.html) about small lies you tell yourself to get over the small cognitive hump of starting to work each day. He lies to himself by saying "we'll just read an abstract for a couple minutes", and invariably he gets invested and reads the whole a 30 page document. Had he been upfront to himself about his intentions, he wouldn't have started.
 
-A simplified process is simple enough you can force yourself to do it in a bad mood. The complexity of your oversimplification increases with skill level. Really, the complexity of your oversimplification *defines* your skill level. For a professional jazz guitarist, "noodling" means playing the notes from a specific scale in a specific voicing off the cuff; for an amateur, noodling means playing an open C chord followed by an open G and an open D.
+A simplified process is simple enough you can force yourself to do it in a bad mood. The complexity of your oversimplification increases with skill level. Really, the complexity of your oversimplification _defines_ your skill level. For a professional jazz guitarist, "noodling" means playing the notes from a specific scale in a specific voicing off the cuff; for an amateur, noodling means playing an open C chord followed by an open G and an open D.
 
 People become experts by raising the baseline of their oversimplifications, NOT by forcing themselves to do the complicated thing.
 

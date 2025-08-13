@@ -1,5 +1,63 @@
 @import url("tufte.css");
 
+/* Full-width navigation container - absolutely positioned */
+.nav-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: rgb(224, 212, 241);
+  padding: 0.8rem 0;
+  z-index: 10;
+}
+
+/* Add top padding to body to account for fixed nav */
+body {
+  padding-top: 5rem;
+}
+
+/* Navigation styling */
+nav {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #7f1d1d; /* darker red for contrast */
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-transform: lowercase;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+/* Mobile responsive navigation */
+@media (max-width: 768px) {
+  nav {
+    padding: 0 0.5rem;
+  }
+
+  nav a {
+    font-size: 1rem;
+    padding: 0.5rem 0.5rem;
+  }
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+nav a.active {
+  font-weight: 800;
+}
+
 /* Blog list styling */
 .blog-year {
   margin-top: 3rem;

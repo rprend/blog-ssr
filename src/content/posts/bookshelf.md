@@ -1,10 +1,8 @@
 ---
-title: 'Book Shelf'
-date: '04-20-2024'
-slug: 'bookshelf'
+title: "Book Shelf"
+date: "04-20-2024"
+slug: "bookshelf"
 ---
-
-# Bookshelf
 
 I have benefited from [others'](https://www.nickbeckstead.com/audiobooks) [publicly](https://subcriticalappraisal.com/bookshelf/) [posted](https://simonsarris.com/bookshelf) [booklists](http://www.aaronsw.com/weblog/books2011), so I'd like to make one of my own. Here is a list of books, fiction or nonfiction, which I strongly recommend.
 

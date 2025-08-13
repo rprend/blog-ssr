@@ -106,7 +106,9 @@ export const layout = (data: Record<string, string> = {}): string => {
   <link href="/styles.css" rel="stylesheet">
 </head>
 <body>
-  {{nav}}
+  <div class="nav-container">
+    {{nav}}
+  </div>
   <article>
     {{content}}
   </article>

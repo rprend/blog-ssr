@@ -1,10 +1,8 @@
 ---
-title: 'Book Reviews'
-date: '05-08-2024'
-slug: 'book-reviews'
+title: "Book Reviews"
+date: "05-08-2024"
+slug: "book-reviews"
 ---
-
-# How I write a book review
 
 I publish book reviews. They are not like the kind you'll see in newspapers, so I thought I'd explain how I write them.
 
@@ -15,4 +13,3 @@ I read books is because sometimes I read something which, against my intentions,
 I am not writing a corpus survey. I have not read all the books of a type and ranked them. Nor will I try to classify genres. Nor any kind of classification at all.
 
 My book reviews are lists of memories. That's all. If I'm lucky, you'll remember them, too.
-
