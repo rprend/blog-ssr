@@ -15,7 +15,7 @@ export default function BlogPost() {
           <Title>Post Not Found - Ryan Prendergast</Title>
           <Nav currentPage="/blog" />
           <main class="max-w-2xl px-4 pb-12 pt-6">
-            <h1 class="text-3xl font-bold text-primary mb-8">Post Not Found</h1>
+            <h1 class="text-3xl font-bold font-headline text-primary mb-8">Post Not Found</h1>
             <p class="text-primary">
               <a href="/blog" class="hover:opacity-80 underline transition-opacity">
                 ← Back to Blog
@@ -34,7 +34,7 @@ export default function BlogPost() {
                   ← Back to Blog
                 </a>
               </p>
-              <h1 class="text-3xl font-bold text-primary mb-4">{postData.title}</h1>
+              <h1 class="text-3xl font-bold font-headline text-primary mb-4">{postData.title}</h1>
               <p class="text-secondary text-sm mb-8">{postData.date}</p>
               <div 
                 class="prose prose-primary max-w-none"

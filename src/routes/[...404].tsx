@@ -7,7 +7,7 @@ export default function NotFound() {
       <Title>404 - Page Not Found - Ryan Prendergast</Title>
       <Nav currentPage="" />
       <main class="max-w-2xl px-4 pb-12 pt-6">
-        <h1 class="text-3xl font-bold text-primary mb-8">Page Not Found</h1>
+        <h1 class="text-3xl font-bold font-headline text-primary mb-8">Page Not Found</h1>
         <p class="text-lg text-primary mb-4">
           The page you're looking for doesn't exist.
         </p>

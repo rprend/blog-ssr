@@ -9,7 +9,9 @@ export default function Blog() {
       <Title>Blog | Ryan Prendergast</Title>
       <Nav currentPage="/blog" />
       <main class="max-w-2xl px-4 pb-12 pt-4">
-        <h1 class="text-4xl md:text-5xl font-bold text-primary mb-8">blog</h1>
+        <h1 class="text-4xl md:text-5xl font-bold font-headline text-primary mb-8">
+          blog
+        </h1>
         <BlogList />
       </main>
     </div>

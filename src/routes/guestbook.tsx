@@ -48,7 +48,7 @@ export default function Guestbook() {
       <Nav currentPage="/guestbook" />
       <main class="max-w-2xl px-4 pb-12 pt-6">
         <div class="flex justify-between items-start mb-8">
-          <h1 class="text-4xl md:text-5xl font-bold text-primary">guestbook</h1>
+          <h1 class="text-4xl md:text-5xl font-bold font-headline text-primary">guestbook</h1>
           <button
             onClick={() => setIsModalOpen(true)}
             class="px-4 py-2 bg-primary text-white rounded hover:opacity-80 transition-opacity"

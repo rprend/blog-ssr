@@ -11,8 +11,8 @@ const config: Config = {
         "muted-red": "#A65D57",
       },
       fontFamily: {
-        headline: ["Afacad Flux", "sans-serif"],
-        body: ["Space Grotesk", "sans-serif"],
+        headline: ['"Afacad Flux"', "sans-serif"],
+        body: ['"Space Grotesk"', "sans-serif"],
       },
       fontSize: {
         headline: ["4vw", "1"],

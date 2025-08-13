@@ -78,7 +78,7 @@ export default function BlogList() {
 
       {/* First year group */}
       <div>
-        <div class="px-4 pt-8 pb-2">
+        <div class="pt-8 pb-2">
           <div class="h-7 w-16 bg-primary/10 rounded"></div>
         </div>
 
@@ -95,7 +95,7 @@ export default function BlogList() {
 
       {/* Second year group */}
       <div>
-        <div class="px-4 pt-8 pb-2">
+        <div class="pt-8 pb-2">
           <div class="h-7 w-16 bg-primary/10 rounded"></div>
         </div>
 
@@ -145,14 +145,16 @@ export default function BlogList() {
             {(group) => (
               <div>
                 {/* Year Header */}
-                <div class="px-4 pt-8 pb-2">
-                  <h2 class="text-xl font-bold text-primary">{group.year}</h2>
+                <div class="pt-8 pb-2">
+                  <h2 class="text-xl font-bold font-headline text-primary">
+                    {group.year}
+                  </h2>
                 </div>
 
                 {/* Posts in this year */}
                 <For each={group.posts}>
                   {(post) => (
-                    <div class="py-3 px-4 flex items-baseline">
+                    <div class="py-3 flex items-baseline">
                       <span class="text-primary w-16 pl-2 flex-shrink-0 whitespace-nowrap">
                         {formatDate(post.date)}
                       </span>

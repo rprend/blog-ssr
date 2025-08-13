@@ -7,7 +7,7 @@ export default function Contact() {
       <Title>Contact - Ryan Prendergast</Title>
       <Nav currentPage="/contact" />
       <main class="max-w-2xl px-4 pb-12 pt-6">
-        <h1 class="text-4xl md:text-5xl font-bold text-primary mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold font-headline text-primary mb-8">
           contact
         </h1>
 

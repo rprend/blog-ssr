@@ -6,8 +6,8 @@ export default function Home() {
     <div class="min-h-screen bg-background font-body relative">
       <Title>Ryan Prendergast</Title>
       <Nav currentPage="/" />
-      <main class="max-w-2xl px-4 pb-12 pt-12">
-        <h1 class="text-4xl md:text-6xl font-bold text-primary leading-tight tracking-wide pb-8">
+      <main class="max-w-2xl px-4 pb-12">
+        <h1 class="text-4xl md:text-6xl font-bold font-headline text-primary leading-tight tracking-wide pb-8">
           RYAN PRENDERGAST
         </h1>
         <p class="text-lg text-primary mb-4">
@@ -42,9 +42,7 @@ export default function Home() {
           >
             electric guitar and sang
           </a>{" "}
-          in a couple bands. I like to write. To describe my writing in a
-          sentence: "alien dropped on earth writes a movie review to remember
-          what he sees."
+          in a couple bands. I like to write. I like to write essays.
         </p>
         <p class="text-lg text-primary mb-4">
           I like to meet new people, and I'm especially interested in people
