@@ -51,6 +51,8 @@ for (const file of files) {
     slug,
     title: data.title || baseFilename,
     date: data.date || new Date().toISOString().split("T")[0],
+    author: data.author || null,
+    subtitle: data.subtitle || null,
     excerpt: data.excerpt || extractExcerpt(markdownContent),
     readTime: calculateReadTime(markdownContent),
     content: htmlContent
@@ -81,6 +83,8 @@ content += 'export interface BlogPost {\n';
 content += '  slug: string;\n';
 content += '  title: string;\n';
 content += '  date: string;\n';
+content += '  author: string | null;\n';
+content += '  subtitle: string | null;\n';
 content += '  excerpt: string;\n';
 content += '  readTime: string;\n';
 content += '  content: string;\n';
