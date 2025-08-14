@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const templatesDir = path.join(__dirname, '../src/templates');
-const outputFile = path.join(__dirname, '../src/lib/templates.ts');
+const outputFile = path.join(__dirname, '../src/build-outputs/templates.ts');
 
 // Simple template function generator
 function generateTemplateFunction(name, htmlContent) {

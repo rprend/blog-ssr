@@ -6,7 +6,7 @@ import { marked } from 'marked';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const postsDir = path.join(__dirname, '../src/content/posts');
-const outputFile = path.join(__dirname, '../src/lib/posts-data.ts');
+const outputFile = path.join(__dirname, '../src/build-outputs/posts-data.ts');
 
 function calculateReadTime(content) {
   const wordsPerMinute = 200;

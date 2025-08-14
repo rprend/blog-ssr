@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { getBlogPosts, getBlogPost } from "./lib/blog";
+import { getBlogPosts, getBlogPost } from "./build-outputs/blog";
 import {
   layout,
   nav,
@@ -7,7 +7,7 @@ import {
   blogList,
   blogPost,
   contact,
-} from "./lib/templates";
+} from "./build-outputs/templates";
 
 interface Bindings {
   GUESTBOOK_DB: any; // D1Database
