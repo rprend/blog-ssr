@@ -133,7 +133,7 @@ app.get("/blog", async (c) => {
       "@context": "https://schema.org",
       "@type": "Blog",
       "name": "Ryan's Mailbag",
-      "description": "Book reviews, essays, and thoughts",
+      "description": "Essays and book reviews",
       "url": "https://ryan-prendergast.com/blog",
       "author": {
         "@type": "Person",
@@ -145,7 +145,7 @@ app.get("/blog", async (c) => {
 
   return c.html(
     renderPage("Ryan's Mailbag", content, "/blog", {
-      description: "Book reviews, essays, and thoughts",
+      description: "Essays and book reviews",
       structuredData,
     })
   );

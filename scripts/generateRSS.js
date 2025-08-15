@@ -98,7 +98,7 @@ let rss = `<?xml version="1.0" encoding="UTF-8"?>
   <channel>
     <title>Ryan's Mailbag</title>
     <link>https://ryan-prendergast.com/blog</link>
-    <description>Book reviews, essays, and thoughts</description>
+    <description>Essays and book reviews</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="https://ryan-prendergast.com/rss.xml" rel="self" type="application/rss+xml" />
