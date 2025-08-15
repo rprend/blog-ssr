@@ -15,6 +15,7 @@
       "Bash(npx wrangler d1 execute:*)",
       "Bash(xmllint:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }

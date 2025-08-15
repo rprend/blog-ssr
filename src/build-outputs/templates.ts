@@ -248,6 +248,20 @@ export const home = (data: Record<string, string> = {}): string => {
       >calendly.com/rprendergast1121/ryan</a
     >.
   </p>
+
+  <p>
+    <label for="theme-toggle" class="margin-toggle">⊕</label>
+    <input type="checkbox" id="theme-toggle" class="margin-toggle" checked/>
+    <span class="marginnote">
+      <label for="theme-select" style="font-size: 0.8em;">theme:</label>
+      <select id="theme-select" style="font-size: 0.8em; padding: 2px;" onchange="switchTheme(this.value)">
+        <option value="tufte">tufte</option>
+        <option value="98">98.css</option>
+        <option value="xp">xp.css</option>
+        <option value="terminal">terminal</option>
+      </select>
+    </span>
+  </p>
 </section>
 `;
   
@@ -268,13 +282,31 @@ export const layout = (data: Record<string, string> = {}): string => {
   <meta name="author" content="Ryan Prendergast">
   <link rel="icon" href="/favicon.ico">
   
-  <!-- Preload critical resources to break the chain -->
-  <link rel="preload" href="/tufte.css" as="style">
-  <link rel="preload" href="/et-book-roman-line-figures/et-book-roman-line-figures.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/et-book-bold-line-figures/et-book-bold-line-figures.woff" as="font" type="font/woff" crossorigin>
+  <!-- Theme Switcher Script (runs before body to prevent flash) -->
+  <script>
+    (function() {
+      const themes = {
+        'tufte': '/tufte.css',
+        '98': 'https://unpkg.com/98.css',
+        'xp': 'https://unpkg.com/xp.css',
+        'terminal': 'https://unpkg.com/terminal.css@0.7.4/dist/terminal.min.css'
+      };
+      
+      const savedTheme = localStorage.getItem('theme') || 'tufte';
+      const themeUrl = themes[savedTheme] || themes.tufte;
+      
+      // Preload fonts for tufte theme
+      if (savedTheme === 'tufte') {
+        document.write('<link rel="preload" href="/et-book-roman-line-figures/et-book-roman-line-figures.woff" as="font" type="font/woff" crossorigin>');
+        document.write('<link rel="preload" href="/et-book-bold-line-figures/et-book-bold-line-figures.woff" as="font" type="font/woff" crossorigin>');
+      }
+      
+      // Load the theme stylesheet
+      document.write('<link id="theme-stylesheet" href="' + themeUrl + '" rel="stylesheet">');
+    })();
+  </script>
   
-  <!-- Load stylesheets in parallel -->
-  <link href="/tufte.css" rel="stylesheet">
+  <!-- Load custom styles after theme -->
   <link href="/styles.css" rel="stylesheet">
   
   <!-- Open Graph meta tags for social sharing -->
@@ -312,6 +344,24 @@ export const layout = (data: Record<string, string> = {}): string => {
   <article>
     {{content}}
   </article>
+  
+  <script>
+    // Set the current theme in the dropdown
+    document.getElementById('theme-select').value = localStorage.getItem('theme') || 'tufte';
+    
+    function switchTheme(themeName) {
+      const themes = {
+        'tufte': '/tufte.css',
+        '98': 'https://unpkg.com/98.css',
+        'xp': 'https://unpkg.com/xp.css',
+        'terminal': 'https://unpkg.com/terminal.css@0.7.4/dist/terminal.min.css'
+      };
+      
+      const themeUrl = themes[themeName] || themes.tufte;
+      document.getElementById('theme-stylesheet').href = themeUrl;
+      localStorage.setItem('theme', themeName);
+    }
+  </script>
 </body>
 </html>`;
   
