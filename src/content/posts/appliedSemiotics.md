@@ -9,13 +9,13 @@ In the future I'd like to start a company called Applied Semiotics. "Applied Sem
 
 The impetus is a mish mash of ideas and books that have been on my mind for close to a decade. The map and the territory. The "consideration" model of political polling (Zaller). Sign and signifier (Saussure). The bicameral mind theory of consciousness (Jaynes). The mirror stage theory of consciousness (Lacan). The unconscious as signifying chains (Freud, Lacan).
 
-Postmodern theory and research is full of discoveries like "language describes meaning, but also language itself shapes how that meaning is constructed." Language, language, language. And in the past four years, we have been blown away by the sudden intelligence of a simple architecture *language* model. LLMs work as next token predictors, but the exact mechanisms for what it is doing is opaque— ie how specific model weights convert to beliefs and ideas.
+Postmodern theory and research is full of insights of the same shape: "language describes meaning, and yet language itself shapes how that meaning is constructed." Language, language, language. Over the past five years, we have been blown away by the sudden intelligence of a simple architecture _language_ model. LLMs work as next token predictors, but the exact mechanisms for what it is doing is opaque— ie how specific model weights correlate to specific ideas.
 
 There is research into understanding what model interpretability. However as far as I know, nobody is specifically applying postmodern and psychoanalytical theory. To start, I'd like to run these experiments.
 
 **Consideration Generation**
 
-In "The Nature and Origin of Mass Opinion", Zaller writes about the public opinions poll results. He found that the addition / removal / wording of the context preceding the question, affected the result dramatically. His theory was that statements map to "Considerations" in the brain— word images with positive or negative connotations. Rather than answer a question by considering it literally, people conjure the 5-10 closest considerations garnered from the question, sum up the positive/negative connotations, and answer the poll accordingly.
+In "The Nature and Origin of Mass Opinion", Zaller writes about the public opinion polls. He found that the addition / removal / wording of the context preceding the questions affected the results of the polls. His theory, technically about politics but also about human psychology, is that when asked a polling question, responders immediately and subconsciously map the question to 5-10 "Considerations". A consideration is a word-image association with a positive or a negative connotation. To answer a poll question, people conjure the 5-10 closest considerations, sum up the positive/negative connotations, and answer the poll accordingly.
 
 He made no attempt to study considerations themselves, only hoping to show that they exist and affect polls. We pick up where he left off.
 
@@ -25,7 +25,7 @@ He made no attempt to study considerations themselves, only hoping to show that 
 - Before the poll, prepend a statement. This is the consideration.
 - Run the model on the poll with the control consideration. Call this process P(c) where P is running the public poll input with c the consideration prepended.
 - Train a secondary model to 1. Generate a consideration c. 2. Run P(c) for that consideration 3. Calculate loss from the target result (which we define as giving 5s to every question). 4. Modify the consideration c according to that loss.
-- Finally, given a secondary model which generates a specific consideration for a s
+- The end result is a consideration generator. Given a public opinion poll, it finds the most salient consideration which, when prepended to the poll, affects the results.
 
 **Experiment 2: Personality Generator**
 
@@ -35,7 +35,7 @@ The experiment:
 
 - Give a trained model a full personality test. Use a professional Big Five.
 - Give the model a context statement before the personality test. As a control, use an empty string.
-- For each of the big five traits, fine tune which context statement alters that axis the most to the RIGHT. (Eg: What context statement will get a result
+- For each of the big five traits, fine tune which context statement alters that axis the most to the RIGHT.
 
 **Towards The Mirror Stage**
 

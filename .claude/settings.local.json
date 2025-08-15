@@ -12,7 +12,8 @@
       "Bash(curl:*)",
       "Bash(true)",
       "Bash(node:*)",
-      "Bash(npx wrangler d1 execute:*)"
+      "Bash(npx wrangler d1 execute:*)",
+      "Bash(xmllint:*)"
     ],
     "deny": []
   }

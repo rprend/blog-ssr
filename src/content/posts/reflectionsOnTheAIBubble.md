@@ -5,11 +5,9 @@ author: "Ryan Prendergast"
 slug: "reflections-on-the-ai-bubble-in-san-francisco"
 ---
 
-# Reflections on the ai bubble in san francisco
-
 I spent three months living in San Francisco, and everybody is talking about AI. AI is hot! "Cursor for X" is the new "Uber for X"; kids are dropping out of college-- no, high school!-- to build voice agents for sales calls. Every 2010s B2B SaaS vertical is fair game: just build the same thing, but AI native. Slack with AI, Gmail with AI, AI CRMs, AI voice agents as a restaurant receptionist, AI massage receptionist, AI booking agent. AI for trucking, AI for lawyers, AI for hospitals. It all seems tremendous, because people are remarkably willing to pay for AI in a way they were not willing to pay for software in the 2000s or 2010s. You can ship a product and get $100k in ARR in a month.
 
-San Francisco is doing what San Francisco does best: it's a gold rush. Everybody is raising $3 at $25m, hell make it $50 if you have some revenue.
+San Francisco is doing what San Francisco does best: it's a gold rush. Everybody is raising $3m at a $25 million valuation, hell make it $50 million if you have some revenue.
 
 Everybody around me is an AI maximalist. There is a lot of hype that white collar professions are "over": computer science is dead, consultants are dead, lawyers are dead, etc.
 

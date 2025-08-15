@@ -5,8 +5,6 @@ author: "Ryan Prendergast"
 slug: "trotsky-vs-the-backscratchers"
 ---
 
-# Trotsky vs the backscratchers
-
 There's a parable that I like, of the old college friend:
 
 "I stayed on Dave's couch, but he kicked me out. I was like Trotsky to him"

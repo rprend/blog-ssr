@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ryan's Mailbag</title>
+    <link>https://ryan-prendergast.com/blog</link>
+    <description>Book reviews, essays, and thoughts</description>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 15 Aug 2025 01:26:25 GMT</lastBuildDate>
+    <atom:link href="https://ryan-prendergast.com/rss.xml" rel="self" type="application/rss+xml" />
+    <generator>Custom RSS Generator</generator>
+    <webMaster>rprendergast1121@gmail.com (Ryan Prendergast)</webMaster>
+    <managingEditor>rprendergast1121@gmail.com (Ryan Prendergast)</managingEditor>
+    <item>
+      <title>Reflections on the ai bubble in san francisco</title>
+      <link>https://ryan-prendergast.com/blog/reflections-on-the-ai-bubble-in-san-francisco</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/reflections-on-the-ai-bubble-in-san-francisco</guid>
+      <description>I spent three months living in San Francisco, and everybody is talking about AI. AI is hot! &quot;Cursor for X&quot; is the new &quot;Uber for X&quot;; kids are dropping out of college-- no, high school!-- to build voice agents for sales calls. Every 2010s B2B SaaS vert...</description>
+      <content:encoded><![CDATA[<p>I spent three months living in San Francisco, and everybody is talking about AI. AI is hot! &quot;Cursor for X&quot; is the new &quot;Uber for X&quot;; kids are dropping out of college-- no, high school!-- to build voice agents for sales calls. Every 2010s B2B SaaS vertical is fair game: just build the same thing, but AI native. Slack with AI, Gmail with AI, AI CRMs, AI voice agents as a restaurant receptionist, AI massage receptionist, AI booking agent. AI for trucking, AI for lawyers, AI for hospitals. It all seems tremendous, because people are remarkably willing to pay for AI in a way they were not willing to pay for software in the 2000s or 2010s. You can ship a product and get $100k in ARR in a month.</p>
+<p>San Francisco is doing what San Francisco does best: it&#39;s a gold rush. Everybody is raising $3m at a $25 million valuation, hell make it $50 million if you have some revenue.</p>
+<p>Everybody around me is an AI maximalist. There is a lot of hype that white collar professions are &quot;over&quot;: computer science is dead, consultants are dead, lawyers are dead, etc.</p>
+<p>My prediction is that LLMs will turn out to be an advanced toaster. They will not become conscious and take over the world. We will not see mass white collar unemployment in the 2020s or 2030s. We will continue to see the rates of model improvement of 2022-2025 for the next year or two, before a plateau in utility as the enshittification process begins.</p>
+<h2><strong>Enshittification</strong></h2>
+<p>Imagine someone invents a new way of teaching and releases a headline: they achieved top percentile test scores with this new method. They try to scale it, but fail. It turns out, the test group was a group of abnormally motivated, high achieving students. It was selection, not pedagogy!</p>
+<p>ChatGPT today is much like Google in the 2000s: a tool whose utility depends largely on its selection effects, not just the tool itself. When the internet was more niche, a high percentage of users were college educated, thoughtful types. A high percentage of forums and websites were by and for these users. And so a person would search a question on google and be amazed that the search engine gave educated, thoughtful responses! Like any good signal, there was money to be made. SEO and advertisers flocked, and the search signal quickly degraded. The same thing happened with social media. Scale and financial incentives ruin all signals, because active signals are a market inefficiency.</p>
+<p>The same thing will happen to LLMs. Much of their utility is in their selection: they were trained on every book, every wikipedia article, Github repo, and tons of text conversations. A person goes on ChatGPT and get a response that sounds like the consensus of all the books, encyclopedias, code repos, and text conversations. It&#39;s really cool. You can talk to &quot;The Other&quot;. But the signal is out. There are already a dozen GEO companies, and everybody is moving fast to cash in on the new signal.</p>
+<h2><strong>The best they&#39;ll ever be</strong></h2>
+<p>AI growth relies heavily on the scaling hypothesis: as we add more data, the models get better. Yud often quotes under new model releases: &quot;remember, this is the worst they&#39;ll ever be&quot; But what if this is the best they will ever be?</p>
+<p>We have started to see this. ChatGPT becomes more of a sycophant every release. 6 months ago, I could ask it a question like &quot;is XYZ normal / reasonable&quot; and it would give an answer that tracks the general consensus. That was a killer use case: fuzzy consensus search. What is the consensus of the book/encyclopedia/commentary realm? Now it always says yes. &quot;Yes, you&#39;re asbolutely right! Oh, I&#39;m so sorry, you&#39;re correct!&quot;</p>
+<p>So many people are banking on the models getting much better and much more general in very little time. The promise is strong, and you can raise to disrupt any legacy industry based on this promise. It is overly optimistic, because it fails to account for enshittification.</p>
+<p>There is currently an ai bubble in San Francisco, comparable to the dot com bubble of &#39;99. We will see the bubble pop, with a contraction in AI venture activity in &lt;2 years.</p>
+<h2>AI + Me</h2>
+<p>I was an early GPT adopter. I was preaching GPT-3 to my college roommates in 2020. I currently use AI every day. Cursor writes a good chunk of my code. ChatGPT is miraculous at fuzzy searches i could never do 5 years ago. It&#39;s not like there isn&#39;t value being created. That&#39;s why I compare this boom to the dot com bubble, rather than the real estate or NFT bubbles. We achieved most of the goals of the dot com bubble! It just took 10-20 years. Commerce is mostly online, banking is mostly online, communication is mostly online, every professional worker spends most of their workday online. LLM chatbot assistants, like the internet, will permeate white collar work. It will take 10-20 years.</p>
+<p>Right now the money is too easy and the promises too big. That&#39;s why i&#39;m calling a bubble. My gut says it&#39;s too good to be true. Viral shitposters like the &quot;cheat on everything&quot; guy, people throwing together demos that don&#39;t really work, promises of AI for everything. These AI companies, like their home city of San Francisco, will bust as quickly as they boomed.</p>
+<p>Like DOGE, whose participants assumed massive fraud in government programs they couldn&#39;t find, many AI for X players will find that the bottleneck in legacy industries is NOT better software. They might be surprised to find these legacy industries are far more organizationally efficient than the big tech companies they come from. Hypergrowth hides lots of waste!</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Mon, 09 Jun 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Best-of lists and the abdication of judgement</title>
+      <link>https://ryan-prendergast.com/blog/best-of-lists-and-the-abdication-of-judgement</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/best-of-lists-and-the-abdication-of-judgement</guid>
+      <description>As time goes on, the market share of old media increases. People still listen to the Beatles and watch The Godfather. It&apos;s a natural effect of media discovery. If I&apos;m going to watch a movie, I will probably google &quot;best movies&quot; and see The Godfather...</description>
+      <content:encoded><![CDATA[<p>As time goes on, the market share of old media increases. People still listen to the Beatles and watch The Godfather. It&#39;s a natural effect of media discovery. If I&#39;m going to watch a movie, I will probably google &quot;best movies&quot; and see The Godfather on the list.</p>
+<p>The logic of consuming the best seems pretty sensible. You have a limited amount of time on earth, and you can&#39;t consumer every piece of media. So for a given format, you probably want to start your search with a consensus of what other people like, and branch out from there.</p>
+<p>I&#39;m someone who grew up a best-of consumer. My most listened to artists in high school were Pink Floyd and the Beatles. Recently I&#39;ve found it to be more and more an empty practice. Far more interesting than the consumption of a best-of, is the creation of one. Would Bach be Bach if not for Mendelsohn? Picasso would not be Picasso if not for a conglomeration of mimetic associations of a downtown scene, loft parties, counterculture. Was that inevitable?</p>
+<p>The Big Lie of best-of lists is that the best emerge by survival of the fittest. The thought goes: every year 1000 artists make 1000 songs, and the good ones emerge from the top of that stack. But that&#39;s just not true. Songs and books succeed by becoming memetic. That is ANOTHER process independent of the production of the art itself. It&#39;s attaching a lifestyle to the artwork, one infective enough to induce itself in its listeners. Pink Floyd effuses a pyschadelic rock lifestyle- that didnt just emerge descriptively! It&#39;s a hodge podge of what people say about the artists&#39; lifestyle and the lifestyle of their listeners.</p>
+<p>I listen to Tyler Cowen&#39;s podcast, and anytime he suggests music he seems to approach it by searching for the best. He looks for an argument for why certain music is better than others. He&#39;s a well-known economist, so perhaps best-of lists are best understood as a symptom of the economics takeover of the world.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Fri, 09 May 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Externally regulated affects</title>
+      <link>https://ryan-prendergast.com/blog/externally-regulated-affects</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/externally-regulated-affects</guid>
+      <description>There are a lot of problems that come up in work. &quot;I need this task done ASAP.&quot; &quot;Oh i just thought of this possible issue&quot;. People who do a lot of work, deal with lots of problems. How they approach these problems is illustrative. The most common arc...</description>
+      <content:encoded><![CDATA[<p>There are a lot of problems that come up in work. &quot;I need this task done ASAP.&quot; &quot;Oh i just thought of this possible issue&quot;. People who do a lot of work, deal with lots of problems. How they approach these problems is illustrative. The most common archetype of person in the workplace gets visibly frustrated and anxious when problems come up. Their body language and nervous tone rub off on the other people in the room, who mirror the anxiety. The problem is just work, something like &quot;our Q1 goal is blocked by shipment A&quot;, but if you didn&#39;t know that you&#39;d think it&#39;s fight-or-flight, like they&#39;re being chased by a 500lb gorilla.</p>
+<p>A lot of people seem to think that feeling fight-or-flight about work is just how life works. But it&#39;s not inevitable! It has a source! The source is the person who regulates their own anxiety by publicizing it in their tone and body language to offload it onto other people.</p>
+<p>This mode of operating is strongly overrepresented among startup and business people. At an old job I had a coworker with a strong external affect. When an unexpected problem came up she would become &quot;ughhhh&quot; personified. People would try to assuage the affect as quickly as possible, because people would mirror her mood and panic, like we were all in danger.</p>
+<p>This anecdote hints at the reason why fight-or-flight is overrepresented: it is a dominant strategy. People who offload their affects are more successful on average than those who don&#39;t. Fight-or-flight increases output, at least locally, and it induces other people into solving your problems. Further, it is contagious. It is almost impossible to completely ignore visible anxiousness and nervousness, because even if you choose to ignore it, body language and tone of voice affect your subconscious.</p>
+<p>Everything you consume that was the output of a corporate process, you should consider that the people who made it were panicked like they were being chased by a lion. This is the genesis of the weird non-humanness of corporate and institutional outputs, like LinkedIn Speak.</p>
+<p>My untested theory is that what makes a successful executive is how well they shut down, minimize, or manage other people&#39;s fight-or-flight responses. I am highly sensitive to my own affect, and I get extremely annoyed at affect-bleeding. I wonder if it&#39;s possible to filter out such people at the interview stage.</p>
+<p>There is a French term that is the opposite of fight-or-flight, sangfroid. &quot;Composure or coolness, sometimes excessive, as shown in danger or under trying circumstances&quot;.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Wed, 16 Apr 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Performative Idiocy and the Path to Power</title>
+      <link>https://ryan-prendergast.com/blog/performative-idiocy</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/performative-idiocy</guid>
+      <description>Recently i watched &quot;Mickey 17&quot;. It&apos;s an objectively good movie with an objectively great premise. Robert Pattinson and Naomi Ackie are extraordinary. It falls flat, though, by insisting on over-the-top grotesque, idiot villains. This movie isn&apos;t alon...</description>
+      <content:encoded><![CDATA[<p>Recently i watched &quot;Mickey 17&quot;. It&#39;s an objectively good movie with an objectively great premise. Robert Pattinson and Naomi Ackie are extraordinary. It falls flat, though, by insisting on over-the-top grotesque, idiot villains. This movie isn&#39;t alone: Don&#39;t Look Up, Triangle of Sadness, White Lotus, Succession, Homelander, are some other examples from the past five years. What does it mean that so many movies cast the rich and powerful as obscene grotesque iditos?</p>
+<p>The thesis I have is &quot;leaders and rich people are grotesque idiots&quot; should NOT be read as a descriptive claim on what power is. Rather, it should be read as a prescriptive claim on what power <em>should be</em>. Convincingly performing the idiot is a necessary prerequisite before the people accept you as powerful. It&#39;s the ritual an aspiring 20 something must do before his claim to power can be accepted. Truisms like &quot;the administration doesn&#39;t care about us&quot; and &quot;they&#39;re all a bunch of idiots at the top&quot; are fairy tales for the other smart, rich people who don&#39;t have power, and they demand a comforting story in exchange for the legitimization of your power. You either need to be an idiot, evil, or both, and if you don&#39;t choose one, it will be chosen for you. It&#39;s the crowning ceremony for people with brownstones in Manhattan.</p>
+<p>I&#39;ve been reading Robert Caro&#39;s Lyndon B Johnson series, and it has me wondering: What, if any, is the &quot;path to power&quot; in the 21st century? Performative idiocy is the answer. If you are a 20-something striver who intends to amass power and influence through one of the avenues--business, influencer, politics, corporate ladder, etc--you should start idiocy-maxxing as soon as possible. Stop thinking before you speak. Publicly ask a question that someone in your field should have learned in Intro 101. Put out the first draft and get 10 comments how that&#39;s wrong; you need to do X instead of Y. You will get your work done much faster and with less effort. Nothing is more powerful than an over performing idiot.</p>
+<p>Beware the curse of the promising young executive who refuses to be an idiot, until finally the people relent and declare him evil instead.</p>
+<p>For each position of power and influence, there are tens of thousands of capable people with the necessary qualifications. Their approval of your powerful is important, because their collective disapproval can veto your power by preference cascade.</p>
+<p>If they believe you are smarter than them, you will meet an organization guided by the CIA Manual for Sabotage. They&#39;ll see it as a challenge to find your limits, and won&#39;t back off until they find it, happily convinced you&#39;re an idiot.</p>
+<p><img src="/ciaSabotage.png" alt="CIA Manual for Sabotage"></p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sat, 15 Mar 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>On Business</title>
+      <link>https://ryan-prendergast.com/blog/on-business</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/on-business</guid>
+      <description>Never have I ever run a business, but that is changing with Zenobia Pay. Since I&apos;m just getting started, I thought I&apos;d write out my philosophy of business and how to make a successful one. 5 years from now, we&apos;ll look back and falsify my predictions:...</description>
+      <content:encoded><![CDATA[<p>Never have I ever run a business, but that is changing with Zenobia Pay. Since I&#39;m just getting started, I thought I&#39;d write out my philosophy of business and how to make a successful one. 5 years from now, we&#39;ll look back and falsify my predictions: are they good intuitions, naiveties, or dangerously wrong pieces of advice? Here we go:</p>
+<h2>Become feature complete as quickly as possible.</h2>
+<p>Do not do &quot;redesigns&quot;. Craigslist is the example here. They have an extremely high valuation / employee count. What you want is a businesses too small to be a public utility. It should self sufficient and stable and should have as few employees as highly paid as possible who are basically permanent on call maintainers. These people get paid at least $200k, work 10hrs most weeks, except an emergency where they grind.</p>
+<h2>Compete on price.</h2>
+<p>There&#39;s a tremendous opportunity to outcompete venture backed, private equity owned, and publicly traded companies by building a minimal feature set with an extremely small number of employees, refusing to grow headcount or that feature set.</p>
+<p>Companies trap themselves into revenue growth and fee maximization by dark patterns. The dark patterns can be &quot;becoming an UMC factory&quot; (over hiring office workers, who inevitably demand that you hire more), and the combo of &quot;trend chasing&quot; and &quot;growth&quot;. The board has a fiduciary duty (aka a legal obligation) to do whatever is the currently most convincing argument (aka the latest trend) for growing their revenue. Trend chasing sacrifices long term value for short term profit. Many understand this. But few people acknowledge that any decision decided by argument and verbal justification BY DEFINITION is a trend chasing decision. If you want to be long term profitable you MUST be obviously wrong according to the well spoken crowds, be that twitter or cocktail parties in Manhattan or the contrarian Thiel-ian view or whatever is fashionable in your date and time (even if they&#39;re fashionable by being un-fashionable!).</p>
+<p>The end result of the company-trap is a fee trapping model where revenue is squeezed. Find a place where there&#39;s price inefficiency, switch from changing what something is worth to charging what people will pay to not have it taken away. See ski passes and concerts. Any business school graduate is rolling their eyes now, because they know to price on value, not on cost. I&#39;m not advocating to price on cost! Plumbers shouldn&#39;t cost $15 because it takes them 15 minutes to fix your pipes. The Vail Ski resorts and venture backed playbook is subtly different from price-on-value: it is to price based on the value of <em>non-exclusion</em>. Get people hostage and then you can price-on-value with the negotiating power of a hostage keeper.</p>
+<p>This one is controversial! YCombinator famously advises the exact opposite: <strong>DO</strong> <strong>NOT compete on price</strong>.</p>
+<h2>Make sacred objects.</h2>
+<p>Sacred objects are purchases and associations that consumers make irrationally. Luxury is the king of sacred objects (spending $4000 on a bag), but it can come in surprising places, like Norway persuading Japan that Atlantic Salmon in sushi is a core part of the Japanese national identity. How many people have bought a Fender because of a rock band, or a Harley because of the lifestyle? There&#39;s an association between a purchase and an implied behavior or character trait, and objects which take on powerful associations become sacred objects.</p>
+<p>Sacred objects emerge organically in culture (like blue jeans), but there are things a company can do can to increase their luck surface-area. The most important thing is: continue operating in the black or at a loss when the object becomes outdated or uncool, rather than retool your factory for a newer thing. This gives a chance for the contrarians to adopt your object as their symbol. The example here is by contradiction: American Car Manufacturers, who notably do the opposite. They keep noticing consumer trends, then retool for it because the projections are great. Then they surprise_pikachu when the trend shifts the opposite direction. Gas guzzling big cars were what everyone wanted, until they didn&#39;t, and they were outcompeted by small fuel efficient Japanese cars. Now we see the same with the commitment to pickup trucks: neither Ford nor GM makes cars anymore in 2025, only trucks and SUVs. Their margins are higher and trends indicate that the consumer will only buy trucks by 203X. blah blah blah. What happens when that trend reverses?</p>
+<p>Another way to become sacred is to survive at low margins until &quot;the mortgage is paid off&quot; (large upfront costs have been paid off) and aim to outcompete on price after that has been written off. This becomes sacred for being &quot;honest&quot; and a time portal for nostalgia. Example: bars with $3 beers that have been around since the 70s and have had the same furniture for 25 years.</p>
+<h2>Hire slowly.</h2>
+<p>The first thing that bloated employees will do is grow employee count. Head count growth demands new features, new redesigns, etc. Headcount growth demands new headcount growth.</p>
+<h2>Avoid water treading businesses.</h2>
+<p>This is likely controversial. Bubble is a water treading business. It&#39;s a platform for people to create web apps, so we are constantly treading water on keeping feature parity with <em>every published web app</em>. And of course, a no code utility is the first thing to break when dependencies have breaking changes, deprecations, etc. Water treading businesses can be unicorns, but they will never be sacred objects, and they will never be feature complete. Hence, they do not fit into my philosophy of business.</p>
+<p>Water treading requires all of your time and lots of outside funding. You <strong>will</strong> lose control. It <strong>will</strong> become board run. It <strong>will</strong> become shareholder run. It <strong>will</strong> be managed according to the projections of MBAs. It will either fail, or it will become a utility.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Fri, 28 Feb 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Gilgamesh and half-movies</title>
+      <link>https://ryan-prendergast.com/blog/gilgamesh-and-half-movies</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/gilgamesh-and-half-movies</guid>
+      <description>I read the Epic of Gilgamesh— the world&apos;s oldest story. There are different angles to approach an old story like this. You can analyze its themes: individualism, friendship, the relationships of man and god. You can reflect on broader questions: this...</description>
+      <content:encoded><![CDATA[<p>I read the Epic of Gilgamesh— the world&#39;s oldest story. There are different angles to approach an old story like this. You can analyze its themes: individualism, friendship, the relationships of man and god. You can reflect on broader questions: this story as an instance of growing up and maturing, for example.</p>
+<p>I don&#39;t enjoy thematic analysis about art and literature. There is no generalizable, absolute knowledge independent from the particular: doing an integral teaches you how to do an integral. Curricula which emphasize &quot;problem solving&quot; and similar universal concepts inevitably produce students who pattern match universal language; they&#39;ve never actually solved any problems!</p>
+<p>I want applications. Applied classicism, if you will.</p>
+<p>The simplest applications are snippets of language to memorize. The eloquent eulogy: &quot;Your funeral is a precious gesture to hide my own guilt&quot;, or the cutting insults: &quot;May all and any who can hurt you now often cross the paths you take&quot;. The applied classicist might memorize Gilgamesh, and then memorize the Odyssey, and then memorize Plato, and then… You&#39;ll run out of memory soon. The next step is to throw this story at other things in your life, and see how it would stick. What would it mean to Gilgamesh-ify?</p>
+<p>Gilgameshification might work for screenwriting. Consider the traditional 3 part Hollywood screenplay. Act 1 introduces the world and the inciting incident, Act 2 rises the action until we hit an all-is-lost moment, until AHA!, Act 3, the Climax and the denouncement. The Hollywood narrative structure is a framework for describing movies. It&#39;s descriptive, not perscriptive: it works because that&#39;s a shape that good stories share, all the way back to Homeric epics and Greek tragedies.</p>
+<p>Gilgamesh doesn&#39;t fit the 3 part story mold. Rather than an inciting action, we start with the introduction of a best friend, followed by episodic heroics, such as the killing of Humbaba. The death of Enkidu, the climax of the story, happens quickly. For the rest of the tale, we follow Gilgamesh moping, coming to terms with the loss of his friend. He listens to the story of the flood by Utnapishtim, resolves to live forever, but, having the life-plant stolen by a snake, returns home to Uruk, his problems unresolved.</p>
+<h2>To Gilgamesh-ify a story:</h2>
+<ol>
+<li>Move the climax to the first half of the movie.</li>
+<li>Write a second half following the character mope or otherwise deal with the climax.</li>
+</ol>
+<p>What movies are like this? What would a standard Hollywood movie (say &quot;Ferris Bueller&quot;) look like if it were Gilgamesh-ified? Ferris&#39;s parents return home at the end of hour 1. We spend the next hour following Bueller&#39;s sister coping with her jealousy and acceptance of Ferris&#39;s arbitrary fame.</p>
+<p>Call it a half movie: half Ferris Bueller, followed by the aftermath.</p>
+<p>I can&#39;t promise the half-movie will be better than the original. But it is intriguing, and I hope to try it soon. I&#39;ve daydreamed of life-after-act-3 since I was a kid, and it&#39;s nice to name and formalize the process which writes FOR that daydream.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Mon, 03 Feb 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Applied Semiotics: Psychoanalysis for computers</title>
+      <link>https://ryan-prendergast.com/blog/applied-semiotics</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/applied-semiotics</guid>
+      <description>In the future I&apos;d like to start a company called Applied Semiotics. &quot;Applied Semiotics: Psychoanalysis for computers&quot;. The goal: put an LLM through the mirror stage. The impetus is a mish mash of ideas and books that have been on my mind for close to...</description>
+      <content:encoded><![CDATA[<p>In the future I&#39;d like to start a company called Applied Semiotics. &quot;Applied Semiotics: Psychoanalysis for computers&quot;. The goal: put an LLM through the mirror stage.</p>
+<p>The impetus is a mish mash of ideas and books that have been on my mind for close to a decade. The map and the territory. The &quot;consideration&quot; model of political polling (Zaller). Sign and signifier (Saussure). The bicameral mind theory of consciousness (Jaynes). The mirror stage theory of consciousness (Lacan). The unconscious as signifying chains (Freud, Lacan).</p>
+<p>Postmodern theory and research is full of insights of the same shape: &quot;language describes meaning, and yet language itself shapes how that meaning is constructed.&quot; Language, language, language. Over the past five years, we have been blown away by the sudden intelligence of a simple architecture <em>language</em> model. LLMs work as next token predictors, but the exact mechanisms for what it is doing is opaque— ie how specific model weights correlate to specific ideas.</p>
+<p>There is research into understanding what model interpretability. However as far as I know, nobody is specifically applying postmodern and psychoanalytical theory. To start, I&#39;d like to run these experiments.</p>
+<p><strong>Consideration Generation</strong></p>
+<p>In &quot;The Nature and Origin of Mass Opinion&quot;, Zaller writes about the public opinion polls. He found that the addition / removal / wording of the context preceding the questions affected the results of the polls. His theory, technically about politics but also about human psychology, is that when asked a polling question, responders immediately and subconsciously map the question to 5-10 &quot;Considerations&quot;. A consideration is a word-image association with a positive or a negative connotation. To answer a poll question, people conjure the 5-10 closest considerations, sum up the positive/negative connotations, and answer the poll accordingly.</p>
+<p>He made no attempt to study considerations themselves, only hoping to show that they exist and affect polls. We pick up where he left off.</p>
+<p><strong>Experiment 1: Considerations Generator</strong></p>
+<ul>
+<li>Give a trained model (GPT or Claude, eg) a public opinion poll. Tell it to answer it directly and give straight answers. The public poll should either have boolean answers (yes/no), or ideally 1-5 answers (highly unlikely to highly likely)</li>
+<li>Before the poll, prepend a statement. This is the consideration.</li>
+<li>Run the model on the poll with the control consideration. Call this process P(c) where P is running the public poll input with c the consideration prepended.</li>
+<li>Train a secondary model to 1. Generate a consideration c. 2. Run P(c) for that consideration 3. Calculate loss from the target result (which we define as giving 5s to every question). 4. Modify the consideration c according to that loss.</li>
+<li>The end result is a consideration generator. Given a public opinion poll, it finds the most salient consideration which, when prepended to the poll, affects the results.</li>
+</ul>
+<p><strong>Experiment 2: Personality Generator</strong></p>
+<p>We can follow the same model as above with a personality test, to train a model with a configurable personality (defined by the Big 5).</p>
+<p>The experiment:</p>
+<ul>
+<li>Give a trained model a full personality test. Use a professional Big Five.</li>
+<li>Give the model a context statement before the personality test. As a control, use an empty string.</li>
+<li>For each of the big five traits, fine tune which context statement alters that axis the most to the RIGHT.</li>
+</ul>
+<p><strong>Towards The Mirror Stage</strong></p>
+<p>In the above experiments, we trained a model to generate considerations that prepend LLM inputs. These experiments alone have a number of practical applications— for any quantitative &quot;Test&quot; (any type of personality test, a political compass test, etc), we can create a Chatbot with the personality of a specific score on that test. Imagine 5 inputs for each of the Big Five personality test, and you can drag each and then chat with a model with that combination of personalities. High consciousness, low neuroticism.</p>
+<p>However, I think we can go further. Two more experiments, that I haven&#39;t fleshed out, but would be the next step.</p>
+<p><strong>Experiment 3: Explicit Signs and Signifiers</strong></p>
+<p>When we consider the realms of the symbolic, the real, and the imaginary, clearly &quot;a token context&quot; is the unit of the symbolic. What, however, consists the real and the imaginary? For this, fix a particular token as input to inference. Take a snapshot of the parameter activations. Consider these signs! We have a real number mapping of 0-1 of parameters, condense these to a binary sign activation of activated or not. Now sweep across an input state…</p>
+<p>I need to do a literature review of model interpretability, because I seem to be rediscovering basic concepts here.</p>
+<p><strong>Experiment 4: Crossing the Bar of Metaphor</strong></p>
+<p>To be determined. The basic idea is: Can we explicitly encode metaphorical substitution in models? Substitute one parameter-cluster for another which is topologically similar in activation-space to another? Perhaps a first experiment in this relies on an interpretability analysis of certain isolatable English words. Take two English words with identifiable activation-centers in a heatmap of the model, and swap the parameters of one for the other. Ie swap the &quot;France&quot; activations for &quot;America&quot; and … see what happens??</p>
+<p><strong>Experiment 5: The Mirror Stage</strong></p>
+<p>The mirror stage is part of the Lacanian theory on the origins of consciousness. A baby sees himself in the mirror and recognizes himself as both himself and not himself. That is to say, he recognizes the image in the mirror as an image of himself, crossing the bar of metaphor for the first time. He substitutes the concept of Me with a symbol (the image of me), and in this substitution begins to understand the world.</p>
+<p>If you have more free time than myself, please run these experiments. I&#39;m happy to support any way I can.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Trotsky vs the backscratchers</title>
+      <link>https://ryan-prendergast.com/blog/trotsky-vs-the-backscratchers</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/trotsky-vs-the-backscratchers</guid>
+      <description>There&apos;s a parable that I like, of the old college friend: &quot;I stayed on Dave&apos;s couch, but he kicked me out. I was like Trotsky to him&quot; &quot;Trotsky?&quot; &quot;Yea Trotsky. Countries kept inviting him in, because they felt bad for him— he was being persecuted by S...</description>
+      <content:encoded><![CDATA[<p>There&#39;s a parable that I like, of the old college friend:</p>
+<p>&quot;I stayed on Dave&#39;s couch, but he kicked me out. I was like Trotsky to him&quot;</p>
+<p>&quot;Trotsky?&quot;</p>
+<p>&quot;Yea Trotsky. Countries kept inviting him in, because they felt bad for him— he was being persecuted by Stalin in Russia. They would give him a house and a place, and he would immediately take to the streets and start a communist riot.&quot;</p>
+<p>&quot;…&quot;</p>
+<p>&quot;And he was good at it! He was good at talking and arguing and convincing people to revolt, and the host country would ask him to please stop stirring up revolution and riots on the streets. We&#39;re being nice taking you in, they&#39;d say, and if you just keep your head down, we can keep you safe.&quot;</p>
+<p>&quot;But he didn&#39;t.&quot;</p>
+<p>&quot;Of course he didn&#39;t! He couldn&#39;t. He couldn&#39;t help himself; it&#39;s just who he was. And so he got kicked out of Turkey and France and Norway until finally he made his way to Mexico, where he wasn&#39;t safe and got assassinated by a Stalinist.&quot;</p>
+<p>&quot;And that&#39;s you?&quot;</p>
+<p>&quot;Yep. You know, he&#39;s married now. Has a quiet life. And I came in and kept dragging him out and getting him drunk till 4 am, and he told me &quot;we can&#39;t do this; I&#39;m going to get in trouble with my wife. Let&#39;s just have a chill night, watch a movie&quot;, and I&#39;d say &quot;yes of course&quot;, and the next night we&#39;d be drunk again. She kicked me out on day 4.&quot;</p>
+<hr>
+<p>The parable was called &quot;Trotsky vs the back scratchers.&quot;</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sat, 04 Jan 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>One Million Bids</title>
+      <link>https://ryan-prendergast.com/blog/one-million-bids</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/one-million-bids</guid>
+      <description>Back in June, I had an idea for a simple 2 person auction: each person bids for an object, and whoever bids LESS buys it from the other. It&apos;s stupidly simple, but it stuck in my mind to make it happen, and I&apos;m happy to say it&apos;s FINALLY done. You can...</description>
+      <content:encoded><![CDATA[<p>Back in June, I had an idea for a simple 2 person auction: each person bids for an object, and whoever bids LESS buys it from the other. It&#39;s stupidly simple, but it stuck in my mind to make it happen, and I&#39;m happy to say it&#39;s FINALLY done. You can try it out here: <a href="http://1mb.app">1mb.app</a>.</p>
+<p>Building a two way marketplace that accepts real payments is remarkably harder than I expected. I think by writing, so every day I worked on it I wrote out what I was doing. Here&#39;s the headline of each of the 37 days:</p>
+<p><img src="/onembwork1.png" alt="Project timeline part 1">
+<img src="/onembwork2.png" alt="Project timeline part 2"></p>
+<p>I was surprised by what the bottleneck was. I thought the challenge would be managing persistent websocket connection pairs and scaling it to allow concurrent auctions (10,000). But as you can see above, that only took ~1/3 of the days. I used Cloudflare Durable Objects to create a LobbyManager and spin up LobbyRooms on demand, and websockets once created are relatively self sufficient.</p>
+<p>What took the majority of the time was <strong>payments.</strong> At first, I assumed that customers would fund an account, they&#39;d mess around for a bit, then they&#39;d withdraw. Turns out that&#39;s just not workable. Fees are 2.9% + $.30 each way. I tried to come up with a solution where someone would Zelle me with an activation code as the description, and I had a lambda trigger every time I got an email notification from Chase which would note the amount and the description and update the user&#39;s account balance. But when it came time to sending money out… I couldn&#39;t find a single API that would let me programmatically send money. I was confused. But after consideration, I realized that a site where a user can fund an account and then send it out arbitrarily without attaching their identity is the <em>world&#39;s greatest money laundering</em> system*.* I was having difficulty finding a provider because what I was trying to do was extremely illegal.</p>
+<p>Payments suck. Everything is either crazy expensive (changing huge amounts of BPs in fees) or illegal. I spent a lot of time researching payments and card networks and bank transfers and wire transfers and FedNow and RTP and ACH.</p>
+<p>I finally found a working solution, though not ideal, in Stripe Marketplace. In this setup, two participants register as Merchants, and get KYB&#39;d by Stripe. With our two-way auction site, each participant is a digital artwork seller to the other. When Person A and Person B go into an auction, they receive 50% ownership in the digital artwork. Each places a double-blind bid, and the person who bids less PURCHASES the digital artwork from the other for the amount they bid. In order for this to work, BOTH parties must authorize a credit card payment directly to the other for the amount they bid. 1mb the platform waits for both to bid, compares the bid sizes, and then only CAPTURES the bid of one. The other will be left, uncaptured, until it expires a few days later. So, as a hypothetical auction:</p>
+<ul>
+<li>Person A Bids $10. They type in a credit card number and authorizes a payment to Person B for $10.</li>
+<li>Person B Bids $5. They type in a card number and authorize a payment to Person A for $5.</li>
+<li>The server waits until the auction end. Seeing $5&lt;$10, the server FULFILLS the payment from Person B to Person A for $5, and leaves the other payment unfulfilled</li>
+</ul>
+<p>Such a setup through API has only become possible in the past few years with something like Stripe Marketplace. The setup still leaves a lot to be desired.</p>
+<ul>
+<li>KYC requires a manual form submission through Stripe (~10-20minutes). The friction prevents this site from growing organically, as a 20 minute onboarding is unworkable. This could be fixed by a payment rail which is KYC compliant ON THE RAIL itself. Payment senders / receivers both have IDs attached, and any 3rd party simply has to embed a &quot;Pay with XYZ&quot; and know all senders will</li>
+<li>Long settlement times for card payments open abuse vectors for cancelled payments. This could be fixed by using bank transfers instead of card networks.</li>
+<li>Card fees are diabolical. 3%+ $.30 is insanity.</li>
+<li>Conditional flows and custom logic. The whole setup of &quot;both parties click pay and then the server only captures one&quot; is not ideal. It&#39;s confusing— you&#39;re not really &quot;paying&quot; but &quot;authorizing payment&quot;. Customers will see a &quot;pending&quot; transaction on their bank statement for the next week before the authorized payment expires.</li>
+</ul>
+<p>This experience taught me that payments suck. The ideal payment rail does:</p>
+<ul>
+<li>Instant bank transfers as payments (no card networks, settlement time)</li>
+<li>1% fee or lower.</li>
+<li>KYC / KYB on the payment rail. Merchants and marketplaces don&#39;t need to verify / collect user identification.</li>
+<li>Conditional logic on the payment rail. Automatic loyalty rewards set by a retailer? Happens automatically. Auctions with only one payment captured? Happens automatically.</li>
+</ul>
+<p>Hopefully coming soon.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Tue, 31 Dec 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Book Review- Lacan by Lionel Bailey</title>
+      <link>https://ryan-prendergast.com/blog/lacan-book-review</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/lacan-book-review</guid>
+      <description>There is a contradiction in human desire, which prevents a simple answer to the simple question &quot;What do you want&quot;? From apathy over what to eat for dinner, to torturous dissatisfaction on what to do with your life, uncertainty plagues humanity. It&apos;s...</description>
+      <content:encoded><![CDATA[<p>There is a contradiction in human desire, which prevents a simple answer to the simple question &quot;What do you want&quot;? From apathy over what to eat for dinner, to torturous dissatisfaction on what to do with your life, uncertainty plagues humanity. It&#39;s so intuitive it seems natural, but it&#39;s not obvious why. Surely, the animal who knows what he wants-- whether food, activity, or entertainment-- would outcompete the anxious one, plagued by uncertainty? Yet humans, the most uncertain of creatures, thrive. why?</p>
+<p>Even people who do sit down and reflect and think really hard and try to come up with an answer for &quot;what do I want, fundamentally&quot; come up frustratingly short. They tend to speak in dubious negations, write down maxims like &quot;being is where it is not&quot;, and become religious or meditators or psychedelics. Lost to the world of woo.</p>
+<p>Psychoanalysis offers a striking answer for why desire is alienating, and it does so while avoiding much of the floofiness of Woo. The answer: it&#39;s built into <strong>the way that humans become conscious</strong>. It&#39;s structural and inherent like a magnet&#39;s attraction to the opposing pole. Desire is alienating because it is the desire of &quot;The Other&quot; -Lacan.</p>
+<p>Jacques Lacan (1901-1981) was a psychoanalyst, a disciple of Sigmund Freud. He built upon the Freudian theories of psychosexual development and unconscious desires, expanding them into a narrative of <strong>why</strong> and <strong>how</strong> humans desire. Like other narrative simplifications of complicated systems, I&#39;m not sure how literally true Lacan&#39;s ideas are, if at all. But as a <a href="https://slatestarcodex.com/2019/01/08/book-review-the-structure-of-scientific-revolutions/"><strong>framework</strong></a> for understanding the contradictions of human psychology, I&#39;m blown away.</p>
+<p>As a psychoanalyst and a public intellectual and most of all a French psychoanalytical public intellectual, Lacan was prone to the redefinition of common words with specific directional meanings. The Real, the Imaginary, the Symbolic, the Other, the object cause of desire, jouissance, the phallus, the Thing, signifier, signified. All of these concepts are defined to answer a few central questions: What do humans desire? Why do they desire such things Where does desire live and how is it created? I&#39;ll trace his ideas as he does: through the development of human consciousness, and how a person develops his place in the world.</p>
+<h2><strong>The Birth of Consciousness</strong></h2>
+<p>Consciousness doesn&#39;t exist, and then it does. At what point does the baby become aware of itself? For Lacan, there is an easy and explicit answer: <strong>the mirror stage</strong>.</p>
+<p>A baby looks into a mirror, and recognizes himself. Unlike the bear in the wild who attacks the mirror, the baby looks at the mirror and sees &quot;me&quot;. But consciousness requires more than that. Self consciousness develops at precisely the moment when the baby recognizes that it is NOT him in the mirror. The image he sees of himself in the mirror is just that--an image-- and not himself. Me but not me. I see myself, but it&#39;s not truly me, it&#39;s an image of me. This is a moment of identification (literally, he sees himself as the object in the mirror), and he invents a concept of &quot;myself&quot;. This moment is the invention of the ego, and the first time that the baby experiences a sense of self separate from its environment.</p>
+<p>The moment of self consciousness is the first step on the formation of desire. We move chronologically through the baby&#39;s life.</p>
+<h2><strong>The Baby&#39;s Development</strong></h2>
+<p>To Lacan, the infant stage of development from a blabbering, incoherent infant to a speaking, walking toddler, is the origin of desire and its structure. We trace a story that&#39;s perhaps a little too-neat-to-be-true, but is neat nevertheless.</p>
+<p>The infant&#39;s entire world is his mother. At the moment of the mirror stage, he recognizes himself as separate from his mother, and he also recognizes that his mother perceives him as an image. like the one he saw of himself in the mirror. Nevertheless, the infant is entirely dependent on the mother-- for food, moving around, rest. The infant is helpless on his own. We transcribe the infants worldview as such:</p>
+<blockquote>
+<p><strong><em>Mother is all powerful. Mother gives me food, gives me life.</em></strong></p>
+<p><strong><em>For some intangible reason, mother takes care of me. When I cry, she consoles me. When I&#39;m hungry, she feeds me.</em></strong></p>
+<p><strong><em>There must be some reason that Mother takes care of me. There must be something about ME. Something about ME that she wants, I am what she wants.</em></strong></p>
+</blockquote>
+<p>However, Mother doesn&#39;t always take care of Baby. Every baby pushes it&#39;s limits to the point it is ignored. Throwing its food on the floor, declaring it disgusting, crying senselessly-- every parent at some point draws the line and refuses to give in to the baby&#39;s demands. Furthermore, simple pragmatism prevents the baby from commanding Mother&#39;s attention 24 hours a day. Mother has to go to work; Mother has to go to bed. To the baby, this is startling:</p>
+<blockquote>
+<p><strong><em>Mother is all-powerful, and I am what Mother wants. But Mother doesn&#39;t always give me what I want. Mother does other things.</em></strong></p>
+</blockquote>
+<p>This is tension; this is torture. It demands resolution. If mother is all powerful, and I am what Mother wants, then why would she not give me what I want? Is she some arbitrary and capricious tyrant? Resolution comes in accepting what Lacan calls the Paternal Metaphor, whereby the name of the Father comes to stand for &quot;Mother must&quot;. Mother and Father here don&#39;t have to literally be the mother and father, as they are used metaphorically. &quot;Mother&quot; is the primary caretaker of the baby, and Father for the primary excuse the mother has for leaving the baby (could be the father, work, etc). The baby accepts that Mother is not all-powerful, that Mother must submit to the rules and demands of some other authority, and the demands of this other authority can be symbolized by the name of the Father. That is to say, that the father&#39;s name stands-in as a symbol for the rules and laws mother must abide by.</p>
+<p>The acceptance of the paternal metaphor introduces the first <strong>symbol</strong>, a term Lacan borrows from Saussarian Linguistics, meaning &quot;phrase-image&quot;. The distinction between signal and signified is commonly explained as &quot;the map is not the territory&quot;, that a map of St Louis is not literally St Louis, while simultaneously representing it.</p>
+<p>It&#39;s at the moment that the child acquires language by &quot;crossing the bar of metaphor&quot; between signifier and signified that he becomes fully conscious. He understands an intangible set of rules and norms which he symbolizes with the Name of the Father. And in that moment of symbolization, something is split in his consciousness, what Lacan call his Subject. There is something missing in the map&#39;s symbolization of the territory, and likewise there is something missing in the paternal metaphors articulation of &quot;what the mother wants&quot;.</p>
+<p>This moment is a tremendous loss for the child, who previously understood himself to be the object of his mother&#39;s desire. The quality of being wholly desired, Lacan calls the Phallus. Again, this is metaphorical. And the child who once believed himself to possess the phallus now understands himself to have lost it. He lost it (although really he never had it), and for the rest of his life he will chase its fragments in things he think might give it back to him. He sees fragments of the phallus in the world-- maybe if he masters electric guitar, maybe if he can run the fastest marathon, maybe then he will be whole again.</p>
+<p>This is the genesis of desire. The introduction of language causes his subject to split, and he loses the fantasy of omnipotence he enjoyed in the phallus. This moment—the loss of the phallus—lays the foundation for desire. As the child&#39;s world expands, he meets and talks with new people and the paternal metaphor grows into a set of phrases and symbols called The Other. His understanding of himself and others is governed by language, symbols, and social rules.</p>
+<h2><strong>Desire</strong></h2>
+<p>Desire is the byproduct of language in the other. It is the result of the impossibility to fully articulate demands, or, well, anything.</p>
+<p>Desire arises where need and demand diverge. Language allows us to articulate demands—what we ask of others—but in doing so, it transforms raw need into something symbolic and incomplete. What is spoken is never quite what we truly need. The baby says &quot;bottle&quot; or &quot;mama&quot; but what it needs is something that&#39;s not quite that. The gap between demand and need is where desire is born, endlessly circling around the unattainable object of fulfillment.</p>
+<p>More sophisticated language doesn&#39;t solve this- its fulfillment becomes more complex too!</p>
+<p>Back to our starting questions: Why does one desire? Whence does desire arise? By what process?</p>
+<p>Desire grows around objects that fulfill a psychological need rather than a physical one. You don&#39;t know what you want for dinner because it isn&#39;t about dinner-- it&#39;s about the impossible, unspoken, alienated aspect of your wants. Your asking not asking &quot;what do I want?&quot; but rather &quot;what will make me feel whole?&quot; and the answer to that is &quot;nothing&quot;. That&#39;s the nature of desire.</p>
+<h2><strong>What this all means</strong></h2>
+<p>I skipped a bunch-- this is the starting point of Lacan&#39;s theory of consciousness and desire. His writing quickly get wordy and complex: for example, he plots the topological vector-space of all aspects of desire, the three dimensions being the Real, the Imaginary, and the Symbolic. He was a fan of pseudo-mathematical formulations of metaphorical processes. His precise definition of the paternal metaphor is:</p>
+<p><code>S1 / s1 x S2 / s2 -&gt; S2 / (S1 / s1)</code></p>
+<p>S1- signifier of the mother&#39;s desire<br>s1- signified idea of the object of mother&#39;s desire, phallus<br>S2- Signifier of the father<br>s2- signified idea of the father</p>
+<p>We didn&#39;t even touch his primary source for all this theory, which is psychoanalysis. Lacan worked his whole life split between the university in seminar and the insane asylum, attempting to understand and cure France&#39;s craziest patients. His practice would appear to those familiar with &quot;Therapy&quot; (CBT) weird, bizarre, and unscientific, with a mostly silent Lacan interjecting with puns or nonsense phrases, and sessions ending seemingly randomly. Take <a href="https://www.youtube.com/watch?v=VA-SXCGwLvY"><strong>this clip</strong></a> of a former patient of his, recalling how he interjected her session with a pun on Gestapo and &quot;geste à peau&quot; (gesture), and that moment cured her.</p>
+<p>Lacan believed language to be the root of all ills. He wrote that the unconscious was structured itself as a language of signifiers-- signifiers which were repressed from the conscious. His goal as an analyst was to become a perfectly transparent mirror, so that the patient sees himself through the eyes of The Other. Hopefully, in that perfect mirror state, as the patient speaks, either the patient independently discovers or Lacan guides him towards the &quot;master signifier&quot; organizing his unconscious. In that moment, the patient&#39;s master signifier is spoken, and the patient&#39;s Subject is articulated, the ultimate goal of Lacanian psychoanalysis.</p>
+<h2><strong>Why he matters</strong></h2>
+<p>With all that said, Lacan is the most important psychoanalyst since Freud, and his influence continues to grow since his death. Ironically, much of the interest in his work comes from academics OUTSIDE psychoanalysis. Within the psychoanalytical mainstream, he remains an outcast, a remnant of personal and political battles he had with the psychoanalytical accreditation boards in his lifetime. The consensus being that the actual substance of the disagreements over training and session organization were irrelevant, that the academy at large found him a cocky asshole and banished him from accreditation and future analysts from calling themselves Lacanian.</p>
+<p>Lacan&#39;s work has found unexpected support in philosophy. His work, even if it&#39;s not literally true as a description of the development of the toddler, nevertheless is profoundly interesting. It provides a compelling answer for why people desire what they desire: they seek wholeness by attaining in themselves what the Other desires. I want to be what I think you want, and this recursive, alienated structure drives human longing.</p>
+<p>Lacan makes a compelling case for language as the foundation of psychology. The unconscious operates like a language, governed by the same rules of metaphor and substitution. a person can be understood by their &quot;master signifiers&quot;—those key words or ideas that shape their unconscious, carrying meanings far beyond their literal definitions and structuring how they see themselves and the world.</p>
+<p>I suspect that there are hundreds of interesting low-hanging results waiting from applying a Lacanian mindset to different intellectual fields. Some applications I&#39;d like to see:</p>
+<ul>
+<li>Movie or TV show writers: would love to see movie or TV show writers incorporate &quot;what are this character&#39;s master signifiers? Does he think in the symbolic or the imaginary realm?&quot; into their process.</li>
+<li>Whoever synthesizes the Lacanian unconscious with <strong>considerations</strong> in &quot;The Nature and Origins of Mass Opinion&quot; deserves a Nobel prize.</li>
+<li>LLMs and metaphor. Attention is all you need, and language is the foundation of the unconscious. Define metaphor and substitution for an LLM (token for token? or token-phrase)</li>
+<li>Imagine the paper &quot;Environment and the shape of The Other&quot; which examines the relationship between TV / Internet usage, and what a survey determines to be the structure of The Other for that person. For example, see my essay on &quot;Comment Section Superego&quot;</li>
+</ul>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sun, 08 Dec 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Contra Thematic Analysis</title>
+      <link>https://ryan-prendergast.com/blog/contra-thematic-analysis</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/contra-thematic-analysis</guid>
+      <description>Growing up, my literature curricula obsessed with analyzing deeper meanings. Each analysis took the form of transliterations of embodied truths. &quot;Transliteration&quot; because the truths themselves live in a different meaning-space: they exist as nonverba...</description>
+      <content:encoded><![CDATA[<p>Growing up, my literature curricula obsessed with analyzing deeper meanings. Each analysis took the form of transliterations of embodied truths. &quot;Transliteration&quot; because the truths themselves live in a different meaning-space: they exist as nonverbal embodied wisdom. When you transliterate deeper meanings to English you produce cliches like &quot;sometimes it&#39;s the people you trusted most who betray you&quot;, or &quot;true love will stop at nothing&quot; or &quot;the arrogantly rich who sneers at his inferiors, is insecure next to the truly rich, who doesn&#39;t care about flashy status symbols&quot;.</p>
+<p>Transliterations are not translations, because they are incomplete. This is not controversial. Nobody upon reading Jane Austen claims to fully understand the experience of Georgian Era British aristocrats. And yet, in English class all through high school, we talked almost exclusively about these lossy transliterations. The shape of it was questions like : &quot;What do you think it represents that Jane Austen had the character rebuke this other one?&quot; and the correct answer being something like &quot;this was reflective of the social status of the time period between the lesser gentry and the more established nobles&quot;.</p>
+<p>Represents. Analyze. Themes. These are the hallmarks of thematic analysis. They are useless.</p>
+<h2>Memory</h2>
+<p>Thematic analysis is useless by one key metric: memorability. I remember zero of the thematic analysis I did in high school. What I remember from my literature curriculum were the bits unrelated to deeper meaning. Producing a movie recreating scenes from Julius Caesar. Memorizing Hamlet soliloquies. Reading the End of Something out loud and hitting the line &quot;It isn&#39;t fun anymore&quot;.</p>
+<p>Memory filters the embodied from the disembodied. What you remember years later is what stuck with you enough to survive years of mental erosion. Thematic analysis is too complicated for high schoolers, because it doesn&#39;t stick. Students will pattern match how to respond in discussions with templates: &quot;Going off that, I think that the windiness of the weather in the scene represents the characters changing personality with the seasons...&quot;.</p>
+<p>Stop it! You are teaching how to break the rules before you teach the rules! You are teaching freeform before you teach the constrained. Miles Davis went to Juliard after all, he was no Kerouac blabbering nonsense high in the night. Something must be certain to be embodied. You cannot transmit embodied truths in English, by talking about them. You have to embody the story first, with simple things- recreate scenes, memorization, recitation. Just like music: you don&#39;t learn music by talking about it. You mimic other people&#39;s songs. You memorize them. You play them over and over.</p>
+<p>We don&#39;t elevate music critics above the music they critique. Why then, do we elevate literary analysis?</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Wed, 14 Aug 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>How I write a book review</title>
+      <link>https://ryan-prendergast.com/blog/how-i-write-a-book-review</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/how-i-write-a-book-review</guid>
+      <description>I publish book reviews. I never like the ones you see in newspapers, and I write mine differently. So, I thought I&apos;d explain how I write them. I have no desire to achieve completeness. The standard format for a book review is: first summarize the plo...</description>
+      <content:encoded><![CDATA[<p>I publish book reviews. I never like the ones you see in newspapers, and I write mine differently. So, I thought I&#39;d explain how I write them.</p>
+<p>I have no desire to achieve completeness. The standard format for a book review is: first summarize the plot, and then analyze the book&#39;s themes. I don&#39;t believe in thematic analysis, so I will not even try that. Nor will I guarantee or attempt to summarize the book to any reasonable metric of completeness. The way I write book reviews is this: after I finish the book, I jot down all of the things which stuck in my memory. I might remember when character Y said this, or I might remember the sidenote on germ theory. I try to recall these memories as accurately as possible. I tidy this list into coherent paragraphs, then publish.</p>
+<p>I read books is because sometimes I read something which, against my intentions, sticks with me. These ideas keep me company on walks or mull with me in the shower. My reviews aren&#39;t reviews as much as they are lists of memories.</p>
+<p>I am not writing a corpus survey. I have not read all the books of a type and ranked them. Nor will I try to classify genres. Nor any kind of classification at all.</p>
+<p>My book reviews are lists of memories. That&#39;s all. If I&#39;m lucky, you&#39;ll remember them, too.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Wed, 08 May 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Bad moods as a fragility test</title>
+      <link>https://ryan-prendergast.com/blog/bad-moods-as-a-fragility-test</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/bad-moods-as-a-fragility-test</guid>
+      <description>Let&apos;s say you want to read more, to go to the gym, to study scientific papers in your free time, to make music. There&apos;s a style of advice that many people give. It&apos;s especially pronounced with hustlers and hustle culture. The advice goes something li...</description>
+      <content:encoded><![CDATA[<p>Let&#39;s say you want to read more, to go to the gym, to study scientific papers in your free time, to make music. There&#39;s a style of advice that many people give. It&#39;s especially pronounced with hustlers and hustle culture. The advice goes something like this:</p>
+<blockquote>
+<p><strong><em>Just wake up at 4 AM. Just force yourself to go to the gym. Just write a song. Just make yourself do extra math homework.</em></strong></p>
+</blockquote>
+<p>This technique fails on most people, because it is too hard. Musicians don&#39;t start randomly one day and write a song. They iterate over years-- starting with lessons their parents force them into, and then they perform oversimplified covers of easy rock songs, and then noodle on their guitar, and etc. The Beatles showed up to perform covers thousands of times before writing their famous works.</p>
+<p>&quot;Iterate on an oversimplified version of the thing&quot; is strong advice for how to improve at something. Playing covers is the simpler version of writing your own songs. Learning a language is hard, &quot;listen and repeat a 30 minute Pimsleur recording every day on your walk home from work&quot; is specific. You can force yourself through it when you are tired or hungover or just don&#39;t feel like it.</p>
+<p>Paul Graham <a href="https://paulgraham.com/greatwork.html"><strong>wrote</strong></a> about small lies you tell yourself to get over the small cognitive hump of starting to work each day. He lies to himself by saying &quot;we&#39;ll just read an abstract for a couple minutes&quot;, and invariably he gets invested and reads the whole a 30 page document. Had he been upfront to himself about his intentions, he wouldn&#39;t have started.</p>
+<p>A simplified process is simple enough you can force yourself to do it in a bad mood. The complexity of your oversimplification increases with skill level. Really, the complexity of your oversimplification <em>defines</em> your skill level. For a professional jazz guitarist, &quot;noodling&quot; means playing the notes from a specific scale in a specific voicing off the cuff; for an amateur, noodling means playing an open C chord followed by an open G and an open D.</p>
+<p>People become experts by raising the baseline of their oversimplifications, NOT by forcing themselves to do the complicated thing.</p>
+<p>Bad moods act as a simplicity test. If it gets thrown away in a bad mood, if it is impossible in a bad mood, then it is too complicated. It is beyond my skill level.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sat, 20 Apr 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Bookshelf</title>
+      <link>https://ryan-prendergast.com/blog/bookshelf</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/bookshelf</guid>
+      <description>I have benefited from others&apos; publicly posted booklists, so I&apos;d like to make one of my own. Here is a list of books, fiction or nonfiction, which I strongly recommend. 1. The New York Trilogy, Paul Auster. 2. Invisible Cities, Italo Calvino. 3. East...</description>
+      <content:encoded><![CDATA[<p>I have benefited from <a href="https://www.nickbeckstead.com/audiobooks"><strong>others&#39;</strong></a> <a href="https://subcriticalappraisal.com/bookshelf/"><strong>publicly</strong></a> <a href="https://simonsarris.com/bookshelf"><strong>posted</strong></a> <a href="http://www.aaronsw.com/weblog/books2011"><strong>booklists</strong></a>, so I&#39;d like to make one of my own. Here is a list of books, fiction or nonfiction, which I strongly recommend.</p>
+<ol>
+<li>The New York Trilogy, Paul Auster.</li>
+<li>Invisible Cities, Italo Calvino.</li>
+<li>East of Eden, John Steinbeck.</li>
+<li>Surely You&#39;re Joking, Mr Feynman by Richard Feynman.</li>
+<li>The Power Broker by Robert Caro.</li>
+</ol>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sat, 20 Apr 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Coffee shops for all</title>
+      <link>https://ryan-prendergast.com/blog/coffee-shops-for-all</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/coffee-shops-for-all</guid>
+      <description>The law is extremely complicated, requiring years of schooling and hard tests to enter the field. &quot;I hand you coffee you hand me money&quot; is a simple enough concept, but there are many laws dictating the proper conduct of how to lay out a coffee shop a...</description>
+      <content:encoded><![CDATA[<p>The law is extremely complicated, requiring years of schooling and hard tests to enter the field. &quot;I hand you coffee you hand me money&quot; is a simple enough concept, but there are many laws dictating the proper conduct of how to lay out a coffee shop according to code, how to serve food, how to lend something to somebody, how to know who is liable when something goes wrong, etc.</p>
+<p>The complexity of the system reflects the complicated nature of reality. There really ARE that many edge cases. Complex rules are too complex to apply to normal interactions, meaning there is a de facto line in the sand at which you jump from no legal process to a ton of legal process. A party with your friends doesn&#39;t comply to any kind of code, because that would overcomplicate a simple thing beyond the capabilities of a normal person. But if you are having strangers attend a conference at a venue, you must account for all legal considerations.</p>
+<p>The limitation is intelligence. The vast majority of the time we simply don&#39;t have enough brain power to spend the attention and focus required for a court case. We don&#39;t have enough brain power to apply the law thoroughly in, well, the law. Ninety-four percent of state and 97% of federal cases are resolved by a plea deal, NOT in court.</p>
+<p>The complexity barrier kicks in right at the point where legal considerations become necessary. It kicks in where you can&#39;t just do it-- you need to pay for event space rental, you need insurance, you need waivers, you need to put limits on people&#39;s behaviors. it becomes very expensive very quickly, because of course you are just a normal person, not a lawyer. The jump from &quot;just doing whatever with your friends&quot; to &quot;legal-compliance levels of organization&quot; is massive, so it acts as a de-facto limit on the capacity of most people. Most people never organize a public event, or open a coffee shop or a store, because the barrier to entry is 300 years of legal compliance intuition they probably don&#39;t have.</p>
+<p>Over time the threshold for legal intervention has dropped. I&#39;m sure you&#39;ve heard a story from your grandparents or some elder, how they used to be able to buy guns without paperwork, walk into airports without security, how randomly one day they started a restaurant or a retail store or other business without much thought, and other tidbits of life before the legal considerations ratcheted downward.</p>
+<p>This ratchet has made life worse. The set of possible actions has declined for the median person without lawyer-grade domain knowledge, or the money to purchase it.</p>
+<p>What is the limit of this? What would it look like if the threshold for legal intervention declined to zero? Micro-lawyers in your pockets.</p>
+<p>Imagine a world with way more lawsuits and way more arbitration. When your friend drops your mug accidentally, your lawyer in your phone automatically sues his lawyer in his phone. They enter a binding arbitration, simulate the bickering and argument you might have in real life, and in the end his lawyer sends $10 for a new mug.</p>
+<p>This might sound like hell. I imagine quite the contrary-- it will free us. By lowering the complexity threshold, you increase exposure to the legal system, and there becomes no difference between organizing a party with your friends and opening a coffee shop. THAT is powerful. It is complexity bankruptcy, and like bankruptcy in real life it&#39;s the only way to stop an insolvency problem. It&#39;s the difference between doing research in a university library in 1975, and Googling the answer.</p>
+<p>In my ideal future, every household has a store, has a business, and it&#39;s as easy and intuitive as hosting a couple friends for dinner. Coffee shops for all.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sat, 30 Mar 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Rewriters</title>
+      <link>https://ryan-prendergast.com/blog/rewriters</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/rewriters</guid>
+      <description>Back in 2023, I was obsessed with the idea of fine tuning an AI to be like specific people. I made two of them. The first is a joke rewriter trained on the jokes of Norm MacDonald, my all time favorite comic. https://grinn.vercel.app/ The second is a...</description>
+      <content:encoded><![CDATA[<p>Back in 2023, I was obsessed with the idea of fine tuning an AI to be like specific people. I made two of them.</p>
+<p>The first is a joke rewriter trained on the jokes of Norm MacDonald, my all time favorite comic. <a href="https://grinn.vercel.app/">https://grinn.vercel.app/</a></p>
+<p>The second is a novel rewriter trained on Invisible Cities by Italo Calvino, one of my favorite books. <a href="https://stylistic.vercel.app/">https://stylistic.vercel.app/</a></p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sun, 12 Nov 2023 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>on religion</title>
+      <link>https://ryan-prendergast.com/blog/on-religion</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/on-religion</guid>
+      <description>Written April 6th, 2023. Edited and published March 25, 2025. Two of my coworkers were talking about going to church. They haven&apos;t been since they were kids, but they were thinking about going on Easter, to one of those Unitarian ones, where you chit...</description>
+      <content:encoded><![CDATA[<p><em>Written April 6th, 2023. Edited and published March 25, 2025.</em></p>
+<p>Two of my coworkers were talking about going to church. They haven&#39;t been since they were kids, but they were thinking about going on Easter, to one of those Unitarian ones, where you chit chat with the pastor about the Bible. It&#39;s an interesting attitude: being inclined toward religion, but not wanting to be unfashionable. You might even get a little defensive and justify it with something universal like &quot;a sense of community&quot;. You can mix it up: maybe you&#39;re feeling a little Episcopalian today, maybe a bit whole-body essentialist in the summer. If one of the churches gets a little problematic, then you remark how that&#39;s unfortunate before you righteously chit chat with your friends where you&#39;ll move to next.</p>
+<p>I don&#39;t go to Church, but I grew up Catholic. I went to Catholic school, where we went to Church every week, and I was an altar server. Unitarian chit chat religion is weird to me. It&#39;s very foreign. I never once considered whether my religion is the best one, as if it were college admissions or plans on a Friday night, riddled with fomo dynamics and hype trains. I&#39;ve never considered switching religions. I don&#39;t think it would even be possible for me to be not-Catholic. I see my Catholicism as something close to an ethnicity-- something permanent that taints a person, a tattoo, rather than an active practice that can be removed.</p>
+<p>I never really cared how literally correct religion is. That always confused me about the atheists: they have this intensity of focus on correctness. How could the flood have happened in 40 days?! How could this or that contradiction be present in the bible? I never cared about any of that, because the correctness of the details is not going to make me not-Catholic. It&#39;s like your father, like your dad. If your dad is wrong, you don&#39;t start shopping around for other dads. That doesn&#39;t make sense. Even if your dad is a raging alcoholic, a bad man, he&#39;s still your dad. Some guy on the internet is like &quot;well actually your dad said that he&#39;d take you to play catch but he stayed in, so that&#39;s a contradiction&quot;. No shit, but he&#39;s still my dad! That&#39;s what God is to me.</p>
+<p>What religion &quot;is&quot; is an attempt to distill previous generations of human wisdom into a package. There&#39;s a balancing act between optimizing-for-correctness and optimizing-for-survival. The Catholic church is the oldest institution that exists, successfully optimizing for survival. The Protestants are not WRONG with God-as-metaphor, but they optimize their way into obsolescence. Protestants optimize themselves into atheism and then they don&#39;t have a church.</p>
+<p>Yes, religion is fake. It&#39;s metaphoric. God doesn&#39;t literally exist; he&#39;s a metaphor for the collective consciousness that coalesces around shared abstract ideas and stories. If you&#39;re interested in God-as-egregore, I recommend <a href="https://aaronzlewis.com/blog/2019/07/25/metaphors-we-believe-by/">Metaphors we believe by</a>. But that&#39;s too damn complicated for me to understand. That&#39;s too complicated to explain to a kid. I need a noble lie. if you metaphor-icalize God and try to explain that he&#39;s real-but-not-real, you kill him. That&#39;s why we lie. What we can picture, and what we can pass down, is A Guy.</p>
+<p>Metaphor as man, so metaphor survives.</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Thu, 06 Apr 2023 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Generative art</title>
+      <link>https://ryan-prendergast.com/blog/generative-art</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/generative-art</guid>
+      <description>!Generative art example 1 !Generative art example 2 For a while in 2022, I got really into generative art, which is where you procedurally define a texture or a pattern in javascript. Usually, there&apos;s a random seed that goes into the algorithm, so ev...</description>
+      <content:encoded><![CDATA[<p><img src="/GenArt2.png" alt="Generative art example 1">
+<img src="/GenArt4.png" alt="Generative art example 2">
+For a while in 2022, I got really into generative art, which is where you procedurally define a texture or a pattern in javascript. Usually, there&#39;s a random seed that goes into the algorithm, so every time you load the page the result is slightly different.</p>
+<p>The master at this is <a href="https://www.tylerxhobbs.com/">Tyler Hobbes</a>. His geometries have been painted as murals, printed to be hung on walls, and sold in books. He also <a href="https://www.tylerxhobbs.com/words">writes essays</a> on his process, which is how I got into trying it myself. Everything uses p5.js, a simple canvas rendering tool for the web. It&#39;s a fun exercise to try to mimic him, and in the future I&#39;d like to go back in this direction. Web design these days lacks texture and complex geometry. The tool defines the appearance--the dominant tools are tailwind css in react components, and their the result is flat design. I&#39;m hoping for a future where websites look more like tyler hobbes prints, and less like jira.</p>
+<p>You can see the 10 sketches I attempted here: <a href="https://generative-art-chi.vercel.app/">https://generative-art-chi.vercel.app/</a></p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Thu, 01 Dec 2022 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Reducing Problems to Impossibilities</title>
+      <link>https://ryan-prendergast.com/blog/reducing-problems-to-impossibilities</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/reducing-problems-to-impossibilities</guid>
+      <description>Originally written February 19, 2022. Edited May 15, 2025. Certain society-wide problems are impossible. &quot;People are stupid&quot;, &quot;People are selfish&quot;, &quot;People are not good people&quot;. However, other society-wide problems are solvable. &quot;Minimize snow remova...</description>
+      <content:encoded><![CDATA[<p><em>Originally written February 19, 2022. Edited May 15, 2025.</em></p>
+<p>Certain society-wide problems are impossible. &quot;People are stupid&quot;, &quot;People are selfish&quot;, &quot;People are not good people&quot;. However, other society-wide problems are solvable. &quot;Minimize snow removal response time given this much money&quot;. The difference is how well specced they are. Sometimes, specifications are based on sentiments and not metrics. &quot;Make the city clean, make it safe, make it functional&quot;. These can be somewhat, but not fully, rationalized. Some problems like &quot;human selfishness&quot; can never be summarized by a metric, and are an impossible problem.</p>
+<p>In algorithms class in school, I was taught the concept of a Hard problem for computers.</p>
+<p>Certain problems are really hard for a computer to solve. They take exponentially more time as you increase the size of the problem. There&#39;s no easier way to solve them than &quot;try every single possibility&quot;. You need to brute force a solution. Hence, we call this problem Hard. At large scales, hard problems become impossible. Like, &quot;all the computers in the world would take a million years to crack this&quot; hard.</p>
+<p>Hard Math Problems are like Hard Society Problems in that they are basically impossible to solve. &quot;Make people less selfish&quot; is about as difficult to solve as &quot;find the unique prime factorization of this extremely large number&quot;. Theoretically possible, but not practically.</p>
+<p>What&#39;s interesting about Hard Society Problems is that since they are succinct, they sound easy. They sound so easy that people prepend a &quot;just&quot; to it. &quot;We just need people to be less selfish!&quot; &quot;We just need people to be a little bit more empathetic!&quot;. As if solving it is as simple as writing the sentence!</p>
+<p>People seem drawn to Hard Society Problems. So much so, that when presented with a non-impossible problem, they propose solving it by ditching the problem entirely and instead solving impossible, Hard Society Problem! Say your city has potholes. I can&#39;t tell you how many people will say &quot;well maybe if these politicians just weren&#39;t so corrupt, we&#39;d have smooth roads!&quot;</p>
+<p>What? You&#39;ve reduced a problem into an impossibility!</p>
+<p>Road pavement is a relatively straightforward problem with engineering and budget constraints that can be optimized. You know what can&#39;t be optimized? The depth and breadth of human corruption! So why would you propose solving a (relatively speaking) easy problem, by throwing your hands in the air and saying &quot;Well, this easy problem wouldn&#39;t exist if we solved this impossible problem, so I guess there&#39;s nothing we can do&quot;. Seems idiotic, yet this kind of commentary is by far the most common attitude of citizens towards government online.</p>
+<p>We see this with regards to Covid, with something along the lines of &quot;if people weren&#39;t so selfish then we wouldn&#39;t still be in this mess.&quot; What does that mean? How do we measure selfishness, what is the acceptable level? Of course asking such questions would be foolish, because it&#39;s not meant to be precise. It&#39;s a platitude. Similar common platitudes abound. &quot;The administration doesn&#39;t care about our mental health&quot;. &quot;The admin only cares about money.&quot; &quot;Greedy corps are ruining society for selfish gains.&quot; These are statements that don&#39;t really mean anything precise.</p>
+<p>Does that mean solving Covid is impossible? No! It&#39;s a dumb reductionist way to look at things. What is the use of reducing a problem to an impossibility? You prove something is Math-Hard by reducing an impossibility to a problem, NOT by reducing a problem to an impossibility!</p>
+<p>Why do so many people do this?</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sat, 19 Feb 2022 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>On Listmaking</title>
+      <link>https://ryan-prendergast.com/blog/on-listmaking</link>
+      <guid isPermaLink="true">https://ryan-prendergast.com/blog/on-listmaking</guid>
+      <description>!A great playlist from Spotify I&apos;ve made hundreds of lists in my life, maybe thousands. It&apos;s my go-to thing to do. Have a problem? Make a list of its components. Like something? Make a list of it and things like it. I regularly run into a certain kin...</description>
+      <content:encoded><![CDATA[<p><img src="/vaguely-experimental.png" alt="A great playlist from Spotify"></p>
+<p>I&#39;ve made hundreds of lists in my life, maybe thousands. It&#39;s my go-to thing to do. Have a problem? Make a list of its components. Like something? Make a list of it and things like it.</p>
+<p>I regularly run into a certain kind of problem, though. This came up a year ago, when I tried to make a list of books to read. I had enough books that I broke up the list into superlists: I had a nonfiction section, with list names like &quot;Topic: history&quot;.</p>
+<p>Here&#39;s a section.</p>
+<ul>
+<li>Nonfiction<ul>
+<li>Topic: Physics and Math<ul>
+<li><a href="https://www.amazon.com/dp/0691178542/?coliid=INA2PDARJHVHL&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Elements of Mathematics: From Euclid to Gödel</a></li>
+<li><a href="https://www.amazon.com/dp/1250619572/?coliid=I3L1342JHQ0IS6&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">The Weil Conjectures: On Math and the Pursuit of the Unknown</a></li>
+<li><a href="https://www.amazon.com/dp/0821839675/?coliid=I1B5DDMOI9D3HF&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Bourbaki: A Secret Society of Mathematicians</a></li>
+<li><a href="https://www.amazon.com/dp/0300235909/?coliid=I27A36WXE5TV6N&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">The Shape of a Life: One Mathematician&#39;s Search for the Universe&#39;s Hidden Geometry</a></li>
+<li><a href="https://www.amazon.com/dp/1795882417/?coliid=I6T0DX6WSNTQG&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Physics from Finance: A gentle introduction to gauge theories, fundamental interactions and fiber bundles</a></li>
+<li><a href="https://www.amazon.com/dp/0306812835/?coliid=I1QHJWYR2O1OIM&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Structures: Or Why Things Don&#39;t Fall Down</a></li>
+<li><a href="https://www.amazon.com/dp/0465023959/?coliid=I2TIIXXF41NXE6&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">The Pleasure of Finding Things Out: The Best Short Works of Richard P. Feynman (Helix Books)</a></li>
+<li><a href="https://www.amazon.com/dp/0470525487/?coliid=I3HP5SUFPQZOKN&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">A History of Mathematics</a></li>
+</ul>
+</li>
+<li>Misc<ul>
+<li><a href="https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/1597499897/?coliid=I3SKFGD2C3D838&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Practical Lock Picking: A Physical Penetration Tester&#39;s Training Guide</a></li>
+</ul>
+</li>
+<li>Behavioral Psychology / Philosophy<ul>
+<li><a href="https://web.archive.org/web/20220122220306/https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games?ac=1&from_search=true&qid=3qFg4FiTJQ&rank=1">Finite and Infinite Games</a></li>
+<li><a href="https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/0679763996/?coliid=I2PIOAGQ1TPKY2&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">The Moral Animal: Why We Are, the Way We Are: The New Science of Evolutionary Psychology</a></li>
+<li><a href="https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/0199729883/?coliid=I2J169LM65505D&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Moral Mazes: The World of Corporate Managers</a></li>
+<li><a href="https://web.archive.org/web/20220122220306/https://www.amazon.com/gp/product/0807014273/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0807014273&linkCode=as2&tag=stephsmith05-20&linkId=087de4a56a3e33707ab2939836e4cc08">Man&#39;s Search for Meaning</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This list is incredibly boring. It isn&#39;t very useful, because after I create it, I ignore it. It is a chore to make, and I never bother to add new books to it.</p>
+<p>I run into the same problem making lists of movies, lists of websites, lists of ideas, lists of tasks, and any other kind. I find lists useful, but a chore to create and maintain. You might say &quot;such is life, suck it up and do it even though it&#39;s a chore&quot;, but I refuse. A solution is only good as good as what actually happens, not the hypothetical best you could imagine it to be. So, can we make better lists?</p>
+<h2>Structuring a list</h2>
+<p>Lists collect a bunch of items: books, movies, etc. We want to balance being successful (something I&#39;ll actually make / maintain) with being useful (something I refer back to).</p>
+<p>To be SUCCESSFUL, lists should be easy to add to. Creating a list is a matter of recall: I stream-of-conscious write out all the books I want to read that I remember right now. The easiest possible structure is a single long list of every book I think of.</p>
+<p>To be USEFUL, lists need to recommend something. The process goes &quot;Hm I want to read a book&quot; —(check list)—&gt; a particular book to read.</p>
+<p>With too many items (~20), going through the list is nontrivial work, so the list is useless. That&#39;s when you decide to breakup a list into a superlist of lists, each list with a name.</p>
+<p><strong>Grouping Items</strong></p>
+<p>There&#39;s an extremely important moment when you turn a single long list into a hierarchy of superlists. You have to decide: by what mechanism will I separate books into different groups? This decision is usually done subconsciously. But subconscious defaults are still decisions!</p>
+<p>The default subconscious decision is to group by category, by genre. I categorized my books by category. Nonfiction nests either into Math or Psychology, with a &quot;Misc&quot; block to take anything that doesn&#39;t fit well into a genre.</p>
+<p><strong>Group by category</strong></p>
+<p>Category lists are pretty okay at collecting a medium sized number of items (~20 – ~50).</p>
+<p>But category lists really aren&#39;t that useful, because they fail at recall. Brains don&#39;t think in genres. I&#39;ve never thought &quot;Hm I&#39;d like to read a behavioral psychology book&quot;, in the same way I don&#39;t think &quot;oh let&#39;s listen to some Folktronica&quot; with music.</p>
+<p>Brain recall is illegibly associative. Most lookups I want to do are things like &quot;oh I liked the whole NYC suits-doing-business of Power Broker, but I want something less dense&quot;. Genre lists are useless at doing that kind of search.</p>
+<p>I also quickly run into tricky problems defining categories. I have German language books on my list. Do I put the German-language books in their own German section, and have a German-fiction German-nonfiction subsections, or do I intersperse German language books in the normal lists?</p>
+<p>When grouping by category, each book should ideally exist in only one category, and categories should be exactly as specific to make that possible. This is why music genres get more specific by place and era: Polish alt-trance, eg. What if we remove that requirement?</p>
+<p><strong>Revealed preferences on Spotify</strong></p>
+<p>The best feature of Spotify is the centering of user-created playlists. These are public and like-able, so that popular ones spread.</p>
+<p>Spotify creates categorical playlists by genre, like &quot;Grunge Forever&quot; with some Nirvana, Soundgarden, and Alice in Chains. Users, however, overwhelmingly make playlists with names like &quot;wonderfully chaotic&quot;, &quot;just sitting in my room&quot; &quot;vaguely experimental: myspace lol 2008 xD&quot; or &quot;norwegian wood&quot; What does it mean for a song to categorically sound like Myspace or a Murakami book? It doesn&#39;t mean anything clear, because it&#39;s not categorical. These are associative lists.</p>
+<p>Associative lists are more useful than category lists, and they&#39;re easier to make. They don&#39;t need find every song that could fit in the list, only some. Associative lists are an emergent phenomenon, like <a href="https://en.wikipedia.org/wiki/Desire_path">desire paths</a>.</p>
+<p><strong>Group by association</strong></p>
+<p>A few months after making the original categorical list and ignoring it, I added a handful of books in a new superlist. It sits at the same super-level as &quot;Fiction&quot; and &quot;Nonfiction&quot;.</p>
+<ul>
+<li>Tech Bro canon, the rationalist world<ul>
+<li><a href="https://www.goodreads.com/book/show/23692271-sapiens">Sapiens: A Brief History of Humankind</a></li>
+<li><a href="https://www.amazon.com/dp/0198739834/?coliid=I2YUE2K811SG9Q&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Superintelligence: Paths, Dangers, Strategies</a></li>
+<li><a href="https://www.amazon.com/dp/0465026567/?coliid=I1114C3TRXYYJO&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Gödel, Escher, Bach: An Eternal Golden Braid</a></li>
+<li>Thinking, Fast and Slow by Daniel Kahneman</li>
+<li>Gang Leader for A Day by Sudhir Venkatesh</li>
+<li>Andy Weir: the Egg</li>
+<li><a href="https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games?ac=1&from_search=true&qid=3qFg4FiTJQ&rank=1">Finite and Infinite Games</a></li>
+<li><a href="https://www.amazon.com/gp/product/0804139296/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0804139296&linkCode=as2&tag=stephsmith05-20&linkId=9c862da80a2bfacf1a1f94a1cc3dca06">Zero to One</a></li>
+<li>Beginning of Infinity</li>
+</ul>
+</li>
+</ul>
+<p>It&#39;s not well grouped by genre. There&#39;s mostly nonfiction here, but of different types, and there&#39;s even some fiction.</p>
+<p>It&#39;s more of a <em>gesturing vaguely at something</em> grouping than a legible or describable one. That&#39;s what makes these lists useful! They are easier to recall because they more closely match your thoughts, which gesture vaguely at the illegible.</p>
+<p>Associative lists are good for collection, because they are easy to create. Each associative list is independent of each other. One list might point at &quot;the melancholy of the big city&quot; and include an Elliott Smith song, another might point to &quot;a cozy high&quot; and include the same Elliott Smith song. You do not have to search through existing lists to create a new one, like with categorical groupings, because the same song can be in multiple groups.</p>
+<p><img src="/listmakings.png" alt="Some common associations for music"></p>
+<h2>Lists are useful, actually</h2>
+<p>Lists assist collection and recall. They are especially important tools to deal with excessive amounts of information, which in the Information Age is basically everything. The structure of your lists, therefore, dictates what you know.</p>
+<p>People can only do what they remember. Human minds are not default systematic, and the extent to which they are systematic is constrained by what they recall. Associative lists structure your collections more like your thoughts, and in my experience are more useful.</p>
+<p>A lot of fields of study, too, are defined by listmaking. What is history if not grouping individual people and events into some useful structure?</p>
+<p>Most scholars group history by category: movements and eras and trends. This is the most logically consistent. But what would an associative history look like?</p>
+<p>What would history look like if it was less like Wikipedia and more like Spotify playlists?</p>
+]]></content:encoded>
+      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
+      <pubDate>Sat, 22 Jan 2022 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

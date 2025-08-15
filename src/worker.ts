@@ -132,8 +132,8 @@ app.get("/blog", async (c) => {
     {
       "@context": "https://schema.org",
       "@type": "Blog",
-      "name": "Ryan Prendergast's Blog",
-      "description": "Essays and thoughts on business, technology, and life",
+      "name": "Ryan's Mailbag",
+      "description": "Book reviews, essays, and thoughts",
       "url": "https://ryan-prendergast.com/blog",
       "author": {
         "@type": "Person",
@@ -144,9 +144,8 @@ app.get("/blog", async (c) => {
   `;
 
   return c.html(
-    renderPage("Blog | Ryan Prendergast", content, "/blog", {
-      description:
-        "Essays and thoughts on business, technology, and life by Ryan Prendergast",
+    renderPage("Ryan's Mailbag", content, "/blog", {
+      description: "Book reviews, essays, and thoughts",
       structuredData,
     })
   );
@@ -416,6 +415,11 @@ app.get("/contact", (c) => {
   );
 });
 
+// RSS Feed
+app.get("/rss.xml", async (c) => {
+  return c.env.ASSETS.fetch(new Request("https://dummy/rss.xml"));
+});
+
 // SEO files
 app.get("/robots.txt", (c) => {
   const robotsTxt = `User-agent: *
@@ -484,7 +488,7 @@ app.get("/*", async (c) => {
   try {
     // Try to fetch the static asset first
     const response = await c.env.ASSETS.fetch(c.req.raw);
-    
+
     // If the asset is not found (404), show our custom 404 page
     if (response.status === 404) {
       const content = `
@@ -513,13 +517,14 @@ app.get("/*", async (c) => {
 
       return c.html(
         renderPage("404 - Page Not Found | Ryan Prendergast", content, "", {
-          description: "The requested page could not be found on Ryan Prendergast's website",
+          description:
+            "The requested page could not be found on Ryan Prendergast's website",
           structuredData,
         }),
         404
       );
     }
-    
+
     // Return the static asset if it exists
     return response;
   } catch (error) {
@@ -550,7 +555,8 @@ app.get("/*", async (c) => {
 
     return c.html(
       renderPage("404 - Page Not Found | Ryan Prendergast", content, "", {
-        description: "The requested page could not be found on Ryan Prendergast's website",
+        description:
+          "The requested page could not be found on Ryan Prendergast's website",
         structuredData,
       }),
       404

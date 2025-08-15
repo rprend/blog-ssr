@@ -2,9 +2,63 @@
 
 export const blogList = (data: Record<string, string> = {}): string => {
   let html = `<section>
-  <h1>blog</h1>
-  {{postsHtml}}
-</section>`;
+  <div style="display: flex; align-items: baseline; gap: 1.5rem">
+    <h1 style="margin-bottom: 0.5rem">blog</h1>
+    <div style="display: flex; align-items: baseline; gap: 0.75rem">
+      <a
+        href="/rss.xml"
+        class="blog-title"
+        style="font-size: 1.1rem; display: inline-flex; align-items: center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="margin-right: 0.25rem"
+        >
+          <path d="M4 11a9 9 0 0 1 9 9"></path>
+          <path d="M4 4a16 16 0 0 1 16 16"></path>
+          <circle cx="5" cy="19" r="1"></circle>
+        </svg>
+        RSS Feed
+      </a>
+      <span style="font-size: 1.1rem; color: #666;">|</span>
+      <a
+        href="https://ryanprendergast.substack.com/?utm_campaign=pub&utm_medium=web"
+        class="blog-title"
+        style="font-size: 1.1rem; display: inline-flex; align-items: center"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.25rem">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Substack<span class="blog-arrow">→</span>
+      </a>
+    </div>
+  </div>
+  <p style="margin-top: 0; margin-bottom: 2rem; font-size: 1.3rem; color: #555">
+    Ryan's mailbag: Essays and book reviews
+  </p>
+
+  <div>{{postsHtml}}</div>
+
+  <div style="margin-top: 3rem">
+    <iframe
+      src="https://ryanprendergast.substack.com/embed"
+      width="480"
+      height="320"
+      style="border: 1px solid #eee; background: white; max-width: 100%"
+      frameborder="0"
+      scrolling="no"
+    ></iframe>
+  </div>
+</section>
+`;
   
   // Replace {{variable}} with data.variable
   return html.replace(/\{\{(\w+)\}\}/g, (match, key) => {
@@ -19,6 +73,26 @@ export const blogPost = (data: Record<string, string> = {}): string => {
   {{subtitle}}
   <p class="subtitle">{{date}}{{author}}</p>
   {{content}}
+  
+  <div style="margin-top: 3rem;">
+    <a href="/blog" style="font-size: 1.4rem;">← Back to Blog</a>
+  </div>
+  
+  <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e5e5;">
+    <div>
+      <iframe src="https://ryanprendergast.substack.com/embed" width="480" height="320" style="border:1px solid #EEE; background:white; max-width: 100%;" frameborder="0" scrolling="no"></iframe>
+      <div style="margin-top: 1rem;">
+        <a href="/rss.xml" class="blog-title" style="font-size: 1.1rem; display: inline-flex; align-items: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.25rem;">
+            <path d="M4 11a9 9 0 0 1 9 9"></path>
+            <path d="M4 4a16 16 0 0 1 16 16"></path>
+            <circle cx="5" cy="19" r="1"></circle>
+          </svg>
+          RSS Feed<span class="blog-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
 </section>`;
   
   // Replace {{variable}} with data.variable
@@ -116,10 +190,32 @@ export const contact = (data: Record<string, string> = {}): string => {
 
 export const home = (data: Record<string, string> = {}): string => {
   let html = `<section>
-  <h1>Ryan Prendergast</h1>
+  <style>
+    .logo-img {
+      height: 4rem;
+      width: 4rem;
+    }
+    @media (max-width: 768px) {
+      .logo-img {
+        height: 5rem;
+        width: 5rem;
+      }
+    }
+  </style>
+  <div
+    style="
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    "
+  >
+    <img src="/logo.svg" alt="Logo" class="logo-img" />
+    <h1 style="margin: 0">Ryan Prendergast</h1>
+  </div>
 
   <p>
-    Hi! I'm Ryan. I'm currently working on
+    I'm Ryan. I'm currently working on
     <a href="https://zenobiapay.com" target="_blank" rel="noopener noreferrer"
       >Zenobia Pay</a
     >. Our mission is to end the Visa / Mastercard duopoly, and make it 3x
@@ -197,6 +293,9 @@ export const layout = (data: Record<string, string> = {}): string => {
   
   <!-- Canonical URL -->
   <link rel="canonical" href="{{canonicalUrl}}">
+  
+  <!-- RSS Feed -->
+  <link rel="alternate" type="application/rss+xml" title="Ryan Prendergast's Blog RSS" href="/rss.xml">
   
   <!-- Additional SEO meta tags -->
   <meta name="robots" content="index, follow">

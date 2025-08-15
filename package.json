@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev src/worker.ts",
-    "build": "node scripts/generatePosts.js && node scripts/generateTemplates.js",
+    "build": "node scripts/generatePosts.js && node scripts/generateTemplates.js && node scripts/generateRSS.js",
     "start": "wrangler dev src/worker.ts",
     "deploy": "npm run build && npx wrangler deploy"
   },
