@@ -9,6 +9,7 @@ binding = "GUESTBOOK_DB"
 database_name = "guestbook_entries"
 database_id = "c8d26c5f-6c73-4886-87c7-2cc78afef0b0"
 
+
 [assets]
 directory = "public"
 binding = "ASSETS"

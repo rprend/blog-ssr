@@ -7,6 +7,7 @@ import {
   blogList,
   blogPost,
   contact,
+  memory,
 } from "./build-outputs/templates";
 
 interface Bindings {
@@ -410,6 +411,35 @@ app.get("/contact", (c) => {
     renderPage("Contact - Ryan Prendergast", content, "/contact", {
       description:
         "Get in touch with Ryan Prendergast. Connect via email or social media.",
+      structuredData,
+    })
+  );
+});
+
+// Memory Page (Flashcards with Spaced Repetition)
+app.get("/memory", (c) => {
+  const content = memory();
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Memory",
+      "description": "Anki-like flashcards with spaced repetition for learning",
+      "url": "https://ryan-prendergast.com/memory",
+      "applicationCategory": "EducationalApplication",
+      "author": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
+      }
+    }
+    </script>
+  `;
+
+  return c.html(
+    renderPage("Memory - Ryan Prendergast", content, "/memory", {
+      description:
+        "Anki-like flashcards with spaced repetition algorithm for effective learning and memorization.",
       structuredData,
     })
   );
