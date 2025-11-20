@@ -5,7 +5,7 @@ author: "Ryan Prendergast"
 slug: "trotsky-vs-the-backscratchers"
 ---
 
-There's a parable that I like, of the old college friend:
+There's a story that I like, about an old friend:
 
 "I stayed on Dave's couch, but he kicked me out. I was like Trotsky to him"
 
@@ -27,4 +27,4 @@ There's a parable that I like, of the old college friend:
 
 ---
 
-The parable was called "Trotsky vs the back scratchers."
+The story was called "Trotsky vs the back scratchers."

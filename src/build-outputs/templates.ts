@@ -218,8 +218,7 @@ export const home = (data: Record<string, string> = {}): string => {
     I'm Ryan. I'm currently working on
     <a href="https://zenobiapay.com" target="_blank" rel="noopener noreferrer"
       >Zenobia Pay</a
-    >. Our mission is to end the Visa / Mastercard duopoly, and make it 3x
-    cheaper to transact online.
+    >. Our mission is to make it 3x cheaper to transact online.
   </p>
 
   <p>

@@ -1,5 +1,5 @@
 ---
-title: "On Listmaking"
+title: "Playlists"
 date: "01-22-2022"
 author: "Ryan Prendergast"
 slug: "on-listmaking"
@@ -7,7 +7,7 @@ slug: "on-listmaking"
 
 ![A great playlist from Spotify](/vaguely-experimental.png)
 
-I've made hundreds of lists in my life, maybe thousands. It's my go-to thing to do. Have a problem? Make a list of its components. Like something? Make a list of it and things like it.
+I've made hundreds of lists in my life, maybe thousands. It's my go-to thing to do. Have a problem? Make a list. Like something? Make a list of it and things like it.
 
 I regularly run into a certain kind of problem, though. This came up a year ago, when I tried to make a list of books to read. I had enough books that I broke up the list into superlists: I had a nonfiction section, with list names like "Topic: history".
 
