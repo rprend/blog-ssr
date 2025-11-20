@@ -1,5 +1,6 @@
 ---
-title: "Performative Idiocy and the Path to Power"
+title: "Book Review: The Path to Power by Robert Caro"
+subtitle: "Performative Idiocy and the Path to Power"
 date: "03-15-2025"
 author: "Ryan Prendergast"
 slug: "performative-idiocy"
