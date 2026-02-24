@@ -80,29 +80,7 @@ export const contact = (data: Record<string, string> = {}): string => {
 };
 
 export const home = (data: Record<string, string> = {}): string => {
-  let html = `<p>
-  I'm Ryan. I'm currently working on
-  <a href="https://zenobiapay.com" target="_blank" rel="noopener noreferrer">Zenobia Pay</a>.
-  Our mission is to make it 3x cheaper to transact online.
-</p>
-
-<p>
-  I make
-  <a href="https://www.youtube.com/playlist?list=PL-evJxq7wCJNhu6jh8QCcj_4PiycBDEOW" target="_blank" rel="noopener noreferrer">films</a>.
-  I've played
-  <a href="https://www.youtube.com/playlist?list=PL-evJxq7wCJPwhV7P91uooPOauMSX-UbE" target="_blank" rel="noopener noreferrer">electric guitar and sang</a>
-  in a couple bands. I like to <a href="/blog">write</a>.
-</p>
-
-<p>
-  If you think we should work together, my calendar is open at
-  <a href="https://calendly.com/rprendergast1121/ryan" target="_blank" rel="noopener noreferrer">calendly.com/rprendergast1121/ryan</a>.
-</p>
-
-<div class="sidebar-box" style="margin-top: 30px;">
-  <h3 class="sidebar-header">Recent Posts</h3>
-  <div class="sidebar-text">{{recentPosts}}</div>
-</div>
+  let html = `{{linksHtml}}
 `;
   
   // Replace {{variable}} with data.variable

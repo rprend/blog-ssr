@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { getBlogPosts, getBlogPost } from "./build-outputs/blog";
+import { getLinkEntries } from "./build-outputs/links";
 import {
   layout,
   nav,
@@ -76,9 +77,38 @@ function renderPage(
   });
 }
 
-// Home Page
+// Home Page (Linklog)
 app.get("/", async (c) => {
-  // Get recent posts for the sidebar
+  const links = await getLinkEntries();
+
+  // Extract domain from URL for display
+  function extractDomain(url: string): string {
+    try {
+      return new URL(url).hostname.replace(/^www\./, "");
+    } catch {
+      return url;
+    }
+  }
+
+  let linksHtml = "";
+  links.forEach((link) => {
+    const imageHtml = link.image
+      ? `<div class="linklog-image"><img src="${link.image}" alt="" loading="lazy"></div>`
+      : "";
+    linksHtml += `
+      <div class="linklog-entry">
+        <div class="linklog-title"><a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.title}</a></div>
+        <div class="linklog-domain">${extractDomain(link.url)}</div>
+        ${imageHtml}
+        <div class="linklog-commentary">${link.content}</div>
+        <div class="linklog-meta">${formatDateReadable(link.date)}</div>
+      </div>
+    `;
+  });
+
+  const content = home({ linksHtml });
+
+  // Sidebar: recent blog posts + link count
   const posts = await getBlogPosts();
   const recentPosts = posts
     .slice(0, 5)
@@ -88,25 +118,31 @@ app.get("/", async (c) => {
     )
     .join("");
 
-  const content = home({ recentPosts });
+  const sidebarExtra = `
+    <div class="sidebar-box">
+      <h3 class="sidebar-header">Recent Essays</h3>
+      <div class="sidebar-text">${recentPosts}</div>
+    </div>
+    <div class="sidebar-box">
+      <h3 class="sidebar-header">About</h3>
+      <div class="sidebar-text">
+        A linklog by Ryan Prendergast. Links, commentary, and things I find interesting.
+        <br><br>
+        <a href="/contact">Get in touch &rarr;</a>
+      </div>
+    </div>
+  `;
+
   const structuredData = `
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Ryan Prendergast",
+      "@type": "Blog",
+      "name": "Ryan Prendergast's Linklog",
       "url": "https://ryan-prendergast.com",
-      "sameAs": [
-        "https://github.com/rprend",
-        "https://linkedin.com/in/rprendergast",
-        "https://instagram.com/r.prendie",
-        "https://youtube.com/@rprend",
-        "https://letterboxd.com/rprend"
-      ],
-      "jobTitle": "Co founder",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "Zenobia Pay"
+      "author": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
       }
     }
     </script>
@@ -114,10 +150,11 @@ app.get("/", async (c) => {
 
   return c.html(
     renderPage("Ryan Prendergast", content, "/", {
+      pageSubtitle: "Linklog",
       description:
-        "Ryan Prendergast is the co-founder of Zenobia Pay, with interests in filmmaking, music, and writing.",
-      ogType: "profile",
+        "Links, commentary, and things I find interesting. A linklog by Ryan Prendergast.",
       structuredData,
+      sidebarExtra,
     })
   );
 });
