@@ -45,12 +45,15 @@
   {{structuredData}}
 </head>
 <body>
-  <div class="nav-container">
-    {{nav}}
+  <div class="page-wrapper">
+    <div class="main-content">
+      <article>
+        {{content}}
+      </article>
+    </div>
+    <div class="sidebar">
+      {{nav}}
+    </div>
   </div>
-  <article>
-    {{content}}
-  </article>
-  
 </body>
 </html>
