@@ -7,6 +7,7 @@ import {
   blogList,
   blogPost,
   contact,
+  archives,
   memory,
 } from "./build-outputs/templates";
 
@@ -16,6 +17,23 @@ interface Bindings {
 }
 
 const app = new Hono<{ Bindings: Bindings }>();
+
+// Helper: format date from MM-DD-YYYY to a readable string
+function formatDateReadable(dateStr: string): string {
+  const parts = dateStr.split("-");
+  const date = new Date(`${parts[2]}-${parts[0]}-${parts[1]}`);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  });
+}
+
+// Helper: parse MM-DD-YYYY to Date object
+function parseDate(dateStr: string): Date {
+  const parts = dateStr.split("-");
+  return new Date(`${parts[2]}-${parts[0]}-${parts[1]}`);
+}
 
 // Helper function to render page with navigation and SEO data
 function renderPage(
@@ -28,13 +46,17 @@ function renderPage(
     ogImage?: string;
     structuredData?: string;
     canonicalUrl?: string;
+    pageSubtitle?: string;
+    sidebarExtra?: string;
   } = {}
 ) {
   const navData = {
     homeActive: currentPage === "/" ? "active" : "",
     blogActive: currentPage === "/blog" ? "active" : "",
+    archivesActive: currentPage === "/archives" ? "active" : "",
     guestbookActive: currentPage === "/guestbook" ? "active" : "",
     contactActive: currentPage === "/contact" ? "active" : "",
+    sidebarExtra: seoData.sidebarExtra || "",
   };
 
   const baseUrl = "https://ryan-prendergast.com";
@@ -43,6 +65,7 @@ function renderPage(
     title,
     nav: nav(navData),
     content,
+    pageSubtitle: seoData.pageSubtitle || "",
     description:
       seoData.description || "Ryan Prendergast's personal website and blog",
     ogType: seoData.ogType || "website",
@@ -54,8 +77,18 @@ function renderPage(
 }
 
 // Home Page
-app.get("/", (c) => {
-  const content = home();
+app.get("/", async (c) => {
+  // Get recent posts for the sidebar
+  const posts = await getBlogPosts();
+  const recentPosts = posts
+    .slice(0, 5)
+    .map(
+      (p) =>
+        `<div style="margin-bottom: 6px;"><a href="/blog/${p.slug}" style="font-size: 12px;">${p.title}</a></div>`
+    )
+    .join("");
+
+  const content = home({ recentPosts });
   const structuredData = `
     <script type="application/ld+json">
     {
@@ -96,19 +129,11 @@ app.get("/blog", async (c) => {
   // Group posts by year
   const postsByYear: { [year: string]: typeof posts } = {};
   posts.forEach((post) => {
-    // Parse MM-DD-YYYY format to YYYY-MM-DD for proper Date parsing
-    const parts = post.date.split("-");
-    const year = new Date(`${parts[2]}-${parts[0]}-${parts[1]}`)
-      .getFullYear()
-      .toString();
+    const date = parseDate(post.date);
+    const year = date.getFullYear().toString();
     if (!postsByYear[year]) postsByYear[year] = [];
     postsByYear[year].push(post);
   });
-
-  const formatDate = (dateStr: string) => {
-    const parts = dateStr.split("-");
-    return `${parts[0]}-${parts[1]}`;
-  };
 
   let postsHtml = "";
   Object.keys(postsByYear)
@@ -118,16 +143,29 @@ app.get("/blog", async (c) => {
       postsByYear[year].forEach((post) => {
         postsHtml += `
         <div class="blog-post-item">
-          <span class="blog-date">${formatDate(post.date)}</span>
-          <a href="/blog/${post.slug}" class="blog-title">
-            ${post.title}<span class="blog-arrow">→</span>
-          </a>
+          <a href="/blog/${post.slug}" class="blog-title">${post.title}</a>
+          <div class="blog-date">${formatDateReadable(post.date)}</div>
         </div>
       `;
       });
     });
 
   const content = blogList({ postsHtml });
+
+  // Sidebar summary
+  const totalPosts = posts.length;
+  const years = Object.keys(postsByYear).sort();
+  const sidebarExtra = `
+    <div class="sidebar-box">
+      <h3 class="sidebar-header">Summary</h3>
+      <div class="sidebar-text">
+        ${totalPosts} posts from ${years[0]} to ${years[years.length - 1]}.
+        <br><br>
+        <a href="/archives">Browse the archives &rarr;</a>
+      </div>
+    </div>
+  `;
+
   const structuredData = `
     <script type="application/ld+json">
     {
@@ -145,9 +183,11 @@ app.get("/blog", async (c) => {
   `;
 
   return c.html(
-    renderPage("Ryan's Mailbag", content, "/blog", {
+    renderPage("Blog - Ryan Prendergast", content, "/blog", {
+      pageSubtitle: "Blog",
       description: "Essays and book reviews",
       structuredData,
+      sidebarExtra,
     })
   );
 });
@@ -159,22 +199,24 @@ app.get("/blog/:slug", async (c) => {
 
   if (!post) {
     const content = `
-      <section>
-        <p><a href="/blog">← Back to Blog</a></p>
-        <h1>Post Not Found</h1>
-        <p>The post you're looking for doesn't exist.</p>
-      </section>
+      <div class="blog-post-nav">
+        <a href="/blog">&larr; Back to Blog</a>
+      </div>
+      <h2 class="blog-post-title">Post Not Found</h2>
+      <p>The post you're looking for doesn't exist.</p>
     `;
     return c.html(
-      renderPage("Post Not Found - Ryan Prendergast", content, "/blog")
+      renderPage("Post Not Found - Ryan Prendergast", content, "/blog", {
+        pageSubtitle: "Blog",
+      })
     );
   }
 
   const content = blogPost({
     title: post.title,
-    date: post.date,
+    date: formatDateReadable(post.date),
     subtitle: post.subtitle ? `<p class="subtitle">${post.subtitle}</p>` : "",
-    author: post.author ? ` • ${post.author}` : "",
+    author: post.author ? ` &mdash; ${post.author}` : "",
     content: post.content,
   });
 
@@ -210,10 +252,141 @@ app.get("/blog/:slug", async (c) => {
 
   return c.html(
     renderPage(`${post.title} - Ryan Prendergast`, content, "/blog", {
+      pageSubtitle: "Blog",
       description: post.excerpt || `${post.title} by Ryan Prendergast`,
       ogType: "article",
       canonicalUrl: `https://ryan-prendergast.com/blog/${post.slug}`,
       structuredData,
+    })
+  );
+});
+
+// Archives Page
+app.get("/archives", async (c) => {
+  const posts = await getBlogPosts();
+
+  // Group posts by month-year
+  const postsByMonth: {
+    [key: string]: { label: string; posts: typeof posts };
+  } = {};
+  posts.forEach((post) => {
+    const date = parseDate(post.date);
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    const label = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+    });
+    if (!postsByMonth[key]) postsByMonth[key] = { label, posts: [] };
+    postsByMonth[key].posts.push(post);
+  });
+
+  let archiveSections = "";
+  Object.keys(postsByMonth)
+    .sort((a, b) => b.localeCompare(a))
+    .forEach((key) => {
+      const group = postsByMonth[key];
+      archiveSections += `<section class="archive-section">`;
+      archiveSections += `<div class="archive-month-header">${group.label}<span class="month-count">${group.posts.length} ${group.posts.length === 1 ? "entry" : "entries"}</span></div>`;
+      group.posts.forEach((post) => {
+        archiveSections += `
+          <div class="link-entry">
+            <div class="entry-title"><a href="/blog/${post.slug}">${post.title}</a></div>
+            <div class="entry-meta">${formatDateReadable(post.date)}</div>
+          </div>
+        `;
+      });
+      archiveSections += `</section>`;
+    });
+
+  const content = archives({ archiveSections });
+
+  // Build calendar for the most recent month
+  const sortedKeys = Object.keys(postsByMonth).sort((a, b) =>
+    b.localeCompare(a)
+  );
+  let calendarHtml = "";
+  if (sortedKeys.length > 0) {
+    const latestKey = sortedKeys[0];
+    const [calYear, calMonth] = latestKey.split("-").map(Number);
+    const monthLabel = postsByMonth[latestKey].label;
+
+    // Get dates that have entries
+    const entryDays = new Set<number>();
+    postsByMonth[latestKey].posts.forEach((post) => {
+      entryDays.add(parseDate(post.date).getDate());
+    });
+
+    const firstDay = new Date(calYear, calMonth - 1, 1).getDay();
+    const daysInMonth = new Date(calYear, calMonth, 0).getDate();
+    const today = new Date();
+    const isCurrentMonth =
+      today.getFullYear() === calYear && today.getMonth() + 1 === calMonth;
+
+    calendarHtml = `
+      <div class="sidebar-box">
+        <h3 class="sidebar-header">${monthLabel}</h3>
+        <table class="calendar-widget">
+          <thead><tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr></thead>
+          <tbody>
+    `;
+    let day = 1;
+    for (let week = 0; week < 6 && day <= daysInMonth; week++) {
+      calendarHtml += "<tr>";
+      for (let dow = 0; dow < 7; dow++) {
+        if ((week === 0 && dow < firstDay) || day > daysInMonth) {
+          calendarHtml += "<td></td>";
+        } else {
+          const classes: string[] = [];
+          if (entryDays.has(day)) classes.push("has-entry");
+          if (isCurrentMonth && today.getDate() === day)
+            classes.push("today");
+          calendarHtml += `<td${classes.length ? ` class="${classes.join(" ")}"` : ""}>${day}</td>`;
+          day++;
+        }
+      }
+      calendarHtml += "</tr>";
+    }
+    calendarHtml += `</tbody></table></div>`;
+  }
+
+  // Summary sidebar
+  const totalPosts = posts.length;
+  const monthCount = sortedKeys.length;
+  const summaryHtml = `
+    <div class="sidebar-box">
+      <h3 class="sidebar-header">Summary</h3>
+      <div class="sidebar-text">
+        Browsing ${totalPosts} posts across ${monthCount} months.
+        <br><br>
+        <a href="/blog">&larr; Back to blog</a>
+      </div>
+    </div>
+  `;
+
+  const sidebarExtra = calendarHtml + summaryHtml;
+
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Archives",
+      "description": "Browse all posts by date",
+      "url": "https://ryan-prendergast.com/archives",
+      "author": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
+      }
+    }
+    </script>
+  `;
+
+  return c.html(
+    renderPage("Archives - Ryan Prendergast", content, "/archives", {
+      pageSubtitle: "Archives",
+      description: "Browse all posts by date",
+      structuredData,
+      sidebarExtra,
     })
   );
 });
@@ -266,7 +439,7 @@ app.get("/guestbook", async (c) => {
     let entriesHtml = "";
     if (!results || results.length === 0) {
       entriesHtml = `
-        <div class="text-center py-2">
+        <div class="text-center" style="padding: 20px 0;">
           <p class="text-muted">No entries yet. Be the first to sign the guestbook!</p>
         </div>
       `;
@@ -274,33 +447,31 @@ app.get("/guestbook", async (c) => {
       results.forEach((entry) => {
         const date = new Date(entry.created_at).toLocaleDateString("en-US", {
           year: "numeric",
-          month: "short",
+          month: "long",
           day: "numeric",
         });
         entriesHtml += `
           <div class="guestbook-entry">
             <div class="guestbook-date">${date}</div>
             <div class="guestbook-message">${entry.message}</div>
-            <div class="guestbook-name">— ${entry.name}</div>
+            <div class="guestbook-name">&mdash; ${entry.name}</div>
           </div>
         `;
       });
     }
 
     const content = `
-      <section>
-        <div class="guestbook-header">
-          <h1>guestbook</h1>
-          <button onclick="showGuestbookModal()">Sign Guestbook</button>
-        </div>
-        ${entriesHtml}
-      </section>
-      
+      <div class="guestbook-header">
+        <h2>Guestbook</h2>
+        <button onclick="showGuestbookModal()">Sign Guestbook</button>
+      </div>
+      ${entriesHtml}
+
       <div id="guestbookModal" class="modal hidden">
         <div class="modal-content">
           <div class="modal-header">
             <h2>Sign Guestbook</h2>
-            <button onclick="hideGuestbookModal()" class="modal-close">✕</button>
+            <button onclick="hideGuestbookModal()" class="modal-close">&times;</button>
           </div>
           <form id="guestbookForm">
             <div class="form-group">
@@ -312,13 +483,13 @@ app.get("/guestbook", async (c) => {
               <textarea id="message" name="message" required maxlength="500" rows="4" class="form-textarea"></textarea>
             </div>
             <div class="form-actions">
-              <button type="button" onclick="hideGuestbookModal()" class="button-secondary">Cancel</button>
+              <button type="button" onclick="hideGuestbookModal()">Cancel</button>
               <button type="submit">Submit</button>
             </div>
           </form>
         </div>
       </div>
-      
+
       <script>
         function showGuestbookModal() {
           document.getElementById('guestbookModal').classList.remove('hidden');
@@ -326,19 +497,22 @@ app.get("/guestbook", async (c) => {
         function hideGuestbookModal() {
           document.getElementById('guestbookModal').classList.add('hidden');
         }
-        
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') hideGuestbookModal();
+        });
+
         document.getElementById('guestbookForm').addEventListener('submit', async (e) => {
           e.preventDefault();
           const name = document.getElementById('name').value;
           const message = document.getElementById('message').value;
-          
+
           try {
             const response = await fetch('/api/guestbook', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ name, message })
             });
-            
+
             if (response.ok) {
               window.location.reload();
             } else {
@@ -369,6 +543,7 @@ app.get("/guestbook", async (c) => {
 
     return c.html(
       renderPage("Guestbook - Ryan Prendergast", content, "/guestbook", {
+        pageSubtitle: "Guestbook",
         description:
           "Sign Ryan Prendergast's guestbook and see messages from visitors",
         structuredData,
@@ -377,13 +552,13 @@ app.get("/guestbook", async (c) => {
   } catch (error) {
     console.error("Error loading guestbook:", error);
     const content = `
-      <section>
-        <h1>guestbook</h1>
-        <p>Failed to load guestbook entries. Please try again later.</p>
-      </section>
+      <h2 class="blog-post-title">Guestbook</h2>
+      <p>Failed to load guestbook entries. Please try again later.</p>
     `;
     return c.html(
-      renderPage("Guestbook - Ryan Prendergast", content, "/guestbook")
+      renderPage("Guestbook - Ryan Prendergast", content, "/guestbook", {
+        pageSubtitle: "Guestbook",
+      })
     );
   }
 });
@@ -409,6 +584,7 @@ app.get("/contact", (c) => {
 
   return c.html(
     renderPage("Contact - Ryan Prendergast", content, "/contact", {
+      pageSubtitle: "Contact",
       description:
         "Get in touch with Ryan Prendergast. Connect via email or social media.",
       structuredData,
@@ -438,6 +614,7 @@ app.get("/memory", (c) => {
 
   return c.html(
     renderPage("Memory - Ryan Prendergast", content, "/memory", {
+      pageSubtitle: "Memory",
       description:
         "Anki-like flashcards with spaced repetition algorithm for effective learning and memorization.",
       structuredData,
@@ -469,6 +646,7 @@ app.get("/sitemap.xml", async (c) => {
   const staticPages = [
     { url: "", changefreq: "weekly", priority: "1.0" },
     { url: "/blog", changefreq: "weekly", priority: "0.9" },
+    { url: "/archives", changefreq: "weekly", priority: "0.8" },
     { url: "/contact", changefreq: "monthly", priority: "0.7" },
     { url: "/guestbook", changefreq: "weekly", priority: "0.6" },
   ];
@@ -516,17 +694,13 @@ app.get("/styles.css", async (c) => {
 // Fallback handler for static assets and 404s
 app.get("/*", async (c) => {
   try {
-    // Try to fetch the static asset first
     const response = await c.env.ASSETS.fetch(c.req.raw);
 
-    // If the asset is not found (404), show our custom 404 page
     if (response.status === 404) {
       const content = `
-        <section>
-          <h1>404 - Page Not Found</h1>
-          <p>The page you're looking for doesn't exist.</p>
-          <p><a href="/">← Go home</a> or <a href="/blog">browse the blog</a></p>
-        </section>
+        <h2 class="blog-post-title">404 - Page Not Found</h2>
+        <p>The page you're looking for doesn't exist.</p>
+        <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the blog</a></p>
       `;
 
       const structuredData = `
@@ -555,16 +729,12 @@ app.get("/*", async (c) => {
       );
     }
 
-    // Return the static asset if it exists
     return response;
   } catch (error) {
-    // If there's an error fetching the asset, also show 404
     const content = `
-      <section>
-        <h1>404 - Page Not Found</h1>
-        <p>The page you're looking for doesn't exist.</p>
-        <p><a href="/">← Go home</a> or <a href="/blog">browse the blog</a></p>
-      </section>
+      <h2 class="blog-post-title">404 - Page Not Found</h2>
+      <p>The page you're looking for doesn't exist.</p>
+      <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the blog</a></p>
     `;
 
     const structuredData = `
