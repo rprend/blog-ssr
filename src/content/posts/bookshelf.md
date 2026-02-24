@@ -5,7 +5,7 @@ author: "Ryan Prendergast"
 slug: "bookshelf"
 ---
 
-I have benefited from [**others'**](https://www.nickbeckstead.com/audiobooks) [**publicly**](https://subcriticalappraisal.com/bookshelf/) [**posted**](https://simonsarris.com/bookshelf) [**booklists**](http://www.aaronsw.com/weblog/books2011), so I'd like to make one of my own. Here is a list of books, fiction or nonfiction, which I strongly recommend.
+I like other [**people's**](https://www.nickbeckstead.com/audiobooks) [**publicly**](https://subcriticalappraisal.com/bookshelf/) [**posted**](https://simonsarris.com/bookshelf) [**booklists**](http://www.aaronsw.com/weblog/books2011), so I'd like to make one of my own. Here is a list of books, fiction or nonfiction, which I strongly recommend.
 
 1. The New York Trilogy, Paul Auster.
 2. Invisible Cities, Italo Calvino.

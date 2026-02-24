@@ -77,17 +77,16 @@ export const home = (data: Record<string, string> = {}): string => {
     I'm Ryan. I'm currently working on
     <a href="https://zenobiapay.com" target="_blank" rel="noopener noreferrer"
       >Zenobia Pay</a
-    >. Our mission is to end the Visa / Mastercard duopoly, and make it 3x
-    cheaper to transact online.
+    >. Our mission is to make it 3x cheaper to transact online.
   </p>
 
   <p>
-    Some hobbies that I enjoy: I enjoy
+    I make
     <a
       href="https://www.youtube.com/playlist?list=PL-evJxq7wCJNhu6jh8QCcj_4PiycBDEOW"
       target="_blank"
       rel="noopener noreferrer"
-      >filmmaking</a
+      >films</a
     >. I've played
     <a
       href="https://www.youtube.com/playlist?list=PL-evJxq7wCJPwhV7P91uooPOauMSX-UbE"
@@ -95,7 +94,7 @@ export const home = (data: Record<string, string> = {}): string => {
       rel="noopener noreferrer"
       >electric guitar and sang</a
     >
-    in a couple bands. I like to <a href="/blog">write essays</a>.
+    in a couple bands. I like to <a href="/blog">write</a>.
   </p>
 
   <p>
@@ -107,7 +106,6 @@ export const home = (data: Record<string, string> = {}): string => {
       >calendly.com/rprendergast1121/ryan</a
     >.
   </p>
-
 </section>
 `;
   

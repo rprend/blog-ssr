@@ -1,5 +1,6 @@
 ---
-title: "Gilgamesh and half-movies"
+title: "Book review - The Epic of Gilgamesh"
+subtitle: "Gilgamesh and half-movies"
 date: "02-03-2025"
 author: "Ryan Prendergast"
 slug: "gilgamesh-and-half-movies"
