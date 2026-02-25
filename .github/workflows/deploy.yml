@@ -30,17 +30,17 @@ jobs:
 
       - run: npm ci
 
-      - name: Deploy to production
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: deploy --env production
-
       - name: Deploy to staging
         if: github.event_name != 'workflow_dispatch' || github.event.inputs.environment == 'staging'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: deploy --env staging
+
+      - name: Deploy to production
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: deploy --env production
 # Trigger: test workflow activation

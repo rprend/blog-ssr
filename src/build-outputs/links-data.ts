@@ -19,6 +19,14 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Other networks outside what&#39;s now called the internet.</p>\n"
   },
   {
+    "slug": "walzr",
+    "title": "Riley Walz",
+    "url": "https://walzr.com/",
+    "date": "02-25-2026",
+    "image": null,
+    "content": "<p>Riley Walz on the labs team at OpenAI has a personal site with my favorite kind of niche single-purpose projects. Route shuffle generates random routes for runners and cyclists, and so on.</p>\n"
+  },
+  {
     "slug": "sceneData",
     "title": "Scene Data",
     "url": "https://www.scene-data.com/explore",
