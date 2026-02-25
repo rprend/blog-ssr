@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "otherNetworks",
+    "title": "Other Networks",
+    "url": "https://othernetworks.net/",
+    "date": "02-25-2026",
+    "image": null,
+    "content": "<p>Other networks outside what&#39;s now called the internet.</p>\n"
+  },
+  {
     "slug": "sceneData",
     "title": "Scene Data",
     "url": "https://www.scene-data.com/explore",
