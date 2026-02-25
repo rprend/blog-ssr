@@ -97,11 +97,13 @@ app.get("/", async (c) => {
       : "";
     linksHtml += `
       <div class="linklog-entry">
-        <div class="linklog-title"><a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.title}</a></div>
-        <div class="linklog-domain">${extractDomain(link.url)}</div>
+        <div class="linklog-header">
+          <div class="linklog-title"><a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.title}</a></div>
+          <span class="linklog-domain">${extractDomain(link.url)}</span>
+          <span class="linklog-meta">${formatDateReadable(link.date)}</span>
+        </div>
         ${imageHtml}
         <div class="linklog-commentary">${link.content}</div>
-        <div class="linklog-meta">${formatDateReadable(link.date)}</div>
       </div>
     `;
   });

@@ -605,8 +605,8 @@ button:active, .btn:active {
 
 /* Linklog entries on homepage */
 .linklog-entry {
-  margin-bottom: 25px;
-  padding-bottom: 20px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
   border-bottom: 1px solid #eee;
 }
 
@@ -614,11 +614,18 @@ button:active, .btn:active {
   border-bottom: none;
 }
 
+.linklog-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
 .linklog-title {
   font-family: var(--header-font);
-  font-size: 22px;
+  font-size: 16px;
   line-height: 1.2;
-  margin-bottom: 3px;
 }
 
 .linklog-title a {
@@ -633,11 +640,18 @@ button:active, .btn:active {
 .linklog-domain {
   font-size: 10px;
   color: var(--apple-gray);
-  margin-bottom: 8px;
+}
+
+.linklog-meta {
+  font-family: var(--body-font);
+  font-size: 10px;
+  color: var(--apple-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .linklog-image {
-  margin: 10px 0;
+  margin: 6px 0;
 }
 
 .linklog-image img {
@@ -648,25 +662,16 @@ button:active, .btn:active {
 
 .linklog-commentary {
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: #222;
 }
 
 .linklog-commentary p {
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
 }
 
 .linklog-commentary p:last-child {
   margin-bottom: 0;
-}
-
-.linklog-meta {
-  font-family: var(--body-font);
-  font-size: 10px;
-  color: var(--apple-gray);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 8px;
 }
 
 /* Mobile responsive */
