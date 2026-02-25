@@ -3,8 +3,18 @@ name: Deploy to Cloudflare Workers
 on:
   push:
     branches:
-      - main
+      - master
       - 'claude/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
 
 jobs:
   deploy:
@@ -21,16 +31,15 @@ jobs:
       - run: npm ci
 
       - name: Deploy to production
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: deploy --env production
 
-      - name: Deploy preview branch
-        if: github.ref != 'refs/heads/main'
+      - name: Deploy to staging
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.environment == 'staging'
         uses: cloudflare/wrangler-action@v3
-        id: preview
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: deploy --env staging
