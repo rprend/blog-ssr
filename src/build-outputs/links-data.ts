@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "citytracker",
+    "title": "City Tracker",
+    "url": "https://citytracker.ai/about",
+    "date": "03-04-2026",
+    "image": null,
+    "content": "<p>A search engine for New York City real estate. New York&#39;s DOB is astonishingly rich with public data sets. So it doesn&#39;t surprise me to see this kind of data viz and analytics take off here.</p>\n"
+  },
+  {
     "slug": "aiunderwriting",
     "title": "AI Underwriting",
     "url": "https://x.com/aiunderwriting",
