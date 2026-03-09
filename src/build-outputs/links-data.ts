@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "reve",
+    "title": "Reve",
+    "url": "https://app.reve.com",
+    "date": "03-09-2026",
+    "image": null,
+    "content": "<p>Finally a good &quot;draw your changes here&quot; editor. What GAUGan always promised to be.</p>\n"
+  },
+  {
     "slug": "terminaluse",
     "title": "Terminal Use",
     "url": "https://www.terminaluse.com/",
