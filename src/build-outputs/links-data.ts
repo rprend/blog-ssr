@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "terminaluse",
+    "title": "Terminal Use",
+    "url": "https://www.terminaluse.com/",
+    "date": "03-09-2026",
+    "image": null,
+    "content": "<p>Sometimes you see a company and wish you got there first. I had half of this infra (Vercel for agents) set up for myself. Why didn&#39;t I productize???</p>\n"
+  },
+  {
     "slug": "citytracker",
     "title": "City Tracker",
     "url": "https://citytracker.ai/about",
