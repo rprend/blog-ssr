@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "busundreu",
+    "title": "Bus und Reu",
+    "url": "https://busundreu.com/",
+    "date": "03-10-2026",
+    "image": null,
+    "content": "<p>Single purpose website. &quot;A new, stupid website to find a piece of classical music whose duration most closely matches that of your next trip.&quot;</p>\n"
+  },
+  {
     "slug": "cranes",
     "title": "Cranes of NYC",
     "url": "https://www.khaledeltokhy.com/cranes",
