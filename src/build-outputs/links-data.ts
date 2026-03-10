@@ -19,6 +19,14 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Single-purpose websites. This one shows a map of every crane in New York City.</p>\n"
   },
   {
+    "slug": "fontofweb",
+    "title": "Font of Web",
+    "url": "https://fontofweb.com/",
+    "date": "03-10-2026",
+    "image": null,
+    "content": "<p>Consistently, the most annoying thing about coding agents is the atrocious design they use. I haven&#39;t found a good system for getting consistently good design.</p>\n"
+  },
+  {
     "slug": "reve",
     "title": "Reve",
     "url": "https://app.reve.com",
