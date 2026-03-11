@@ -91,11 +91,59 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Riley Walz on the labs team at OpenAI has a personal site with my favorite kind of niche single-purpose projects. Route shuffle generates random routes for runners and cyclists, and so on.</p>\n"
   },
   {
+    "slug": "decayOfIndependentWeb",
+    "title": "The Decay of the Independent Web",
+    "url": "https://www.tbray.org/ongoing/When/202x/2024/01/15/Google-Search-Decline",
+    "date": "02-24-2025",
+    "image": null,
+    "content": "<p>Tim Bray on the slow decline of Google Search and what it means for independent publishers. The web used to be a place where you could stumble across something genuinely surprising - a personal homepage, a weird hobbyist forum, a hand-coded HTML page about trains. Now everything funnels through the same five websites.</p>\n<p>The most interesting thing about the independent web isn&#39;t the nostalgia. It&#39;s that the model <em>worked</em>. People made things for fun, linked to each other, and a whole ecosystem emerged without anyone planning it.</p>\n"
+  },
+  {
     "slug": "sceneData",
     "title": "Scene Data",
     "url": "https://www.scene-data.com/explore",
     "date": "02-24-2025",
     "image": null,
     "content": "<p>Seems like OpenClaw is opening up a lot of breadth-based internet searches, scraping so many things. Way more people are making way more scrapers, and I expect this to continue.</p>\n"
+  },
+  {
+    "slug": "hypercardSimulator",
+    "title": "Hypercard Simulator in JS",
+    "url": "https://hcsimulator.com/",
+    "date": "02-22-2025",
+    "image": "https://hcsimulator.com/og-image.png",
+    "content": "<p>Someone built a full Hypercard simulator that runs in the browser. You can create stacks, draw buttons, write HyperTalk scripts - the whole thing. It&#39;s shockingly faithful to the original.</p>\n<p>Hypercard was the original &quot;programming for everyone&quot; tool, years before Scratch or no-code platforms. Bill Atkinson gave it away for free with every Mac. Apple killed it because they couldn&#39;t figure out how to charge for it.</p>\n"
+  },
+  {
+    "slug": "interfaceHallOfShame",
+    "title": "Interface Hall of Shame",
+    "url": "http://hallofshame.gp.co.at/shame.htm",
+    "date": "02-20-2025",
+    "image": null,
+    "content": "<p>A relic from the late 90s web: a site cataloguing the worst user interfaces ever shipped. The commentary is sharp and holds up perfectly. My favorite is the entry on Microsoft Bob - &quot;the interface equivalent of a person who speaks slowly and loudly to foreigners.&quot;</p>\n<p>What I love about this site is the implicit argument: bad interfaces aren&#39;t just annoying, they&#39;re <em>disrespectful</em>. They assume the user is stupid rather than admitting the designer was lazy.</p>\n"
+  },
+  {
+    "slug": "usWebDesignStandards",
+    "title": "U.S. Web Design Standards",
+    "url": "https://designsystem.digital.gov/",
+    "date": "02-15-2025",
+    "image": null,
+    "content": "<p>The U.S. government&#39;s open-source design system. Clean typography, accessible components, thoughtful spacing. It&#39;s surprisingly good - better than most startup design systems I&#39;ve seen.</p>\n<p>There&#39;s something poetic about the federal government shipping a design system that prioritizes clarity and readability over flash. No dark patterns, no growth hacking, no engagement metrics. Just: here&#39;s information, presented clearly.</p>\n"
+  },
+  {
+    "slug": "winampSkinMuseum",
+    "title": "Winamp Skin Museum",
+    "url": "https://skins.webamp.org/",
+    "date": "02-12-2025",
+    "image": "https://skins.webamp.org/og-image.png",
+    "content": "<p>An archive of over 90,000 Winamp skins, all viewable in the browser. You can browse by era, style, or just let them wash over you. It&#39;s like visiting a folk art museum.</p>\n<p>Winamp skins were one of the first mass creative outlets on the internet. Thousands of teenagers with pirated copies of Photoshop making pixel art for a media player. No monetization, no audience metrics, no &quot;building a brand.&quot; Just people making things because it was fun.</p>\n"
+  },
+  {
+    "slug": "simpleWebServersInC",
+    "title": "Simple Web Servers in C",
+    "url": "https://brucehoult.nz/blog/simple-web-server-in-c.html",
+    "date": "02-05-2025",
+    "image": null,
+    "content": "<p>Bruce Hoult walks through building a web server from scratch in C. No frameworks, no libraries - just sockets and string manipulation. The whole thing fits in about 200 lines.</p>\n<p>I think everyone who builds for the web should do this exercise at least once. It demystifies the entire stack. An HTTP request is just text over a socket. A response is just text back. Everything else is convention.</p>\n"
   }
 ];
