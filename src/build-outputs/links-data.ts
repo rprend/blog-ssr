@@ -19,6 +19,54 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Ottoman-era data visualizations from Cerîde-i Adliyye, “The Justice Gazette,”</p>\n"
   },
   {
+    "slug": "busundreu",
+    "title": "Bus und Reu",
+    "url": "https://busundreu.com/",
+    "date": "03-10-2026",
+    "image": null,
+    "content": "<p>Single purpose website. &quot;A new, stupid website to find a piece of classical music whose duration most closely matches that of your next trip.&quot;</p>\n"
+  },
+  {
+    "slug": "cranes",
+    "title": "Cranes of NYC",
+    "url": "https://www.khaledeltokhy.com/cranes",
+    "date": "03-10-2026",
+    "image": null,
+    "content": "<p>Single-purpose websites. This one shows a map of every crane in New York City.</p>\n"
+  },
+  {
+    "slug": "fontofweb",
+    "title": "Font of Web",
+    "url": "https://fontofweb.com/",
+    "date": "03-10-2026",
+    "image": null,
+    "content": "<p>Consistently, the most annoying thing about coding agents is the atrocious design they use. I haven&#39;t found a good system for getting consistently good design.</p>\n"
+  },
+  {
+    "slug": "reve",
+    "title": "Reve",
+    "url": "https://app.reve.com",
+    "date": "03-09-2026",
+    "image": null,
+    "content": "<p>Finally a good &quot;draw your changes here&quot; editor. What GAUGan always promised to be.</p>\n"
+  },
+  {
+    "slug": "terminaluse",
+    "title": "Terminal Use",
+    "url": "https://www.terminaluse.com/",
+    "date": "03-09-2026",
+    "image": null,
+    "content": "<p>Sometimes you see a company and wish you got there first. I had half of this infra (Vercel for agents) set up for myself. Why didn&#39;t I productize???</p>\n"
+  },
+  {
+    "slug": "citytracker",
+    "title": "City Tracker",
+    "url": "https://citytracker.ai/about",
+    "date": "03-04-2026",
+    "image": null,
+    "content": "<p>A search engine for New York City real estate. New York&#39;s DOB is astonishingly rich with public data sets. So it doesn&#39;t surprise me to see this kind of data viz and analytics take off here.</p>\n"
+  },
+  {
     "slug": "aiunderwriting",
     "title": "AI Underwriting",
     "url": "https://x.com/aiunderwriting",
