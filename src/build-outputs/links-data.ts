@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "p5Brush",
+    "title": "p5.brush",
+    "url": "https://github.com/acamposuribe/p5.brush",
+    "date": "03-15-2026",
+    "image": null,
+    "content": "<p>Brushes and fill effects on JavaScript canvases. Feels Tyler Hobbes-y.</p>\n"
+  },
+  {
     "slug": "poeticJustice",
     "title": "Poetic Justice",
     "url": "https://casualarchivist.substack.com/p/poetic-justice",
