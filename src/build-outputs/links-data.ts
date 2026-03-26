@@ -19,6 +19,14 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Trade distributor of independent publishers, kind of like a curated Amazon.</p>\n"
   },
   {
+    "slug": "essayArchitecture",
+    "title": "Essay Architecture",
+    "url": "https://essayarchitecture.com/",
+    "date": "03-26-2026",
+    "image": null,
+    "content": "<p>Haven&#39;t tried the tool, so I can&#39;t speak to its efficacy, but I love this kind of frameworking or trying to find patterns in writing. I love the diagrams and the shapes that he draws, and anyone who has strong opinions on that.</p>\n"
+  },
+  {
     "slug": "projectsDev",
     "title": "Projects",
     "url": "https://projects.dev/",
