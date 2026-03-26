@@ -27,6 +27,14 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Haven&#39;t tried the tool, so I can&#39;t speak to its efficacy, but I love this kind of frameworking or trying to find patterns in writing. I love the diagrams and the shapes that he draws, and anyone who has strong opinions on that.</p>\n"
   },
   {
+    "slug": "marginalRevolutionGenerativeBook",
+    "title": "Marginal Revolution Generative Book",
+    "url": "https://tylercowen.com/marginal-revolution-generative-book/app/",
+    "date": "03-26-2026",
+    "image": null,
+    "content": "<p>Tyler Cowen gets the direction. A book on the left, a question answerer on the right that uses his corpus, whether this chapter, the entire book, or all of his podcast transcripts, to answer those questions. He could actually benefit a lot from AlphaBook.</p>\n"
+  },
+  {
     "slug": "projectsDev",
     "title": "Projects",
     "url": "https://projects.dev/",
