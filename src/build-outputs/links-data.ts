@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "asterismBooks",
+    "title": "Asterism Books",
+    "url": "https://asterismbooks.com/",
+    "date": "03-26-2026",
+    "image": null,
+    "content": "<p>Trade distributor of independent publishers, kind of like a curated Amazon.</p>\n"
+  },
+  {
     "slug": "projectsDev",
     "title": "Projects",
     "url": "https://projects.dev/",
