@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "projectsDev",
+    "title": "Projects",
+    "url": "https://projects.dev/",
+    "date": "03-26-2026",
+    "image": null,
+    "content": "<p>By far the biggest pain for a no-code or bipoding system is the integrations. Cool to see Stripe is tackling this.</p>\n"
+  },
+  {
     "slug": "p5Brush",
     "title": "p5.brush",
     "url": "https://github.com/acamposuribe/p5.brush",
