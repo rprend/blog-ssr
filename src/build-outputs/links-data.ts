@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "illnessAsArt",
+    "title": "Illness As Art",
+    "url": "https://illnessasart.com/",
+    "date": "04-01-2026",
+    "image": null,
+    "content": "<p>Smiths fan site. Interviews, magazine covers, photos.</p>\n"
+  },
+  {
     "slug": "rlmCli",
     "title": "RLM CLI",
     "url": "https://github.com/viplismism/rlm-cli",
