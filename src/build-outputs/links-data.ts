@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "galleryJessyinWorld",
+    "title": "Gallery",
+    "url": "https://gallery.jessyin.world/",
+    "date": "04-05-2026",
+    "image": null,
+    "content": "<p>Artworks from the MoMA collection with a matching curation feature.</p>\n"
+  },
+  {
     "slug": "illnessAsArt",
     "title": "Illness As Art",
     "url": "https://illnessasart.com/",
