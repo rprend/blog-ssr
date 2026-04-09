@@ -19,6 +19,14 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Knowledge base for mathematics. Beautiful site</p>\n"
   },
   {
+    "slug": "makingSoftware",
+    "title": "Making Software",
+    "url": "https://www.makingsoftware.com/",
+    "date": "04-09-2026",
+    "image": null,
+    "content": "<p>Design eng at cursor. Beautiful looking book</p>\n"
+  },
+  {
     "slug": "galleryJessyinWorld",
     "title": "Gallery",
     "url": "https://gallery.jessyin.world/",
