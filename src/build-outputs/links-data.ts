@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "algebrica",
+    "title": "Algebrica",
+    "url": "https://algebrica.org/",
+    "date": "04-09-2026",
+    "image": null,
+    "content": "<p>Knowledge base for mathematics. Beautiful site</p>\n"
+  },
+  {
     "slug": "galleryJessyinWorld",
     "title": "Gallery",
     "url": "https://gallery.jessyin.world/",
