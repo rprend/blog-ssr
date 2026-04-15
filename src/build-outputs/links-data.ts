@@ -11,6 +11,14 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "atlasOfObliqueMaps",
+    "title": "Atlas of Oblique Maps",
+    "url": "https://www.hiddenhydrology.org/atlas-of-oblique-maps/",
+    "date": "04-15-2026",
+    "image": null,
+    "content": "<p>Atlas of oblique maps. beautiful</p>\n"
+  },
+  {
     "slug": "algebrica",
     "title": "Algebrica",
     "url": "https://algebrica.org/",
