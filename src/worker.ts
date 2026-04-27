@@ -50,6 +50,7 @@ function renderPage(
     canonicalUrl?: string;
     pageSubtitle?: string;
     sidebarExtra?: string;
+    bodyClass?: string;
   } = {}
 ) {
   const navData = {
@@ -76,6 +77,7 @@ function renderPage(
     ogImage: seoData.ogImage || "",
     twitterImage: seoData.ogImage || "",
     structuredData: seoData.structuredData || "",
+    bodyClass: seoData.bodyClass || "",
   });
 }
 
@@ -213,20 +215,13 @@ app.get("/photos/:slug", async (c) => {
     );
   }
 
-  const content = blogPost({
-    title: post.title,
-    date: formatDateReadable(post.date),
-    subtitle: post.subtitle ? `<p class="subtitle">${post.subtitle}</p>` : "",
-    author: post.author ? ` &mdash; ${post.author}` : "",
-    content: post.content,
-  }).replaceAll("/blog", "/photos").replaceAll("Back to Blog", "Back to Photos");
-
   return c.html(
-    renderPage(`${post.title} - Ryan Prendergast`, content, "/photos", {
+    renderPage(`${post.title} - Ryan Prendergast`, post.content, "/photos", {
       pageSubtitle: "Photos",
       description: post.excerpt || `${post.title} by Ryan Prendergast`,
       ogType: "article",
       canonicalUrl: `https://ryan-prendergast.com/photos/${post.slug}`,
+      bodyClass: "raw-page",
     })
   );
 });

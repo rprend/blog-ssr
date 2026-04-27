@@ -131,7 +131,7 @@ export const layout = (data: Record<string, string> = {}): string => {
   <!-- Structured data will be injected here -->
   {{structuredData}}
 </head>
-<body>
+<body class="{{bodyClass}}">
   <div class="aqua-bar">
     <a href="/" class="aqua-pill">Ryan's Blog</a>
     <a href="/blog" class="aqua-pill">Blog</a>

@@ -15,14 +15,14 @@ export interface BlogPost {
 export const blogPosts: BlogPost[] = [
   {
     "slug": "raw-photos",
-    "title": "RAW PHOTOS",
+    "title": "RAW",
     "date": "04-27-2026",
     "author": "Ryan Prendergast",
     "section": "photos",
     "subtitle": null,
-    "excerpt": "RAW PHOTOS",
+    "excerpt": "RAW",
     "readTime": "1 min read",
-    "content": "<div class=\"photo-post\">\n  <img src=\"/photos/raw/img-0676.jpg\" alt=\"RAW photo 1\" loading=\"lazy\">\n  <img src=\"/photos/raw/raw-photo-4.jpeg\" alt=\"RAW photo 2\" loading=\"lazy\">\n  <img src=\"/photos/raw/img-0680.jpg\" alt=\"RAW photo 3\" loading=\"lazy\">\n  <img src=\"/photos/raw/img-0686.jpg\" alt=\"RAW photo 4\" loading=\"lazy\">\n</div>\n"
+    "content": "<div class=\"raw-canvas\" aria-label=\"RAW photo arrangement\">\n  <a class=\"raw-back\" href=\"/photos\">Photos</a>\n  <h2 class=\"raw-title\">RAW</h2>\n  <img class=\"raw-photo raw-photo-one\" src=\"/photos/raw/img-0676.jpg\" alt=\"RAW photo 1\" loading=\"eager\">\n  <img class=\"raw-photo raw-photo-two\" src=\"/photos/raw/raw-photo-4.jpeg\" alt=\"RAW photo 2\" loading=\"eager\">\n  <img class=\"raw-photo raw-photo-three\" src=\"/photos/raw/img-0680.jpg\" alt=\"RAW photo 3\" loading=\"lazy\">\n  <img class=\"raw-photo raw-photo-four\" src=\"/photos/raw/img-0686.jpg\" alt=\"RAW photo 4\" loading=\"lazy\">\n</div>\n"
   },
   {
     "slug": "gilgamesh-and-half-movies",
