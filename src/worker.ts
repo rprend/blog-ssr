@@ -7,6 +7,7 @@ import {
   home,
   blogList,
   blogPost,
+  photosList,
   contact,
   archives,
   memory,
@@ -22,7 +23,7 @@ const app = new Hono<{ Bindings: Bindings }>();
 // Helper: format date from MM-DD-YYYY to a readable string
 function formatDateReadable(dateStr: string): string {
   const parts = dateStr.split("-");
-  const date = new Date(`${parts[2]}-${parts[0]}-${parts[1]}`);
+  const date = new Date(Number(parts[2]), Number(parts[0]) - 1, Number(parts[1]));
   return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -33,7 +34,7 @@ function formatDateReadable(dateStr: string): string {
 // Helper: parse MM-DD-YYYY to Date object
 function parseDate(dateStr: string): Date {
   const parts = dateStr.split("-");
-  return new Date(`${parts[2]}-${parts[0]}-${parts[1]}`);
+  return new Date(Number(parts[2]), Number(parts[0]) - 1, Number(parts[1]));
 }
 
 // Helper function to render page with navigation and SEO data
@@ -54,6 +55,7 @@ function renderPage(
   const navData = {
     homeActive: currentPage === "/" ? "active" : "",
     blogActive: currentPage === "/blog" ? "active" : "",
+    photosActive: currentPage === "/photos" ? "active" : "",
     archivesActive: currentPage === "/archives" ? "active" : "",
     guestbookActive: currentPage === "/guestbook" ? "active" : "",
     contactActive: currentPage === "/contact" ? "active" : "",
@@ -111,7 +113,7 @@ app.get("/", async (c) => {
   const content = home({ linksHtml });
 
   // Sidebar: recent blog posts + link count
-  const posts = await getBlogPosts();
+  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
   const recentPosts = posts
     .slice(0, 5)
     .map(
@@ -161,9 +163,77 @@ app.get("/", async (c) => {
   );
 });
 
+// Photos List Page
+app.get("/photos", async (c) => {
+  const posts = (await getBlogPosts()).filter((post) => post.section === "photos");
+
+  let photosHtml = "";
+  posts.forEach((post) => {
+    photosHtml += `
+      <div class="blog-post-item">
+        <a href="/photos/${post.slug}" class="blog-title">${post.title}</a>
+        <div class="blog-date">${formatDateReadable(post.date)}</div>
+      </div>
+    `;
+  });
+
+  const sidebarExtra = `
+    <div class="sidebar-box">
+      <h3 class="sidebar-header">Photos</h3>
+      <div class="sidebar-text">${posts.length} ${posts.length === 1 ? "post" : "posts"}.</div>
+    </div>
+  `;
+
+  return c.html(
+    renderPage("Photos - Ryan Prendergast", photosList({ photosHtml }), "/photos", {
+      pageSubtitle: "Photos",
+      description: "Photos by Ryan Prendergast",
+      sidebarExtra,
+    })
+  );
+});
+
+// Individual Photo Post Page
+app.get("/photos/:slug", async (c) => {
+  const slug = c.req.param("slug");
+  const post = await getBlogPost(slug);
+
+  if (!post || post.section !== "photos") {
+    const content = `
+      <div class="blog-post-nav">
+        <a href="/photos">&larr; Back to Photos</a>
+      </div>
+      <h2 class="blog-post-title">Post Not Found</h2>
+      <p>The photo post you're looking for doesn't exist.</p>
+    `;
+    return c.html(
+      renderPage("Post Not Found - Ryan Prendergast", content, "/photos", {
+        pageSubtitle: "Photos",
+      })
+    );
+  }
+
+  const content = blogPost({
+    title: post.title,
+    date: formatDateReadable(post.date),
+    subtitle: post.subtitle ? `<p class="subtitle">${post.subtitle}</p>` : "",
+    author: post.author ? ` &mdash; ${post.author}` : "",
+    content: post.content,
+  }).replaceAll("/blog", "/photos").replaceAll("Back to Blog", "Back to Photos");
+
+  return c.html(
+    renderPage(`${post.title} - Ryan Prendergast`, content, "/photos", {
+      pageSubtitle: "Photos",
+      description: post.excerpt || `${post.title} by Ryan Prendergast`,
+      ogType: "article",
+      canonicalUrl: `https://ryan-prendergast.com/photos/${post.slug}`,
+    })
+  );
+});
+
 // Blog List Page
 app.get("/blog", async (c) => {
-  const posts = await getBlogPosts();
+  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
 
   // Group posts by year
   const postsByYear: { [year: string]: typeof posts } = {};
@@ -251,6 +321,10 @@ app.get("/blog/:slug", async (c) => {
     );
   }
 
+  if (post.section === "photos") {
+    return c.redirect(`/photos/${post.slug}`);
+  }
+
   const content = blogPost({
     title: post.title,
     date: formatDateReadable(post.date),
@@ -302,7 +376,7 @@ app.get("/blog/:slug", async (c) => {
 
 // Archives Page
 app.get("/archives", async (c) => {
-  const posts = await getBlogPosts();
+  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
 
   // Group posts by month-year
   const postsByMonth: {

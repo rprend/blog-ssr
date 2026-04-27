@@ -52,6 +52,7 @@ for (const file of files) {
     title: data.title || baseFilename,
     date: data.date || new Date().toISOString().split("T")[0],
     author: data.author || null,
+    section: data.section || "blog",
     subtitle: data.subtitle || null,
     excerpt: data.excerpt || extractExcerpt(markdownContent),
     readTime: calculateReadTime(markdownContent),
@@ -84,6 +85,7 @@ content += '  slug: string;\n';
 content += '  title: string;\n';
 content += '  date: string;\n';
 content += '  author: string | null;\n';
+content += '  section: string;\n';
 content += '  subtitle: string | null;\n';
 content += '  excerpt: string;\n';
 content += '  readTime: string;\n';

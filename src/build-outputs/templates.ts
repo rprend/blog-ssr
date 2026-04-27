@@ -712,11 +712,23 @@ export const nav = (data: Record<string, string> = {}): string => {
   let html = `<ul class="nav-list">
   <li><a href="/" class="{{homeActive}}">Home</a></li>
   <li><a href="/blog" class="{{blogActive}}">Blog</a></li>
+  <li><a href="/photos" class="{{photosActive}}">Photos</a></li>
   <li><a href="/archives" class="{{archivesActive}}">Archives</a></li>
   <li><a href="/guestbook" class="{{guestbookActive}}">Guestbook</a></li>
   <li><a href="/contact" class="{{contactActive}}">Contact</a></li>
 </ul>
 {{sidebarExtra}}
+`;
+  
+  // Replace {{variable}} with data.variable
+  return html.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+    return data[key] || '';
+  });
+};
+
+export const photosList = (data: Record<string, string> = {}): string => {
+  let html = `<p class="blog-description">Photos</p>
+{{photosHtml}}
 `;
   
   // Replace {{variable}} with data.variable

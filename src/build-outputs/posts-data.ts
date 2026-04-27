@@ -5,6 +5,7 @@ export interface BlogPost {
   title: string;
   date: string;
   author: string | null;
+  section: string;
   subtitle: string | null;
   excerpt: string;
   readTime: string;
@@ -13,10 +14,22 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    "slug": "raw-photos",
+    "title": "RAW PHOTOS",
+    "date": "04-27-2026",
+    "author": "Ryan Prendergast",
+    "section": "photos",
+    "subtitle": null,
+    "excerpt": "RAW PHOTOS",
+    "readTime": "1 min read",
+    "content": "<div class=\"photo-post\">\n  <img src=\"/photos/raw/img-0676.jpg\" alt=\"RAW photo 1\" loading=\"lazy\">\n  <img src=\"/photos/raw/img-0680.jpg\" alt=\"RAW photo 2\" loading=\"lazy\">\n  <img src=\"/photos/raw/img-0686.jpg\" alt=\"RAW photo 3\" loading=\"lazy\">\n</div>\n"
+  },
+  {
     "slug": "gilgamesh-and-half-movies",
     "title": "Book review - The Epic of Gilgamesh",
     "date": "02-03-2025",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": "Gilgamesh and half-movies",
     "excerpt": "I read the Epic of Gilgamesh— the world's oldest story. There are different angles to approach an old story like this. You can analyze its themes: ind...",
     "readTime": "3 min read",
@@ -27,6 +40,7 @@ export const blogPosts: BlogPost[] = [
     "title": "Applied Semiotics: Psychoanalysis for computers",
     "date": "01-07-2025",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "In the future I'd like to start a company called Applied Semiotics. \"Applied Semiotics: Psychoanalysis for computers\". The goal: put an LLM through th...",
     "readTime": "5 min read",
@@ -37,6 +51,7 @@ export const blogPosts: BlogPost[] = [
     "title": "Trotsky vs the backscratchers",
     "date": "01-04-2025",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "There's a story that I like, about an old friend: \"I stayed on Dave's couch, but he kicked me out. I was like Trotsky to him\" \"Trotsky?\" \"Yea Trotsky....",
     "readTime": "2 min read",
@@ -47,6 +62,7 @@ export const blogPosts: BlogPost[] = [
     "title": "One Million Bids",
     "date": "12-31-2024",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "Back in June, I had an idea for a simple 2 person auction: each person bids for an object, and whoever bids LESS buys it from the other. It's stupidly...",
     "readTime": "5 min read",
@@ -57,6 +73,7 @@ export const blogPosts: BlogPost[] = [
     "title": "Book Review- Lacan by Lionel Bailey",
     "date": "12-08-2024",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "There is a contradiction in human desire, which prevents a simple answer to the simple question: \"What do you want\"? From apathy over what to eat for...",
     "readTime": "12 min read",
@@ -67,6 +84,7 @@ export const blogPosts: BlogPost[] = [
     "title": "Bookshelf",
     "date": "04-20-2024",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "I like other people's publicly posted booklists, so I'd like to make one of my own. Here is a list of books, fiction or nonfiction, which I strongly r...",
     "readTime": "1 min read",
@@ -77,6 +95,7 @@ export const blogPosts: BlogPost[] = [
     "title": "Coffee shops for all",
     "date": "03-30-2024",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "The law is extremely complicated, requiring years of schooling and hard tests to enter the field. \"I hand you coffee you hand me money\" is a simple en...",
     "readTime": "4 min read",
@@ -87,6 +106,7 @@ export const blogPosts: BlogPost[] = [
     "title": "Generative art",
     "date": "12-01-2022",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "!Generative art example 1 !Generative art example 2 For a while in 2022, I got really into generative art, which is where you procedurally define a te...",
     "readTime": "1 min read",
@@ -97,6 +117,7 @@ export const blogPosts: BlogPost[] = [
     "title": "Reducing Problems to Impossibilities",
     "date": "02-19-2022",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "Originally written February 19, 2022. Edited May 15, 2025. Certain society-wide problems are impossible. \"People are stupid\", \"People are selfish\", \"P...",
     "readTime": "3 min read",
@@ -107,6 +128,7 @@ export const blogPosts: BlogPost[] = [
     "title": "Playlists",
     "date": "01-22-2022",
     "author": "Ryan Prendergast",
+    "section": "blog",
     "subtitle": null,
     "excerpt": "!A great playlist from Spotify I've made hundreds of lists in my life, maybe thousands. It's my go-to thing to do. Have a problem? Make a list. Like s...",
     "readTime": "7 min read",

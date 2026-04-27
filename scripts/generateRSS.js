@@ -29,12 +29,15 @@ for (const file of files) {
     title: data.title || baseFilename,
     date: data.date || new Date().toISOString().split("T")[0],
     author: data.author || "Ryan Prendergast",
+    section: data.section || "blog",
     subtitle: data.subtitle || null,
     excerpt: data.excerpt || extractExcerpt(markdownContent),
     content: htmlContent,
   };
 
-  posts.push(post);
+  if (post.section !== "photos") {
+    posts.push(post);
+  }
 }
 
 // Sort by date (newest first)
