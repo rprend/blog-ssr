@@ -22,7 +22,7 @@ export const blogPosts: BlogPost[] = [
     "subtitle": null,
     "excerpt": "RAW PHOTOS",
     "readTime": "1 min read",
-    "content": "<div class=\"photo-post\">\n  <img src=\"/photos/raw/img-0676.jpg\" alt=\"RAW photo 1\" loading=\"lazy\">\n  <img src=\"/photos/raw/img-0680.jpg\" alt=\"RAW photo 2\" loading=\"lazy\">\n  <img src=\"/photos/raw/img-0686.jpg\" alt=\"RAW photo 3\" loading=\"lazy\">\n</div>\n"
+    "content": "<div class=\"photo-post\">\n  <img src=\"/photos/raw/img-0676.jpg\" alt=\"RAW photo 1\" loading=\"lazy\">\n  <img src=\"/photos/raw/raw-photo-4.jpeg\" alt=\"RAW photo 2\" loading=\"lazy\">\n  <img src=\"/photos/raw/img-0680.jpg\" alt=\"RAW photo 3\" loading=\"lazy\">\n  <img src=\"/photos/raw/img-0686.jpg\" alt=\"RAW photo 4\" loading=\"lazy\">\n</div>\n"
   },
   {
     "slug": "gilgamesh-and-half-movies",
