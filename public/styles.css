@@ -790,6 +790,23 @@ button:active, .btn:active {
 }
 
 /* Linklog entries on homepage */
+.homepage-intro {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #222;
+}
+
+.homepage-intro p {
+  margin: 0 0 8px 0;
+}
+
+.homepage-intro p:last-child {
+  margin-bottom: 0;
+}
+
 .linklog-entry {
   margin-bottom: 14px;
   padding-bottom: 14px;
