@@ -259,14 +259,6 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Riley Walz on the labs team at OpenAI has a personal site with my favorite kind of niche single-purpose projects. Route shuffle generates random routes for runners and cyclists, and so on.</p>\n"
   },
   {
-    "slug": "decayOfIndependentWeb",
-    "title": "The Decay of the Independent Web",
-    "url": "https://www.tbray.org/ongoing/When/202x/2024/01/15/Google-Search-Decline",
-    "date": "02-24-2025",
-    "image": null,
-    "content": "<p>Tim Bray on Google Search getting worse and what that does to the independent web.</p>\n"
-  },
-  {
     "slug": "sceneData",
     "title": "Scene Data",
     "url": "https://www.scene-data.com/explore",
@@ -288,7 +280,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "http://hallofshame.gp.co.at/shame.htm",
     "date": "02-20-2025",
     "image": null,
-    "content": "<p>A late-90s catalog of bad interfaces. The commentary still holds up.</p>\n"
+    "content": "<p>A late-90s catalog of bad interfaces.</p>\n"
   },
   {
     "slug": "usWebDesignStandards",
@@ -305,13 +297,5 @@ export const linkEntries: LinkEntry[] = [
     "date": "02-12-2025",
     "image": "https://skins.webamp.org/og-image.png",
     "content": "<p>An archive of over 90,000 Winamp skins. Internet folk art.</p>\n"
-  },
-  {
-    "slug": "simpleWebServersInC",
-    "title": "Simple Web Servers in C",
-    "url": "https://brucehoult.nz/blog/simple-web-server-in-c.html",
-    "date": "02-05-2025",
-    "image": null,
-    "content": "<p>Building a web server from scratch in C. The web is just text over sockets.</p>\n"
   }
 ];
