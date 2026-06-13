@@ -11,6 +11,86 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "mouldTreesChairs",
+    "title": "We mould trees to grow into shape of chairs",
+    "url": "https://www.bbc.com/news/articles/cvg0yy3gp71o",
+    "date": "05-18-2026",
+    "image": null,
+    "content": "<p>i have a friend working on something like this</p>\n"
+  },
+  {
+    "slug": "realHampshireCollege",
+    "title": "Real Hampshire College Has Never Been Tried",
+    "url": "https://www.mod171.com/p/real-hampshire-college-has-never",
+    "date": "05-16-2026",
+    "image": null,
+    "content": "<p>I wish i knew about Hampshire college when i was 17</p>\n"
+  },
+  {
+    "slug": "idog",
+    "title": "iDog",
+    "url": "https://en.wikipedia.org/wiki/IDog",
+    "date": "05-10-2026",
+    "image": null,
+    "content": "<p>I used to have this</p>\n"
+  },
+  {
+    "slug": "openaiSupplyCo",
+    "title": "OpenAI Supply Co.",
+    "url": "https://supply.openai.com/",
+    "date": "05-10-2026",
+    "image": null,
+    "content": "<p>OpenAI merch</p>\n"
+  },
+  {
+    "slug": "flick",
+    "title": "Flick",
+    "url": "https://flick.art/projects",
+    "date": "05-07-2026",
+    "image": null,
+    "content": "<p>The best for making artistic images</p>\n"
+  },
+  {
+    "slug": "printingpress",
+    "title": "printingpress.dev",
+    "url": "https://printingpress.dev/",
+    "date": "05-07-2026",
+    "image": null,
+    "content": "<p>In my notes as something to do , they launched</p>\n"
+  },
+  {
+    "slug": "recurseCenterFaq",
+    "title": "Recurse Center FAQ",
+    "url": "https://www.recurse.com/faq",
+    "date": "05-07-2026",
+    "image": null,
+    "content": "<p>Creative coding. Nolan (eieio) type people</p>\n"
+  },
+  {
+    "slug": "corner",
+    "title": "Corner",
+    "url": "https://www.corner.inc/",
+    "date": "05-05-2026",
+    "image": null,
+    "content": "<p>google maps but social</p>\n"
+  },
+  {
+    "slug": "psychosisNyc",
+    "title": "AI Psychosis Summit",
+    "url": "https://psychosis.nyc/",
+    "date": "05-01-2026",
+    "image": null,
+    "content": "<p>AI psychosis summit</p>\n"
+  },
+  {
+    "slug": "sereneIndustriesCleaver",
+    "title": "Serene Industries Cleaver",
+    "url": "https://www.serene.industries/product/cleaver",
+    "date": "05-01-2026",
+    "image": null,
+    "content": "<p>$850 keyboard made from a solid brick of aluminum</p>\n"
+  },
+  {
     "slug": "atlasOfObliqueMaps",
     "title": "Atlas of Oblique Maps",
     "url": "https://www.hiddenhydrology.org/atlas-of-oblique-maps/",
