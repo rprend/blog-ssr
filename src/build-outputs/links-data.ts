@@ -152,7 +152,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://essayarchitecture.com/",
     "date": "03-26-2026",
     "image": null,
-    "content": "<p>Haven&#39;t tried the tool, so I can&#39;t speak to its efficacy, but I love this kind of frameworking or trying to find patterns in writing. I love the diagrams and the shapes that he draws, and anyone who has strong opinions on that.</p>\n"
+    "content": "<p>I love this kind of frameworking around writing. The diagrams are the point.</p>\n"
   },
   {
     "slug": "marginalRevolutionGenerativeBook",
@@ -160,7 +160,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://tylercowen.com/marginal-revolution-generative-book/app/",
     "date": "03-26-2026",
     "image": null,
-    "content": "<p>Tyler Cowen gets the direction. A book on the left, a question answerer on the right that uses his corpus, whether this chapter, the entire book, or all of his podcast transcripts, to answer those questions. He could actually benefit a lot from AlphaBook.</p>\n"
+    "content": "<p>Tyler Cowen gets the direction. Book on the left, corpus-aware question answerer on the right.</p>\n"
   },
   {
     "slug": "projectsDev",
@@ -232,7 +232,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://citytracker.ai/about",
     "date": "03-04-2026",
     "image": null,
-    "content": "<p>A search engine for New York City real estate. New York&#39;s DOB is astonishingly rich with public data sets. So it doesn&#39;t surprise me to see this kind of data viz and analytics take off here.</p>\n"
+    "content": "<p>A search engine for NYC real estate using the city&#39;s unusually rich public data.</p>\n"
   },
   {
     "slug": "aiunderwriting",
@@ -264,7 +264,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.tbray.org/ongoing/When/202x/2024/01/15/Google-Search-Decline",
     "date": "02-24-2025",
     "image": null,
-    "content": "<p>Tim Bray on the slow decline of Google Search and what it means for independent publishers. The web used to be a place where you could stumble across something genuinely surprising - a personal homepage, a weird hobbyist forum, a hand-coded HTML page about trains. Now everything funnels through the same five websites.</p>\n<p>The most interesting thing about the independent web isn&#39;t the nostalgia. It&#39;s that the model <em>worked</em>. People made things for fun, linked to each other, and a whole ecosystem emerged without anyone planning it.</p>\n"
+    "content": "<p>Tim Bray on Google Search getting worse and what that does to the independent web.</p>\n"
   },
   {
     "slug": "sceneData",
@@ -280,7 +280,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://hcsimulator.com/",
     "date": "02-22-2025",
     "image": "https://hcsimulator.com/og-image.png",
-    "content": "<p>Someone built a full Hypercard simulator that runs in the browser. You can create stacks, draw buttons, write HyperTalk scripts - the whole thing. It&#39;s shockingly faithful to the original.</p>\n<p>Hypercard was the original &quot;programming for everyone&quot; tool, years before Scratch or no-code platforms. Bill Atkinson gave it away for free with every Mac. Apple killed it because they couldn&#39;t figure out how to charge for it.</p>\n"
+    "content": "<p>HyperCard in the browser. Original programming-for-everyone energy.</p>\n"
   },
   {
     "slug": "interfaceHallOfShame",
@@ -288,7 +288,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "http://hallofshame.gp.co.at/shame.htm",
     "date": "02-20-2025",
     "image": null,
-    "content": "<p>A relic from the late 90s web: a site cataloguing the worst user interfaces ever shipped. The commentary is sharp and holds up perfectly. My favorite is the entry on Microsoft Bob - &quot;the interface equivalent of a person who speaks slowly and loudly to foreigners.&quot;</p>\n<p>What I love about this site is the implicit argument: bad interfaces aren&#39;t just annoying, they&#39;re <em>disrespectful</em>. They assume the user is stupid rather than admitting the designer was lazy.</p>\n"
+    "content": "<p>A late-90s catalog of bad interfaces. The commentary still holds up.</p>\n"
   },
   {
     "slug": "usWebDesignStandards",
@@ -296,7 +296,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://designsystem.digital.gov/",
     "date": "02-15-2025",
     "image": null,
-    "content": "<p>The U.S. government&#39;s open-source design system. Clean typography, accessible components, thoughtful spacing. It&#39;s surprisingly good - better than most startup design systems I&#39;ve seen.</p>\n<p>There&#39;s something poetic about the federal government shipping a design system that prioritizes clarity and readability over flash. No dark patterns, no growth hacking, no engagement metrics. Just: here&#39;s information, presented clearly.</p>\n"
+    "content": "<p>The U.S. government&#39;s open-source design system. Surprisingly good.</p>\n"
   },
   {
     "slug": "winampSkinMuseum",
@@ -304,7 +304,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://skins.webamp.org/",
     "date": "02-12-2025",
     "image": "https://skins.webamp.org/og-image.png",
-    "content": "<p>An archive of over 90,000 Winamp skins, all viewable in the browser. You can browse by era, style, or just let them wash over you. It&#39;s like visiting a folk art museum.</p>\n<p>Winamp skins were one of the first mass creative outlets on the internet. Thousands of teenagers with pirated copies of Photoshop making pixel art for a media player. No monetization, no audience metrics, no &quot;building a brand.&quot; Just people making things because it was fun.</p>\n"
+    "content": "<p>An archive of over 90,000 Winamp skins. Internet folk art.</p>\n"
   },
   {
     "slug": "simpleWebServersInC",
@@ -312,6 +312,6 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://brucehoult.nz/blog/simple-web-server-in-c.html",
     "date": "02-05-2025",
     "image": null,
-    "content": "<p>Bruce Hoult walks through building a web server from scratch in C. No frameworks, no libraries - just sockets and string manipulation. The whole thing fits in about 200 lines.</p>\n<p>I think everyone who builds for the web should do this exercise at least once. It demystifies the entire stack. An HTTP request is just text over a socket. A response is just text back. Everything else is convention.</p>\n"
+    "content": "<p>Building a web server from scratch in C. The web is just text over sockets.</p>\n"
   }
 ];
