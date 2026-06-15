@@ -12,6 +12,12 @@ import {
   archives,
   memory,
 } from "./build-outputs/templates";
+import {
+  defaultThemeSlug,
+  getThemesByCategory,
+  siteThemes,
+  type SiteTheme,
+} from "./themes";
 
 interface Bindings {
   GUESTBOOK_DB: any; // D1Database
@@ -37,6 +43,47 @@ function parseDate(dateStr: string): Date {
   return new Date(Number(parts[2]), Number(parts[0]) - 1, Number(parts[1]));
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatCategory(category: string): string {
+  if (category === "retro-os") return "Retro OS";
+  return category
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function renderThemeCard(theme: SiteTheme): string {
+  const tags = theme.tags
+    .map((tag) => `<span class="theme-tag">${escapeHtml(tag)}</span>`)
+    .join("");
+
+  return `
+    <article class="theme-card" data-theme-card="${theme.slug}" data-theme-category="${theme.category}">
+      <div class="theme-card-preview" aria-hidden="true">
+        <span>${escapeHtml(theme.name)}</span>
+      </div>
+      <div class="theme-card-body">
+        <div class="theme-card-kicker">${formatCategory(theme.category)}</div>
+        <h2 class="theme-card-title">${escapeHtml(theme.name)}</h2>
+        <p class="theme-card-description">${escapeHtml(theme.description)}</p>
+        <div class="theme-card-tags">${tags}</div>
+        <div class="theme-card-actions">
+          <button type="button" data-theme-apply="${theme.slug}">Apply</button>
+          <a href="?theme=${theme.slug}" data-theme-preview="${theme.slug}">Preview URL</a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
 // Helper function to render page with navigation and SEO data
 function renderPage(
   title: string,
@@ -60,6 +107,7 @@ function renderPage(
     archivesActive: currentPage === "/archives" ? "active" : "",
     guestbookActive: currentPage === "/guestbook" ? "active" : "",
     contactActive: currentPage === "/contact" ? "active" : "",
+    themesActive: currentPage === "/themes" ? "active" : "",
     sidebarExtra: seoData.sidebarExtra || "",
   };
 
@@ -499,6 +547,161 @@ app.get("/archives", async (c) => {
   );
 });
 
+// Theme Registry API
+app.get("/api/themes", (c) => {
+  return c.json({
+    defaultTheme: defaultThemeSlug,
+    count: siteThemes.length,
+    themes: siteThemes,
+  });
+});
+
+// Theme Gallery
+app.get("/themes", (c) => {
+  const themesByCategory = getThemesByCategory();
+  const categories = Object.keys(themesByCategory);
+  const categoryControls = [
+    `<button type="button" class="theme-filter is-active" data-theme-filter="all">All 100</button>`,
+    ...categories.map(
+      (category) =>
+        `<button type="button" class="theme-filter" data-theme-filter="${category}">${formatCategory(category)}</button>`
+    ),
+  ].join("");
+
+  const selectOptions = siteThemes
+    .map((theme) => `<option value="${theme.slug}">${escapeHtml(theme.name)}</option>`)
+    .join("");
+
+  const themeSections = categories
+    .map((category) => {
+      const themes = themesByCategory[category as keyof typeof themesByCategory];
+      return `
+        <section class="theme-category-section">
+          <div class="theme-category-heading">
+            <h2>${formatCategory(category)}</h2>
+            <span>${themes.length} themes</span>
+          </div>
+          <div class="theme-grid">
+            ${themes.map(renderThemeCard).join("")}
+          </div>
+        </section>
+      `;
+    })
+    .join("");
+
+  const content = `
+    <section class="themes-hero">
+      <div>
+        <p class="themes-eyebrow">Theme Museum</p>
+        <h2>100 ways to read the same personal site.</h2>
+        <p>The content stays stable while the visual system changes around it. Pick a skin, randomize the wardrobe, or share a URL with a theme parameter.</p>
+      </div>
+      <div class="themes-console">
+        <label for="theme-select">Current theme</label>
+        <select id="theme-select" data-theme-select>${selectOptions}</select>
+        <div class="theme-picker-controls">
+          <button type="button" data-theme-prev>&lsaquo; Previous</button>
+          <button type="button" data-theme-random>Random</button>
+          <button type="button" data-theme-next>Next &rsaquo;</button>
+        </div>
+        <p>Selected: <strong data-theme-current>Aqua</strong></p>
+      </div>
+    </section>
+    <div class="theme-filters" aria-label="Theme categories">${categoryControls}</div>
+    ${themeSections}
+  `;
+
+  const sidebarExtra = `
+    <div class="sidebar-box">
+      <h3 class="sidebar-header">Theme System</h3>
+      <div class="sidebar-text">
+        ${siteThemes.length} ready themes across ${categories.length} categories.
+        <br><br>
+        URL sharing works with <code>?theme=win98</code>.
+      </div>
+    </div>
+  `;
+
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Theme Museum",
+      "description": "Browse 100 visual themes for Ryan Prendergast's personal site",
+      "url": "https://ryan-prendergast.com/themes",
+      "author": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
+      }
+    }
+    </script>
+  `;
+
+  return c.html(
+    renderPage("Themes - Ryan Prendergast", content, "/themes", {
+      pageSubtitle: "Themes",
+      description: "Browse and apply 100 visual themes for Ryan Prendergast's personal site.",
+      structuredData,
+      sidebarExtra,
+    })
+  );
+});
+
+app.get("/themes/random", (c) => {
+  const index = Math.floor(Math.random() * siteThemes.length);
+  const theme = siteThemes[index] || siteThemes[0];
+  return c.redirect(`/themes?theme=${theme.slug}`, 302);
+});
+
+app.get("/colophon", (c) => {
+  const content = `
+    <article class="colophon-page">
+      <h2 class="blog-post-title">Colophon</h2>
+      <p>This site is built as a small Cloudflare Worker that renders semantic HTML templates and serves static assets from the repository.</p>
+      <p>The visual layer is now a 100-theme system. A single theme registry in source code defines the available skins, the <a href="/themes">theme museum</a> renders from that registry, and the same page structure is reused across the site.</p>
+      <p>Theme selection is stored locally in the browser, can be shared with a URL parameter such as <code>?theme=win98</code>, and can be changed from the sidebar picker or the full theme gallery.</p>
+      <p>The default skin is <strong>Aqua</strong>, preserving the early-2000s Apple-inspired design that was already here before the theme system was added.</p>
+    </article>
+  `;
+
+  const sidebarExtra = `
+    <div class="sidebar-box">
+      <h3 class="sidebar-header">Build Notes</h3>
+      <div class="sidebar-text">
+        Worker-rendered HTML, static CSS, a small JavaScript picker, and 100 theme tokens.
+        <br><br>
+        <a href="/themes">Open the theme museum &rarr;</a>
+      </div>
+    </div>
+  `;
+
+  const structuredData = `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Colophon",
+      "description": "How Ryan Prendergast's personal site is built",
+      "url": "https://ryan-prendergast.com/colophon",
+      "author": {
+        "@type": "Person",
+        "name": "Ryan Prendergast"
+      }
+    }
+    </script>
+  `;
+
+  return c.html(
+    renderPage("Colophon - Ryan Prendergast", content, "/colophon", {
+      pageSubtitle: "Colophon",
+      description: "How Ryan Prendergast's personal site is built, including the 100-theme system.",
+      structuredData,
+      sidebarExtra,
+    })
+  );
+});
+
 // Guestbook API endpoints
 app.get("/api/guestbook", async (c) => {
   try {
@@ -755,7 +958,9 @@ app.get("/sitemap.xml", async (c) => {
     { url: "", changefreq: "weekly", priority: "1.0" },
     { url: "/blog", changefreq: "weekly", priority: "0.9" },
     { url: "/archives", changefreq: "weekly", priority: "0.8" },
+    { url: "/themes", changefreq: "monthly", priority: "0.8" },
     { url: "/contact", changefreq: "monthly", priority: "0.7" },
+    { url: "/colophon", changefreq: "monthly", priority: "0.7" },
     { url: "/guestbook", changefreq: "weekly", priority: "0.6" },
   ];
 

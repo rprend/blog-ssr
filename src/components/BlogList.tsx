@@ -1,5 +1,5 @@
 import { createResource, For, createSignal, Show } from "solid-js";
-import { getBlogPosts, type BlogPost } from "~/lib/blog";
+import { getBlogPosts, type BlogPost } from "../build-outputs/blog";
 
 type SortDirection = "asc" | "desc";
 

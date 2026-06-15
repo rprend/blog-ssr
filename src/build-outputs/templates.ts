@@ -96,7 +96,7 @@ export const home = (data: Record<string, string> = {}): string => {
 
 export const layout = (data: Record<string, string> = {}): string => {
   let html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="aqua">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,6 +104,20 @@ export const layout = (data: Record<string, string> = {}): string => {
   <meta name="description" content="{{description}}">
   <meta name="author" content="Ryan Prendergast">
   <link rel="icon" href="/favicon.ico">
+
+  <script>
+    (() => {
+      const fallback = "aqua";
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const requested = params.get("theme");
+        const saved = window.localStorage.getItem("siteTheme");
+        document.documentElement.dataset.theme = requested || saved || fallback;
+      } catch {
+        document.documentElement.dataset.theme = fallback;
+      }
+    })();
+  </script>
 
   <!-- Stylesheets -->
   <link href="/styles.css" rel="stylesheet">
@@ -136,11 +150,12 @@ export const layout = (data: Record<string, string> = {}): string => {
   <!-- Structured data will be injected here -->
   {{structuredData}}
 </head>
-<body class="{{bodyClass}}">
+<body class="site-shell {{bodyClass}}">
   <div class="aqua-bar">
     <a href="/" class="aqua-pill">Ryan's Blog</a>
     <a href="/blog" class="aqua-pill">Blog</a>
     <a href="/archives" class="aqua-pill">Archives</a>
+    <a href="/themes" class="aqua-pill">Themes</a>
     <a href="/rss.xml" class="aqua-pill">RSS Feed</a>
   </div>
   <div class="main-container">
@@ -159,11 +174,14 @@ export const layout = (data: Record<string, string> = {}): string => {
     <footer class="site-footer">
       <a href="/">Ryan Prendergast Worldwide</a>
       <a href="/contact">Contact</a>
+      <a href="/themes">Themes</a>
+      <a href="/colophon">Colophon</a>
       <a href="/rss.xml">RSS</a>
       <br><br>
       Copyright &copy; 2025 Ryan Prendergast. All rights reserved.
     </footer>
   </div>
+  <script src="/theme-system.js" defer></script>
 </body>
 </html>
 `;
@@ -721,7 +739,22 @@ export const nav = (data: Record<string, string> = {}): string => {
   <li><a href="/archives" class="{{archivesActive}}">Archives</a></li>
   <li><a href="/guestbook" class="{{guestbookActive}}">Guestbook</a></li>
   <li><a href="/contact" class="{{contactActive}}">Contact</a></li>
+  <li><a href="/themes" class="{{themesActive}}">Themes</a></li>
 </ul>
+<div class="sidebar-box theme-picker" aria-label="Theme picker">
+  <h3 class="sidebar-header">Theme</h3>
+  <div class="sidebar-text theme-picker-summary">
+    <span data-theme-current>Aqua</span>
+  </div>
+  <div class="theme-picker-controls">
+    <button type="button" class="theme-picker-button" data-theme-prev aria-label="Previous theme">&lsaquo;</button>
+    <button type="button" class="theme-picker-button" data-theme-random>Random</button>
+    <button type="button" class="theme-picker-button" data-theme-next aria-label="Next theme">&rsaquo;</button>
+  </div>
+  <div class="sidebar-text">
+    <a href="/themes">Browse all 100 themes</a>
+  </div>
+</div>
 {{sidebarExtra}}
 `;
   

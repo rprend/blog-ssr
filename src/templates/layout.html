@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="aqua">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,20 @@
   <meta name="description" content="{{description}}">
   <meta name="author" content="Ryan Prendergast">
   <link rel="icon" href="/favicon.ico">
+
+  <script>
+    (() => {
+      const fallback = "aqua";
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const requested = params.get("theme");
+        const saved = window.localStorage.getItem("siteTheme");
+        document.documentElement.dataset.theme = requested || saved || fallback;
+      } catch {
+        document.documentElement.dataset.theme = fallback;
+      }
+    })();
+  </script>
 
   <!-- Stylesheets -->
   <link href="/styles.css" rel="stylesheet">
@@ -39,11 +53,12 @@
   <!-- Structured data will be injected here -->
   {{structuredData}}
 </head>
-<body class="{{bodyClass}}">
+<body class="site-shell {{bodyClass}}">
   <div class="aqua-bar">
     <a href="/" class="aqua-pill">Ryan's Blog</a>
     <a href="/blog" class="aqua-pill">Blog</a>
     <a href="/archives" class="aqua-pill">Archives</a>
+    <a href="/themes" class="aqua-pill">Themes</a>
     <a href="/rss.xml" class="aqua-pill">RSS Feed</a>
   </div>
   <div class="main-container">
@@ -62,10 +77,13 @@
     <footer class="site-footer">
       <a href="/">Ryan Prendergast Worldwide</a>
       <a href="/contact">Contact</a>
+      <a href="/themes">Themes</a>
+      <a href="/colophon">Colophon</a>
       <a href="/rss.xml">RSS</a>
       <br><br>
       Copyright &copy; 2025 Ryan Prendergast. All rights reserved.
     </footer>
   </div>
+  <script src="/theme-system.js" defer></script>
 </body>
 </html>

@@ -5,5 +5,20 @@
   <li><a href="/archives" class="{{archivesActive}}">Archives</a></li>
   <li><a href="/guestbook" class="{{guestbookActive}}">Guestbook</a></li>
   <li><a href="/contact" class="{{contactActive}}">Contact</a></li>
+  <li><a href="/themes" class="{{themesActive}}">Themes</a></li>
 </ul>
+<div class="sidebar-box theme-picker" aria-label="Theme picker">
+  <h3 class="sidebar-header">Theme</h3>
+  <div class="sidebar-text theme-picker-summary">
+    <span data-theme-current>Aqua</span>
+  </div>
+  <div class="theme-picker-controls">
+    <button type="button" class="theme-picker-button" data-theme-prev aria-label="Previous theme">&lsaquo;</button>
+    <button type="button" class="theme-picker-button" data-theme-random>Random</button>
+    <button type="button" class="theme-picker-button" data-theme-next aria-label="Next theme">&rsaquo;</button>
+  </div>
+  <div class="sidebar-text">
+    <a href="/themes">Browse all 100 themes</a>
+  </div>
+</div>
 {{sidebarExtra}}

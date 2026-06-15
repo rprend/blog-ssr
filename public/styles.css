@@ -903,3 +903,576 @@ button:active, .btn:active {
     font-size: 36px;
   }
 }
+
+/* 100-theme system */
+:root {
+  --theme-bg: #ffffff;
+  --theme-surface: #fffae8;
+  --theme-panel: #f7f7f7;
+  --theme-text: #000000;
+  --theme-muted: #666666;
+  --theme-link: var(--apple-blue);
+  --theme-visited: var(--apple-visited);
+  --theme-border: var(--border-color);
+  --theme-accent: #5a66a3;
+  --theme-accent-2: #7e87c0;
+  --theme-shadow: rgba(0, 0, 0, 0.16);
+  --theme-radius: 0;
+  --theme-body-font: var(--body-font);
+  --theme-heading-font: var(--header-font);
+  --theme-pattern: none;
+  --theme-bar: linear-gradient(to bottom, #7e87c0 0%, #5a66a3 50%, #465392 51%, #6a74b0 100%);
+}
+
+html {
+  background: var(--theme-bg);
+}
+
+body.site-shell:not(.raw-page) {
+  background: var(--theme-bg);
+  background-image: var(--theme-pattern);
+  color: var(--theme-text);
+  font-family: var(--theme-body-font);
+}
+
+.site-shell:not(.raw-page) .aqua-bar {
+  background: var(--theme-bar);
+  border-color: var(--theme-border);
+}
+
+.site-shell:not(.raw-page) h1.site-title,
+.site-shell:not(.raw-page) .site-subtitle,
+.site-shell:not(.raw-page) .nav-list li,
+.site-shell:not(.raw-page) .sidebar-header,
+.site-shell:not(.raw-page) .archive-month-header,
+.site-shell:not(.raw-page) .entry-title,
+.site-shell:not(.raw-page) .blog-year,
+.site-shell:not(.raw-page) .blog-post-item .blog-title,
+.site-shell:not(.raw-page) .blog-post-title,
+.site-shell:not(.raw-page) .blog-post-content h2,
+.site-shell:not(.raw-page) .blog-post-content h3,
+.site-shell:not(.raw-page) .guestbook-header h2,
+.site-shell:not(.raw-page) .guestbook-name,
+.site-shell:not(.raw-page) .linklog-title,
+.site-shell:not(.raw-page) .theme-card-title,
+.site-shell:not(.raw-page) .themes-hero h2 {
+  font-family: var(--theme-heading-font);
+}
+
+.site-shell:not(.raw-page) .main-container,
+.site-shell:not(.raw-page) .modal-content {
+  color: var(--theme-text);
+}
+
+.site-shell:not(.raw-page) .content-wrapper,
+.site-shell:not(.raw-page) .main-content-area,
+.site-shell:not(.raw-page) .site-footer,
+.site-shell:not(.raw-page) .blog-post-footer,
+.site-shell:not(.raw-page) .homepage-intro,
+.site-shell:not(.raw-page) .linklog-entry,
+.site-shell:not(.raw-page) .guestbook-entry,
+.site-shell:not(.raw-page) .blog-year,
+.site-shell:not(.raw-page) .archive-month-header,
+.site-shell:not(.raw-page) .photo-post img,
+.site-shell:not(.raw-page) .linklog-image img,
+.site-shell:not(.raw-page) .blog-post-content pre,
+.site-shell:not(.raw-page) .blog-post-content blockquote {
+  border-color: var(--theme-border);
+}
+
+.site-shell:not(.raw-page) a,
+.site-shell:not(.raw-page) .nav-list a,
+.site-shell:not(.raw-page) .entry-title a,
+.site-shell:not(.raw-page) .blog-rss-link a,
+.site-shell:not(.raw-page) .blog-post-nav a,
+.site-shell:not(.raw-page) .blog-post-footer a,
+.site-shell:not(.raw-page) .linklog-title a,
+.site-shell:not(.raw-page) .blog-post-item .blog-title,
+.site-shell:not(.raw-page) .sidebar-text a,
+.site-shell:not(.raw-page) .site-footer a {
+  color: var(--theme-link);
+}
+
+.site-shell:not(.raw-page) a:visited,
+.site-shell:not(.raw-page) .entry-title a:visited,
+.site-shell:not(.raw-page) .linklog-title a:visited,
+.site-shell:not(.raw-page) .blog-post-item .blog-title:visited {
+  color: var(--theme-visited);
+}
+
+.site-shell:not(.raw-page) .site-subtitle,
+.site-shell:not(.raw-page) .sidebar-text,
+.site-shell:not(.raw-page) .entry-meta,
+.site-shell:not(.raw-page) .month-count,
+.site-shell:not(.raw-page) .blog-description,
+.site-shell:not(.raw-page) .blog-post-item .blog-date,
+.site-shell:not(.raw-page) .footer-separator,
+.site-shell:not(.raw-page) p.subtitle,
+.site-shell:not(.raw-page) .guestbook-date,
+.site-shell:not(.raw-page) .guestbook-name,
+.site-shell:not(.raw-page) .site-footer,
+.site-shell:not(.raw-page) .text-muted,
+.site-shell:not(.raw-page) .linklog-domain,
+.site-shell:not(.raw-page) .linklog-meta {
+  color: var(--theme-muted);
+}
+
+.site-shell:not(.raw-page) .sidebar-box,
+.site-shell:not(.raw-page) .modal-content,
+.site-shell:not(.raw-page) .blog-post-content pre,
+.site-shell:not(.raw-page) .blog-post-content code,
+.site-shell:not(.raw-page) .theme-card,
+.site-shell:not(.raw-page) .themes-console {
+  background: var(--theme-surface);
+  border-color: var(--theme-border);
+  border-radius: var(--theme-radius);
+}
+
+.site-shell:not(.raw-page) .homepage-intro,
+.site-shell:not(.raw-page) .linklog-commentary,
+.site-shell:not(.raw-page) .guestbook-message {
+  color: var(--theme-text);
+}
+
+.site-shell:not(.raw-page) button,
+.site-shell:not(.raw-page) .btn,
+.site-shell:not(.raw-page) select {
+  font-family: var(--theme-body-font);
+  border-color: var(--theme-border);
+  border-radius: var(--theme-radius);
+}
+
+.site-shell:not(.raw-page) button:focus-visible,
+.site-shell:not(.raw-page) a:focus-visible,
+.site-shell:not(.raw-page) select:focus-visible,
+.site-shell:not(.raw-page) input:focus-visible,
+.site-shell:not(.raw-page) textarea:focus-visible {
+  outline: 3px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+
+.theme-picker-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.theme-picker-button,
+.theme-picker-controls button {
+  min-height: 28px;
+}
+
+.themes-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 22px;
+}
+
+.themes-eyebrow,
+.theme-card-kicker {
+  margin: 0 0 5px;
+  color: var(--theme-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.themes-hero h2 {
+  margin: 0 0 8px;
+  font-size: 34px;
+  font-weight: normal;
+  line-height: 1.05;
+}
+
+.themes-hero p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.themes-console {
+  border: 1px solid var(--theme-border);
+  padding: 14px;
+  box-shadow: 0 8px 24px var(--theme-shadow);
+}
+
+.themes-console label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--theme-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.themes-console select {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 8px;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+}
+
+.theme-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 20px;
+}
+
+.theme-filter.is-active,
+.theme-card.is-active .theme-card-preview {
+  background: var(--theme-accent);
+  color: var(--theme-bg);
+}
+
+.theme-category-section {
+  margin-bottom: 28px;
+}
+
+.theme-category-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.theme-category-heading h2 {
+  margin: 0;
+  font-family: var(--theme-heading-font);
+  font-size: 24px;
+  font-weight: normal;
+}
+
+.theme-category-heading span {
+  color: var(--theme-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.theme-card {
+  border: 1px solid var(--theme-border);
+  overflow: hidden;
+  box-shadow: 0 5px 16px var(--theme-shadow);
+}
+
+.theme-card-preview {
+  display: grid;
+  min-height: 76px;
+  place-items: center;
+  padding: 10px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--theme-accent) 80%, white), var(--theme-accent-2)),
+    var(--theme-accent);
+  color: #fff;
+  font-family: var(--theme-heading-font);
+  font-size: 18px;
+  text-align: center;
+}
+
+.theme-card-body {
+  padding: 12px;
+}
+
+.theme-card-title {
+  margin: 0 0 5px;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 1.1;
+}
+
+.theme-card-description {
+  margin: 0 0 10px;
+  min-height: 48px;
+  color: var(--theme-text);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.theme-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 20px;
+  margin-bottom: 10px;
+}
+
+.theme-tag {
+  border: 1px solid var(--theme-border);
+  padding: 2px 5px;
+  background: var(--theme-bg);
+  color: var(--theme-muted);
+  font-size: 10px;
+}
+
+.theme-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Category treatments */
+:root[data-theme="classic-mac"],
+:root[data-theme="win95"],
+:root[data-theme="win98"],
+:root[data-theme="palmpilot"] {
+  --theme-body-font: Geneva, "Lucida Grande", Arial, sans-serif;
+  --theme-heading-font: Chicago, Geneva, "Times New Roman", serif;
+  --theme-radius: 0;
+}
+
+:root[data-theme="dos"],
+:root[data-theme="commodore-64"],
+:root[data-theme="green-terminal"],
+:root[data-theme="amber-terminal"],
+:root[data-theme="solarized-light"],
+:root[data-theme="solarized-dark"],
+:root[data-theme="monokai"],
+:root[data-theme="dracula"],
+:root[data-theme="gruvbox"],
+:root[data-theme="nord"],
+:root[data-theme="catppuccin"],
+:root[data-theme="vim-help"],
+:root[data-theme="financial-terminal"] {
+  --theme-body-font: "Courier New", Courier, monospace;
+  --theme-heading-font: "Courier New", Courier, monospace;
+  --theme-radius: 0;
+}
+
+:root[data-theme="tufte"],
+:root[data-theme="latex"],
+:root[data-theme="newspaper"],
+:root[data-theme="paperback"],
+:root[data-theme="academic-journal"],
+:root[data-theme="legal-brief"],
+:root[data-theme="encyclopedia"],
+:root[data-theme="print"],
+:root[data-theme="reader-mode"] {
+  --theme-body-font: Georgia, "Times New Roman", serif;
+  --theme-heading-font: Georgia, "Times New Roman", serif;
+  --theme-radius: 0;
+}
+
+:root[data-theme="geocities"],
+:root[data-theme="myspace"],
+:root[data-theme="webring"],
+:root[data-theme="sticker-sheet"],
+:root[data-theme="badge-wall"],
+:root[data-theme="tiled-background"],
+:root[data-theme="pixel-art"],
+:root[data-theme="vaporwave"],
+:root[data-theme="cyberpunk"],
+:root[data-theme="scrapbook"],
+:root[data-theme="collage"],
+:root[data-theme="arcade"],
+:root[data-theme="toy-ui"],
+:root[data-theme="birthday"],
+:root[data-theme="random-chaos"] {
+  --theme-radius: 6px;
+}
+
+:root[data-theme="plain-html"],
+:root[data-theme="no-css"],
+:root[data-theme="low-bandwidth"],
+:root[data-theme="brutalist"],
+:root[data-theme="monochrome"],
+:root[data-theme="high-contrast"] {
+  --theme-radius: 0;
+  --theme-shadow: transparent;
+}
+
+/* Individual theme tokens */
+:root[data-theme="aqua"] { --theme-bg: #ffffff; --theme-surface: #fffae8; --theme-text: #000000; --theme-muted: #666666; --theme-link: #0000ee; --theme-visited: #551a8b; --theme-border: #d0d0d0; --theme-accent: #5a66a3; --theme-accent-2: #7e87c0; --theme-bar: linear-gradient(to bottom, #7e87c0 0%, #5a66a3 50%, #465392 51%, #6a74b0 100%); }
+:root[data-theme="classic-mac"] { --theme-bg: #fff; --theme-surface: #f2f2f2; --theme-text: #000; --theme-muted: #555; --theme-link: #0000cc; --theme-visited: #551a8b; --theme-border: #000; --theme-accent: #000; --theme-accent-2: #777; --theme-bar: repeating-linear-gradient(0deg, #fff 0 2px, #000 2px 3px); }
+:root[data-theme="win95"] { --theme-bg: #008080; --theme-surface: #c0c0c0; --theme-panel: #dcdcdc; --theme-text: #000; --theme-muted: #404040; --theme-link: #000080; --theme-visited: #800080; --theme-border: #808080; --theme-accent: #000080; --theme-accent-2: #1084d0; --theme-bar: linear-gradient(90deg, #000080, #1084d0); }
+:root[data-theme="win98"] { --theme-bg: #3a9b8f; --theme-surface: #c3c7cb; --theme-text: #000; --theme-muted: #4b4b4b; --theme-link: #0000ee; --theme-visited: #551a8b; --theme-border: #808080; --theme-accent: #000080; --theme-accent-2: #0a64ad; --theme-bar: linear-gradient(90deg, #000080, #1084d0); }
+:root[data-theme="windows-xp"] { --theme-bg: #eaf3ff; --theme-surface: #f5f8ff; --theme-text: #172033; --theme-muted: #526171; --theme-link: #0645d9; --theme-visited: #6f42c1; --theme-border: #7ba7e1; --theme-accent: #2468d8; --theme-accent-2: #4cae4f; --theme-radius: 8px; --theme-bar: linear-gradient(#2f7df6, #0f4fb8 52%, #2f7df6); }
+:root[data-theme="windows-7"] { --theme-bg: #dcecf7; --theme-surface: rgba(255,255,255,.72); --theme-text: #121b24; --theme-muted: #52606c; --theme-link: #005a9e; --theme-visited: #5b3b8c; --theme-border: #8ab6d6; --theme-accent: #2878b8; --theme-accent-2: #9fd0f4; --theme-radius: 7px; --theme-bar: linear-gradient(#8fc8ef, #2d79b8 55%, #74b4df); }
+:root[data-theme="dos"] { --theme-bg: #050505; --theme-surface: #000; --theme-text: #cfcfcf; --theme-muted: #8d8d8d; --theme-link: #00ffff; --theme-visited: #ff55ff; --theme-border: #8d8d8d; --theme-accent: #00ff00; --theme-accent-2: #00ffff; --theme-bar: #000; }
+:root[data-theme="commodore-64"] { --theme-bg: #40318d; --theme-surface: #6c5eb5; --theme-text: #d7d0ff; --theme-muted: #b5a9ff; --theme-link: #9fffff; --theme-visited: #ffb5ff; --theme-border: #a59be8; --theme-accent: #7fffd4; --theme-accent-2: #ffffff; --theme-bar: #21105f; }
+:root[data-theme="palmpilot"] { --theme-bg: #b8c1a9; --theme-surface: #d9decf; --theme-text: #1b2118; --theme-muted: #4f5a46; --theme-link: #183a9a; --theme-visited: #553580; --theme-border: #69745f; --theme-accent: #2f3c2c; --theme-accent-2: #87947a; --theme-bar: linear-gradient(#d9decf, #9ba890); }
+:root[data-theme="ipod"] { --theme-bg: #f8f8f5; --theme-surface: #ffffff; --theme-text: #111; --theme-muted: #777; --theme-link: #2b59c3; --theme-visited: #6848a4; --theme-border: #d9d9d2; --theme-accent: #d6d6d6; --theme-accent-2: #9a9a9a; --theme-radius: 14px; --theme-bar: linear-gradient(#fff, #d7d7d7); }
+:root[data-theme="tufte"] { --theme-bg: #fffff8; --theme-surface: #f6f1df; --theme-text: #111; --theme-muted: #675f51; --theme-link: #0046ad; --theme-visited: #684186; --theme-border: #d8cfb6; --theme-accent: #8b1a1a; --theme-accent-2: #c9b27d; --theme-bar: #efe6cc; }
+:root[data-theme="latex"] { --theme-bg: #fbfaf6; --theme-surface: #fffef9; --theme-text: #111; --theme-muted: #555; --theme-link: #0645ad; --theme-visited: #6b3fa0; --theme-border: #c9c2b5; --theme-accent: #222; --theme-accent-2: #777; --theme-bar: #e8e2d6; }
+:root[data-theme="newspaper"] { --theme-bg: #f2eee3; --theme-surface: #faf7ec; --theme-text: #151515; --theme-muted: #5b5549; --theme-link: #8b0000; --theme-visited: #5d2a2a; --theme-border: #1d1d1d; --theme-accent: #111; --theme-accent-2: #a91616; --theme-bar: #111; }
+:root[data-theme="magazine"] { --theme-bg: #fff; --theme-surface: #f1eee9; --theme-text: #121212; --theme-muted: #555; --theme-link: #e23d28; --theme-visited: #7b2e77; --theme-border: #111; --theme-accent: #e23d28; --theme-accent-2: #111; --theme-bar: linear-gradient(90deg, #111, #e23d28); }
+:root[data-theme="paperback"] { --theme-bg: #efe1c2; --theme-surface: #f8edcf; --theme-text: #2e2115; --theme-muted: #7a644c; --theme-link: #6a2e13; --theme-visited: #70405c; --theme-border: #c8a87c; --theme-accent: #7b3f18; --theme-accent-2: #d2a65f; --theme-bar: #7b3f18; }
+:root[data-theme="academic-journal"] { --theme-bg: #f8f8f8; --theme-surface: #fff; --theme-text: #111; --theme-muted: #555; --theme-link: #003f7f; --theme-visited: #573b76; --theme-border: #bdbdbd; --theme-accent: #003f7f; --theme-accent-2: #999; --theme-bar: #2b2b2b; }
+:root[data-theme="field-notes"] { --theme-bg: #f6e7aa; --theme-surface: #fff6c9; --theme-text: #2a2416; --theme-muted: #74643a; --theme-link: #2f5f9f; --theme-visited: #704c86; --theme-border: #d1b85f; --theme-accent: #d66b1f; --theme-accent-2: #2f5f9f; --theme-pattern: linear-gradient(#0000 23px, rgba(47,95,159,.18) 24px); --theme-bar: #d66b1f; }
+:root[data-theme="legal-brief"] { --theme-bg: #fff; --theme-surface: #f9f9f4; --theme-text: #000; --theme-muted: #555; --theme-link: #000080; --theme-visited: #551a8b; --theme-border: #222; --theme-accent: #9b1c1c; --theme-accent-2: #222; --theme-pattern: linear-gradient(90deg, transparent 76px, rgba(170,0,0,.25) 77px, transparent 78px); --theme-bar: #222; }
+:root[data-theme="encyclopedia"] { --theme-bg: #ece7d8; --theme-surface: #fbf9ef; --theme-text: #1f1d18; --theme-muted: #6a6252; --theme-link: #235789; --theme-visited: #654078; --theme-border: #b7a98e; --theme-accent: #235789; --theme-accent-2: #8c2f39; --theme-bar: #235789; }
+:root[data-theme="markdown-reader"] { --theme-bg: #fff; --theme-surface: #f6f8fa; --theme-text: #24292f; --theme-muted: #57606a; --theme-link: #0969da; --theme-visited: #8250df; --theme-border: #d0d7de; --theme-accent: #0969da; --theme-accent-2: #6e7781; --theme-bar: #24292f; }
+:root[data-theme="html-1"] { --theme-bg: #fff; --theme-surface: #fff; --theme-text: #000; --theme-muted: #555; --theme-link: #00e; --theme-visited: #551a8b; --theme-border: #aaa; --theme-accent: #00e; --theme-accent-2: #aaa; --theme-bar: #fff; }
+:root[data-theme="geocities"] { --theme-bg: #001a70; --theme-surface: #ffff99; --theme-text: #000; --theme-muted: #5b0085; --theme-link: #ff00ff; --theme-visited: #00ffff; --theme-border: #ff00ff; --theme-accent: #ff00ff; --theme-accent-2: #00ffff; --theme-pattern: repeating-linear-gradient(45deg, rgba(255,255,0,.16) 0 10px, rgba(0,255,255,.12) 10px 20px); --theme-bar: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00); }
+:root[data-theme="blogger"] { --theme-bg: #f7f1e8; --theme-surface: #fff; --theme-text: #2b2118; --theme-muted: #8a6b4f; --theme-link: #b54b19; --theme-visited: #7f4c76; --theme-border: #dfc7a6; --theme-accent: #f57921; --theme-accent-2: #8ac2d9; --theme-bar: #f57921; }
+:root[data-theme="myspace"] { --theme-bg: #0f1b52; --theme-surface: #eef3ff; --theme-text: #111; --theme-muted: #455a86; --theme-link: #003399; --theme-visited: #663399; --theme-border: #ff8a00; --theme-accent: #ff8a00; --theme-accent-2: #003399; --theme-bar: linear-gradient(90deg, #003399, #ff8a00); }
+:root[data-theme="tumblr"] { --theme-bg: #36465d; --theme-surface: #fff; --theme-text: #1f2933; --theme-muted: #6d7a88; --theme-link: #34526f; --theme-visited: #6d4a83; --theme-border: #d5dce3; --theme-accent: #34526f; --theme-accent-2: #9fb0c1; --theme-bar: #36465d; }
+:root[data-theme="craigslist"] { --theme-bg: #fff; --theme-surface: #f7f7ff; --theme-text: #000; --theme-muted: #666; --theme-link: #0000ee; --theme-visited: #551a8b; --theme-border: #ccc; --theme-accent: #800080; --theme-accent-2: #eee; --theme-bar: #eee; }
+:root[data-theme="hacker-news"] { --theme-bg: #f6f6ef; --theme-surface: #f6f6ef; --theme-text: #000; --theme-muted: #828282; --theme-link: #000; --theme-visited: #828282; --theme-border: #ff6600; --theme-accent: #ff6600; --theme-accent-2: #828282; --theme-bar: #ff6600; }
+:root[data-theme="wikipedia"] { --theme-bg: #fff; --theme-surface: #f8f9fa; --theme-text: #202122; --theme-muted: #54595d; --theme-link: #36c; --theme-visited: #6b4ba1; --theme-border: #a2a9b1; --theme-accent: #36c; --theme-accent-2: #eaecf0; --theme-bar: #f8f9fa; }
+:root[data-theme="rss-reader"] { --theme-bg: #eef2f5; --theme-surface: #fff; --theme-text: #1d2a35; --theme-muted: #64717c; --theme-link: #d65f00; --theme-visited: #8d4c79; --theme-border: #c9d4dc; --theme-accent: #ff7a00; --theme-accent-2: #4d7ea8; --theme-bar: #ff7a00; }
+:root[data-theme="webring"] { --theme-bg: #101020; --theme-surface: #f7f1d4; --theme-text: #191919; --theme-muted: #604a78; --theme-link: #cc0066; --theme-visited: #660099; --theme-border: #cc0066; --theme-accent: #cc0066; --theme-accent-2: #ffcc00; --theme-pattern: radial-gradient(circle at 20% 20%, rgba(255,204,0,.18), transparent 22%), radial-gradient(circle at 80% 60%, rgba(204,0,102,.18), transparent 24%); --theme-bar: linear-gradient(90deg, #660099, #cc0066, #ffcc00); }
+:root[data-theme="green-terminal"] { --theme-bg: #001400; --theme-surface: #001f00; --theme-text: #9cff9c; --theme-muted: #5ec45e; --theme-link: #00ffff; --theme-visited: #ff7bff; --theme-border: #2cff2c; --theme-accent: #39ff14; --theme-accent-2: #00ffff; --theme-bar: #001400; }
+:root[data-theme="amber-terminal"] { --theme-bg: #140d00; --theme-surface: #211600; --theme-text: #ffbf4d; --theme-muted: #cc8e2d; --theme-link: #ffd27d; --theme-visited: #d98cff; --theme-border: #ff9d00; --theme-accent: #ffb000; --theme-accent-2: #ffdf99; --theme-bar: #140d00; }
+:root[data-theme="solarized-light"] { --theme-bg: #fdf6e3; --theme-surface: #eee8d5; --theme-text: #657b83; --theme-muted: #93a1a1; --theme-link: #268bd2; --theme-visited: #6c71c4; --theme-border: #d8cfb2; --theme-accent: #b58900; --theme-accent-2: #2aa198; --theme-bar: #eee8d5; }
+:root[data-theme="solarized-dark"] { --theme-bg: #002b36; --theme-surface: #073642; --theme-text: #839496; --theme-muted: #586e75; --theme-link: #268bd2; --theme-visited: #6c71c4; --theme-border: #586e75; --theme-accent: #b58900; --theme-accent-2: #2aa198; --theme-bar: #073642; }
+:root[data-theme="monokai"] { --theme-bg: #272822; --theme-surface: #3e3d32; --theme-text: #f8f8f2; --theme-muted: #a6a69b; --theme-link: #66d9ef; --theme-visited: #ae81ff; --theme-border: #75715e; --theme-accent: #a6e22e; --theme-accent-2: #f92672; --theme-bar: #1e1f1c; }
+:root[data-theme="dracula"] { --theme-bg: #282a36; --theme-surface: #44475a; --theme-text: #f8f8f2; --theme-muted: #bd93f9; --theme-link: #8be9fd; --theme-visited: #ff79c6; --theme-border: #6272a4; --theme-accent: #bd93f9; --theme-accent-2: #50fa7b; --theme-bar: #191a21; }
+:root[data-theme="gruvbox"] { --theme-bg: #282828; --theme-surface: #3c3836; --theme-text: #ebdbb2; --theme-muted: #a89984; --theme-link: #83a598; --theme-visited: #d3869b; --theme-border: #665c54; --theme-accent: #fabd2f; --theme-accent-2: #b8bb26; --theme-bar: #1d2021; }
+:root[data-theme="nord"] { --theme-bg: #2e3440; --theme-surface: #3b4252; --theme-text: #eceff4; --theme-muted: #d8dee9; --theme-link: #88c0d0; --theme-visited: #b48ead; --theme-border: #4c566a; --theme-accent: #81a1c1; --theme-accent-2: #a3be8c; --theme-bar: #242933; }
+:root[data-theme="catppuccin"] { --theme-bg: #1e1e2e; --theme-surface: #313244; --theme-text: #cdd6f4; --theme-muted: #a6adc8; --theme-link: #89b4fa; --theme-visited: #cba6f7; --theme-border: #585b70; --theme-accent: #f5c2e7; --theme-accent-2: #a6e3a1; --theme-bar: #181825; }
+:root[data-theme="vim-help"] { --theme-bg: #ffffd7; --theme-surface: #ffffef; --theme-text: #000; --theme-muted: #5f5f5f; --theme-link: #0000af; --theme-visited: #870087; --theme-border: #87875f; --theme-accent: #008700; --theme-accent-2: #af0000; --theme-bar: #005f00; }
+:root[data-theme="personal-blog"] { --theme-bg: #fff; --theme-surface: #f8f5ef; --theme-text: #171717; --theme-muted: #6b6258; --theme-link: #1259a7; --theme-visited: #6d4584; --theme-border: #ddd2c4; --theme-accent: #1259a7; --theme-accent-2: #c47f35; --theme-bar: #1259a7; }
+:root[data-theme="digital-garden"] { --theme-bg: #edf7ee; --theme-surface: #fbfff8; --theme-text: #1c2c1d; --theme-muted: #607561; --theme-link: #2f7d3c; --theme-visited: #6b5e9a; --theme-border: #b8d2b8; --theme-accent: #4d9a57; --theme-accent-2: #b7d66b; --theme-pattern: radial-gradient(circle at 10% 10%, rgba(77,154,87,.12), transparent 22%); --theme-bar: #2f7d3c; }
+:root[data-theme="public-wiki"] { --theme-bg: #f7f7f7; --theme-surface: #fff; --theme-text: #202020; --theme-muted: #666; --theme-link: #0645ad; --theme-visited: #6b3fa0; --theme-border: #bdbdbd; --theme-accent: #0645ad; --theme-accent-2: #ddd; --theme-bar: #f0f0f0; }
+:root[data-theme="cv"] { --theme-bg: #f4f6f8; --theme-surface: #fff; --theme-text: #17202a; --theme-muted: #5b6670; --theme-link: #1f5f8b; --theme-visited: #5c487c; --theme-border: #cfd7df; --theme-accent: #1f5f8b; --theme-accent-2: #8fa9bd; --theme-bar: #17202a; }
+:root[data-theme="portfolio"] { --theme-bg: #111; --theme-surface: #f7f2e8; --theme-text: #161616; --theme-muted: #6a6258; --theme-link: #d13d2f; --theme-visited: #784d8c; --theme-border: #d13d2f; --theme-accent: #d13d2f; --theme-accent-2: #f5c542; --theme-bar: linear-gradient(90deg, #111, #d13d2f); }
+:root[data-theme="now-page"] { --theme-bg: #eef7ff; --theme-surface: #fff; --theme-text: #162330; --theme-muted: #627386; --theme-link: #0d6efd; --theme-visited: #7550b3; --theme-border: #b8d7f3; --theme-accent: #0d6efd; --theme-accent-2: #6cc3ff; --theme-bar: #0d6efd; }
+:root[data-theme="uses-page"] { --theme-bg: #f3f0ea; --theme-surface: #fff; --theme-text: #25201a; --theme-muted: #76695b; --theme-link: #5d4b34; --theme-visited: #6c5571; --theme-border: #c8bbaa; --theme-accent: #5d4b34; --theme-accent-2: #9d8566; --theme-bar: #5d4b34; }
+:root[data-theme="colophon"] { --theme-bg: #faf9f5; --theme-surface: #fffef8; --theme-text: #1b1b18; --theme-muted: #646159; --theme-link: #315f72; --theme-visited: #775c83; --theme-border: #d4cfc1; --theme-accent: #315f72; --theme-accent-2: #b88944; --theme-bar: #315f72; }
+:root[data-theme="guestbook"] { --theme-bg: #fff7fb; --theme-surface: #fff; --theme-text: #2f1f2d; --theme-muted: #8a617f; --theme-link: #b0006d; --theme-visited: #6941a5; --theme-border: #e6b9d7; --theme-accent: #b0006d; --theme-accent-2: #f7c8e4; --theme-bar: #b0006d; }
+:root[data-theme="personal-portal"] { --theme-bg: #e7ecef; --theme-surface: #fff; --theme-text: #172026; --theme-muted: #5e6b73; --theme-link: #1d5f8a; --theme-visited: #69518e; --theme-border: #b9c5cc; --theme-accent: #1d5f8a; --theme-accent-2: #d48b2a; --theme-bar: #1d5f8a; }
+:root[data-theme="receipt"] { --theme-bg: #e9e3d6; --theme-surface: #fffdf2; --theme-text: #111; --theme-muted: #666; --theme-link: #111; --theme-visited: #555; --theme-border: #999; --theme-accent: #111; --theme-accent-2: #777; --theme-body-font: "Courier New", Courier, monospace; --theme-heading-font: "Courier New", Courier, monospace; --theme-bar: #fffdf2; }
+:root[data-theme="index-cards"] { --theme-bg: #d9caa8; --theme-surface: #fff8d8; --theme-text: #2a2116; --theme-muted: #74664e; --theme-link: #245a8d; --theme-visited: #704a7a; --theme-border: #c1a96f; --theme-accent: #c14b35; --theme-accent-2: #245a8d; --theme-bar: #c14b35; }
+:root[data-theme="filing-cabinet"] { --theme-bg: #c9c0ad; --theme-surface: #f4e9c8; --theme-text: #26221a; --theme-muted: #6b6353; --theme-link: #30557a; --theme-visited: #66446f; --theme-border: #958a74; --theme-accent: #8b6f3e; --theme-accent-2: #30557a; --theme-bar: #8b6f3e; }
+:root[data-theme="notebook"] { --theme-bg: #f6f0d8; --theme-surface: #fff9df; --theme-text: #1e2430; --theme-muted: #6b7180; --theme-link: #1d63a5; --theme-visited: #6b4a8e; --theme-border: #c8d4e6; --theme-accent: #d84f45; --theme-accent-2: #1d63a5; --theme-pattern: linear-gradient(#0000 27px, rgba(29,99,165,.22) 28px), linear-gradient(90deg, transparent 58px, rgba(216,79,69,.32) 59px, transparent 60px); --theme-bar: #1d63a5; }
+:root[data-theme="corkboard"] { --theme-bg: #9b6a3c; --theme-surface: #fff4c8; --theme-text: #2a1b0e; --theme-muted: #76572f; --theme-link: #235b8d; --theme-visited: #744a80; --theme-border: #70461f; --theme-accent: #b7332b; --theme-accent-2: #235b8d; --theme-pattern: radial-gradient(circle, rgba(255,255,255,.12) 1px, transparent 2px); --theme-bar: #70461f; }
+:root[data-theme="whiteboard"] { --theme-bg: #f8fbff; --theme-surface: #fff; --theme-text: #1a2633; --theme-muted: #667788; --theme-link: #006fc9; --theme-visited: #874bb0; --theme-border: #b9c8d8; --theme-accent: #e0342f; --theme-accent-2: #006fc9; --theme-bar: #f8fbff; }
+:root[data-theme="blueprint"] { --theme-bg: #123a66; --theme-surface: #164c86; --theme-text: #e6f4ff; --theme-muted: #b6d7f0; --theme-link: #ffffff; --theme-visited: #d6c4ff; --theme-border: #7ec0ee; --theme-accent: #7ec0ee; --theme-accent-2: #ffffff; --theme-pattern: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); --theme-bar: #0c2d52; }
+:root[data-theme="calendar"] { --theme-bg: #f4f5f0; --theme-surface: #fff; --theme-text: #202020; --theme-muted: #777; --theme-link: #c62828; --theme-visited: #6d4aa0; --theme-border: #d2d2c8; --theme-accent: #c62828; --theme-accent-2: #2e7d32; --theme-bar: #c62828; }
+:root[data-theme="map"] { --theme-bg: #d8cfaa; --theme-surface: #f3ecd0; --theme-text: #2e2a1d; --theme-muted: #71694f; --theme-link: #1c6695; --theme-visited: #6e4b84; --theme-border: #a89561; --theme-accent: #b75c2a; --theme-accent-2: #1c6695; --theme-pattern: radial-gradient(ellipse at 30% 20%, rgba(70,120,65,.16), transparent 28%); --theme-bar: #5b7f59; }
+:root[data-theme="museum-label"] { --theme-bg: #f7f4ed; --theme-surface: #fff; --theme-text: #171717; --theme-muted: #69645c; --theme-link: #222; --theme-visited: #555; --theme-border: #d8d1c4; --theme-accent: #111; --theme-accent-2: #b8a98e; --theme-bar: #f7f4ed; }
+:root[data-theme="government-form"] { --theme-bg: #e6eef5; --theme-surface: #fff; --theme-text: #111; --theme-muted: #4d5a66; --theme-link: #003e7e; --theme-visited: #5d4381; --theme-border: #6f8091; --theme-accent: #003e7e; --theme-accent-2: #b21b2c; --theme-bar: #003e7e; }
+:root[data-theme="university-page"] { --theme-bg: #f5f0e6; --theme-surface: #fff; --theme-text: #1c1612; --theme-muted: #6f6257; --theme-link: #8c1d40; --theme-visited: #5c4a82; --theme-border: #d5c6ad; --theme-accent: #8c1d40; --theme-accent-2: #ffc627; --theme-bar: #8c1d40; }
+:root[data-theme="library-catalog"] { --theme-bg: #ece4d1; --theme-surface: #fff8df; --theme-text: #251c12; --theme-muted: #766953; --theme-link: #4d3b25; --theme-visited: #5f4a70; --theme-border: #b8a27a; --theme-accent: #7a5428; --theme-accent-2: #3e6a75; --theme-bar: #7a5428; }
+:root[data-theme="airline-departures"] { --theme-bg: #111820; --theme-surface: #1d2730; --theme-text: #f5f0c6; --theme-muted: #aeb8bf; --theme-link: #ffd54f; --theme-visited: #b39ddb; --theme-border: #394854; --theme-accent: #ffd54f; --theme-accent-2: #4fc3f7; --theme-bar: #000; }
+:root[data-theme="diner-menu"] { --theme-bg: #fff3d6; --theme-surface: #fffaf0; --theme-text: #2b1a12; --theme-muted: #8a5445; --theme-link: #c21f32; --theme-visited: #7a3f75; --theme-border: #d93a2f; --theme-accent: #d93a2f; --theme-accent-2: #1d76a8; --theme-bar: linear-gradient(90deg, #d93a2f, #1d76a8); }
+:root[data-theme="record-store"] { --theme-bg: #1e1715; --theme-surface: #fff0c7; --theme-text: #1e1715; --theme-muted: #775f3f; --theme-link: #b51f1f; --theme-visited: #663c85; --theme-border: #b51f1f; --theme-accent: #b51f1f; --theme-accent-2: #f0b429; --theme-bar: #1e1715; }
+:root[data-theme="art-gallery"] { --theme-bg: #fff; --theme-surface: #fafafa; --theme-text: #111; --theme-muted: #777; --theme-link: #111; --theme-visited: #555; --theme-border: #e2e2e2; --theme-accent: #111; --theme-accent-2: #ddd; --theme-bar: #fff; }
+:root[data-theme="hardware-manual"] { --theme-bg: #ebe7dc; --theme-surface: #f9f6ed; --theme-text: #1e1e1e; --theme-muted: #5f5b52; --theme-link: #b3382c; --theme-visited: #684c7b; --theme-border: #777166; --theme-accent: #b3382c; --theme-accent-2: #333; --theme-bar: #333; }
+:root[data-theme="financial-terminal"] { --theme-bg: #06120b; --theme-surface: #101c14; --theme-text: #c9ffd3; --theme-muted: #7cb887; --theme-link: #00e676; --theme-visited: #ff4081; --theme-border: #1b5e20; --theme-accent: #00e676; --theme-accent-2: #ffd600; --theme-bar: #000; }
+:root[data-theme="classified-ads"] { --theme-bg: #f1ead8; --theme-surface: #fff9e8; --theme-text: #111; --theme-muted: #555; --theme-link: #000; --theme-visited: #555; --theme-border: #111; --theme-accent: #111; --theme-accent-2: #777; --theme-bar: #111; }
+:root[data-theme="plain-html"] { --theme-bg: #fff; --theme-surface: #fff; --theme-text: #000; --theme-muted: #555; --theme-link: #00e; --theme-visited: #551a8b; --theme-border: #ccc; --theme-accent: #00e; --theme-accent-2: #777; --theme-bar: #fff; }
+:root[data-theme="brutalist"] { --theme-bg: #fff200; --theme-surface: #fff; --theme-text: #000; --theme-muted: #000; --theme-link: #0000ee; --theme-visited: #800080; --theme-border: #000; --theme-accent: #ff1a1a; --theme-accent-2: #000; --theme-bar: #000; }
+:root[data-theme="swiss-grid"] { --theme-bg: #f7f7f2; --theme-surface: #fff; --theme-text: #111; --theme-muted: #666; --theme-link: #e30613; --theme-visited: #555; --theme-border: #111; --theme-accent: #e30613; --theme-accent-2: #111; --theme-bar: #e30613; }
+:root[data-theme="monochrome"] { --theme-bg: #fff; --theme-surface: #f5f5f5; --theme-text: #000; --theme-muted: #555; --theme-link: #000; --theme-visited: #444; --theme-border: #000; --theme-accent: #000; --theme-accent-2: #888; --theme-bar: #000; }
+:root[data-theme="high-contrast"] { --theme-bg: #000; --theme-surface: #000; --theme-text: #fff; --theme-muted: #fff; --theme-link: #ffff00; --theme-visited: #00ffff; --theme-border: #fff; --theme-accent: #ff00ff; --theme-accent-2: #ffff00; --theme-bar: #000; }
+:root[data-theme="print"] { --theme-bg: #fff; --theme-surface: #fff; --theme-text: #000; --theme-muted: #444; --theme-link: #000; --theme-visited: #000; --theme-border: #000; --theme-accent: #000; --theme-accent-2: #777; --theme-bar: #fff; }
+:root[data-theme="large-type"] { --theme-bg: #fbfaf6; --theme-surface: #fff; --theme-text: #111; --theme-muted: #555; --theme-link: #0b55b7; --theme-visited: #7047a5; --theme-border: #d4d0c6; --theme-accent: #0b55b7; --theme-accent-2: #f29f05; --theme-bar: #0b55b7; }
+:root[data-theme="no-css"] { --theme-bg: #fff; --theme-surface: #fff; --theme-text: #000; --theme-muted: #555; --theme-link: #00e; --theme-visited: #551a8b; --theme-border: #bbb; --theme-accent: #00e; --theme-accent-2: #777; --theme-bar: #fff; }
+:root[data-theme="reader-mode"] { --theme-bg: #f4f1ea; --theme-surface: #fbf8ef; --theme-text: #201c18; --theme-muted: #675f57; --theme-link: #2b5c88; --theme-visited: #6e527d; --theme-border: #d5ccbd; --theme-accent: #2b5c88; --theme-accent-2: #9b7b4f; --theme-bar: #e6dccb; }
+:root[data-theme="low-bandwidth"] { --theme-bg: #fff; --theme-surface: #fff; --theme-text: #000; --theme-muted: #444; --theme-link: #00e; --theme-visited: #551a8b; --theme-border: #999; --theme-accent: #00e; --theme-accent-2: #777; --theme-bar: #eee; }
+:root[data-theme="sticker-sheet"] { --theme-bg: #fff7d8; --theme-surface: #fff; --theme-text: #221c2e; --theme-muted: #7a5b85; --theme-link: #e1007a; --theme-visited: #6c3cff; --theme-border: #221c2e; --theme-accent: #e1007a; --theme-accent-2: #00a6a6; --theme-pattern: radial-gradient(circle, rgba(225,0,122,.12) 0 8px, transparent 9px); --theme-bar: linear-gradient(90deg, #e1007a, #00a6a6, #ffd400); }
+:root[data-theme="badge-wall"] { --theme-bg: #101820; --theme-surface: #f8f4d8; --theme-text: #101820; --theme-muted: #5b5560; --theme-link: #d40000; --theme-visited: #5b3fa2; --theme-border: #d40000; --theme-accent: #d40000; --theme-accent-2: #ffd000; --theme-bar: repeating-linear-gradient(90deg, #d40000 0 60px, #ffd000 60px 120px, #0057b8 120px 180px); }
+:root[data-theme="tiled-background"] { --theme-bg: #073b4c; --theme-surface: #fff8dc; --theme-text: #1a1a1a; --theme-muted: #6b5d4a; --theme-link: #ef476f; --theme-visited: #7b2cbf; --theme-border: #118ab2; --theme-accent: #ef476f; --theme-accent-2: #ffd166; --theme-pattern: repeating-linear-gradient(45deg, rgba(255,255,255,.12) 0 12px, transparent 12px 24px); --theme-bar: linear-gradient(90deg, #ef476f, #ffd166, #06d6a0, #118ab2); }
+:root[data-theme="pixel-art"] { --theme-bg: #1b1f3b; --theme-surface: #f7d51d; --theme-text: #161616; --theme-muted: #4b3c00; --theme-link: #1b1f3b; --theme-visited: #5b2b7a; --theme-border: #161616; --theme-accent: #e43b44; --theme-accent-2: #63c74d; --theme-bar: #161616; }
+:root[data-theme="vaporwave"] { --theme-bg: #210124; --theme-surface: #ffe6ff; --theme-text: #210124; --theme-muted: #7b3f99; --theme-link: #ff00a8; --theme-visited: #5b2eff; --theme-border: #00e5ff; --theme-accent: #ff00a8; --theme-accent-2: #00e5ff; --theme-pattern: linear-gradient(180deg, rgba(255,0,168,.2), transparent 40%); --theme-bar: linear-gradient(90deg, #ff00a8, #00e5ff); }
+:root[data-theme="cyberpunk"] { --theme-bg: #08080d; --theme-surface: #161622; --theme-text: #f5f542; --theme-muted: #a7a96b; --theme-link: #00f0ff; --theme-visited: #ff2a6d; --theme-border: #ff2a6d; --theme-accent: #ff2a6d; --theme-accent-2: #00f0ff; --theme-bar: linear-gradient(90deg, #08080d, #ff2a6d, #00f0ff); }
+:root[data-theme="scrapbook"] { --theme-bg: #d8c3a5; --theme-surface: #fff5d6; --theme-text: #33281f; --theme-muted: #806b58; --theme-link: #b13f2d; --theme-visited: #6b4b82; --theme-border: #a67c52; --theme-accent: #b13f2d; --theme-accent-2: #e0a84f; --theme-pattern: radial-gradient(circle at 10% 30%, rgba(255,255,255,.25), transparent 18%); --theme-bar: #b13f2d; }
+:root[data-theme="collage"] { --theme-bg: #f2e9e4; --theme-surface: #fff; --theme-text: #22223b; --theme-muted: #6d6875; --theme-link: #c9184a; --theme-visited: #5a189a; --theme-border: #22223b; --theme-accent: #c9184a; --theme-accent-2: #4a4e69; --theme-bar: linear-gradient(90deg, #22223b, #c9184a); }
+:root[data-theme="arcade"] { --theme-bg: #090a1a; --theme-surface: #11133a; --theme-text: #ffffff; --theme-muted: #ffcc00; --theme-link: #00ffcc; --theme-visited: #ff66ff; --theme-border: #ffcc00; --theme-accent: #ff3366; --theme-accent-2: #00ffcc; --theme-bar: #000; }
+:root[data-theme="toy-ui"] { --theme-bg: #e7f6ff; --theme-surface: #fff6a8; --theme-text: #263238; --theme-muted: #617d8a; --theme-link: #1976d2; --theme-visited: #8e24aa; --theme-border: #263238; --theme-accent: #ff5252; --theme-accent-2: #4caf50; --theme-radius: 14px; --theme-bar: linear-gradient(90deg, #ff5252, #ffeb3b, #4caf50, #2196f3); }
+:root[data-theme="winter"] { --theme-bg: #eef7fb; --theme-surface: #ffffff; --theme-text: #1f3442; --theme-muted: #6d8795; --theme-link: #176d9c; --theme-visited: #6f5aa6; --theme-border: #c6dce7; --theme-accent: #5aa9d6; --theme-accent-2: #ffffff; --theme-bar: #5aa9d6; }
+:root[data-theme="summer"] { --theme-bg: #fff1b8; --theme-surface: #fffbe8; --theme-text: #33250f; --theme-muted: #8a6b24; --theme-link: #007f7f; --theme-visited: #a43b8f; --theme-border: #f2bd2d; --theme-accent: #ff8c1a; --theme-accent-2: #00a676; --theme-bar: linear-gradient(90deg, #ff8c1a, #00a676); }
+:root[data-theme="midnight"] { --theme-bg: #070b1a; --theme-surface: #111733; --theme-text: #e8ecff; --theme-muted: #9ba6d4; --theme-link: #91b7ff; --theme-visited: #c4a3ff; --theme-border: #303a70; --theme-accent: #91b7ff; --theme-accent-2: #f7d774; --theme-bar: #070b1a; }
+:root[data-theme="sunrise"] { --theme-bg: #fff0df; --theme-surface: #fffaf4; --theme-text: #321a16; --theme-muted: #8a6156; --theme-link: #c2410c; --theme-visited: #7c3a8c; --theme-border: #f0b58f; --theme-accent: #f97316; --theme-accent-2: #facc15; --theme-bar: linear-gradient(90deg, #f97316, #facc15); }
+:root[data-theme="birthday"] { --theme-bg: #fff0f7; --theme-surface: #ffffff; --theme-text: #2a1730; --theme-muted: #855c90; --theme-link: #d10068; --theme-visited: #6b46c1; --theme-border: #ff9ad5; --theme-accent: #d10068; --theme-accent-2: #ffd400; --theme-pattern: radial-gradient(circle, rgba(255,212,0,.24) 0 4px, transparent 5px); --theme-bar: linear-gradient(90deg, #d10068, #ffd400, #00bcd4); }
+:root[data-theme="launch-day"] { --theme-bg: #08111f; --theme-surface: #ffffff; --theme-text: #111827; --theme-muted: #5b6472; --theme-link: #2563eb; --theme-visited: #7c3aed; --theme-border: #93c5fd; --theme-accent: #2563eb; --theme-accent-2: #f97316; --theme-bar: linear-gradient(90deg, #08111f, #2563eb, #f97316); }
+:root[data-theme="archive-mode"] { --theme-bg: #d8d2c4; --theme-surface: #f4efe2; --theme-text: #29251f; --theme-muted: #70685d; --theme-link: #5c4a32; --theme-visited: #5e4a65; --theme-border: #a79d8b; --theme-accent: #5c4a32; --theme-accent-2: #8a7a61; --theme-bar: #5c4a32; }
+:root[data-theme="random-chaos"] { --theme-bg: #00ff9f; --theme-surface: #fffb00; --theme-text: #110033; --theme-muted: #ff006e; --theme-link: #3a00ff; --theme-visited: #ff006e; --theme-border: #110033; --theme-accent: #ff006e; --theme-accent-2: #3a00ff; --theme-pattern: repeating-linear-gradient(22deg, rgba(255,0,110,.2) 0 8px, rgba(58,0,255,.18) 8px 16px); --theme-bar: linear-gradient(90deg, #ff006e, #fffb00, #00ff9f, #3a00ff); }
+:root[data-theme="secret-mode"] { --theme-bg: #070707; --theme-surface: #121212; --theme-text: #d7d0bd; --theme-muted: #7d7667; --theme-link: #c1a15a; --theme-visited: #8a6ea8; --theme-border: #3d3628; --theme-accent: #c1a15a; --theme-accent-2: #5f4b24; --theme-bar: #070707; }
+:root[data-theme="theme-museum"] { --theme-bg: #efebe2; --theme-surface: #fff; --theme-text: #1a1815; --theme-muted: #6c655b; --theme-link: #8a3a22; --theme-visited: #6b527d; --theme-border: #cfc6b8; --theme-accent: #8a3a22; --theme-accent-2: #1a1815; --theme-bar: #1a1815; }
+
+/* Per-theme structural accents */
+:root[data-theme="receipt"] .site-shell:not(.raw-page) .main-container {
+  max-width: 560px;
+}
+
+:root[data-theme="large-type"] body:not(.raw-page),
+:root[data-theme="large-type"] .blog-post-content,
+:root[data-theme="large-type"] .homepage-intro {
+  font-size: 18px;
+}
+
+:root[data-theme="newspaper"] .main-content-area,
+:root[data-theme="magazine"] .main-content-area {
+  column-gap: 24px;
+}
+
+:root[data-theme="plain-html"] .aqua-bar,
+:root[data-theme="no-css"] .aqua-bar,
+:root[data-theme="print"] .aqua-bar,
+:root[data-theme="art-gallery"] .aqua-bar,
+:root[data-theme="html-1"] .aqua-bar {
+  box-shadow: none;
+}
+
+:root[data-theme="win95"] button,
+:root[data-theme="win98"] button,
+:root[data-theme="classic-mac"] button,
+:root[data-theme="palmpilot"] button {
+  box-shadow: inset -1px -1px 0 #000, inset 1px 1px 0 #fff;
+}
+
+:root[data-theme="dos"] .aqua-pill,
+:root[data-theme="green-terminal"] .aqua-pill,
+:root[data-theme="amber-terminal"] .aqua-pill,
+:root[data-theme="financial-terminal"] .aqua-pill,
+:root[data-theme="high-contrast"] .aqua-pill {
+  color: var(--theme-link);
+  text-shadow: none;
+}
+
+@media (max-width: 700px) {
+  .themes-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .themes-hero h2 {
+    font-size: 28px;
+  }
+
+  .theme-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  html {
+    background: #fff;
+  }
+
+  body.site-shell:not(.raw-page) {
+    background: #fff;
+    color: #000;
+  }
+
+  .aqua-bar,
+  .sidebar,
+  .theme-picker,
+  .theme-filters,
+  .themes-console,
+  .theme-card-actions {
+    display: none !important;
+  }
+
+  .content-wrapper {
+    display: block;
+    border: 0;
+  }
+
+  .main-content-area {
+    border: 0;
+    padding: 0;
+  }
+}
