@@ -407,6 +407,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (routeType === "archives") return renderArchives(model as ArchiveModel, ctx);
   if (routeType === "guestbook") return renderGuestbook(model as GuestbookModel, ctx);
   if (routeType === "themes") return renderThemes(model as ThemesModel, ctx);
+  if (ctx.family === "archive-index") return renderArchiveIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "wordmark-studio") return renderWordmarkGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "builder-notes") return renderBuilderNotesGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "manual") return renderManualGeneric(model as GenericPageModel, ctx);
@@ -634,7 +635,10 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "archive-index") {
-    return `<section class="archive-index">${homeHeader}<nav>All · Sources · Posts · Links</nav><div class="name-counts">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.domain)} <span>1</span></a>`).join("")}</div></section>`;
+    const sourceCounts = countBy(model.links.map((link) => link.domain));
+    const linkRows = model.links.map((link) => renderArchiveIndexRow(link.title, link.url, link.domain, link.date, stripHtml(link.contentHtml))).join("");
+    const postRows = model.recentPosts.map((post) => renderArchiveIndexRow(post.title, post.href, "Ryan Prendergast", post.date, post.readTime || "")).join("");
+    return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Ryan Prendergast", model.introHtml, `${model.links.length} links / ${model.recentPosts.length} essays`)}${renderArchiveIndexFilters("All")}<section class="archive-index-directory"><div><h2>All Sources</h2>${renderArchiveIndexNames(sourceCounts)}</div><div><h2>Recent Posts</h2><div class="archive-index-list">${postRows}</div></div></section><section class="archive-index-feed"><h2>All Entries</h2><div class="archive-index-list">${linkRows}</div></section></section>`;
   }
 
   if (ctx.family === "scrapbook") {
@@ -843,7 +847,9 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Blog", `${model.totalPosts} entries`)}<h2>Blog League Schedule</h2><nav class="scoreboard-subnav"><a href="/blog">Schedule</a><a href="/archives">Standings</a><a href="/rss.xml">Teams</a></nav>${yearTables}</section>`;
   }
   if (ctx.family === "archive-index") {
-    return `<section class="archive-index"><h2>all posts</h2><nav>All · Years · Titles · Dates</nav><div class="name-counts">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)} <span>${escapeHtml(group.year)}</span></a>`)).join("")}</div></section>`;
+    const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
+    const yearCounts = countBy(posts.map((post) => post.year));
+    return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "All Posts", `<p>${escapeHtml(model.description)}</p>`, `${model.totalPosts} posts`)}${renderArchiveIndexFilters("Authors")}<section class="archive-index-directory"><div><h2>Years</h2>${renderArchiveIndexNames(yearCounts)}</div><div><h2>Titles</h2><div class="archive-index-list">${posts.map((post) => renderArchiveIndexRow(post.title, post.href, post.year, post.date, post.readTime || "")).join("")}</div></div></section></section>`;
   }
   if (ctx.family === "art-index") {
     return `<section class="art-index"><h2>SELECTED TEXTS</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<div class="art-row"><span>${escapeHtml(group.year)}</span><a href="${post.href}">𓆓 ${escapeHtml(post.title)}</a></div>`).join("")}`).join("")}</section>`;
@@ -923,6 +929,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "art-index") {
     return `<article class="art-index"><p>LAT: 40.7128 LNG: -74.0060</p><h2>𓁹 ${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
   }
+  if (ctx.family === "archive-index") {
+    return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.title, model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : `<p>${meta}</p>`, meta)}${renderArchiveIndexFilters("Authors")}<div class="archive-index-record-meta"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a><span>Ryan Prendergast</span><time>${escapeHtml(model.date)}</time></div><div class="blog-post-content archive-index-copy">${model.contentHtml}</div></article>`;
+  }
   if (ctx.family === "no-css") {
     return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
   }
@@ -961,7 +970,8 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Archives", `${model.totalPosts} archived posts`)}<h2>Archive Standings</h2><nav class="scoreboard-subnav"><a href="/archives">Schedule</a><a href="/blog">Standings</a><a href="/rss.xml">Teams</a></nav>${renderScoreboardTable(["Month", "Posts", "Entries"], model.months.map((month) => [escapeHtml(month.label), String(month.posts.length), month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" ")]))}</section>`;
   }
   if (ctx.family === "archive-index") {
-    return `<section class="archive-index"><h2>every post ever archived</h2><nav>All · Months · Titles</nav><div class="name-counts">${model.months.map((month) => `<a href="#${month.key}">${escapeHtml(month.label)} <span>${month.posts.length}</span></a>`).join("")}</div>${model.months.map((month) => `<section id="${month.key}"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
+    const monthCounts = new Map(model.months.map((month) => [month.label, month.posts.length]));
+    return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Archive", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`, `${model.totalPosts} records`)}${renderArchiveIndexFilters("All")}<section class="archive-index-directory"><div><h2>Months</h2>${renderArchiveIndexNames(monthCounts, (label) => `#${slugify(label)}`)}</div><div><h2>Records</h2>${model.months.map((month) => `<section id="${slugify(month.label)}" class="archive-index-month"><h3>${escapeHtml(month.label)}</h3><div class="archive-index-list">${month.posts.map((post) => renderArchiveIndexRow(post.title, post.href, month.label, post.date, post.readTime || "")).join("")}</div></section>`).join("")}</div></section></section>`;
   }
   if (ctx.family === "art-index") {
     return `<section class="art-index"><h2>CHRONOLOGY</h2>${model.months.map((month) => `<div class="art-row"><span>${escapeHtml(month.key)}</span><strong>${escapeHtml(month.label)}</strong><em>${month.posts.length} works</em></div>`).join("")}</section>`;
@@ -1039,6 +1049,46 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
+}
+
+function renderArchiveIndexHeader(ctx: RenderContext, title: string, detailHtml: string, countLabel: string): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = [
+    ["/", "All"],
+    ["/blog", "Authors"],
+    ["/photos", "Photographers"],
+    ["/archives", "Stylists"],
+    ["/guestbook", "Talent"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+  ] as Array<[string, string]>;
+  return `<header class="archive-index-header"><div class="archive-index-topline"><a class="archive-index-brand" href="/">Ryan Prendergast</a><span>${escapeHtml(countLabel)}</span></div><nav class="archive-index-nav" aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav><div class="archive-index-title"><h1>${escapeHtml(title)}</h1><div>${detailHtml}</div></div></header>`;
+}
+
+function renderArchiveIndexFilters(activeLabel: string): string {
+  const filters = ["All", "Authors", "Photographers", "Stylists", "Talent"];
+  return `<nav class="archive-index-filters" aria-label="Archive filters">${filters.map((filter) => `<a class="${filter === activeLabel ? "is-active" : ""}" href="/archives">${filter}</a>`).join("")}</nav>`;
+}
+
+function renderArchiveIndexNames(counts: Map<string, number>, hrefFor: (label: string) => string = () => "/"): string {
+  const entries = Array.from(counts.entries()).sort(([a], [b]) => a.localeCompare(b));
+  return `<div class="archive-index-names">${entries.map(([label, count]) => `<a href="${hrefFor(label)}"><span>${escapeHtml(label)}</span><em>${count}</em></a>`).join("")}</div>`;
+}
+
+function renderArchiveIndexRow(title: string, href: string, source: string, date: string, detail: string): string {
+  return `<a class="archive-index-row" href="${href}"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(source)}</span><time>${escapeHtml(date)}</time>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</a>`;
+}
+
+function renderArchiveIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.heading, `<p>${escapeHtml(ctx.currentPage || "/")}</p>`, "page record")}${renderArchiveIndexFilters("All")}<div class="archive-index-copy">${model.contentHtml}</div></article>`;
+}
+
+function countBy(values: string[]): Map<string, number> {
+  return values.reduce((counts, value) => {
+    const key = value || "Unknown";
+    counts.set(key, (counts.get(key) || 0) + 1);
+    return counts;
+  }, new Map<string, number>());
 }
 
 function renderWordmarkNav(ctx: RenderContext): string {
