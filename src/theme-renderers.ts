@@ -408,6 +408,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (routeType === "guestbook") return renderGuestbook(model as GuestbookModel, ctx);
   if (routeType === "themes") return renderThemes(model as ThemesModel, ctx);
   if (ctx.family === "wordmark-studio") return renderWordmarkGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "builder-notes") return renderBuilderNotesGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -591,7 +592,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "builder-notes") {
-    return `<section class="builder-notes"><nav>about writing links</nav>${homeHeader}<h3>writing</h3>${posts}<h3>links</h3>${links}</section>`;
+    return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<header class="builder-notes-intro"><h1>Ryan Prendergast</h1><div class="builder-notes-lede">${model.introHtml}</div></header><section class="builder-notes-now">${model.aboutHtml}</section><section class="builder-notes-section"><h2>writing</h2>${model.recentPosts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section><section class="builder-notes-section"><h2>links</h2>${model.links.map((link) => renderBuilderNotesLinkLine(link)).join("")}</section></section>`;
   }
 
   if (ctx.family === "research-tools") {
@@ -786,6 +787,9 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="${ctx.family}"><h2>Studies Index</h2><div class="work-grid">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(group.year)} · ${escapeHtml(post.date)}</small></a>`)).join("")}</div></section>`;
   }
   if (ctx.family === "builder-notes" || ctx.family === "garden-notebook") {
+    if (ctx.family === "builder-notes") {
+      return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>writing</h1>${model.postsByYear.map((group) => `<section class="builder-notes-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
+    }
     return `<section class="${ctx.family}"><h2>writing</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
   }
   if (ctx.family === "research-tools" || ctx.family === "artist-ledger") {
@@ -854,6 +858,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "wordmark-studio") {
     return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="wordmark-page-header"><p>${meta}</p><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<span>${escapeHtml(model.subtitle)}</span>` : ""}</header><div class="blog-post-content">${model.contentHtml}</div></article>`;
   }
+  if (ctx.family === "builder-notes") {
+    return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><header><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p>${meta}</p></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
+  }
   if (ctx.family === "publishing") {
     return `<article class="publishing-article"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="article-meta">${meta}</p></header><div class="article-body">${model.contentHtml}</div></article>`;
   }
@@ -888,7 +895,10 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   if (ctx.family === "wordmark-studio") {
     return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Archive</p><h2>Chronology</h2><span>${model.totalPosts} entries across ${model.months.length} months</span></header><div class="wordmark-archive">${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</section>`).join("")}</div></section>`;
   }
-  if (["studio-index", "research-tools", "artist-ledger", "builder-notes", "garden-notebook"].includes(ctx.family)) {
+  if (ctx.family === "builder-notes") {
+    return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>archive</h1>${model.months.map((month) => `<section class="builder-notes-section"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
+  }
+  if (["studio-index", "research-tools", "artist-ledger", "garden-notebook"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "art-library") {
@@ -943,12 +953,29 @@ function renderWordmarkNav(ctx: RenderContext): string {
   return `<header class="wordmark-top"><nav class="wordmark-primary" aria-label="Primary"><a class="${active("/")}" href="/">Work</a><a class="${active("/blog")}" href="/blog">Grid</a><a class="${active("/contact")}" href="/contact">Inquiries</a></nav><nav class="wordmark-secondary" aria-label="Core site areas">${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav></header>`;
 }
 
+function renderBuilderNotesNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  return `<nav class="builder-notes-nav" aria-label="Primary"><a class="${active("/")}" href="/">Ryan Prendergast</a><a class="${active("/contact")}" href="/contact">about</a><a class="${active("/blog")}" href="/blog">writing</a><a class="${active("/")}" href="/">links</a><a class="${active("/photos")}" href="/photos">photos</a><a class="${active("/archives")}" href="/archives">archive</a><a class="${active("/guestbook")}" href="/guestbook">guestbook</a><a href="/rss.xml">rss</a></nav>`;
+}
+
+function renderBuilderNotesPostLine(post: PostSummaryModel): string {
+  return `<p class="builder-note-line"><a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` <small>${escapeHtml(post.readTime)}</small>` : ""}<br><small>${escapeHtml(post.date)}</small></p>`;
+}
+
+function renderBuilderNotesLinkLine(link: LinkEntryModel): string {
+  return `<article class="builder-note-line"><p><a href="${link.url}">${escapeHtml(link.title)}</a> <small>${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</small></p><div>${link.contentHtml}</div></article>`;
+}
+
 function renderWordmarkHero(introHtml: string): string {
   return `<header class="wordmark-hero"><div class="wordmark-hero-copy"><h1>Ryan Prendergast</h1><div>${introHtml}</div><div aria-hidden="true">${introHtml}</div></div></header>`;
 }
 
 function renderWordmarkGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Inquiries</p><h2>${escapeHtml(model.heading)}</h2></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
+}
+
+function renderBuilderNotesGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<header><h1>${escapeHtml(model.heading)}</h1></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
