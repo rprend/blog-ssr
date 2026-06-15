@@ -73,6 +73,8 @@ const builtThemeSlugs = new Set([
   "ai-grant-application-page",
 ]);
 
+export const defaultThemeSlug = "spartan-essay-table";
+
 const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "depth" | "stylesheet" | "referencePath" | "screenshots">> = [
   {
     slug: "spaced-wordmark-studio",
@@ -447,21 +449,25 @@ const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "de
   },
 ];
 
-export const siteThemes: SiteTheme[] = suppliedThemes.map((theme) => ({
-  ...theme,
-  category: "supplied",
-  tags: ["user supplied", "site mimic"],
-  status: builtThemeSlugs.has(theme.slug) ? "built" : "planned",
-  depth: "layout",
-  stylesheet: `/theme-mimics/${theme.slug}.css`,
-  referencePath: `docs/theme-references/sites/${theme.slug}.md`,
-  screenshots: {},
-}));
-
-export const defaultThemeSlug = "spartan-essay-table";
+export const siteThemes: SiteTheme[] = suppliedThemes
+  .map((theme) => ({
+    ...theme,
+    category: "supplied" as const,
+    tags: ["user supplied", "site mimic"],
+    status: builtThemeSlugs.has(theme.slug) ? "built" as const : "planned" as const,
+    depth: "layout" as const,
+    stylesheet: `/theme-mimics/${theme.slug}.css`,
+    referencePath: `docs/theme-references/sites/${theme.slug}.md`,
+    screenshots: {},
+  }))
+  .sort((a, b) => {
+    if (a.slug === defaultThemeSlug) return -1;
+    if (b.slug === defaultThemeSlug) return 1;
+    return 0;
+  });
 
 export function getThemeBySlug(slug: string | null | undefined): SiteTheme {
-  return siteThemes.find((theme) => theme.slug === slug) || siteThemes[0];
+  return siteThemes.find((theme) => theme.slug === slug) || siteThemes.find((theme) => theme.slug === defaultThemeSlug) || siteThemes[0];
 }
 
 export function getThemesByCategory(): Record<ThemeCategory, SiteTheme[]> {

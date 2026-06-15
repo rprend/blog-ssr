@@ -7,7 +7,16 @@ const renderersSource = fs.readFileSync("src/theme-renderers.ts", "utf8");
 const slugs = [...themesSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
 const familyPairs = [...renderersSource.matchAll(/"([^"]+)":\s*"([^"]+)"/g)];
 const familyBySlug = new Map(familyPairs.map((match) => [match[1], match[2]]));
-const routes = ["/", "/blog", "/archives", "/themes"];
+const routes = ["/", "/blog", "/archives", "/contact"];
+const forbiddenPhrases = [
+  "re-coding everyday Ryan is a digital",
+  "Based on the supplied",
+  "Application-style landing page",
+  "A scenario report assembled",
+  "Lightweight entries from Ryan",
+  "Come for a stroll",
+  "Downloaded entries from Ryan",
+];
 const failures = [];
 
 if (slugs.length !== 53) failures.push(`Expected 53 theme slugs, found ${slugs.length}.`);
@@ -45,6 +54,11 @@ for (const slug of slugs) {
       }
       if (html.includes("family-aqua") && slug !== "aqua") {
         failures.push(`${slug} ${route} fell back to family-aqua.`);
+      }
+      for (const phrase of forbiddenPhrases) {
+        if (html.includes(phrase)) {
+          failures.push(`${slug} ${route} includes forbidden added content: ${phrase}`);
+        }
       }
     } catch (error) {
       failures.push(`${slug} ${route} failed to fetch from ${baseUrl}: ${error.message}`);

@@ -17,7 +17,7 @@ Before a theme can be marked built in the current architecture:
 1. Create `docs/theme-references/sites/<slug>.md`.
 2. Add the slug and target URL to `src/themes.ts`.
 3. Map the slug to a direct renderer family in `src/theme-renderers.ts`.
-4. Implement route rendering for home, blog index, and archives, plus the shared blog post/contact/guestbook/themes shell.
+4. Implement route rendering for home, blog index, and archives, plus the shared blog post/contact/guestbook shell.
 5. Add layout-specific CSS in `public/styles.css`.
 6. Map canonical Ryan content into the target site's layout pattern.
 7. Run `npm run audit:themes`.
@@ -121,7 +121,7 @@ Captured: YYYY-MM-DD
 - Blog post:
 - Archives:
 - Contact:
-- Themes:
+- Theme picker:
 
 ## Rejection Criteria
 

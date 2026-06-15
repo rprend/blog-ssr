@@ -14,7 +14,6 @@ import {
 } from "./build-outputs/templates";
 import {
   defaultThemeSlug,
-  getThemesByCategory,
   siteThemes,
   type SiteTheme,
 } from "./themes";
@@ -28,7 +27,6 @@ import {
   type HomeModel,
   type LinkEntryModel,
   type PostSummaryModel,
-  type ThemesModel,
 } from "./theme-renderers";
 
 interface Bindings {
@@ -193,7 +191,7 @@ function renderPage(
     archivesActive: currentPage === "/archives" ? "active" : "",
     guestbookActive: currentPage === "/guestbook" ? "active" : "",
     contactActive: currentPage === "/contact" ? "active" : "",
-    themesActive: currentPage === "/themes" ? "active" : "",
+    themesActive: "",
     sidebarExtra: seoData.sidebarExtra || "",
   };
 
@@ -516,76 +514,15 @@ app.get("/api/themes", (c) => {
   });
 });
 
-// Theme Gallery
 app.get("/themes", (c) => {
-  const themesByCategory = getThemesByCategory();
-  const categories = Object.keys(themesByCategory);
-  const categoryControls = [
-    `<button type="button" class="theme-filter is-active" data-theme-filter="all">All ${siteThemes.length}</button>`,
-    ...categories.map(
-      (category) =>
-        `<button type="button" class="theme-filter" data-theme-filter="${category}">${formatCategory(category)}</button>`
-    ),
-  ].join("");
-
-  const selectOptions = siteThemes
-    .map((theme) => `<option value="${theme.slug}">${escapeHtml(theme.name)}</option>`)
-    .join("");
-
-  const themeSections = categories
-    .map((category) => {
-      const themes = themesByCategory[category as keyof typeof themesByCategory];
-      return `
-        <section class="theme-category-section">
-          <div class="theme-category-heading">
-            <h2>${formatCategory(category)}</h2>
-            <span>${themes.length} themes</span>
-          </div>
-          <div class="theme-grid">
-            ${themes.map(renderThemeCard).join("")}
-          </div>
-        </section>
-      `;
-    })
-    .join("");
-
-  const model: ThemesModel = {
-    themes: siteThemes,
-    categories,
-    categoryControlsHtml: categoryControls,
-    selectOptionsHtml: selectOptions,
-    themeSectionsHtml: themeSections,
-  };
-
-  const structuredData = `
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Supplied Site Mimics",
-      "description": "Browse Ryan's supplied site-mimic themes",
-      "url": "https://ryan-prendergast.com/themes",
-      "author": {
-        "@type": "Person",
-        "name": "Ryan Prendergast"
-      }
-    }
-    </script>
-  `;
-
-  return c.html(
-    renderThemePage(c.req.raw, "Themes - Ryan Prendergast", model, "/themes", "themes", {
-      pageSubtitle: "Themes",
-      description: "Browse and apply 100 visual themes for Ryan Prendergast's personal site.",
-      structuredData,
-    })
-  );
+  const url = new URL(c.req.url);
+  return c.redirect(`/${url.search}`, 302);
 });
 
 app.get("/themes/random", (c) => {
   const index = Math.floor(Math.random() * siteThemes.length);
   const theme = siteThemes[index] || siteThemes[0];
-  return c.redirect(`/themes?theme=${theme.slug}`, 302);
+  return c.redirect(`/?theme=${theme.slug}`, 302);
 });
 
 app.get("/colophon", (c) => {
@@ -806,7 +743,6 @@ app.get("/sitemap.xml", async (c) => {
     { url: "", changefreq: "weekly", priority: "1.0" },
     { url: "/blog", changefreq: "weekly", priority: "0.9" },
     { url: "/archives", changefreq: "weekly", priority: "0.8" },
-    { url: "/themes", changefreq: "monthly", priority: "0.8" },
     { url: "/contact", changefreq: "monthly", priority: "0.7" },
     { url: "/colophon", changefreq: "monthly", priority: "0.7" },
     { url: "/guestbook", changefreq: "weekly", priority: "0.6" },
