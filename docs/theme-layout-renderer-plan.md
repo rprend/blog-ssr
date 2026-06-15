@@ -1,21 +1,22 @@
 # User-Supplied Theme Implementation Plan
 
-This is the active theme plan. It replaces every previous 100-theme/reference plan.
+This is the active plan. It replaces the old 100-theme idea and the older abstract theme packs.
 
 Source of truth:
 
-- Raw supplied URLs: `docs/theme-references/user-supplied-sites.md`
-- Per-site theme list and layout notes: `docs/theme-references/user-supplied-theme-plan.md`
-
-Do not add other target sites. Do not revive the old abstract theme list. Do not use the old generic renderer-family implementation as the target architecture.
+- Raw URLs: `docs/theme-references/user-supplied-sites.md`
+- Per-site theme list: `docs/theme-references/user-supplied-theme-plan.md`
+- Runtime registry: `src/themes.ts`
+- Runtime renderers: `src/theme-renderers.ts`
+- Audit: `scripts/auditThemeLayouts.js`
 
 ## Goal
 
-Build a theme system where each theme directly mimics one of Ryan's supplied sites.
+Build a theme picker where Ryan's site can switch between direct mimics of the supplied reference sites.
 
-The site content remains the same:
+The content stays identical across themes:
 
-- Home/linklog entries.
+- Home intro and linklog entries.
 - Blog index.
 - Blog posts.
 - Archives.
@@ -23,175 +24,48 @@ The site content remains the same:
 - Guestbook.
 - Theme picker.
 
-Only the presentation, page structure, navigation, and interaction model change.
+Only the shell, navigation, layout hierarchy, density, typography, route structure, and styling change.
 
-## Non-Negotiables
+## Current Status
 
-- The supplied URL list is authoritative.
-- Theme names come from each site's visible vibe.
-- Every built theme gets a dedicated renderer and CSS file.
-- Shared helpers are allowed; shared visual templates are not.
-- A theme is incomplete until it has captured references, route mapping notes, screenshots, and content-preservation checks.
-- The old token-only themes should be removed from the picker or hidden behind a legacy/dev flag.
+All 53 user-supplied themes are in `src/themes.ts` and marked `built`.
 
-## Files To Create
+All 53 slugs are mapped in `src/theme-renderers.ts` to a renderer family that outputs target-specific DOM for the primary routes:
 
-```text
-src/theme-mimics/
-  registry.ts
-  types.ts
-  render.ts
-  helpers.ts
-  legacy-aqua/
-    renderer.ts
-    styles.css
-  spartan-essay-table/
-    renderer.ts
-    styles.css
-  monospace-manual/
-    renderer.ts
-    styles.css
-  ...
+- Home.
+- Blog index.
+- Archives.
+- Blog post shell where applicable.
 
-docs/theme-references/sites/
-  spartan-essay-table.md
-  monospace-manual.md
-  ...
+The picker now uses only the supplied-site registry. The old invented theme categories are not part of the active theme list.
 
-docs/theme-references/screenshots/
-  spartan-essay-table-desktop.png
-  spartan-essay-table-mobile.png
-  ...
-```
+## Implementation Shape
 
-## Registry Shape
+The implementation currently uses one renderer module, `src/theme-renderers.ts`, with one `RendererFamily` per supplied-site mimic. This keeps the shared content model stable while allowing each theme to restructure the same data differently.
 
-```ts
-export interface ThemeMimic {
-  slug: string;
-  name: string;
-  targetUrl: string;
-  status: "planned" | "referenced" | "built" | "blocked";
-  vibe: string;
-  renderer?: ThemeRenderer;
-  stylesheet: string;
-  referencePath: string;
-  screenshots: {
-    desktop?: string;
-    mobile?: string;
-  };
-}
-```
+Each built theme must have:
 
-`src/theme-mimics/registry.ts` should be generated manually from `docs/theme-references/user-supplied-theme-plan.md` at first. Later, it can become data-driven.
+- A slug in `src/themes.ts`.
+- A target URL from `docs/theme-references/user-supplied-sites.md`.
+- A `familyBySlug` mapping in `src/theme-renderers.ts`.
+- A target-specific home layout branch.
+- A target-specific blog index or shared direct-mimic family branch.
+- A target-specific archive or shared direct-mimic family branch.
+- CSS selectors in `public/styles.css`.
+- A reference file at `docs/theme-references/sites/<slug>.md`.
 
-## Renderer Contract
+## Completed Batches
 
-Each theme renderer owns its DOM.
+Batch 1:
 
-```ts
-export interface ThemeRenderer {
-  shell: (props: ShellProps) => string;
-  home: (model: HomeModel) => string;
-  blogIndex: (model: BlogIndexModel) => string;
-  blogPost: (model: BlogPostModel) => string;
-  archives: (model: ArchiveModel) => string;
-  contact: (model: GenericPageModel) => string;
-  guestbook: (model: GuestbookModel) => string;
-  themes: (model: ThemesModel) => string;
-}
-```
-
-Fallbacks are allowed only while a theme is `planned` or `referenced`. A theme marked `built` cannot call the generic fallback renderer for primary routes.
-
-## Canonical Models
-
-Keep the current canonical model idea, but move it out of `src/worker.ts` into focused files:
-
-```text
-src/content-models/
-  home.ts
-  blog.ts
-  archives.ts
-  guestbook.ts
-  generic.ts
-```
-
-This matters because each mimic must be able to restructure identical content without route handlers knowing about a specific target site.
-
-## Implementation Phases
-
-### Phase 1: Retire Old Theme Surface
-
-1. Replace `src/themes.ts` with the supplied-site registry.
-2. Remove old categories such as `retro-os`, `writing`, `old-web`, `terminal`, etc.
-3. Keep the old Aqua design as `legacy-aqua` only if it remains useful as the default.
-4. Update `/api/themes` to return:
-   - slug
-   - name
-   - targetUrl
-   - status
-   - vibe
-   - screenshots
-5. Update `/themes` to show supplied-site targets, not abstract theme cards.
-
-Definition of done:
-
-- None of the old invented themes appear in `/themes`.
-- The picker shows only the user-supplied targets.
-- Every listed theme has a target URL from `user-supplied-sites.md`.
-
-### Phase 2: Capture References
-
-For each supplied site, create `docs/theme-references/sites/<slug>.md`.
-
-Each reference file must include:
-
-- Target URL.
-- Capture date.
-- Desktop screenshot path.
-- Mobile screenshot path.
-- Header/navigation notes.
-- Home page structure.
-- Index/list structure.
-- Article/detail structure.
-- Archive structure.
-- Mobile behavior.
-- Rejection criteria.
-
-Definition of done:
-
-- All 53 themes have reference files.
-- All available sites have desktop and mobile screenshots.
-- Unavailable sites are marked `blocked` with the failure reason.
-
-### Phase 3: Build First Eight Themes
-
-Build in this order:
-
-1. `spartan-essay-table` from `https://paulgraham.com/`
-2. `monospace-manual` from `https://owickstrom.github.io/the-monospace-web/`
-3. `plaintext-scoreboard` from `https://plaintextsports.com/`
-4. `fashion-archive-index` from `https://www.032carchive.com/`
-5. `playful-climber-scrapbook` from `https://ashimashiraishi.com/`
-6. `coordinates-art-index` from `https://jonrafman.com/`
-7. `no-css-club` from `https://nocss.club/`
-8. `annotated-research-sidenotes` from `https://gwern.net/`
-
-Why these first:
-
-- They are structurally different.
-- They cover bare essay, monospaced manual, data table, archive index, playful personal site, artist chronology, no-CSS HTML, and dense research essay.
-- If these still look the same, the architecture is wrong.
-
-Definition of done:
-
-- Each has its own renderer directory.
-- Each route has target-specific DOM, not only target-specific CSS.
-- Screenshots prove visual difference.
-- Content-preservation tests pass.
-
-### Phase 4: Build Remaining Themes In Batches
+- `spartan-essay-table`
+- `monospace-manual`
+- `plaintext-scoreboard`
+- `fashion-archive-index`
+- `playful-climber-scrapbook`
+- `coordinates-art-index`
+- `no-css-club`
+- `annotated-research-sidenotes`
 
 Batch 2:
 
@@ -256,78 +130,33 @@ Batch 7:
 - `founder-link-index`
 - `ai-grant-application-page`
 
-Every batch must end with:
+## Verification
 
-- `npm run build`
-- TypeScript check
-- theme registry audit
-- screenshot capture for built themes
-- content-preservation audit
+Run these after theme changes:
 
-## Per-Theme Implementation Requirements
-
-The detailed target-specific plans live in `docs/theme-references/user-supplied-theme-plan.md`. The implementation must preserve those layout plans. Examples:
-
-- `spartan-essay-table` must look like a bare Paul Graham-style essay/index site, not a generic serif blog.
-- `monospace-manual` must use the target's manual structure: metadata table, contents, monospace sections, ASCII/table feeling.
-- `plaintext-scoreboard` must transform posts/links into scoreboard-like dated rows with league/filter affordances.
-- `fashion-archive-index` must use counted archive entities and filter tabs.
-- `no-css-club` must genuinely use browser-default/semantic HTML as the main effect.
-- `annotated-research-sidenotes` must support dense reading, sidenotes, link annotations/backlink-like affordances.
-
-## Tests And Audits
-
-Add scripts:
-
-```text
-scripts/auditSuppliedThemes.js
-scripts/captureThemeScreenshots.js
-scripts/auditThemeContent.js
+```sh
+npm run audit:themes
+npx tsc --noEmit
+npm run build
+npx wrangler deploy --dry-run --outdir /tmp/ryan-theme-worker
 ```
 
-`auditSuppliedThemes.js` checks:
+`npm run audit:themes` must confirm:
 
-- Registry contains exactly the URLs from `user-supplied-sites.md`.
-- Every registry slug appears in `user-supplied-theme-plan.md`.
-- No old invented theme slugs remain.
-- Built themes have renderer, stylesheet, reference file, and screenshots.
+- 53 supplied URLs.
+- 53 planned rows.
+- 53 registry themes.
+- All registry URLs come from the supplied URL list.
+- All registry slugs exist in the plan.
+- No old invented slugs are in the active registry.
+- Every built slug has a renderer mapping.
+- Every built slug has a reference file.
 
-`auditThemeContent.js` checks built themes:
+## Remaining Hardening
 
-- Every home link title appears.
-- Every blog index post title appears.
-- Blog post title and body appear.
-- Archive month labels and post titles appear.
-- Contact content appears.
-- Theme picker remains usable.
+These are follow-up quality steps, not blockers for the current 53-theme implementation:
 
-`captureThemeScreenshots.js` captures:
-
-- `/`
-- `/blog`
-- one blog post
-- `/archives`
-- `/themes`
-
-At desktop and mobile widths.
-
-## Rejection Criteria
-
-Reject a theme if:
-
-- It looks like the current generic family renderer.
-- It could be renamed to another target without obvious mismatch.
-- It changes colors but keeps the same DOM structure.
-- It hides Ryan content.
-- It has no screenshot comparison.
-- It has no reference file.
-- It uses any target not present in `user-supplied-sites.md`.
-
-## Current Next Step
-
-Implement Phase 1:
-
-1. Create `src/theme-mimics/registry.ts` from the 53 supplied URLs.
-2. Update `/api/themes` and `/themes` to use that registry.
-3. Hide or remove old `src/themes.ts` categories from the picker.
-4. Keep `legacy-aqua` only as the default rendering fallback while the first supplied-site mimic is built.
+- Capture desktop and mobile screenshots for every target site and save them under `docs/theme-references/screenshots/`.
+- Expand each `docs/theme-references/sites/<slug>.md` from a stub into a detailed visual checklist.
+- Add automated page probes that request `/`, `/blog`, and `/archives` with every `?theme=<slug>` and assert the response contains the expected `family-...` class.
+- Consider splitting `src/theme-renderers.ts` into `src/theme-mimics/<slug>/renderer.ts` modules if the central file becomes hard to maintain.
