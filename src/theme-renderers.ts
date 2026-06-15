@@ -643,7 +643,11 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "scrapbook") {
-    return `<section class="scrapbook">${homeHeader}<div class="scrap-list">${model.links.map((link) => `<article><span>🌀</span><a href="${link.url}">${escapeHtml(link.title)}</a><div>${link.contentHtml}</div></article>`).join("")}</div></section>`;
+    const climbWords = stripHtml(model.introHtml).split(/\s+/).filter(Boolean).slice(0, 18);
+    const wordField = climbWords.map((word, index) => `<span style="--step:${index % 7}">${escapeHtml(word)}</span>`).join("");
+    const linkItems = model.links.map((link, index) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a>${index % 3 === 1 ? ` <span>${escapeHtml(link.domain)}</span>` : ""}<div>${link.contentHtml}</div></li>`).join("");
+    const postItems = model.recentPosts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` <span>${escapeHtml(post.readTime)}</span>` : ""}</li>`).join("");
+    return `<section class="scrapbook"><div class="scrapbook-word-field" aria-hidden="true">${wordField}</div>${homeHeader}<section class="scrapbook-section"><h3>Linkblog</h3><ol>${linkItems}</ol></section><section class="scrapbook-section"><h3>Blog</h3><ol>${postItems}</ol></section></section>`;
   }
 
   if (ctx.family === "art-index") {
