@@ -413,6 +413,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "manual") return renderManualGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "art-library") return renderArtLibraryGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "studio-index") return renderStudioIndexGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "cargo-cv") return renderCargoCvGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -689,7 +690,12 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "cargo-cv") {
-    return `<section class="cargo-cv"><aside>Ryan Prendergast<br>Info</aside><main>${homeHeader}<h3>Selected links</h3>${links}</main></section>`;
+    const lifeworks = [
+      `<span class="cargo-cv-info">${model.introHtml}</span>`,
+      ...model.recentPosts.slice(0, 3).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a> <span>${escapeHtml(post.readTime || post.date)}</span>`),
+      ...model.links.slice(0, 5).map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a> <span>${escapeHtml(link.domain)}</span>`),
+    ];
+    return renderCargoCvPage(ctx, "Info", `<h2>Lifeworks:</h2>${renderCargoCvList(lifeworks)}<section class="cargo-cv-profile">${model.aboutHtml}</section>`);
   }
 
   if (ctx.family === "artist-ledger") {
@@ -890,7 +896,8 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Blog", model.description)}${renderArtLibraryCategories(model.postsByYear.map((group) => group.year))}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.postsByYear.flatMap((group) => group.posts.map((post) => [`<a href="${post.href}">${escapeHtml(post.title)}</a>`, "Ryan Prendergast", escapeHtml(post.date), escapeHtml(group.year)])))}</section>`;
   }
   if (ctx.family === "cargo-cv") {
-    return `<section class="cargo-cv"><aside>Writing</aside><main>${model.postsByYear.map((group) => `<h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => `<p>${index + 1} <a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}`).join("")}</main></section>`;
+    const items = model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a> <span>${escapeHtml(group.year)} ${escapeHtml(post.date)}</span>`));
+    return renderCargoCvPage(ctx, "Writing", `<h2>Lifeworks:</h2>${renderCargoCvList(items)}<p class="cargo-cv-note">${escapeHtml(model.description)}</p>`);
   }
   if (["fragment-journal", "writer-ledger", "experimental-loop"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>${ctx.family === "writer-ledger" ? "recently..." : "journal"}</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
@@ -964,6 +971,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "publishing") {
     return `<article class="publishing-article"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="article-meta">${meta}</p></header><div class="article-body">${model.contentHtml}</div></article>`;
   }
+  if (ctx.family === "cargo-cv") {
+    return renderCargoCvPage(ctx, "Writing", `<article class="cargo-cv-post"><a class="cargo-cv-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="entry-meta">${meta}</p><div class="blog-post-content">${model.contentHtml}</div></article>`);
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1011,7 +1021,9 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Archive", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`)}${renderArtLibraryCategories(model.months.slice(0, 8).map((month) => month.label))}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.months.flatMap((month) => month.posts.map((post) => [`<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(month.label), escapeHtml(post.date), "Archive"])))}</section>`;
   }
   if (ctx.family === "cargo-cv") {
-    return `<section class="cargo-cv"><aside>Archive</aside><main>${model.months.map((month, index) => `<p>${index + 1} ${escapeHtml(month.label)} — ${month.posts.length} entries</p>`).join("")}</main></section>`;
+    const items = model.months.map((month) => `<a href="#${slugify(month.label)}">${escapeHtml(month.label)}</a> <span>${month.posts.length} entries</span>`);
+    const months = model.months.map((month) => `<section id="${slugify(month.label)}" class="cargo-cv-month"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("");
+    return renderCargoCvPage(ctx, "Archive", `<h2>Lifeworks:</h2>${renderCargoCvList(items)}<div class="cargo-cv-small-list">${months}</div>`);
   }
   if (["fragment-journal", "writer-ledger", "experimental-loop", "briefing", "taste-directory", "bookmaker-card", "uncertainty"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
@@ -1051,6 +1063,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
   if (ctx.family === "studio-index") {
     return `<section class="studio-index">${renderStudioIndexHeader(ctx, `<p>${model.entries.length} entries</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Guestbook", "Messages"])}<div class="studio-index-content"><section class="guestbook-header">${button}</section><div class="studio-index-list">${entries}</div></div></div></section>${guestbookModalScript()}`;
   }
+  if (ctx.family === "cargo-cv") {
+    const cargoEntries = model.entries.length
+      ? model.entries.map((entry) => `<span><strong>${escapeHtml(entry.name)}</strong> ${escapeHtml(entry.message)} <span>${escapeHtml(entry.date)}</span></span>`)
+      : [`<span>No entries yet. Be the first to sign the guestbook!</span>`];
+    return `${renderCargoCvPage(ctx, "Guestbook", `<h2>Lifeworks:</h2>${renderCargoCvList(cargoEntries)}<section class="guestbook-header">${button}</section>`)}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -1073,6 +1091,10 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     const rows = model.themes.map((theme, index) => renderStudioIndexTextRow(theme.name, `?theme=${theme.slug}`, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, index)).join("");
     return `<section class="studio-index">${renderStudioIndexHeader(ctx, `<p>${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Built", "Planned", "Reference"])}<div class="studio-index-content"><div class="themes-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="studio-index-list">${rows}</div></div></div></section>`;
+  }
+  if (ctx.family === "cargo-cv") {
+    const items = model.themes.map((theme) => `<a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> <span>${escapeHtml(theme.status)}</span>`);
+    return renderCargoCvPage(ctx, "Themes", `<h2>Lifeworks:</h2><div class="themes-console cargo-cv-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>${renderCargoCvList(items)}`);
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
@@ -1214,6 +1236,22 @@ function renderStudioIndexTextRow(title: string, href: string, date: string, typ
 
 function renderStudioIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return `<article class="studio-index studio-index-article">${renderStudioIndexHeader(ctx, `<p>${escapeHtml(ctx.currentPage || "/")}</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Information", "Contact", "Pages"])}<div class="studio-index-content"><header class="studio-index-article-head"><h2>${escapeHtml(model.heading)}</h2></header><div class="blog-post-content studio-index-copy">${model.contentHtml}</div></div></div></article>`;
+}
+
+function renderCargoCvPage(ctx: RenderContext, section: string, contentHtml: string): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = ctx.navItems
+    .map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`)
+    .join("");
+  return `<section class="cargo-cv"><aside><a class="cargo-cv-title" href="/">Ryan Prendergast</a><a class="${active("/")}" href="/">Info</a><span>${escapeHtml(section)}</span><nav aria-label="Core site areas">${nav}<a class="${active("/themes")}" href="/themes">Themes</a></nav></aside><main>${contentHtml}</main></section>`;
+}
+
+function renderCargoCvList(items: string[]): string {
+  return `<ol class="cargo-cv-lifeworks">${items.map((item) => `<li>${item}</li>`).join("")}</ol>`;
+}
+
+function renderCargoCvGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderCargoCvPage(ctx, model.heading, `<h2>${escapeHtml(model.heading)}:</h2><div class="cargo-cv-profile">${model.contentHtml}</div>`);
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
