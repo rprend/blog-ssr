@@ -1558,32 +1558,220 @@ body {
 }
 
 .family-research-tools {
-  background: #efefe8;
-  color: #111;
-  font-family: "Times New Roman", Times, serif;
+  --theme-bg: #f4f1e8;
+  --theme-text: #17130d;
+  --theme-surface: transparent;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-size: 19px;
+  line-height: 1.18;
 }
 
-.research-tools h2 {
-  font-size: clamp(80px, 22vw, 260px);
-  line-height: .75;
+.family-research-tools .theme-shell-frame {
+  width: min(1180px, calc(100vw - 34px));
+  margin: 18px auto 74px;
+}
+
+.family-research-tools .theme-shell-footer {
+  margin-top: 82px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(23, 19, 13, .4);
+  font-size: 15px;
+}
+
+.family-research-tools .theme-utility-footer .theme-shell-nav {
+  gap: 10px 16px;
+}
+
+.family-research-tools .theme-utility-footer .theme-shell-nav a {
+  text-decoration-thickness: 1px;
+}
+
+.family-research-tools .sticky-theme-picker {
+  background: rgba(244, 241, 232, .92);
+  border-top-color: rgba(23, 19, 13, .5);
+  box-shadow: none;
+  font-size: 14px;
+}
+
+.family-research-tools .mini-theme-picker select,
+.family-research-tools .mini-theme-picker button {
+  border: 1px solid rgba(23, 19, 13, .55);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.research-tools {
+  max-width: 1120px;
   margin: 0;
 }
 
-.family-research-tools .canonical-home-header h2 {
-  font-size: clamp(72px, 20vw, 240px);
-  line-height: .75;
+.research-tools a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .08em;
+}
+
+.research-tools-header {
+  margin-bottom: 46px;
+}
+
+.research-tools-mark {
+  display: inline-block;
+  margin-bottom: 18px;
+  font-size: 24px;
+  line-height: .9;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.research-tools-contact,
+.research-tools-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  margin: 0 0 31px;
+  font-size: 19px;
+}
+
+.research-tools-contact a,
+.research-tools-nav a {
+  text-decoration: underline;
+}
+
+.research-tools-contact a + a::before,
+.research-tools-nav a + a::before {
+  content: "⁂";
+  margin-right: 10px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.research-tools-copy,
+.research-tools-practice {
+  max-width: 1080px;
+}
+
+.research-tools-copy p,
+.research-tools-practice p {
+  margin: 0 0 19px;
+  font-size: clamp(24px, 4vw, 45px);
+  line-height: 1.06;
+}
+
+.research-tools-practice {
+  margin: 0 0 58px;
+}
+
+.research-tools-section {
+  margin: 0 0 42px;
+}
+
+.research-tools h2 {
   margin: 0 0 18px;
+  font: inherit;
+  font-size: clamp(25px, 4vw, 44px);
+  line-height: 1;
+  font-weight: 700;
+  text-transform: lowercase;
 }
 
-.family-research-tools .canonical-site-nav {
-  max-width: 360px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.research-tools-list,
+.research-tools-articles {
+  margin: 0;
+  padding-left: 1.2em;
 }
 
-.research-tools > p {
-  max-width: 680px;
-  font-size: 22px;
+.research-tools-list li,
+.research-tools-articles li {
+  max-width: 1060px;
+  margin: 0 0 22px;
+  padding-left: .15em;
+  font-size: clamp(21px, 3.1vw, 34px);
+  line-height: 1.08;
+}
+
+.research-tools-list p,
+.research-tools-articles p {
+  display: inline;
+  margin: 0;
+}
+
+.research-tools-list span,
+.research-tools-articles span {
+  color: inherit;
+}
+
+.research-tools-articles a {
+  text-decoration: none;
+}
+
+.research-tools-articles a:hover,
+.research-tools-articles a:focus-visible {
+  text-decoration: underline;
+}
+
+.research-tools-articles time {
+  font-variant-numeric: tabular-nums;
+}
+
+.family-research-tools .theme-index,
+.family-research-tools .theme-archives,
+.family-research-tools .theme-generic,
+.family-research-tools .guestbook-header,
+.family-research-tools .guestbook-entry,
+.family-research-tools .theme-post {
+  max-width: 980px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: clamp(21px, 3vw, 34px);
+  line-height: 1.1;
+}
+
+.family-research-tools .theme-index h2,
+.family-research-tools .theme-archives h2,
+.family-research-tools .theme-generic h2,
+.family-research-tools .guestbook-header h2,
+.family-research-tools .theme-post h2 {
+  font: inherit;
+  font-weight: 700;
+  margin: 0 0 22px;
+}
+
+@media (max-width: 700px) {
+  .family-research-tools {
+    font-size: 17px;
+  }
+
+  .family-research-tools .theme-shell-frame {
+    width: min(100% - 22px, 1180px);
+    margin-top: 13px;
+  }
+
+  .research-tools-header {
+    margin-bottom: 35px;
+  }
+
+  .research-tools-contact,
+  .research-tools-nav {
+    margin-bottom: 24px;
+    font-size: 17px;
+  }
+
+  .research-tools-copy p,
+  .research-tools-practice p {
+    font-size: 28px;
+  }
+
+  .research-tools-list li,
+  .research-tools-articles li {
+    font-size: 24px;
+  }
 }
 
 .family-art-library {

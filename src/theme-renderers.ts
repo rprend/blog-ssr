@@ -635,7 +635,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "research-tools") {
-    return `<section class="research-tools">${homeHeader}<div class="tool-list">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</div></section>`;
+    return `<section class="research-tools">${renderResearchToolsHeader(ctx, model.introHtml)}<div class="research-tools-practice">${model.aboutHtml}</div><section class="research-tools-section"><h2>tools</h2><ul class="research-tools-list">${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> <span>${escapeHtml(stripHtml(link.contentHtml))}</span></li>`).join("")}</ul></section><section class="research-tools-section"><h2>articles</h2><ul class="research-tools-articles">${model.recentPosts.map((post) => `<li><a href="${post.href}"><time>${escapeHtml(post.rawDate || post.date)}</time> ${escapeHtml(post.title)}${post.excerpt ? ` <span>${escapeHtml(post.excerpt)}</span>` : ""}</a></li>`).join("")}</ul></section></section>`;
   }
 
   if (ctx.family === "art-library") {
@@ -1000,6 +1000,11 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
 function renderWordmarkNav(ctx: RenderContext): string {
   const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
   return `<header class="wordmark-top"><nav class="wordmark-primary" aria-label="Primary"><a class="${active("/")}" href="/">Work</a><a class="${active("/blog")}" href="/blog">Grid</a><a class="${active("/contact")}" href="/contact">Inquiries</a></nav><nav class="wordmark-secondary" aria-label="Core site areas">${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav></header>`;
+}
+
+function renderResearchToolsHeader(ctx: RenderContext, introHtml = ""): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  return `<header class="research-tools-header"><a class="research-tools-mark" href="/" aria-label="Ryan Prendergast">rp</a><nav class="research-tools-contact" aria-label="Contact and feeds"><a class="${active("/contact")}" href="/contact">@ Contact</a><a href="/rss.xml">RSS</a></nav><div class="research-tools-copy">${introHtml}</div><nav class="research-tools-nav" aria-label="Core site areas">${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav></header>`;
 }
 
 function renderBuilderNotesNav(ctx: RenderContext): string {
