@@ -119,6 +119,21 @@ interface RenderContext {
   currentPage: string;
 }
 
+const originalTheme: SiteTheme = {
+  slug: "original",
+  name: "Original",
+  category: "supplied",
+  description: "Original Ryan Prendergast site design.",
+  tags: ["original"],
+  status: "built",
+  depth: "layout",
+  targetUrl: "",
+  vibe: "Original",
+  stylesheet: "",
+  referencePath: "",
+  screenshots: {},
+};
+
 type RendererFamily =
   | "aqua"
   | "spartan"
@@ -360,7 +375,7 @@ export function resolveThemeFromRequest(request: Request): SiteTheme {
 
   const cookie = request.headers.get("Cookie") || "";
   const match = cookie.match(/(?:^|;\s*)siteTheme=([^;]+)/);
-  return getThemeBySlug(match ? decodeURIComponent(match[1]) : defaultThemeSlug);
+  return match ? getThemeBySlug(decodeURIComponent(match[1])) : originalTheme;
 }
 
 export function renderThemedPage<T extends PageModel>(options: RenderPageOptions<T>): string {
@@ -410,7 +425,7 @@ function renderAquaShell<T extends PageModel>(options: RenderPageOptions<T>, con
   return layout({
     title: options.title,
     nav: nav(navData),
-    content,
+    content: `${content}${renderMiniThemePicker(options.theme)}`,
     pageSubtitle: options.pageSubtitle || "",
     description: options.description || "Ryan Prendergast's personal website and blog",
     ogType: options.ogType || "website",
@@ -521,9 +536,9 @@ function renderShellChrome(ctx: RenderContext): { before: string; after: string 
 }
 
 function renderMiniThemePicker(theme: SiteTheme): string {
-  const options = siteThemes
+  const options = [`<option value="original"${theme.slug === "original" ? " selected" : ""}>Original</option>`, ...siteThemes
     .map((candidate) => `<option value="${candidate.slug}"${candidate.slug === theme.slug ? " selected" : ""}>${escapeHtml(candidate.name)}</option>`)
-    .join("");
+  ].join("");
   return `<div class="mini-theme-picker sticky-theme-picker"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${options}</select><button type="button" data-theme-random>Random</button><button type="button" data-theme-reset>Remove theme</button></div>`;
 }
 

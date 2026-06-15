@@ -1,5 +1,6 @@
 (function () {
   const storageKey = "siteTheme";
+  const originalTheme = { slug: "original", name: "Original" };
   const root = document.documentElement;
   let themes = [];
   let defaultTheme = "spartan-essay-table";
@@ -13,11 +14,12 @@
   }
 
   function getCurrentSlug() {
-    return root.dataset.theme || localStorage.getItem(storageKey) || "spartan-essay-table";
+    return root.dataset.theme || localStorage.getItem(storageKey) || "original";
   }
 
   function findTheme(slug) {
-    return themes.find((theme) => theme.slug === slug) || themes[0];
+    if (slug === "original") return originalTheme;
+    return themes.find((theme) => theme.slug === slug) || originalTheme;
   }
 
   function updateUi(theme) {
@@ -38,6 +40,12 @@
   function setTheme(slug, options) {
     const theme = findTheme(slug);
     if (!theme) return;
+
+    if (theme.slug === "original") {
+      root.dataset.theme = originalTheme.slug;
+      updateUi(originalTheme);
+      return;
+    }
 
     root.dataset.theme = theme.slug;
     localStorage.setItem(storageKey, theme.slug);
@@ -76,7 +84,12 @@
   function resetTheme() {
     localStorage.removeItem(storageKey);
     document.cookie = storageKey + "=; path=/; max-age=0; SameSite=Lax";
-    setTheme(defaultTheme, { updateUrl: true, reload: true });
+    root.dataset.theme = originalTheme.slug;
+    updateUi(originalTheme);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete("theme");
+    window.location.assign(url.toString());
   }
 
   function bindControls() {
@@ -135,12 +148,12 @@
       themes = data.themes || [];
       defaultTheme = data.defaultTheme || defaultTheme;
       const requested = getRequestedTheme();
-      const current = requested || localStorage.getItem(storageKey) || defaultTheme;
+      const current = requested || localStorage.getItem(storageKey) || "original";
       setTheme(current, { updateUrl: false });
       bindControls();
     })
     .catch(() => {
-      updateUi({ slug: getCurrentSlug(), name: getCurrentSlug() || "spartan-essay-table" });
+      updateUi(findTheme(getCurrentSlug()));
       bindControls();
     });
 })();

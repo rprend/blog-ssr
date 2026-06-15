@@ -23,6 +23,32 @@ const failures = [];
 
 if (slugs.length !== 53) failures.push(`Expected 53 theme slugs, found ${slugs.length}.`);
 
+try {
+  const originalResponse = await fetch(new URL("/", baseUrl));
+  const originalHtml = await originalResponse.text();
+
+  if (!originalResponse.ok) {
+    failures.push(`original / returned ${originalResponse.status}.`);
+  }
+  if (!originalHtml.includes('data-theme="original"')) {
+    failures.push("original / is missing data-theme=\"original\".");
+  }
+  if (!originalHtml.includes("theme-original")) {
+    failures.push("original / is missing theme-original class.");
+  }
+  if (!originalHtml.includes("family-aqua")) {
+    failures.push("original / is missing family-aqua.");
+  }
+  if (originalHtml.includes("theme-spartan-essay-table")) {
+    failures.push("original / incorrectly renders the spartan essay mimic theme.");
+  }
+  if (!originalHtml.includes("data-theme-reset")) {
+    failures.push("original / is missing the remove theme control.");
+  }
+} catch (error) {
+  failures.push(`original / failed to fetch from ${baseUrl}: ${error.message}`);
+}
+
 for (const slug of slugs) {
   const family = familyBySlug.get(slug);
   if (!family) {
@@ -90,7 +116,7 @@ console.log(
       baseUrl,
       themes: slugs.length,
       routes: routes.length,
-      probes: slugs.length * routes.length,
+      probes: slugs.length * routes.length + 1,
     },
     null,
     2
