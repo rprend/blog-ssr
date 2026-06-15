@@ -28,6 +28,14 @@ const builtSlugs = [...new Set([...themesSource.matchAll(/"([^"]+)",/g)]
       "coordinates-art-index",
       "no-css-club",
       "annotated-research-sidenotes",
+      "spaced-wordmark-studio",
+      "intimate-builder-notes",
+      "research-tools-studio",
+      "contemporary-art-library",
+      "idealist-studio-index",
+      "lifeworks-cargo-cv",
+      "artist-news-ledger",
+      "latent-garden-notebook",
     ].includes(slug)
   ))];
 

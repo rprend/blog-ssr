@@ -26,6 +26,14 @@ const builtThemeSlugs = new Set([
   "coordinates-art-index",
   "no-css-club",
   "annotated-research-sidenotes",
+  "spaced-wordmark-studio",
+  "intimate-builder-notes",
+  "research-tools-studio",
+  "contemporary-art-library",
+  "idealist-studio-index",
+  "lifeworks-cargo-cv",
+  "artist-news-ledger",
+  "latent-garden-notebook",
 ]);
 
 const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "depth" | "stylesheet" | "referencePath" | "screenshots">> = [

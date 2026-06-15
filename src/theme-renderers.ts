@@ -129,6 +129,14 @@ type RendererFamily =
   | "art-index"
   | "no-css"
   | "research-sidenotes"
+  | "wordmark-studio"
+  | "builder-notes"
+  | "research-tools"
+  | "art-library"
+  | "studio-index"
+  | "cargo-cv"
+  | "artist-ledger"
+  | "garden-notebook"
   | "desktop"
   | "terminal"
   | "editor"
@@ -163,6 +171,14 @@ const familyBySlug: Record<string, RendererFamily> = {
   "coordinates-art-index": "art-index",
   "no-css-club": "no-css",
   "annotated-research-sidenotes": "research-sidenotes",
+  "spaced-wordmark-studio": "wordmark-studio",
+  "intimate-builder-notes": "builder-notes",
+  "research-tools-studio": "research-tools",
+  "contemporary-art-library": "art-library",
+  "idealist-studio-index": "studio-index",
+  "lifeworks-cargo-cv": "cargo-cv",
+  "artist-news-ledger": "artist-ledger",
+  "latent-garden-notebook": "garden-notebook",
   "classic-mac": "desktop",
   win95: "desktop",
   win98: "desktop",
@@ -477,6 +493,39 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return `<article class="research-page"><h2>Essays and Links</h2><aside>Warning: JavaScript optional. Link annotations and sidenotes are simulated for Ryan's content.</aside>${model.introHtml}<h3>Annotated Links</h3>${model.links.map((link, index) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><label for="sn-${index}" class="sidenote-number"></label><span class="sidenote">${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</span></p>`).join("")}<h3>Recent Essays</h3>${posts}</article>`;
   }
 
+  if (ctx.family === "wordmark-studio") {
+    return `<section class="wordmark-studio"><nav>Work Grid Inquiries</nav><h2>R Y A N&nbsp;&nbsp;P R E N D E R G A S T</h2><p class="studio-statement">${stripHtml(model.introHtml)}</p><div class="work-grid">${model.links.map((link) => `<a href="${link.url}"><span>${escapeHtml(link.title)}</span><small>${escapeHtml(link.domain)}</small></a>`).join("")}</div></section>`;
+  }
+
+  if (ctx.family === "builder-notes") {
+    return `<section class="builder-notes"><nav>about friends writing</nav><h2>i'm ryan, and this is what i'm building.</h2>${model.introHtml}<h3>writing</h3>${posts}<h3>links i'm thinking about</h3>${links}</section>`;
+  }
+
+  if (ctx.family === "research-tools") {
+    return `<section class="research-tools"><h2>tt</h2><p>software development and design for research, editorial, and publishing practices.</p>${model.introHtml}<div class="tool-list">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</div></section>`;
+  }
+
+  if (ctx.family === "art-library") {
+    return `<section class="art-library"><header><strong>Midway Contemporary Art</strong><span>Library</span><span>11am-5pm</span></header><table><thead><tr><th>Title</th><th>Name</th><th>Date</th></tr></thead><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
+  }
+
+  if (ctx.family === "studio-index") {
+    return `<section class="studio-index"><h2>LAND</h2><p>Center for Applied Experimentation.</p><nav>STUDIO [ Index ] Studies Information Objects Wabi Sabi Type [ All ]</nav><div class="studio-studies">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><span>${escapeHtml(link.domain)}</span></article>`).join("")}</div></section>`;
+  }
+
+  if (ctx.family === "cargo-cv") {
+    const roles = ["Founder", "Researcher", "Writer", "Builder", "Link collector", "Collaborator"];
+    return `<section class="cargo-cv"><aside>Ryan Prendergast<br>Info</aside><main><h2>Lifeworks</h2>${roles.map((role, index) => `<p>${index + 1} ${escapeHtml(role)}</p>`).join("")}<h3>Selected links</h3>${links}</main></section>`;
+  }
+
+  if (ctx.family === "artist-ledger") {
+    return `<section class="artist-ledger"><p class="latest">Latest: ${model.recentPosts[0] ? `<a href="${model.recentPosts[0].href}">${escapeHtml(model.recentPosts[0].title)}</a>` : "Ryan's linklog"}</p><h2>RYAN PRENDERGAST</h2><nav>ABOUT NEWS WORK</nav><div class="ledger-list">${model.links.map((link) => `<p><time>${escapeHtml(link.date)}</time> <a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</div></section>`;
+  }
+
+  if (ctx.family === "garden-notebook") {
+    return `<section class="garden-notebook"><figure><div class="garden-image">latent space</div><figcaption>Getting my notes signed by the internet</figcaption></figure><h2>Hi, I'm Ryan.</h2>${model.introHtml}<div class="garden-beds">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+  }
+
   if (ctx.family === "hn") {
     return `<section class="hn-feed"><div class="hn-intro">${model.introHtml}</div><table><tbody>${model.links
       .map((link, index) => `<tr><td class="rank">${index + 1}.</td><td><a href="${link.url}">${escapeHtml(link.title)}</a><span class="sitebit"> (${escapeHtml(link.domain)})</span><div class="subtext">${escapeHtml(link.date)} | ${stripHtml(link.contentHtml)}</div></td></tr>`)
@@ -522,6 +571,21 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "research-sidenotes") {
     return `<article class="research-page"><h2>Essays</h2><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(post.date)} · ${post.readTime || ""}</span></p>`).join("")}</section>`).join("")}</article>`;
+  }
+  if (ctx.family === "wordmark-studio" || ctx.family === "studio-index") {
+    return `<section class="${ctx.family}"><h2>${ctx.family === "wordmark-studio" ? "W O R K" : "Studies Index"}</h2><div class="work-grid">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(group.year)} · ${escapeHtml(post.date)}</small></a>`)).join("")}</div></section>`;
+  }
+  if (ctx.family === "builder-notes" || ctx.family === "garden-notebook") {
+    return `<section class="${ctx.family}"><h2>writing</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
+  }
+  if (ctx.family === "research-tools" || ctx.family === "artist-ledger") {
+    return `<section class="${ctx.family}"><h2>${ctx.family === "artist-ledger" ? "NEWS" : "Publications"}</h2><div class="ledger-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><time>${escapeHtml(post.date)}</time> <a href="${post.href}">${escapeHtml(post.title)}</a></p>`)).join("")}</div></section>`;
+  }
+  if (ctx.family === "art-library") {
+    return `<section class="art-library"><table><thead><tr><th>Title</th><th>Year</th><th>Date</th></tr></thead><tbody>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<tr><td><a href="${post.href}">${escapeHtml(post.title)}</a></td><td>${escapeHtml(group.year)}</td><td>${escapeHtml(post.date)}</td></tr>`)).join("")}</tbody></table></section>`;
+  }
+  if (ctx.family === "cargo-cv") {
+    return `<section class="cargo-cv"><aside>Writing</aside><main>${model.postsByYear.map((group) => `<h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => `<p>${index + 1} <a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}`).join("")}</main></section>`;
   }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<section class="terminal-output"><p class="prompt">$ find ./blog -type f</p>${model.postsByYear
@@ -586,6 +650,15 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   }
   if (ctx.family === "research-sidenotes") {
     return `<article class="research-page"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(month.key)}</span></p>`).join("")}</section>`).join("")}</article>`;
+  }
+  if (["wordmark-studio", "studio-index", "research-tools", "artist-ledger", "builder-notes", "garden-notebook"].includes(ctx.family)) {
+    return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
+  }
+  if (ctx.family === "art-library") {
+    return `<section class="art-library"><table><thead><tr><th>Month</th><th>Entries</th><th>Titles</th></tr></thead><tbody>${model.months.map((month) => `<tr><td>${escapeHtml(month.label)}</td><td>${month.posts.length}</td><td>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("<br>")}</td></tr>`).join("")}</tbody></table></section>`;
+  }
+  if (ctx.family === "cargo-cv") {
+    return `<section class="cargo-cv"><aside>Archive</aside><main>${model.months.map((month, index) => `<p>${index + 1} ${escapeHtml(month.label)} — ${month.posts.length} entries</p>`).join("")}</main></section>`;
   }
   if (ctx.family === "desktop") {
     return `<section class="file-grid">${model.months.map((month) => `<article class="file-folder"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</article>`).join("")}</section>`;
