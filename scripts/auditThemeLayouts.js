@@ -44,6 +44,14 @@ const builtSlugs = [...new Set([...themesSource.matchAll(/"([^"]+)",/g)]
       "experimental-publication-loop",
       "taste-directory",
       "recent-writer-ledger",
+      "artist-menu-works",
+      "friendly-nerd-hub",
+      "playful-games-cabinet",
+      "creativity-portal-gallery",
+      "design-archive-repository",
+      "weblog-topic-facets",
+      "research-lab-index",
+      "visual-culture-practice",
     ].includes(slug)
   ))];
 
