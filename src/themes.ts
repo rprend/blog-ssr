@@ -141,9 +141,9 @@ const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "de
   },
   {
     slug: "lifeworks-cargo-cv",
-    name: "Lifeworks Cargo CV",
+    name: "Sidebar Lifeworks CV",
     targetUrl: "https://tamikaabakawood.com/",
-    vibe: "Lifeworks Cargo CV",
+    vibe: "Sidebar Lifeworks CV",
     description: "Tamika Abaka-Wood: Cargo-like sidebar/title, numbered lifework roles, CV/profile as a dense life-practice list, minimal chrome.",
   },
   {
@@ -169,23 +169,23 @@ const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "de
   },
   {
     slug: "spartan-essay-table",
-    name: "Spartan Essay Table",
+    name: "Plain Essay Table",
     targetUrl: "https://paulgraham.com/",
-    vibe: "Spartan Essay Table",
+    vibe: "Plain Essay Table",
     description: "Paul Graham: almost bare HTML, small centered page, simple top \"New\" links, essay list with minimal typography, no modern cards.",
   },
   {
     slug: "coordinates-art-index",
-    name: "Coordinates Art Index",
+    name: "Coordinate Work Index",
     targetUrl: "https://jonrafman.com/",
-    vibe: "Coordinates Art Index",
+    vibe: "Coordinate Work Index",
     description: "Jon Rafman: lat/lng header, artist title, year-grouped selected works, cryptic symbols, gallery-representation note, dense artwork chronology.",
   },
   {
     slug: "ucoz-folk-archive",
-    name: "Ucoz Folk Archive",
+    name: "Old Portal File Archive",
     targetUrl: "https://mopppoppp.moy.su/load/rybalka/o_rybalka/ehduard_uspenskij_k_cheloveku_boris_mikhajlov/3-1-0-32",
-    vibe: "Ucoz Folk Archive",
+    vibe: "Old Portal File Archive",
     description: "uCoz/Russian file catalog: old portal chrome, registration/catalog links, nested category breadcrumbs, small text modules, file-entry page structure.",
   },
   {
@@ -267,9 +267,9 @@ const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "de
   },
   {
     slug: "weblog-topic-facets",
-    name: "Weblog With Topic Facets",
+    name: "Topic Facet Weblog",
     targetUrl: "https://simonwillison.net/",
-    vibe: "Weblog With Topic Facets",
+    vibe: "Topic Facet Weblog",
     description: "Simon Willison: weblog title, About/Subscribe/TILs/Tools nav, topic tag counts, chronological posts with utility/tool density.",
   },
   {
@@ -302,9 +302,9 @@ const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "de
   },
   {
     slug: "cyberfeminist-download-index",
-    name: "Cyberfeminist Download Index",
+    name: "Activist Download Index",
     targetUrl: "https://cyberfeminismindex.com/",
-    vibe: "Cyberfeminist Download Index",
+    vibe: "Activist Download Index",
     description: "Cyberfeminism Index: entry download logs, index/database framing, dense records, activist archive tone, timestamped data traces.",
   },
   {
@@ -358,9 +358,9 @@ const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "de
   },
   {
     slug: "no-css-club",
-    name: "No CSS Club",
+    name: "Plain Semantic HTML",
     targetUrl: "https://nocss.club/",
-    vibe: "No CSS Club",
+    vibe: "Plain Semantic HTML",
     description: "No CSS Club: browser-default HTML, anti-modern-web manifesto, club/list membership, no styling beyond semantic structure.",
   },
   {
@@ -386,9 +386,9 @@ const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "de
   },
   {
     slug: "recurse-link-joy",
-    name: "Recurse Link Joy",
+    name: "Community Link Joy",
     targetUrl: "https://joy.recurse.com/",
-    vibe: "Recurse Link Joy",
+    vibe: "Community Link Joy",
     description: "Joy of Computing: daily community link, home/about/subscribe/RC nav, weekday post stream, Atom feed prominence.",
   },
   {
@@ -442,9 +442,9 @@ const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "de
   },
   {
     slug: "ai-grant-application-page",
-    name: "AI Grant Application Page",
+    name: "Grant Application Landing",
     targetUrl: "https://aigrant.com/",
-    vibe: "AI Grant Application Page",
+    vibe: "Grant Application Landing",
     description: "AI Grant because it is user-supplied: accelerator landing page, grant amount hero, credits/summit/advisor details, application CTA structure.",
   },
 ];

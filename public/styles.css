@@ -382,6 +382,33 @@ body {
 }
 
 /* User-supplied site mimics */
+.canonical-home-header {
+  margin-bottom: 24px;
+}
+
+.canonical-home-header h2 {
+  margin: 0 0 12px;
+  font: inherit;
+  font-size: clamp(34px, 7vw, 88px);
+  line-height: 1;
+}
+
+.canonical-home-header .homepage-intro {
+  max-width: 820px;
+}
+
+.canonical-site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 18px;
+  font-size: 13px;
+}
+
+.canonical-site-nav a {
+  text-decoration: none;
+}
+
 .family-spartan {
   background: #fff;
   color: #000;
@@ -409,6 +436,19 @@ body {
   font-size: 14px;
 }
 
+.family-spartan .canonical-home-header h2 {
+  font: 22px Arial, Helvetica, sans-serif;
+}
+
+.family-spartan .canonical-site-nav {
+  gap: 8px;
+}
+
+.family-spartan .canonical-site-nav a {
+  color: #00e;
+  text-decoration: underline;
+}
+
 .family-manual {
   --manual-border: #222;
   background: #f7f7f2;
@@ -419,6 +459,27 @@ body {
 .manual-page {
   max-width: 980px;
   margin: 0 auto;
+}
+
+.family-manual .canonical-home-header {
+  border: 1px solid var(--manual-border);
+  padding: 10px;
+}
+
+.family-manual .canonical-home-header h2 {
+  font-size: 20px;
+}
+
+.family-manual .canonical-site-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0;
+  border: 1px solid var(--manual-border);
+}
+
+.family-manual .canonical-site-nav a {
+  border-right: 1px solid var(--manual-border);
+  padding: 4px 6px;
 }
 
 .manual-page h2,
@@ -453,6 +514,18 @@ body {
 
 .scoreboard {
   font-size: 13px;
+}
+
+.family-scoreboard .canonical-home-header h2 {
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+.family-scoreboard .canonical-site-nav {
+  border-top: 1px solid #111;
+  border-bottom: 1px solid #111;
+  padding: 4px 0;
+  font-family: inherit;
 }
 
 .scorebar,
@@ -490,6 +563,18 @@ body {
   text-transform: lowercase;
 }
 
+.family-archive-index .canonical-home-header h2 {
+  font-size: clamp(64px, 15vw, 180px);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.family-archive-index .canonical-site-nav {
+  justify-content: space-between;
+  border-bottom: 2px solid #111;
+  padding-bottom: 8px;
+}
+
 .archive-index nav {
   margin: 20px 0;
   border-top: 1px solid #111;
@@ -523,6 +608,19 @@ body {
   line-height: 1.05;
 }
 
+.family-scrapbook .canonical-home-header {
+  background: #fff;
+  border: 2px dashed #222;
+  padding: 18px;
+  transform: rotate(-.6deg);
+}
+
+.family-scrapbook .canonical-site-nav a {
+  background: #ffe66d;
+  border: 1px solid #222;
+  padding: 3px 7px;
+}
+
 .scrap-list {
   display: grid;
   gap: 18px;
@@ -552,6 +650,21 @@ body {
   letter-spacing: 0;
 }
 
+.family-art-index .canonical-home-header {
+  border-top: 1px solid rgba(255,255,255,.45);
+  border-bottom: 1px solid rgba(255,255,255,.45);
+  padding: 20px 0;
+}
+
+.family-art-index .canonical-home-header h2 {
+  font-size: clamp(46px, 12vw, 150px);
+  text-transform: uppercase;
+}
+
+.family-art-index .canonical-site-nav {
+  justify-content: flex-end;
+}
+
 .art-row {
   display: grid;
   grid-template-columns: 80px 1fr minmax(120px, .4fr);
@@ -576,6 +689,16 @@ body {
 .research-page h2 {
   font-size: clamp(38px, 8vw, 86px);
   line-height: 1;
+}
+
+.family-research-sidenotes .canonical-home-header h2 {
+  font-size: clamp(34px, 6vw, 68px);
+  font-variant-caps: small-caps;
+}
+
+.family-research-sidenotes .canonical-site-nav {
+  border-bottom: 1px solid #d8d1bd;
+  padding-bottom: 10px;
 }
 
 .research-page aside,
@@ -630,6 +753,20 @@ body {
   overflow-wrap: anywhere;
 }
 
+.family-wordmark-studio .canonical-home-header h2 {
+  font-size: clamp(42px, 13vw, 180px);
+  line-height: .85;
+  font-weight: 400;
+  letter-spacing: .16em;
+  overflow-wrap: anywhere;
+}
+
+.family-wordmark-studio .canonical-site-nav {
+  justify-content: space-between;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
 .studio-statement {
   max-width: 760px;
   font-size: clamp(22px, 4vw, 52px);
@@ -679,6 +816,11 @@ body {
   font-weight: 500;
 }
 
+.family-builder-notes .canonical-home-header h2 {
+  font-size: clamp(32px, 7vw, 78px);
+  font-weight: 600;
+}
+
 .family-research-tools {
   background: #efefe8;
   color: #111;
@@ -689,6 +831,18 @@ body {
   font-size: clamp(80px, 22vw, 260px);
   line-height: .75;
   margin: 0;
+}
+
+.family-research-tools .canonical-home-header h2 {
+  font-size: clamp(72px, 20vw, 240px);
+  line-height: .75;
+  margin: 0 0 18px;
+}
+
+.family-research-tools .canonical-site-nav {
+  max-width: 360px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .research-tools > p {
@@ -717,6 +871,24 @@ body {
   font-size: 14px;
 }
 
+.family-art-library .canonical-home-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  border-bottom: 1px solid #111;
+  padding-bottom: 14px;
+}
+
+.family-art-library .canonical-home-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.family-art-library .canonical-site-nav {
+  grid-column: 1 / -1;
+  justify-content: space-between;
+}
+
 .art-library th,
 .art-library td {
   border-bottom: 1px solid #d8d8d8;
@@ -734,6 +906,304 @@ body {
   font-size: clamp(58px, 18vw, 220px);
   margin: 0;
   line-height: .8;
+}
+
+.family-studio-index .canonical-home-header h2 {
+  font-size: clamp(58px, 18vw, 220px);
+  margin: 0;
+  line-height: .8;
+  text-transform: uppercase;
+}
+
+.family-studio-index .canonical-site-nav {
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  padding: 10px 0;
+  margin-bottom: 28px;
+}
+
+.family-cargo-cv .canonical-home-header h2,
+.family-artist-ledger .canonical-home-header h2,
+.family-fragment-journal .canonical-home-header h2,
+.family-writer-ledger .canonical-home-header h2 {
+  font-size: clamp(28px, 6vw, 72px);
+  font-weight: 400;
+}
+
+.family-cargo-cv .canonical-site-nav,
+.family-fragment-journal .canonical-site-nav {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  align-content: start;
+}
+
+.family-artist-ledger .canonical-site-nav,
+.family-writer-ledger .canonical-site-nav {
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  padding: 7px 0;
+  text-transform: uppercase;
+}
+
+.family-garden-notebook .canonical-home-header {
+  max-width: 720px;
+  background: #fffff7;
+  border: 1px solid #dde2be;
+  padding: 18px;
+}
+
+.family-garden-notebook .canonical-home-header h2 {
+  color: #40613a;
+  font-family: Georgia, serif;
+  font-size: clamp(34px, 8vw, 84px);
+}
+
+.family-ucoz-archive .canonical-home-header {
+  background: #f3f3f3;
+  border: 1px solid #999;
+  padding: 8px;
+}
+
+.family-ucoz-archive .canonical-home-header h2 {
+  font: bold 20px Tahoma, Arial, sans-serif;
+}
+
+.family-ucoz-archive .canonical-site-nav {
+  background: #d7e5f5;
+  border: 1px solid #8aa4c0;
+  padding: 4px;
+}
+
+.family-uncertainty .canonical-home-header {
+  min-height: 52vh;
+  display: grid;
+  align-content: center;
+}
+
+.family-uncertainty .canonical-home-header h2 {
+  font-size: clamp(28px, 5vw, 58px);
+  font-weight: 400;
+}
+
+.family-briefing .canonical-home-header,
+.family-research-lab .canonical-home-header {
+  border-top: 4px solid currentColor;
+  padding-top: 18px;
+}
+
+.family-briefing .canonical-home-header h2,
+.family-research-lab .canonical-home-header h2 {
+  font-size: clamp(40px, 9vw, 96px);
+  font-weight: 700;
+  line-height: .9;
+}
+
+.family-briefing .canonical-site-nav,
+.family-research-lab .canonical-site-nav {
+  justify-content: space-between;
+  text-transform: uppercase;
+}
+
+.family-bookmaker-card .canonical-home-header {
+  max-width: 520px;
+  border: 1px solid currentColor;
+  padding: 18px;
+}
+
+.family-bookmaker-card .canonical-home-header h2 {
+  font-size: 28px;
+}
+
+.family-experimental-loop .canonical-home-header h2 {
+  font-size: clamp(36px, 9vw, 110px);
+  line-height: .9;
+}
+
+.family-experimental-loop .canonical-home-header {
+  border-left: 8px solid currentColor;
+  padding-left: 18px;
+}
+
+.family-taste-directory .canonical-site-nav {
+  display: flex;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+
+.family-taste-directory .canonical-home-header {
+  text-align: center;
+}
+
+.family-artist-menu .canonical-home-header,
+.family-portal-gallery .canonical-home-header,
+.family-design-repository .canonical-home-header,
+.family-room-wall .canonical-home-header {
+  display: grid;
+  grid-template-columns: minmax(180px, .6fr) 1fr;
+  gap: 20px;
+}
+
+.family-artist-menu .canonical-site-nav,
+.family-portal-gallery .canonical-site-nav,
+.family-design-repository .canonical-site-nav,
+.family-room-wall .canonical-site-nav {
+  grid-row: 1 / span 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.family-friendly-hub .canonical-home-header {
+  background: #fff3bf;
+  border: 3px solid #111;
+  padding: 18px;
+  box-shadow: 8px 8px 0 #111;
+}
+
+.family-friendly-hub .canonical-home-header h2 {
+  font-size: clamp(40px, 9vw, 100px);
+}
+
+.family-games-cabinet .canonical-home-header {
+  background: #101828;
+  color: #f7f871;
+  border: 3px solid #f7f871;
+  padding: 18px;
+}
+
+.family-games-cabinet .canonical-site-nav a {
+  border: 1px solid #f7f871;
+  padding: 4px 7px;
+}
+
+.family-weblog-facets .canonical-home-header {
+  border-bottom: 1px solid #444;
+  padding-bottom: 16px;
+}
+
+.family-weblog-facets .canonical-home-header h2 {
+  font: 42px Georgia, serif;
+}
+
+.family-visual-culture .canonical-home-header h2 {
+  font-size: clamp(64px, 16vw, 210px);
+  line-height: .8;
+  text-transform: uppercase;
+}
+
+.family-book-microsite .canonical-home-header {
+  text-align: center;
+  min-height: 48vh;
+  display: grid;
+  place-content: center;
+}
+
+.family-book-microsite .canonical-home-header h2 {
+  font-size: clamp(54px, 12vw, 150px);
+  text-transform: uppercase;
+}
+
+.family-download-index .canonical-site-nav,
+.family-performance-club .canonical-site-nav {
+  font-family: "Courier New", monospace;
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  padding: 6px 0;
+}
+
+.family-visual-index .canonical-home-header h2,
+.family-data-portfolio .canonical-home-header h2 {
+  font-size: clamp(38px, 8vw, 86px);
+  font-weight: 400;
+}
+
+.family-html-bulletin .canonical-home-header,
+.family-vernacular-essay .canonical-home-header,
+.family-cheap-manifesto .canonical-home-header {
+  max-width: 720px;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.family-html-bulletin .canonical-site-nav,
+.family-vernacular-essay .canonical-site-nav,
+.family-cheap-manifesto .canonical-site-nav {
+  display: block;
+}
+
+.family-html-bulletin .canonical-site-nav a,
+.family-vernacular-essay .canonical-site-nav a,
+.family-cheap-manifesto .canonical-site-nav a {
+  margin-right: 10px;
+  text-decoration: underline;
+}
+
+.family-consumption-digest .canonical-home-header {
+  border-bottom: 3px double currentColor;
+  padding-bottom: 16px;
+}
+
+.family-internet-diagram .canonical-home-header {
+  position: relative;
+  border: 1px dashed #174ea6;
+  background: rgba(255,255,255,.72);
+  padding: 18px;
+}
+
+.family-poetic-article .canonical-home-header,
+.family-feral-essay .canonical-home-header,
+.family-forecast-report .canonical-home-header {
+  max-width: 760px;
+  border-top: 8px solid currentColor;
+  padding-top: 18px;
+}
+
+.family-poetic-article .canonical-home-header h2,
+.family-feral-essay .canonical-home-header h2,
+.family-forecast-report .canonical-home-header h2 {
+  font-size: clamp(42px, 9vw, 100px);
+}
+
+.family-recurse-joy .canonical-home-header {
+  border-bottom: 2px solid #222;
+  padding-bottom: 14px;
+}
+
+.family-forum-frontpage .canonical-home-header {
+  background: #fff;
+  border: 1px solid #d0ccc1;
+  padding: 14px;
+}
+
+.family-essay-blogroll .canonical-home-header,
+.family-conversational-minimal .canonical-home-header,
+.family-founder-index .canonical-home-header {
+  max-width: 680px;
+}
+
+.family-essay-blogroll .canonical-home-header h2,
+.family-conversational-minimal .canonical-home-header h2,
+.family-founder-index .canonical-home-header h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(32px, 7vw, 76px);
+}
+
+.family-now-directory .canonical-home-header {
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.family-grant-page .canonical-home-header {
+  text-align: center;
+}
+
+.family-grant-page .canonical-home-header h2 {
+  font-size: clamp(58px, 13vw, 150px);
+  color: #1b4cff;
 }
 
 .studio-index nav {

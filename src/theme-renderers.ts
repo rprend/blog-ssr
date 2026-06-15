@@ -528,7 +528,7 @@ function renderMiniThemePicker(theme: SiteTheme): string {
 }
 
 function renderCanonicalHomeHeader(model: HomeModel): string {
-  return `<header class="canonical-home-header"><h2>Ryan Prendergast</h2>${model.introHtml}</header>`;
+  return `<header class="canonical-home-header"><nav class="canonical-site-nav"><a href="/">Linkblog</a><a href="/blog">Blog</a><a href="/photos">Photos</a><a href="/archives">Archives</a><a href="/guestbook">Guestbook</a><a href="/contact">Contact</a><a href="/rss.xml">RSS</a></nav><h2>Ryan Prendergast</h2>${model.introHtml}</header>`;
 }
 
 function renderHome(model: HomeModel, ctx: RenderContext): string {

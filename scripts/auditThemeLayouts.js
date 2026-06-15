@@ -17,6 +17,7 @@ const plannedRows = plan
 
 const registryUrls = [...themesSource.matchAll(/targetUrl:\s*"([^"]+)"/g)].map((match) => match[1]);
 const registrySlugs = [...themesSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
+const registryNames = [...themesSource.matchAll(/name:\s*"([^"]+)"/g)].map((match) => match[1]);
 const builtSlugs = [...new Set([...themesSource.matchAll(/"([^"]+)",/g)]
   .map((match) => match[1])
   .filter((slug) =>
@@ -96,6 +97,12 @@ for (const slug of registrySlugs) {
 
 for (const oldSlug of ["hacker-news", "win98", "tufte", "aqua", "theme-museum"]) {
   if (registrySlugs.includes(oldSlug)) failures.push(`Old invented theme still present: ${oldSlug}`);
+}
+
+for (const sourceName of ["Ucoz", "Cyberfeminism", "No CSS Club", "Recurse", "AI Grant", "Paul Graham", "LessWrong", "Slate Star", "Gwern"]) {
+  if (registryNames.some((name) => name.includes(sourceName))) {
+    failures.push(`Visible theme name still includes source-site wording: ${sourceName}`);
+  }
 }
 
 for (const slug of builtSlugs) {

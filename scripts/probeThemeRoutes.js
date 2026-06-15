@@ -18,6 +18,7 @@ const forbiddenPhrases = [
   "Downloaded entries from Ryan",
 ];
 const canonicalHomeText = "Ryan is a startup founder focused on quantitative humanities research";
+const requiredNavHrefs = ['href="/"', 'href="/blog"', 'href="/archives"', 'href="/contact"'];
 const failures = [];
 
 if (slugs.length !== 53) failures.push(`Expected 53 theme slugs, found ${slugs.length}.`);
@@ -58,6 +59,11 @@ for (const slug of slugs) {
       }
       if (route === "/" && !html.includes(canonicalHomeText)) {
         failures.push(`${slug} ${route} is missing the canonical home subheader.`);
+      }
+      for (const href of requiredNavHrefs) {
+        if (!html.includes(href)) {
+          failures.push(`${slug} ${route} is missing core nav link ${href}.`);
+        }
       }
       for (const phrase of forbiddenPhrases) {
         if (html.includes(phrase)) {
