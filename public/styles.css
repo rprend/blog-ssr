@@ -24,6 +24,316 @@ body {
   line-height: 1.5;
 }
 
+/* Theme layout renderer system */
+.theme-layout {
+  min-height: 100vh;
+  background: var(--theme-bg, #f7f7f7);
+  color: var(--theme-text, #111);
+}
+
+.theme-layout a {
+  color: inherit;
+}
+
+.theme-shell-frame {
+  width: min(1180px, calc(100vw - 32px));
+  margin: 24px auto 56px;
+}
+
+.theme-shell-header,
+.theme-shell-nav,
+.theme-shell-footer,
+.theme-shell-main {
+  position: relative;
+}
+
+.theme-shell-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.theme-shell-header h1 {
+  margin: 0;
+  font-size: 42px;
+  line-height: 1;
+}
+
+.theme-shell-header h1 a {
+  text-decoration: none;
+}
+
+.theme-shell-kicker {
+  margin: 0 0 6px;
+  font: 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.mini-theme-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.mini-theme-picker label {
+  font-size: 12px;
+}
+
+.mini-theme-picker select,
+.mini-theme-picker button {
+  min-height: 34px;
+}
+
+.theme-shell-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.theme-shell-nav a {
+  padding: 6px 10px;
+  border: 1px solid currentColor;
+  text-decoration: none;
+}
+
+.theme-shell-nav a.is-active {
+  color: var(--theme-bg, #fff);
+  background: var(--theme-text, #111);
+}
+
+.theme-shell-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid currentColor;
+  font-size: 12px;
+}
+
+.theme-link-list,
+.theme-recent-posts,
+.theme-index,
+.theme-archives,
+.file-grid,
+.theme-shell-main .theme-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.theme-card-entry,
+.file-folder,
+.desktop-window,
+.publishing-article,
+.wiki-article,
+.theme-post {
+  border: 1px solid currentColor;
+  padding: 16px;
+  background: var(--theme-surface, rgba(255,255,255,0.72));
+}
+
+.theme-card-entry img {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.catalog-table {
+  display: grid;
+  border: 1px solid currentColor;
+}
+
+.catalog-table header,
+.catalog-table a,
+.catalog-row {
+  display: grid;
+  grid-template-columns: minmax(36px, .4fr) minmax(180px, 2fr) minmax(110px, 1fr) minmax(80px, .8fr);
+  gap: 10px;
+  padding: 8px 10px;
+  border-bottom: 1px solid currentColor;
+  text-decoration: none;
+}
+
+.catalog-table header {
+  font-weight: bold;
+  background: var(--theme-text, #111);
+  color: var(--theme-bg, #fff);
+}
+
+.theme-catalog header,
+.theme-catalog a {
+  grid-template-columns: 2fr 1fr .7fr;
+}
+
+.terminal-status,
+.terminal-output {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.terminal-status {
+  padding: 8px 14px;
+  background: #050505;
+  color: #7cff7c;
+}
+
+.terminal-output {
+  border: 1px solid currentColor;
+  padding: 18px;
+  background: rgba(0,0,0,.82);
+  color: #9cff9c;
+}
+
+.terminal-line,
+.terminal-dir,
+.prompt,
+.terminal-comment {
+  display: block;
+  margin: 0 0 8px;
+}
+
+.terminal-dir,
+.prompt {
+  color: #fff;
+}
+
+.desktop-icons {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  display: grid;
+  gap: 12px;
+  z-index: 0;
+}
+
+.desktop-icons a {
+  color: #fff;
+  text-shadow: 1px 1px #000;
+  width: 72px;
+  text-align: center;
+}
+
+.theme-taskbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-top: 2px solid #fff;
+  background: #c0c0c0;
+  color: #000;
+  z-index: 5;
+}
+
+.desktop-window {
+  box-shadow: 2px 2px 0 rgba(0,0,0,.65);
+  padding: 0;
+}
+
+.desktop-window .window-title {
+  background: #000080;
+  color: #fff;
+  padding: 4px 8px;
+  font-weight: bold;
+}
+
+.desktop-window .window-body {
+  padding: 14px;
+}
+
+.wiki-article {
+  display: grid;
+  grid-template-columns: minmax(140px, 220px) 1fr;
+  gap: 24px;
+}
+
+.wiki-article > h2,
+.wiki-article > .wiki-meta,
+.wiki-article > .article-body,
+.wiki-article > section {
+  grid-column: 2;
+}
+
+.wiki-toc,
+.wiki-infobox {
+  grid-column: 1;
+  grid-row: span 4;
+  border: 1px solid currentColor;
+  padding: 12px;
+}
+
+.wiki-toc a {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.publishing-article {
+  max-width: 760px;
+  margin: 0 auto;
+  border: 0;
+  background: transparent;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.publishing-article h2 {
+  font-size: 44px;
+  line-height: 1.05;
+}
+
+.old-web-marquee,
+.old-web-badges {
+  text-align: center;
+  padding: 8px;
+  background: #ff0;
+  color: #00f;
+  font-weight: bold;
+}
+
+.old-web-badges {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.old-web-badges span {
+  border: 2px outset #ccc;
+  background: #fff;
+  padding: 2px 8px;
+}
+
+.hn-feed {
+  background: #f6f6ef;
+  color: #000;
+  font: 13px Verdana, Geneva, sans-serif;
+  padding: 8px;
+}
+
+.hn-feed table {
+  width: 100%;
+}
+
+.hn-feed .rank {
+  width: 32px;
+  color: #828282;
+  text-align: right;
+  vertical-align: top;
+}
+
+.hn-feed .sitebit,
+.hn-feed .subtext {
+  color: #828282;
+  font-size: 10px;
+}
+
 /* Aqua navigation bar */
 .aqua-bar {
   width: 100%;

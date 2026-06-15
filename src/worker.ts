@@ -18,6 +18,18 @@ import {
   siteThemes,
   type SiteTheme,
 } from "./themes";
+import {
+  renderThemedPage,
+  resolveThemeFromRequest,
+  type ArchiveModel,
+  type BlogIndexModel,
+  type BlogPostModel,
+  type GenericPageModel,
+  type HomeModel,
+  type LinkEntryModel,
+  type PostSummaryModel,
+  type ThemesModel,
+} from "./theme-renderers";
 
 interface Bindings {
   GUESTBOOK_DB: any; // D1Database
@@ -58,6 +70,70 @@ function formatCategory(category: string): string {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+function extractDomain(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
+
+function toPostSummary(post: Awaited<ReturnType<typeof getBlogPosts>>[number], hrefPrefix = "/blog"): PostSummaryModel {
+  return {
+    slug: post.slug,
+    title: post.title,
+    href: `${hrefPrefix}/${post.slug}`,
+    date: formatDateReadable(post.date),
+    rawDate: post.date,
+    excerpt: post.excerpt,
+    readTime: post.readTime,
+  };
+}
+
+function toLinkEntryModel(link: Awaited<ReturnType<typeof getLinkEntries>>[number]): LinkEntryModel {
+  return {
+    title: link.title,
+    url: link.url,
+    domain: extractDomain(link.url),
+    date: formatDateReadable(link.date),
+    rawDate: link.date,
+    image: link.image,
+    contentHtml: link.content,
+  };
+}
+
+function renderThemePage<T>(
+  request: Request,
+  title: string,
+  content: T,
+  currentPage: string,
+  routeType: Parameters<typeof renderThemedPage>[0]["routeType"],
+  seoData: {
+    description?: string;
+    ogType?: string;
+    ogImage?: string;
+    structuredData?: string;
+    canonicalUrl?: string;
+    pageSubtitle?: string;
+    bodyClass?: string;
+  } = {}
+) {
+  return renderThemedPage({
+    theme: resolveThemeFromRequest(request),
+    title,
+    currentPage,
+    routeType,
+    model: content as any,
+    pageSubtitle: seoData.pageSubtitle || "",
+    description: seoData.description,
+    ogType: seoData.ogType,
+    ogImage: seoData.ogImage,
+    structuredData: seoData.structuredData,
+    canonicalUrl: seoData.canonicalUrl,
+    bodyClass: seoData.bodyClass,
+  });
 }
 
 function renderThemeCard(theme: SiteTheme): string {
@@ -132,60 +208,18 @@ function renderPage(
 // Home Page (Linklog)
 app.get("/", async (c) => {
   const links = await getLinkEntries();
-
-  // Extract domain from URL for display
-  function extractDomain(url: string): string {
-    try {
-      return new URL(url).hostname.replace(/^www\./, "");
-    } catch {
-      return url;
-    }
-  }
-
-  let linksHtml = "";
-  links.forEach((link) => {
-    const imageHtml = link.image
-      ? `<div class="linklog-image"><img src="${link.image}" alt="" loading="lazy"></div>`
-      : "";
-    linksHtml += `
-      <div class="linklog-entry">
-        <div class="linklog-header">
-          <div class="linklog-title"><a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.title}</a></div>
-          <span class="linklog-domain">${extractDomain(link.url)}</span>
-          <span class="linklog-meta">${formatDateReadable(link.date)}</span>
-        </div>
-        ${imageHtml}
-        <div class="linklog-commentary">${link.content}</div>
-      </div>
-    `;
-  });
-
-  const content = home({ linksHtml });
-
-  // Sidebar: recent blog posts + link count
   const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
-  const recentPosts = posts
-    .slice(0, 5)
-    .map(
-      (p) =>
-        `<div style="margin-bottom: 6px;"><a href="/blog/${p.slug}" style="font-size: 12px;">${p.title}</a></div>`
-    )
-    .join("");
-
-  const sidebarExtra = `
-    <div class="sidebar-box">
-      <h3 class="sidebar-header">Recent Essays</h3>
-      <div class="sidebar-text">${recentPosts}</div>
-    </div>
-    <div class="sidebar-box">
-      <h3 class="sidebar-header">About</h3>
-      <div class="sidebar-text">
-        A linklog by Ryan Prendergast. Links, commentary, and things I find interesting.
-        <br><br>
-        <a href="/contact">Get in touch &rarr;</a>
+  const model: HomeModel = {
+    introHtml: `
+      <div class="homepage-intro">
+        <p>Ryan is a startup founder focused on quantitative humanities research at <a href="https://alpharesearch.nyc" target="_blank" rel="noopener noreferrer">Alpha Research</a>. Previously, he built <a href="https://zenobiapay.com" target="_blank" rel="noopener noreferrer">Zenobia Pay</a>, a bank transfer payment network for luxury goods, and <a href="https://dolphinmade.com" target="_blank" rel="noopener noreferrer">Dolphin Made</a>, a web app builder focused on one shotting entire startups.</p>
+        <p>He works to orchestrate AI for difficult or impossible workflows, and he is open to collaborate or network with people with unique and difficult problems they want to solve with AI.</p>
       </div>
-    </div>
-  `;
+    `,
+    links: links.map(toLinkEntryModel),
+    recentPosts: posts.slice(0, 5).map((post) => toPostSummary(post)),
+    aboutHtml: "A linklog by Ryan Prendergast. Links, commentary, and things I find interesting.",
+  };
 
   const structuredData = `
     <script type="application/ld+json">
@@ -203,12 +237,11 @@ app.get("/", async (c) => {
   `;
 
   return c.html(
-    renderPage("Ryan Prendergast", content, "/", {
+    renderThemePage(c.req.raw, "Ryan Prendergast", model, "/", "home", {
       pageSubtitle: "Linklog",
       description:
         "Links, commentary, and things I find interesting. A linklog by Ryan Prendergast.",
       structuredData,
-      sidebarExtra,
     })
   );
 });
@@ -217,28 +250,22 @@ app.get("/", async (c) => {
 app.get("/photos", async (c) => {
   const posts = (await getBlogPosts()).filter((post) => post.section === "photos");
 
-  let photosHtml = "";
-  posts.forEach((post) => {
-    photosHtml += `
-      <div class="blog-post-item">
-        <a href="/photos/${post.slug}" class="blog-title">${post.title}</a>
-        <div class="blog-date">${formatDateReadable(post.date)}</div>
-      </div>
-    `;
-  });
-
-  const sidebarExtra = `
-    <div class="sidebar-box">
-      <h3 class="sidebar-header">Photos</h3>
-      <div class="sidebar-text">${posts.length} ${posts.length === 1 ? "post" : "posts"}.</div>
-    </div>
-  `;
+  const model: BlogIndexModel = {
+    description: "Photos by Ryan Prendergast",
+    postsByYear: [
+      {
+        year: "Photos",
+        posts: posts.map((post) => toPostSummary(post, "/photos")),
+      },
+    ],
+    totalPosts: posts.length,
+    yearRange: null,
+  };
 
   return c.html(
-    renderPage("Photos - Ryan Prendergast", photosList({ photosHtml }), "/photos", {
+    renderThemePage(c.req.raw, "Photos - Ryan Prendergast", model, "/photos", "blog-index", {
       pageSubtitle: "Photos",
       description: "Photos by Ryan Prendergast",
-      sidebarExtra,
     })
   );
 });
@@ -263,8 +290,20 @@ app.get("/photos/:slug", async (c) => {
     );
   }
 
+  const parts = post.date.split("-");
+  const model: BlogPostModel = {
+    title: post.title,
+    subtitle: post.subtitle,
+    author: post.author,
+    date: formatDateReadable(post.date),
+    isoDate: `${parts[2]}-${parts[0]}-${parts[1]}`,
+    contentHtml: post.content,
+    backHref: "/photos",
+    backLabel: "Back to Photos",
+  };
+
   return c.html(
-    renderPage(`${post.title} - Ryan Prendergast`, post.content, "/photos", {
+    renderThemePage(c.req.raw, `${post.title} - Ryan Prendergast`, model, "/photos", "blog-post", {
       pageSubtitle: "Photos",
       description: post.excerpt || `${post.title} by Ryan Prendergast`,
       ogType: "article",
@@ -287,36 +326,20 @@ app.get("/blog", async (c) => {
     postsByYear[year].push(post);
   });
 
-  let postsHtml = "";
-  Object.keys(postsByYear)
+  const sortedYears = Object.keys(postsByYear)
     .sort((a, b) => b.localeCompare(a))
-    .forEach((year) => {
-      postsHtml += `<h2 class="blog-year">${year}</h2>`;
-      postsByYear[year].forEach((post) => {
-        postsHtml += `
-        <div class="blog-post-item">
-          <a href="/blog/${post.slug}" class="blog-title">${post.title}</a>
-          <div class="blog-date">${formatDateReadable(post.date)}</div>
-        </div>
-      `;
-      });
-    });
-
-  const content = blogList({ postsHtml });
-
-  // Sidebar summary
-  const totalPosts = posts.length;
-  const years = Object.keys(postsByYear).sort();
-  const sidebarExtra = `
-    <div class="sidebar-box">
-      <h3 class="sidebar-header">Summary</h3>
-      <div class="sidebar-text">
-        ${totalPosts} posts from ${years[0]} to ${years[years.length - 1]}.
-        <br><br>
-        <a href="/archives">Browse the archives &rarr;</a>
-      </div>
-    </div>
-  `;
+  const yearsAscending = Object.keys(postsByYear).sort();
+  const model: BlogIndexModel = {
+    description: "Ryan's mailbag: Essays and book reviews",
+    postsByYear: sortedYears.map((year) => ({
+      year,
+      posts: postsByYear[year].map((post) => toPostSummary(post)),
+    })),
+    totalPosts: posts.length,
+    yearRange: yearsAscending.length
+      ? [Number(yearsAscending[0]), Number(yearsAscending[yearsAscending.length - 1])]
+      : null,
+  };
 
   const structuredData = `
     <script type="application/ld+json">
@@ -335,11 +358,10 @@ app.get("/blog", async (c) => {
   `;
 
   return c.html(
-    renderPage("Blog - Ryan Prendergast", content, "/blog", {
+    renderThemePage(c.req.raw, "Blog - Ryan Prendergast", model, "/blog", "blog-index", {
       pageSubtitle: "Blog",
       description: "Essays and book reviews",
       structuredData,
-      sidebarExtra,
     })
   );
 });
@@ -368,17 +390,19 @@ app.get("/blog/:slug", async (c) => {
     return c.redirect(`/photos/${post.slug}`);
   }
 
-  const content = blogPost({
-    title: post.title,
-    date: formatDateReadable(post.date),
-    subtitle: post.subtitle ? `<p class="subtitle">${post.subtitle}</p>` : "",
-    author: post.author ? ` &mdash; ${post.author}` : "",
-    content: post.content,
-  });
-
   // Parse date for structured data
   const parts = post.date.split("-");
   const isoDate = `${parts[2]}-${parts[0]}-${parts[1]}`;
+  const model: BlogPostModel = {
+    title: post.title,
+    subtitle: post.subtitle,
+    author: post.author,
+    date: formatDateReadable(post.date),
+    isoDate,
+    contentHtml: post.content,
+    backHref: "/blog",
+    backLabel: "Back to Blog",
+  };
 
   const structuredData = `
     <script type="application/ld+json">
@@ -407,7 +431,7 @@ app.get("/blog/:slug", async (c) => {
   `;
 
   return c.html(
-    renderPage(`${post.title} - Ryan Prendergast`, content, "/blog", {
+    renderThemePage(c.req.raw, `${post.title} - Ryan Prendergast`, model, "/blog", "blog-post", {
       pageSubtitle: "Blog",
       description: post.excerpt || `${post.title} by Ryan Prendergast`,
       ogType: "article",
@@ -436,90 +460,17 @@ app.get("/archives", async (c) => {
     postsByMonth[key].posts.push(post);
   });
 
-  let archiveSections = "";
-  Object.keys(postsByMonth)
-    .sort((a, b) => b.localeCompare(a))
-    .forEach((key) => {
-      const group = postsByMonth[key];
-      archiveSections += `<section class="archive-section">`;
-      archiveSections += `<div class="archive-month-header">${group.label}<span class="month-count">${group.posts.length} ${group.posts.length === 1 ? "entry" : "entries"}</span></div>`;
-      group.posts.forEach((post) => {
-        archiveSections += `
-          <div class="link-entry">
-            <div class="entry-title"><a href="/blog/${post.slug}">${post.title}</a></div>
-            <div class="entry-meta">${formatDateReadable(post.date)}</div>
-          </div>
-        `;
-      });
-      archiveSections += `</section>`;
-    });
-
-  const content = archives({ archiveSections });
-
-  // Build calendar for the most recent month
   const sortedKeys = Object.keys(postsByMonth).sort((a, b) =>
     b.localeCompare(a)
   );
-  let calendarHtml = "";
-  if (sortedKeys.length > 0) {
-    const latestKey = sortedKeys[0];
-    const [calYear, calMonth] = latestKey.split("-").map(Number);
-    const monthLabel = postsByMonth[latestKey].label;
-
-    // Get dates that have entries
-    const entryDays = new Set<number>();
-    postsByMonth[latestKey].posts.forEach((post) => {
-      entryDays.add(parseDate(post.date).getDate());
-    });
-
-    const firstDay = new Date(calYear, calMonth - 1, 1).getDay();
-    const daysInMonth = new Date(calYear, calMonth, 0).getDate();
-    const today = new Date();
-    const isCurrentMonth =
-      today.getFullYear() === calYear && today.getMonth() + 1 === calMonth;
-
-    calendarHtml = `
-      <div class="sidebar-box">
-        <h3 class="sidebar-header">${monthLabel}</h3>
-        <table class="calendar-widget">
-          <thead><tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr></thead>
-          <tbody>
-    `;
-    let day = 1;
-    for (let week = 0; week < 6 && day <= daysInMonth; week++) {
-      calendarHtml += "<tr>";
-      for (let dow = 0; dow < 7; dow++) {
-        if ((week === 0 && dow < firstDay) || day > daysInMonth) {
-          calendarHtml += "<td></td>";
-        } else {
-          const classes: string[] = [];
-          if (entryDays.has(day)) classes.push("has-entry");
-          if (isCurrentMonth && today.getDate() === day)
-            classes.push("today");
-          calendarHtml += `<td${classes.length ? ` class="${classes.join(" ")}"` : ""}>${day}</td>`;
-          day++;
-        }
-      }
-      calendarHtml += "</tr>";
-    }
-    calendarHtml += `</tbody></table></div>`;
-  }
-
-  // Summary sidebar
-  const totalPosts = posts.length;
-  const monthCount = sortedKeys.length;
-  const summaryHtml = `
-    <div class="sidebar-box">
-      <h3 class="sidebar-header">Summary</h3>
-      <div class="sidebar-text">
-        Browsing ${totalPosts} posts across ${monthCount} months.
-        <br><br>
-        <a href="/blog">&larr; Back to blog</a>
-      </div>
-    </div>
-  `;
-
-  const sidebarExtra = calendarHtml + summaryHtml;
+  const model: ArchiveModel = {
+    months: sortedKeys.map((key) => ({
+      key,
+      label: postsByMonth[key].label,
+      posts: postsByMonth[key].posts.map((post) => toPostSummary(post)),
+    })),
+    totalPosts: posts.length,
+  };
 
   const structuredData = `
     <script type="application/ld+json">
@@ -538,11 +489,10 @@ app.get("/archives", async (c) => {
   `;
 
   return c.html(
-    renderPage("Archives - Ryan Prendergast", content, "/archives", {
+    renderThemePage(c.req.raw, "Archives - Ryan Prendergast", model, "/archives", "archives", {
       pageSubtitle: "Archives",
       description: "Browse all posts by date",
       structuredData,
-      sidebarExtra,
     })
   );
 });
@@ -589,38 +539,13 @@ app.get("/themes", (c) => {
     })
     .join("");
 
-  const content = `
-    <section class="themes-hero">
-      <div>
-        <p class="themes-eyebrow">Theme Museum</p>
-        <h2>100 ways to read the same personal site.</h2>
-        <p>The content stays stable while the visual system changes around it. Pick a skin, randomize the wardrobe, or share a URL with a theme parameter.</p>
-      </div>
-      <div class="themes-console">
-        <label for="theme-select">Current theme</label>
-        <select id="theme-select" data-theme-select>${selectOptions}</select>
-        <div class="theme-picker-controls">
-          <button type="button" data-theme-prev>&lsaquo; Previous</button>
-          <button type="button" data-theme-random>Random</button>
-          <button type="button" data-theme-next>Next &rsaquo;</button>
-        </div>
-        <p>Selected: <strong data-theme-current>Aqua</strong></p>
-      </div>
-    </section>
-    <div class="theme-filters" aria-label="Theme categories">${categoryControls}</div>
-    ${themeSections}
-  `;
-
-  const sidebarExtra = `
-    <div class="sidebar-box">
-      <h3 class="sidebar-header">Theme System</h3>
-      <div class="sidebar-text">
-        ${siteThemes.length} ready themes across ${categories.length} categories.
-        <br><br>
-        URL sharing works with <code>?theme=win98</code>.
-      </div>
-    </div>
-  `;
+  const model: ThemesModel = {
+    themes: siteThemes,
+    categories,
+    categoryControlsHtml: categoryControls,
+    selectOptionsHtml: selectOptions,
+    themeSectionsHtml: themeSections,
+  };
 
   const structuredData = `
     <script type="application/ld+json">
@@ -639,11 +564,10 @@ app.get("/themes", (c) => {
   `;
 
   return c.html(
-    renderPage("Themes - Ryan Prendergast", content, "/themes", {
+    renderThemePage(c.req.raw, "Themes - Ryan Prendergast", model, "/themes", "themes", {
       pageSubtitle: "Themes",
       description: "Browse and apply 100 visual themes for Ryan Prendergast's personal site.",
       structuredData,
-      sidebarExtra,
     })
   );
 });
@@ -655,26 +579,16 @@ app.get("/themes/random", (c) => {
 });
 
 app.get("/colophon", (c) => {
-  const content = `
+  const contentHtml = `
     <article class="colophon-page">
       <h2 class="blog-post-title">Colophon</h2>
       <p>This site is built as a small Cloudflare Worker that renders semantic HTML templates and serves static assets from the repository.</p>
-      <p>The visual layer is now a 100-theme system. A single theme registry in source code defines the available skins, the <a href="/themes">theme museum</a> renders from that registry, and the same page structure is reused across the site.</p>
-      <p>Theme selection is stored locally in the browser, can be shared with a URL parameter such as <code>?theme=win98</code>, and can be changed from the sidebar picker or the full theme gallery.</p>
+      <p>The visual layer is now a 100-theme layout renderer system. A shared content model feeds different shells and route renderers, so a theme can act like Hacker News, Windows 98, a terminal, a wiki, or a portfolio without changing the underlying content.</p>
+      <p>Theme selection is stored locally and in a cookie, can be shared with a URL parameter such as <code>?theme=win98</code>, and can be changed from the picker or the full theme gallery.</p>
       <p>The default skin is <strong>Aqua</strong>, preserving the early-2000s Apple-inspired design that was already here before the theme system was added.</p>
     </article>
   `;
-
-  const sidebarExtra = `
-    <div class="sidebar-box">
-      <h3 class="sidebar-header">Build Notes</h3>
-      <div class="sidebar-text">
-        Worker-rendered HTML, static CSS, a small JavaScript picker, and 100 theme tokens.
-        <br><br>
-        <a href="/themes">Open the theme museum &rarr;</a>
-      </div>
-    </div>
-  `;
+  const model: GenericPageModel = { heading: "Colophon", contentHtml };
 
   const structuredData = `
     <script type="application/ld+json">
@@ -693,11 +607,10 @@ app.get("/colophon", (c) => {
   `;
 
   return c.html(
-    renderPage("Colophon - Ryan Prendergast", content, "/colophon", {
+    renderThemePage(c.req.raw, "Colophon - Ryan Prendergast", model, "/colophon", "generic", {
       pageSubtitle: "Colophon",
       description: "How Ryan Prendergast's personal site is built, including the 100-theme system.",
       structuredData,
-      sidebarExtra,
     })
   );
 });
@@ -747,94 +660,19 @@ app.get("/guestbook", async (c) => {
       results: Array<{ name: string; message: string; created_at: string }>;
     };
 
-    let entriesHtml = "";
-    if (!results || results.length === 0) {
-      entriesHtml = `
-        <div class="text-center" style="padding: 20px 0;">
-          <p class="text-muted">No entries yet. Be the first to sign the guestbook!</p>
-        </div>
-      `;
-    } else {
-      results.forEach((entry) => {
-        const date = new Date(entry.created_at).toLocaleDateString("en-US", {
+    const model = {
+      entries: (results || []).map((entry) => ({
+        name: entry.name,
+        message: entry.message,
+        rawDate: entry.created_at,
+        date: new Date(entry.created_at).toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
           day: "numeric",
-        });
-        entriesHtml += `
-          <div class="guestbook-entry">
-            <div class="guestbook-date">${date}</div>
-            <div class="guestbook-message">${entry.message}</div>
-            <div class="guestbook-name">&mdash; ${entry.name}</div>
-          </div>
-        `;
-      });
-    }
-
-    const content = `
-      <div class="guestbook-header">
-        <h2>Guestbook</h2>
-        <button onclick="showGuestbookModal()">Sign Guestbook</button>
-      </div>
-      ${entriesHtml}
-
-      <div id="guestbookModal" class="modal hidden">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2>Sign Guestbook</h2>
-            <button onclick="hideGuestbookModal()" class="modal-close">&times;</button>
-          </div>
-          <form id="guestbookForm">
-            <div class="form-group">
-              <label for="name" class="form-label">Name *</label>
-              <input id="name" name="name" type="text" required maxlength="50" class="form-input">
-            </div>
-            <div class="form-group">
-              <label for="message" class="form-label">Message *</label>
-              <textarea id="message" name="message" required maxlength="500" rows="4" class="form-textarea"></textarea>
-            </div>
-            <div class="form-actions">
-              <button type="button" onclick="hideGuestbookModal()">Cancel</button>
-              <button type="submit">Submit</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <script>
-        function showGuestbookModal() {
-          document.getElementById('guestbookModal').classList.remove('hidden');
-        }
-        function hideGuestbookModal() {
-          document.getElementById('guestbookModal').classList.add('hidden');
-        }
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape') hideGuestbookModal();
-        });
-
-        document.getElementById('guestbookForm').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const name = document.getElementById('name').value;
-          const message = document.getElementById('message').value;
-
-          try {
-            const response = await fetch('/api/guestbook', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name, message })
-            });
-
-            if (response.ok) {
-              window.location.reload();
-            } else {
-              alert('Failed to submit entry. Please try again.');
-            }
-          } catch (error) {
-            alert('Failed to submit entry. Please try again.');
-          }
-        });
-      </script>
-    `;
+        }),
+      })),
+      canSign: true,
+    };
 
     const structuredData = `
       <script type="application/ld+json">
@@ -853,7 +691,7 @@ app.get("/guestbook", async (c) => {
     `;
 
     return c.html(
-      renderPage("Guestbook - Ryan Prendergast", content, "/guestbook", {
+      renderThemePage(c.req.raw, "Guestbook - Ryan Prendergast", model, "/guestbook", "guestbook", {
         pageSubtitle: "Guestbook",
         description:
           "Sign Ryan Prendergast's guestbook and see messages from visitors",
@@ -876,7 +714,7 @@ app.get("/guestbook", async (c) => {
 
 // Contact Page
 app.get("/contact", (c) => {
-  const content = contact();
+  const model: GenericPageModel = { heading: "Contact", contentHtml: contact() };
   const structuredData = `
     <script type="application/ld+json">
     {
@@ -894,7 +732,7 @@ app.get("/contact", (c) => {
   `;
 
   return c.html(
-    renderPage("Contact - Ryan Prendergast", content, "/contact", {
+    renderThemePage(c.req.raw, "Contact - Ryan Prendergast", model, "/contact", "contact", {
       pageSubtitle: "Contact",
       description:
         "Get in touch with Ryan Prendergast. Connect via email or social media.",
@@ -905,7 +743,7 @@ app.get("/contact", (c) => {
 
 // Memory Page (Flashcards with Spaced Repetition)
 app.get("/memory", (c) => {
-  const content = memory();
+  const model: GenericPageModel = { heading: "Memory", contentHtml: memory() };
   const structuredData = `
     <script type="application/ld+json">
     {
@@ -924,7 +762,7 @@ app.get("/memory", (c) => {
   `;
 
   return c.html(
-    renderPage("Memory - Ryan Prendergast", content, "/memory", {
+    renderThemePage(c.req.raw, "Memory - Ryan Prendergast", model, "/memory", "generic", {
       pageSubtitle: "Memory",
       description:
         "Anki-like flashcards with spaced repetition algorithm for effective learning and memorization.",

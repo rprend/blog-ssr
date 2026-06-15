@@ -40,6 +40,7 @@
 
     root.dataset.theme = theme.slug;
     localStorage.setItem(storageKey, theme.slug);
+    document.cookie = storageKey + "=" + encodeURIComponent(theme.slug) + "; path=/; max-age=31536000; SameSite=Lax";
     updateUi(theme);
 
     if (options && options.updateUrl) {
@@ -125,4 +126,3 @@
       bindControls();
     });
 })();
-
