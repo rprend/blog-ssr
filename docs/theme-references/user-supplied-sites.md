@@ -1,0 +1,57 @@
+# User-Supplied Theme Sites
+
+This is the source-of-truth list supplied by Ryan. Do not replace these with unrelated gallery finds.
+
+1. https://jarcos.work/
+2. https://www.jia.build/
+3. https://owickstrom.github.io/the-monospace-web/
+4. https://those.tools/
+5. https://www.midwayart.org/library/
+6. https://plaintextsports.com/
+7. https://www.032carchive.com/
+8. https://www.workbyland.com/
+9. https://ashimashiraishi.com/
+10. https://tamikaabakawood.com/
+11. https://tegabrain.com/
+12. https://www.nomad.garden/
+13. https://winnielim.org/
+14. https://paulgraham.com/
+15. https://jonrafman.com/
+16. https://mopppoppp.moy.su/load/rybalka/o_rybalka/ehduard_uspenskij_k_cheloveku_boris_mikhajlov/3-1-0-32
+17. https://schemasofuncertainty.com/
+18. https://www.semafor.com/
+19. https://virginiegauthier.info/
+20. https://re-coding.technology/
+21. https://www.pi.fyi/
+22. https://rmorrislevine.info/
+23. https://setarehshahbazi.com/
+24. https://visakanv.com/
+25. https://eieio.games/
+26. https://www.enterportal.xyz/
+27. https://archives.design/
+28. https://simonwillison.net/
+29. https://www.anthropic.com/research
+30. https://paradyme.zone/
+31. https://www.nataliajordanova.com/index.htm
+32. https://barbaraforever.everyoceanhughes.com/
+33. https://cyberfeminismindex.com/
+34. https://www.maxkohler.com/
+35. https://cynnality.com/index.html
+36. https://consumed.today/
+37. https://www.ashleycai.com/
+38. https://diagram.website/
+39. https://art.teleportacia.org/observation/vernacular/
+40. https://potato.cheap/
+41. https://nocss.club/
+42. https://sfpc.study/blog/cellular-automata
+43. https://paragraph.com/@austinwadesmith/queer-servers-and-feral-webs
+44. https://250kb.club/
+45. https://joy.recurse.com/
+46. https://ai-2027.com/
+47. https://www.lesswrong.com/
+48. https://slatestarcodex.com/
+49. https://gwern.net/
+50. https://nownownow.com/about
+51. https://sive.rs/
+52. https://patrickcollison.com/
+53. https://aigrant.com/
