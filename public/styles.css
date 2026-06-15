@@ -732,47 +732,211 @@ body {
 }
 
 .family-scoreboard {
+  --theme-bg: #ffffff;
+  --theme-text: #000000;
+  --theme-surface: #ffffff;
   background: #fff;
-  color: #111;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #000;
+  font: 14px/1.35 "Courier New", Courier, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-ligatures: none;
 }
 
-.scoreboard {
+.family-scoreboard .theme-shell-frame {
+  width: min(76ch, calc(100vw - 18px));
+  margin: 10px auto 72px;
+}
+
+.family-scoreboard .theme-shell-footer {
+  margin-top: 26px;
+  padding-top: 8px;
+  border-top: 0;
   font-size: 13px;
 }
 
-.family-scoreboard .canonical-home-header h2 {
-  font-size: 24px;
-  text-transform: uppercase;
+.family-scoreboard .theme-utility-footer > div {
+  display: none;
 }
 
-.family-scoreboard .canonical-site-nav {
-  border-top: 1px solid #111;
-  border-bottom: 1px solid #111;
-  padding: 4px 0;
-  font-family: inherit;
+.family-scoreboard .theme-utility-footer .theme-shell-nav {
+  justify-content: center;
+  gap: 0 1ch;
+  width: 100%;
 }
 
-.scorebar,
-.league-tabs {
+.family-scoreboard .theme-utility-footer .theme-shell-nav a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.family-scoreboard a {
+  color: #0000ee;
+  text-decoration: underline;
+}
+
+.scoreboard,
+.scoreboard table,
+.scoreboard pre {
+  font: inherit;
+}
+
+.scoreboard {
+  max-width: 100%;
+}
+
+.scoreboard-header {
+  margin-bottom: 20px;
+}
+
+.scoreboard-header p,
+.scoreboard-header h1,
+.scoreboard h2,
+.scoreboard h3,
+.scoreboard-identity p {
+  margin: 0 0 .85em;
+}
+
+.scoreboard-header h1,
+.scoreboard h2,
+.scoreboard h3 {
+  font: inherit;
+  font-weight: 700;
+}
+
+.scoreboard-modes,
+.scoreboard-pager,
+.scoreboard-leagues,
+.scoreboard-subnav {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  border-bottom: 1px solid #999;
-  padding: 6px 0;
-  margin-bottom: 10px;
+  gap: 0 1ch;
+  margin: 0 0 .85em;
 }
 
-.scoreboard table {
+.scoreboard-pager {
+  justify-content: center;
+}
+
+.scoreboard-pager strong {
+  font-weight: 700;
+}
+
+.scoreboard-leagues span {
+  margin-right: .5ch;
+}
+
+.scoreboard-leagues a.is-active,
+.scoreboard-subnav a:first-child {
+  color: #000;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.scoreboard-state {
+  color: #333;
+}
+
+.scoreboard-identity {
+  margin: 0 0 1.3em;
+}
+
+.scoreboard-identity h2 {
+  margin-bottom: .35em;
+}
+
+.scoreboard-box-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20ch, 1fr));
+  gap: .75em 1.5ch;
+  margin: .25em 0 1.5em;
+}
+
+.scoreboard-box {
+  display: block;
+  color: #0000ee;
+  text-decoration: none;
+}
+
+.scoreboard-box pre {
+  display: inline-block;
+  margin: 0;
+  color: inherit;
+  white-space: pre;
+}
+
+.scoreboard-table {
+  margin: .25em 0 1.6em;
+}
+
+.scoreboard-table,
+.scoreboard-table thead,
+.scoreboard-table tbody,
+.scoreboard-table tr {
   width: 100%;
   border-collapse: collapse;
 }
 
-.scoreboard td,
-.scoreboard th {
-  border-bottom: 1px solid #ddd;
-  padding: 4px 8px;
+.scoreboard-table th,
+.scoreboard-table td {
+  padding: 0 .9ch .15em 0;
+  border: 0;
+  text-align: left;
   vertical-align: top;
+}
+
+.scoreboard-table th {
+  font-weight: 700;
+  border-bottom: 1px solid #000;
+}
+
+.scoreboard-table td:first-child,
+.scoreboard-table th:first-child {
+  white-space: nowrap;
+}
+
+.scoreboard-article {
+  margin-top: 1.25em;
+}
+
+.scoreboard-article h1,
+.scoreboard-article h2,
+.scoreboard-article h3 {
+  font: inherit;
+  font-weight: 700;
+}
+
+.scoreboard-article img {
+  max-width: 100%;
+  height: auto;
+}
+
+.family-scoreboard .sticky-theme-picker {
+  background: #fff;
+  color: #000;
+  box-shadow: none;
+  border-top: 1px solid #000;
+  font: 12px/1.2 "Courier New", Courier, monospace;
+}
+
+.family-scoreboard .sticky-theme-picker select,
+.family-scoreboard .sticky-theme-picker button {
+  min-height: 26px;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font: inherit;
+}
+
+@media (max-width: 640px) {
+  .family-scoreboard {
+    font-size: 12px;
+  }
+
+  .scoreboard-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
 
 .family-archive-index {

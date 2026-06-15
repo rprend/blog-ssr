@@ -572,6 +572,32 @@ function renderManualToc(items: Array<[string, string]>): string {
   return `<section class="manual-toc" aria-labelledby="manual-contents"><h2 id="manual-contents">Contents</h2><ol>${items.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ol></section>`;
 }
 
+function renderScoreboardHeader(ctx: RenderContext, title: string, state = ""): string {
+  const loaded = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", second: "2-digit", timeZoneName: "short" });
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = [
+    ["/", "Home"],
+    ["/blog", "Blog"],
+    ["/photos", "Photos"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+  ] as Array<[string, string]>;
+  return `<header class="scoreboard-header" id="top"><p>Page loaded: ${escapeHtml(loaded)}</p><p>Data loaded: ${escapeHtml(loaded)}</p><h1><a href="/">Ryan Prendergast</a></h1><div class="scoreboard-modes"><span>Dark Mode</span> <span>Light Mode</span></div><nav class="scoreboard-pager" aria-label="Date pager"><a href="/archives">&lt; Archives</a><strong>${escapeHtml(title)}</strong><a href="/blog">Blog &gt;</a></nav><nav class="scoreboard-leagues" aria-label="Core site areas"><span>Leagues:</span>${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav>${state ? `<p class="scoreboard-state">${escapeHtml(state)}</p>` : ""}</header>`;
+}
+
+function renderScoreboardBox(lines: string[], href: string): string {
+  const width = Math.max(14, ...lines.map((line) => line.length));
+  const top = `+-${"-".repeat(width)}-+`;
+  const body = lines.map((line) => `| ${line.padEnd(width, " ")} |`);
+  return `<a class="scoreboard-box" href="${href}"><pre>${[top, ...body, top].map(escapeHtml).join("\n")}</pre></a>`;
+}
+
+function renderScoreboardTable(headers: string[], rows: string[][]): string {
+  return `<table class="scoreboard-table"><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+
 function renderManualLinkEntry(link: LinkEntryModel, index: number): string {
   const image = link.image ? `<figure class="manual-media"><img src="${link.image}" alt="" loading="lazy"><figcaption>${escapeHtml(link.title)}</figcaption></figure>` : "";
   return `<article class="manual-entry"><h3 id="link-${index + 1}"><a href="${link.url}">${escapeHtml(link.title)}</a></h3><table><tbody><tr><th>Source</th><td>${escapeHtml(link.domain)}</td></tr><tr><th>Date</th><td>${escapeHtml(link.date)}</td></tr></tbody></table>${image}<div class="manual-entry-body">${link.contentHtml}</div></article>`;
@@ -602,7 +628,9 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "scoreboard") {
-    return `<section class="scoreboard"><div class="scorebar">${escapeHtml(model.links[0]?.date || "")}</div>${homeHeader}<div class="league-tabs">LINKS BLOG ARCHIVES</div><table><tbody>${model.links.map((link) => `<tr><td>${escapeHtml(link.date)}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td></tr>`).join("")}</tbody></table></section>`;
+    const boxes = model.links.slice(0, 8).map((link, index) => renderScoreboardBox([`${String(index + 1).padStart(2, "0")} ${link.date}`, link.title.slice(0, 18), link.domain.slice(0, 18)], link.url)).join("");
+    const rows = model.links.map((link, index) => [String(index + 1), escapeHtml(link.date), `<a href="${link.url}">${escapeHtml(link.title)}</a>`, escapeHtml(link.domain)]);
+    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Monday, June 15", `${model.links.length} link entries · ${model.recentPosts.length} recent essays`)}<section class="scoreboard-identity"><h2>Ryan Prendergast</h2><div>${model.introHtml}</div></section><h3>Linkblog</h3><nav class="scoreboard-subnav"><a href="/">Schedule</a><a href="/archives">Standings</a><a href="/blog">Teams</a></nav><div class="scoreboard-box-grid">${boxes}</div><h3>Entries</h3>${renderScoreboardTable(["#", "Date", "Entry", "Source"], rows)}<h3>Recent Essays</h3>${renderScoreboardTable(["Date", "Essay", "Status"], model.recentPosts.map((post) => [escapeHtml(post.date), `<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(post.readTime || "Final")]))}</section>`;
   }
 
   if (ctx.family === "archive-index") {
@@ -806,7 +834,13 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<article class="manual-page">${renderManualHeader(ctx, "Blog Index", model.description, [["Entries", String(model.totalPosts)], ["Years", model.yearRange ? `${model.yearRange[0]}-${model.yearRange[1]}` : ""]])}${renderManualToc(model.postsByYear.map((group) => [`#year-${group.year}`, group.year]))}${renderManualRule()}<pre>find ./essays -type f</pre>${model.postsByYear.map((group) => `<section id="year-${group.year}" class="manual-year"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
   }
   if (ctx.family === "scoreboard") {
-    return `<section class="scoreboard"><h2>Blog League Schedule</h2><table><tbody>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<tr><td>${escapeHtml(post.date)}</td><td><a href="${post.href}">${escapeHtml(post.title)}</a></td><td>${escapeHtml(group.year)}</td></tr>`)).join("")}</tbody></table></section>`;
+    const yearTables = model.postsByYear
+      .map((group) => {
+        const rows = group.posts.map((post) => [escapeHtml(post.date), `<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(post.readTime || "Final")]);
+        return `<h3>${escapeHtml(group.year)}</h3>${renderScoreboardTable(["Date", "Title", "Read"], rows)}`;
+      })
+      .join("");
+    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Blog", `${model.totalPosts} entries`)}<h2>Blog League Schedule</h2><nav class="scoreboard-subnav"><a href="/blog">Schedule</a><a href="/archives">Standings</a><a href="/rss.xml">Teams</a></nav>${yearTables}</section>`;
   }
   if (ctx.family === "archive-index") {
     return `<section class="archive-index"><h2>all posts</h2><nav>All · Years · Titles · Dates</nav><div class="name-counts">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)} <span>${escapeHtml(group.year)}</span></a>`)).join("")}</div></section>`;
@@ -884,7 +918,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.title, model.subtitle || "Ryan Prendergast essay", [["Date", meta], ["Path", escapeHtml(model.backHref)]])}${renderManualToc([["#document", "Document"]])}${renderManualRule()}<section id="document" class="manual-entry-body"><h2>Document</h2>${model.contentHtml}</section><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p></article>`;
   }
   if (ctx.family === "scoreboard") {
-    return `<section class="scoreboard"><h2>Box Score</h2><table><tbody><tr><td>Title</td><td>${escapeHtml(model.title)}</td></tr><tr><td>Date</td><td>${meta}</td></tr></tbody></table><article>${model.contentHtml}</article></section>`;
+    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Box Score", meta)}<h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="scoreboard-state">${escapeHtml(model.subtitle)}</p>` : ""}${renderScoreboardTable(["Field", "Value"], [["Title", escapeHtml(model.title)], ["Date", meta], ["Back", `<a href="${model.backHref}">${escapeHtml(model.backLabel)}</a>`]])}<article class="scoreboard-article">${model.contentHtml}</article></section>`;
   }
   if (ctx.family === "art-index") {
     return `<article class="art-index"><p>LAT: 40.7128 LNG: -74.0060</p><h2>𓁹 ${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
@@ -924,7 +958,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<article class="manual-page">${renderManualHeader(ctx, "Archive Tree", "", [["Entries", String(model.totalPosts)], ["Months", String(model.months.length)]])}${renderManualToc(model.months.map((month) => [`#${month.key}`, month.label]))}${renderManualRule()}<pre>${model.months.map((month) => `${month.key}/\\n${month.posts.map((post) => `  ${post.slug}.html`).join("\\n")}`).join("\\n")}</pre>${model.months.map((month) => `<section id="${month.key}" class="manual-year"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
   }
   if (ctx.family === "scoreboard") {
-    return `<section class="scoreboard"><h2>Archive Standings</h2><table><tbody>${model.months.map((month) => `<tr><td>${escapeHtml(month.label)}</td><td>${month.posts.length}</td><td>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" · ")}</td></tr>`).join("")}</tbody></table></section>`;
+    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Archives", `${model.totalPosts} archived posts`)}<h2>Archive Standings</h2><nav class="scoreboard-subnav"><a href="/archives">Schedule</a><a href="/blog">Standings</a><a href="/rss.xml">Teams</a></nav>${renderScoreboardTable(["Month", "Posts", "Entries"], model.months.map((month) => [escapeHtml(month.label), String(month.posts.length), month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" ")]))}</section>`;
   }
   if (ctx.family === "archive-index") {
     return `<section class="archive-index"><h2>every post ever archived</h2><nav>All · Months · Titles</nav><div class="name-counts">${model.months.map((month) => `<a href="#${month.key}">${escapeHtml(month.label)} <span>${month.posts.length}</span></a>`).join("")}</div>${model.months.map((month) => `<section id="${month.key}"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
