@@ -2,6 +2,7 @@
   const storageKey = "siteTheme";
   const root = document.documentElement;
   let themes = [];
+  let defaultTheme = "spartan-essay-table";
 
   function getRequestedTheme() {
     try {
@@ -72,6 +73,12 @@
     setTheme(next.slug, { updateUrl: true, reload: true });
   }
 
+  function resetTheme() {
+    localStorage.removeItem(storageKey);
+    document.cookie = storageKey + "=; path=/; max-age=0; SameSite=Lax";
+    setTheme(defaultTheme, { updateUrl: true, reload: true });
+  }
+
   function bindControls() {
     document.querySelectorAll("[data-theme-apply]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -98,6 +105,10 @@
       button.addEventListener("click", randomTheme);
     });
 
+    document.querySelectorAll("[data-theme-reset]").forEach((button) => {
+      button.addEventListener("click", resetTheme);
+    });
+
     document.querySelectorAll("[data-theme-select]").forEach((select) => {
       select.addEventListener("change", () => {
         setTheme(select.value, { updateUrl: true, reload: true });
@@ -122,8 +133,9 @@
     .then((response) => response.json())
     .then((data) => {
       themes = data.themes || [];
+      defaultTheme = data.defaultTheme || defaultTheme;
       const requested = getRequestedTheme();
-      const current = requested || localStorage.getItem(storageKey) || data.defaultTheme || "spartan-essay-table";
+      const current = requested || localStorage.getItem(storageKey) || defaultTheme;
       setTheme(current, { updateUrl: false });
       bindControls();
     })

@@ -524,7 +524,7 @@ function renderMiniThemePicker(theme: SiteTheme): string {
   const options = siteThemes
     .map((candidate) => `<option value="${candidate.slug}"${candidate.slug === theme.slug ? " selected" : ""}>${escapeHtml(candidate.name)}</option>`)
     .join("");
-  return `<div class="mini-theme-picker sticky-theme-picker"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${options}</select><button type="button" data-theme-random>Random</button></div>`;
+  return `<div class="mini-theme-picker sticky-theme-picker"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${options}</select><button type="button" data-theme-random>Random</button><button type="button" data-theme-reset>Remove theme</button></div>`;
 }
 
 function renderCanonicalHomeHeader(model: HomeModel): string {
