@@ -60,7 +60,7 @@ src/site-mimics/
     renderer.ts
     styles.css
     references.md
-  hacker-news/
+  taliahhh/
     renderer.ts
     styles.css
     references.md
@@ -153,13 +153,13 @@ Definition of done:
 
 ### Phase 3: Build 5 Proof Mimics
 
-Build these first because they are obviously different and easy to judge:
+Build these first because they are specific personal/portfolio sites with visibly different structures:
 
 1. `legacy-aqua` mimics the original Ryan site.
-2. `hacker-news` mimics [Hacker News](https://news.ycombinator.com/).
-3. `craigslist` mimics [Craigslist](https://www.craigslist.org/).
-4. `wikipedia` mimics [Wikipedia](https://www.wikipedia.org/).
-5. `anthropic-news` mimics [Anthropic News](https://www.anthropic.com/news).
+2. `taliahhh` mimics [Taliahhh](https://taliahhh.com/), found through Framer Gallery.
+3. `daveos` mimics [DaveOS](https://daveos.fun/), found through Framer Gallery.
+4. `folkert-gorter` mimics [Folkert Gorter](https://folkert.link/), found through Siteinspire and Cargo.
+5. `lynn-sohn` mimics [Lynn Sohn](https://lynnsohn.com/), found through Siteinspire and Cargo.
 
 Definition of done:
 
@@ -174,11 +174,11 @@ Do not build 100 at once. Build 10 mimic themes per batch.
 
 Each batch must include:
 
-- 3 text/list-heavy sites.
-- 3 portfolio/editorial sites.
-- 2 app/product sites.
-- 1 weird web/art site.
-- 1 utility/institutional site.
+- 4 individual designer/developer portfolios.
+- 2 artist/photographer portfolios.
+- 2 studio portfolios.
+- 1 weird/personal-web portfolio.
+- 1 writing-heavy personal site or blog.
 
 At the end of each batch:
 
@@ -230,130 +230,137 @@ For each built theme, answer these before marking it `built`:
 
 ## 100 Direct Site Targets
 
-These are the planned mimic themes. Each one has exactly one target site. If a better target is chosen later, replace the target, do not blend it with another site.
+These are the planned mimic themes. Each one has exactly one target person or studio site. The source column records where the site was found, prioritizing curated galleries and channels over generic search. If the row links to a gallery detail page instead of the live site, it is a research placeholder: the build cannot start until the live target URL is captured in that row's `docs/theme-references/<slug>.md`.
 
-| # | Slug | Theme name | Direct target |
+Research sources used for this reset:
+
+- [Framer Portfolio Gallery](https://www.framer.com/gallery/categories/portfolio) and [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal), which list named portfolio/personal sites such as Taliahhh, Uthinh Pham, Zuza Wozniczka, DaveOS, Paula Lu, and others.
+- [Cargo Community](https://cargo.site/community), which lists named artist/designer portfolios and handles including Jiayu Cheng, Braulio Amado, Agustin Pina, Rafik Greiss, Matthew Vlach, Sasyk, Weiran Liang, Violeta Araujo Bofill, and others.
+- [Siteinspire Cargo Collective](https://www.siteinspire.com/websites/category/cargo-collective), plus individual Siteinspire pages for Folkert Gorter and Lynn Sohn.
+- [Are.na One-page Personal Websites](https://www.are.na/rodrigo-tello/one-page-personal-websites) and [Are.na design portfolios and studios](https://www.are.na/www-nana/design-portfolios-and-studios).
+- [Godly](https://godly.website/), [Awwwards](https://www.awwwards.com/), and [One Page Love](https://onepagelove.com/) portfolio/person-site listings.
+
+| # | Slug | Theme name | Direct target | Curated source |
 | --- | --- | --- | --- |
-| 1 | `legacy-aqua` | Legacy Aqua | Original Ryan Prendergast site |
-| 2 | `hacker-news` | Hacker News | [Hacker News](https://news.ycombinator.com/) |
-| 3 | `craigslist` | Craigslist | [Craigslist](https://www.craigslist.org/) |
-| 4 | `wikipedia` | Wikipedia | [Wikipedia](https://www.wikipedia.org/) |
-| 5 | `anthropic-news` | Anthropic News | [Anthropic News](https://www.anthropic.com/news) |
-| 6 | `anthropic-engineering` | Anthropic Engineering | [Anthropic Engineering](https://www.anthropic.com/engineering) |
-| 7 | `framer-gallery` | Framer Gallery | [Framer Gallery](https://www.framer.com/gallery/) |
-| 8 | `framer-portfolio` | Framer Portfolio Category | [Framer Portfolio Gallery](https://www.framer.com/gallery/categories/portfolio) |
-| 9 | `cargo-community` | Cargo Community | [Cargo Community](https://cargo.site/community) |
-| 10 | `cargo-templates` | Cargo Templates | [Cargo Templates](https://cargo.site/templates) |
-| 11 | `are-na-channel` | Are.na Channel | [Are.na Portfolio & Personal Websites](https://www.are.na/husani-barnwell/portfolio-personal-websites) |
-| 12 | `are-na-board` | Are.na Board | [Are.na Radical Web Design](https://www.are.na/julien-bidoret/radical-web-design) |
-| 13 | `read-cv` | Read.cv | [read.cv](https://read.cv/) |
-| 14 | `daring-fireball` | Daring Fireball | [Daring Fireball](https://daringfireball.net/) |
-| 15 | `simon-willison` | Simon Willison | [Simon Willison](https://simonwillison.net/) |
-| 16 | `gwern` | Gwern | [Gwern](https://gwern.net/) |
-| 17 | `maggie-appleton` | Maggie Appleton | [Maggie Appleton](https://maggieappleton.com/) |
-| 18 | `andy-matuschak-notes` | Andy Matuschak Notes | [Andy Matuschak Notes](https://notes.andymatuschak.org/) |
-| 19 | `tom-critchlow-wiki` | Tom Critchlow Wiki | [Tom Critchlow Wiki](https://tomcritchlow.com/wiki/) |
-| 20 | `nownownow` | Now Now Now | [nownownow](https://nownownow.com/) |
-| 21 | `uses-tech` | Uses.tech | [uses.tech](https://uses.tech/) |
-| 22 | `brutalist-websites` | Brutalist Websites | [Brutalist Websites](https://brutalistwebsites.com/) |
-| 23 | `camerons-world` | Cameron's World | [Cameron's World](https://www.cameronsworld.net/) |
-| 24 | `neocities` | Neocities | [Neocities](https://neocities.org/) |
-| 25 | `internet-archive` | Internet Archive | [Internet Archive](https://archive.org/) |
-| 26 | `archive-wayback` | Wayback Machine | [Wayback Machine](https://web.archive.org/) |
-| 27 | `github-readme` | GitHub README | [GitHub](https://github.com/) |
-| 28 | `github-docs` | GitHub Docs | [GitHub Docs](https://docs.github.com/) |
-| 29 | `apple` | Apple | [Apple](https://www.apple.com/) |
-| 30 | `apple-developer` | Apple Developer | [Apple Developer](https://developer.apple.com/) |
-| 31 | `stripe-docs` | Stripe Docs | [Stripe Docs](https://docs.stripe.com/) |
-| 32 | `stripe` | Stripe | [Stripe](https://stripe.com/) |
-| 33 | `linear` | Linear | [Linear](https://linear.app/) |
-| 34 | `notion` | Notion | [Notion](https://www.notion.com/) |
-| 35 | `figma` | Figma | [Figma](https://www.figma.com/) |
-| 36 | `openai` | OpenAI | [OpenAI](https://openai.com/) |
-| 37 | `openai-docs` | OpenAI Docs | [OpenAI Docs](https://platform.openai.com/docs) |
-| 38 | `perplexity` | Perplexity | [Perplexity](https://www.perplexity.ai/) |
-| 39 | `vercel` | Vercel | [Vercel](https://vercel.com/) |
-| 40 | `vercel-docs` | Vercel Docs | [Vercel Docs](https://vercel.com/docs) |
-| 41 | `cloudflare-docs` | Cloudflare Docs | [Cloudflare Docs](https://developers.cloudflare.com/) |
-| 42 | `tailwind-docs` | Tailwind CSS Docs | [Tailwind CSS Docs](https://tailwindcss.com/docs) |
-| 43 | `react-docs` | React Docs | [React Docs](https://react.dev/) |
-| 44 | `mdn` | MDN | [MDN Web Docs](https://developer.mozilla.org/) |
-| 45 | `govuk` | GOV.UK | [GOV.UK](https://www.gov.uk/) |
-| 46 | `govuk-design-system` | GOV.UK Design System | [GOV.UK Design System](https://design-system.service.gov.uk/) |
-| 47 | `uswds` | USWDS | [U.S. Web Design System](https://designsystem.digital.gov/) |
-| 48 | `nytimes` | New York Times | [The New York Times](https://www.nytimes.com/) |
-| 49 | `new-yorker` | The New Yorker | [The New Yorker](https://www.newyorker.com/) |
-| 50 | `the-atlantic` | The Atlantic | [The Atlantic](https://www.theatlantic.com/) |
-| 51 | `guardian` | The Guardian | [The Guardian](https://www.theguardian.com/) |
-| 52 | `bloomberg` | Bloomberg | [Bloomberg](https://www.bloomberg.com/) |
-| 53 | `ft` | Financial Times | [Financial Times](https://www.ft.com/) |
-| 54 | `the-verge` | The Verge | [The Verge](https://www.theverge.com/) |
-| 55 | `wired` | WIRED | [WIRED](https://www.wired.com/) |
-| 56 | `pitchfork` | Pitchfork | [Pitchfork](https://pitchfork.com/) |
-| 57 | `letterboxd` | Letterboxd | [Letterboxd](https://letterboxd.com/) |
-| 58 | `goodreads` | Goodreads | [Goodreads](https://www.goodreads.com/) |
-| 59 | `discogs` | Discogs | [Discogs](https://www.discogs.com/) |
-| 60 | `bandcamp` | Bandcamp | [Bandcamp](https://bandcamp.com/) |
-| 61 | `substack` | Substack | [Substack](https://substack.com/) |
-| 62 | `medium` | Medium | [Medium](https://medium.com/) |
-| 63 | `tumblr` | Tumblr | [Tumblr](https://www.tumblr.com/) |
-| 64 | `wordpress` | WordPress.com | [WordPress.com](https://wordpress.com/) |
-| 65 | `blogger` | Blogger | [Blogger](https://www.blogger.com/) |
-| 66 | `pinboard` | Pinboard | [Pinboard](https://pinboard.in/) |
-| 67 | `delicious` | Delicious Archive | [Delicious on Wikipedia](https://en.wikipedia.org/wiki/Delicious_(website)) |
-| 68 | `lobsters` | Lobsters | [Lobsters](https://lobste.rs/) |
-| 69 | `slashdot` | Slashdot | [Slashdot](https://slashdot.org/) |
-| 70 | `reddit-old` | Old Reddit | [Old Reddit](https://old.reddit.com/) |
-| 71 | `reddit-new` | Reddit | [Reddit](https://www.reddit.com/) |
-| 72 | `product-hunt` | Product Hunt | [Product Hunt](https://www.producthunt.com/) |
-| 73 | `dribbble` | Dribbble | [Dribbble](https://dribbble.com/) |
-| 74 | `behance` | Behance | [Behance](https://www.behance.net/) |
-| 75 | `awwwards` | Awwwards | [Awwwards](https://www.awwwards.com/) |
-| 76 | `siteinspire` | Siteinspire | [Siteinspire](https://www.siteinspire.com/) |
-| 77 | `one-page-love` | One Page Love | [One Page Love](https://onepagelove.com/) |
-| 78 | `special-fish` | Special Fish | [Special Fish](https://special.fish/) |
-| 79 | `mmm-page` | mmm.page | [mmm.page](https://mmm.page/) |
-| 80 | `wiby` | Wiby | [Wiby](https://wiby.me/) |
-| 81 | `search-marginalia` | Marginalia Search | [Marginalia Search](https://search.marginalia.nu/) |
-| 82 | `textfiles` | textfiles.com | [textfiles.com](http://textfiles.com/) |
-| 83 | `motherfucking-website` | Motherfucking Website | [Motherfucking Website](http://motherfuckingwebsite.com/) |
-| 84 | `best-motherfucking-website` | Better Motherfucking Website | [Better Motherfucking Website](http://bettermotherfuckingwebsite.com/) |
-| 85 | `txti` | txti | [txti](https://txti.es/) |
-| 86 | `tufte-css` | Tufte CSS | [Tufte CSS](https://edwardtufte.github.io/tufte-css/) |
-| 87 | `latex-css` | LaTeX.css | [LaTeX.css](https://latex.vercel.app/) |
-| 88 | `terminal-css` | Terminal CSS | [Terminal CSS](https://terminalcss.xyz/) |
-| 89 | `98-css` | 98.css | [98.css](https://jdan.github.io/98.css/) |
-| 90 | `xp-css` | XP.css | [XP.css](https://botoxparty.github.io/XP.css/) |
-| 91 | `7-css` | 7.css | [7.css](https://khang-nd.github.io/7.css/) |
-| 92 | `system-css` | System.css | [System.css](https://sakofchit.github.io/system.css/) |
-| 93 | `nes-css` | NES.css | [NES.css](https://nostalgic-css.github.io/NES.css/) |
-| 94 | `puppertino` | Puppertino | [Puppertino](https://codedgar.github.io/Puppertino/) |
-| 95 | `geocities-gallery` | Geocities Gallery | [Geocities Gallery](https://geocities.restorativland.org/) |
-| 96 | `yahoo-directory` | Yahoo Directory | [Yahoo Directory on Wikipedia](https://en.wikipedia.org/wiki/Yahoo!_Directory) |
-| 97 | `google-search` | Google Search | [Google](https://www.google.com/) |
-| 98 | `google-docs` | Google Docs | [Google Docs](https://docs.google.com/) |
-| 99 | `airtable` | Airtable | [Airtable](https://www.airtable.com/) |
-| 100 | `basecamp` | Basecamp | [Basecamp](https://basecamp.com/) |
+| 1 | `legacy-aqua` | Legacy Aqua | Original Ryan Prendergast site | Repository baseline |
+| 2 | `taliahhh` | Taliahhh | [taliahhh.com](https://taliahhh.com/) | [Framer Gallery detail](https://www.framer.com/gallery/taliahhhcom) |
+| 3 | `daveos` | DaveOS | [daveos.fun](https://daveos.fun/) | [Framer Gallery detail](https://www.framer.com/gallery/daveosfun) |
+| 4 | `guangxi-cai` | Guangxi Cai | [caiguangxi.com](https://caiguangxi.com/) | [Framer Gallery detail](https://www.framer.com/gallery/guangxi-cai) |
+| 5 | `sebastian-martinez` | SEB Portfolio | [sebastian-martinez.com](https://sebastian-martinez.com/) | [Framer Gallery detail](https://www.framer.com/gallery/sebastian-martinezcom) |
+| 6 | `framer-uthinh-pham` | Uthinh Pham | Uthinh Pham portfolio, live URL to capture | [Framer Portfolio Gallery](https://www.framer.com/gallery/categories/portfolio) |
+| 7 | `framer-zuza-wozniczka` | Zuza Wozniczka | Zuza Wozniczka portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 8 | `framer-tracy-lou` | Tracy Lou | Tracy Lou digital designer portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 9 | `framer-ayush-wanjari` | Ayush Wanjari | Ayush Wanjari portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 10 | `framer-maria-nigmatullina` | Maria Nigmatullina | Maria Nigmatullina portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 11 | `framer-anastasia-kozhushna` | Anastasia Kozhushna | Anastasia Kozhushna portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 12 | `framer-yanxin-zhang` | YanXin Zhang | YanXin Zhang portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 13 | `framer-nitin-sangwan` | Nitin Sangwan | Nitin Sangwan portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 14 | `framer-jackie-zhang` | Jackie Zhang | Jackie Zhang portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 15 | `framer-sofie-viola` | Sofie Viola | Sofie Viola portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 16 | `framer-italo-santorsula` | Italo Santorsula | Italo Santorsula portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 17 | `framer-janar-siniloo` | Janar Siniloo | Janar Siniloo portfolio, live URL to capture | [Framer Personal Gallery](https://www.framer.com/gallery/categories/personal) |
+| 18 | `framer-paula-lu` | Paula Lu | Paula Lu brand/digital designer portfolio, live URL to capture | [Framer Portfolio Gallery](https://www.framer.com/gallery/categories/portfolio) |
+| 19 | `folkert-gorter` | Folkert Gorter | [folkert.link](https://folkert.link/) | [Siteinspire Folkert Gorter](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 20 | `lynn-sohn` | Lynn Sohn | [lynnsohn.com](https://lynnsohn.com/) | [Siteinspire Lynn Sohn](https://www.siteinspire.com/website/11108-lynn-sohn) |
+| 21 | `graeme-pereira` | Graeme Pereira | Graeme Pereira portfolio, live URL to capture | [Siteinspire Cargo Collective](https://www.siteinspire.com/websites/category/cargo-collective) |
+| 22 | `bernet-fourtet` | Bernet Fourtet | Bernet Fourtet portfolio, live URL to capture | [Siteinspire Cargo Collective](https://www.siteinspire.com/websites/category/cargo-collective) |
+| 23 | `julien-pacaud` | Julien Pacaud | Julien Pacaud portfolio, live URL to capture | [Siteinspire Cargo Collective](https://www.siteinspire.com/websites/category/cargo-collective) |
+| 24 | `khristian-mendoza` | Goodbye Galaxy / Khristian Mendoza | Goodbye Galaxy / Khristian Mendoza portfolio, live URL to capture | [Siteinspire Cargo Collective](https://www.siteinspire.com/websites/category/cargo-collective) |
+| 25 | `santiago-jaramillo` | Santiago Jaramillo | Santiago Jaramillo portfolio, live URL to capture | [Siteinspire Folkert similar sites](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 26 | `tessa-van-den-berg` | tessa van den berg | tessa van den berg portfolio, live URL to capture | [Siteinspire Folkert similar sites](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 27 | `vincent-lowe` | Studio of Vincent Lowe | Studio of Vincent Lowe portfolio, live URL to capture | [Siteinspire Folkert similar sites](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 28 | `pawel-achtelik` | Pawel Achtelik | Pawel Achtelik portfolio, live URL to capture | [Siteinspire Folkert similar sites](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 29 | `antoine-corbineau` | Antoine Corbineau | Antoine Corbineau portfolio, live URL to capture | [Siteinspire Folkert similar sites](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 30 | `victoria-gee` | Victoria Gee | Victoria Gee portfolio, live URL to capture | [Siteinspire Folkert similar sites](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 31 | `edoardo-lunardi` | Edoardo Lunardi | Edoardo Lunardi portfolio, live URL to capture | [Siteinspire Folkert similar sites](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 32 | `jin-su-park` | Jin Su Park | Jin Su Park portfolio, live URL to capture | [Siteinspire Folkert similar sites](https://www.siteinspire.com/website/10877-folkert-gorter) |
+| 33 | `jiayu-cheng` | Jiayu Cheng | Jiayu Cheng portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 34 | `braulio-amado` | Braulio Amado | Braulio Amado portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 35 | `lakis-sobyra` | Lakis Sobyra | Lakis Sobyra portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 36 | `agustin-pina` | Agustin Pina | [pinagustin.com](https://pinagustin.com/) | [Cargo Community](https://cargo.site/community) |
+| 37 | `darian-zahedi` | Darian Zahedi | Darian Zahedi photography portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 38 | `carola-monteleone` | Carola Monteleone | Carola Monteleone portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 39 | `rafik-greiss` | Rafik Greiss | [rafikgreiss.com](https://rafikgreiss.com/) | [Cargo Community](https://cargo.site/community) |
+| 40 | `matthew-vlach` | Matthew Vlach | [matthewvla.ch](https://matthewvla.ch/) | [Cargo Community](https://cargo.site/community) |
+| 41 | `sasyk` | Sasyk | [sasyk.com](https://sasyk.com/) | [Cargo Community](https://cargo.site/community) |
+| 42 | `weiran-liang` | Weiran Liang | [weiran.design](https://weiran.design/) | [Cargo Community](https://cargo.site/community) |
+| 43 | `violeta-araujo-bofill` | Violeta Araujo Bofill | [araujovioleta.com](https://araujovioleta.com/) | [Cargo Community](https://cargo.site/community) |
+| 44 | `daryan-knoblauch` | Daryan Knoblauch | Daryan Knoblauch portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 45 | `adrien-guillet` | Adrien Guillet | Adrien Guillet portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 46 | `theresa-hattinger` | Theresa Hattinger | Theresa Hattinger portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 47 | `rana-wassef` | Rana Wassef | Rana Wassef portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 48 | `andres-casas` | Andres Casas | Andres Casas portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 49 | `marina-guscetti` | Marina Guscetti | Marina Guscetti portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 50 | `constance-blackaller` | Constance Blackaller | Constance Blackaller portfolio, live URL to capture | [Cargo Community](https://cargo.site/community) |
+| 51 | `martin-borst` | Martin Borst | Martin Borst one-page personal site, live URL to capture | [Are.na One-page Personal Websites](https://www.are.na/rodrigo-tello/one-page-personal-websites) |
+| 52 | `everything-and-something-else` | everythingandsomethingelse.com | [everythingandsomethingelse.com](https://everythingandsomethingelse.com/) | [Are.na One-page Personal Websites](https://www.are.na/rodrigo-tello/one-page-personal-websites) |
+| 53 | `elena-borisova` | Elena Borisova | Elena Borisova one-page personal site, live URL to capture | [Are.na One-page Personal Websites](https://www.are.na/rodrigo-tello/one-page-personal-websites) |
+| 54 | `amanda-zip` | amanda.zip | [amanda.zip](https://amanda.zip/) | [Are.na One-page Personal Websites](https://www.are.na/rodrigo-tello/one-page-personal-websites) |
+| 55 | `elizabeth-van-de-griend` | elizabethvandegriend | Elizabeth van de Griend personal site, live URL to capture | [Are.na One-page Personal Websites](https://www.are.na/rodrigo-tello/one-page-personal-websites) |
+| 56 | `thomas-van-ryzewyk` | Thomas van Ryzewyk | Thomas van Ryzewyk one-page personal site, live URL to capture | [Are.na One-page Personal Websites](https://www.are.na/rodrigo-tello/one-page-personal-websites) |
+| 57 | `sam-seurynck` | Sam Seurynck Design | Sam Seurynck portfolio, live URL to capture | [Are.na design portfolios and studios](https://www.are.na/www-nana/design-portfolios-and-studios) |
+| 58 | `wang-yang` | WANG Yang | WANG Yang designer portfolio, live URL to capture | [Are.na design portfolios and studios](https://www.are.na/www-nana/design-portfolios-and-studios) |
+| 59 | `daniel-sun` | Daniel Sun | Daniel Sun portfolio, live URL to capture | [Godly Daniel Sun](https://godly.website/website/daniel-sun-1011) |
+| 60 | `camille-mormal` | Camille Mormal | Camille Mormal portfolio, live URL to capture | [Godly Camille Mormal](https://godly.website/website/camille-mormal-866) |
+| 61 | `edward-hinrichsen` | Edward Hinrichsen | Edward Hinrichsen portfolio, live URL to capture | [Godly Edward Hinrichsen](https://godly.website/website/edward-hinrichsen-744) |
+| 62 | `linus-rogge` | Linus Rogge | Linus Rogge portfolio, live URL to capture | [Godly Linus Rogge](https://godly.website/website/linus-rogge-878) |
+| 63 | `mike-matas` | Mike Matas | Mike Matas portfolio, live URL to capture | [Godly Mike Matas](https://godly.website/website/mike-matas-959) |
+| 64 | `carl-beaverson` | Carl Beaverson | Carl Beaverson portfolio, live URL to capture | [Godly Carl Beaverson](https://godly.website/website/carl-beaverson-946) |
+| 65 | `lorenzo-rodriguez` | Lorenzo Rodriguez | Lorenzo Rodriguez portfolio, live URL to capture | [Godly Lorenzo Rodriguez](https://godly.website/website/lorenzo-rodriguez-600) |
+| 66 | `maelan-le-meur` | Maelan Le Meur | Maelan Le Meur portfolio, live URL to capture | [Godly Maelan Le Meur](https://godly.website/website/maelan-le-meur-930) |
+| 67 | `dennis-snellenberg` | Dennis Snellenberg | Dennis Snellenberg portfolio, live URL to capture | [Godly Dennis Snellenberg](https://godly.website/website/dennis-snellenberg-697) |
+| 68 | `mark-vogelaar` | Mark Vogelaar | Mark Vogelaar personal design portfolio, live URL to capture | [Awwwards Personal Design Portfolio](https://www.awwwards.com/sites/personal-design-portfolio) |
+| 69 | `maciej-baska` | Maciej Baska | Maciej Baska personal portfolio, live URL to capture | [Awwwards Personal Portfolio](https://www.awwwards.com/sites/personal-portfolio-2) |
+| 70 | `botond-raduly` | Botond Raduly | Botond Raduly personal portfolio, live URL to capture | [Awwwards Personal Portfolio Site](https://www.awwwards.com/sites/personal-portfolio-site) |
+| 71 | `arkon-digital` | Arkon Digital | Arkon Digital personal portfolio, live URL to capture | [Awwwards AD Personal Portfolio](https://www.awwwards.com/sites/ad-personal-portfolio) |
+| 72 | `rumman-amin` | Rumman Amin | Rumman Amin personal portfolio, live URL to capture | [Awwwards Personal Portfolio](https://www.awwwards.com/sites/personal-portfolio) |
+| 73 | `igor-mahr` | Igor Mahr | Igor Mahr personal portfolio, live URL to capture | [Awwwards Igor Mahr](https://www.awwwards.com/sites/igor-mahr-personal-portfolio) |
+| 74 | `oleksandr-krasovskyi` | Oleksandr Krasovskyi | Oleksandr Krasovskyi personal portfolio, live URL to capture | [Awwwards Personal Portfolio O.K.](https://www.awwwards.com/sites/personal-portfolio-o-k) |
+| 75 | `alex-nikiforov` | Alex Nikiforov | Alex Nikiforov mobile product designer portfolio, live URL to capture | [Awwwards Personal Website](https://www.awwwards.com/sites/personal-website) |
+| 76 | `lucabazuka` | lucabazuka | lucabazuka personal portfolio, live URL to capture | [Awwwards Personal Portfolio MacBook](https://www.awwwards.com/sites/personal-portfolio-macbook-1) |
+| 77 | `abdul-wahab` | Abdul Wahab | Abdul Wahab portfolio, live URL to capture | [One Page Love Portfolio Filter](https://onepagelove.com/tag/portfolio-filter) |
+| 78 | `dillen-verschoor` | Dillen Verschoor | Dillen Verschoor personal portfolio, live URL to capture | [One Page Love Portfolio Filter](https://onepagelove.com/tag/portfolio-filter) |
+| 79 | `faris-kassim` | Faris Kassim | Faris Kassim portfolio, live URL to capture | [One Page Love Portfolio Filter](https://onepagelove.com/tag/portfolio-filter) |
+| 80 | `michael-uloth` | Michael Uloth | Michael Uloth music portfolio, live URL to capture | [One Page Love Portfolio Filter](https://onepagelove.com/tag/portfolio-filter) |
+| 81 | `barlas-apaydin` | Barlas Apaydin | Barlas Apaydin portfolio, live URL to capture | [One Page Love Portfolio Filter](https://onepagelove.com/tag/portfolio-filter) |
+| 82 | `mohammed-bilal` | Mohammed Bilal | Mohammed Bilal portfolio, live URL to capture | [One Page Love Portfolio Filter](https://onepagelove.com/tag/portfolio-filter) |
+| 83 | `joost-huver` | Joost Huver | Joost Huver portfolio, live URL to capture | [One Page Love Cargo](https://onepagelove.com/tag/cargo) |
+| 84 | `lauren-gallagher` | Lauren Gallagher | Lauren Gallagher portfolio, live URL to capture | [One Page Love Cargo](https://onepagelove.com/tag/cargo) |
+| 85 | `pedro-del-corro` | Pedro del Corro | Pedro del Corro portfolio, live URL to capture | [One Page Love Cargo](https://onepagelove.com/tag/cargo) |
+| 86 | `luke-fenech` | Luke Fenech | Luke Fenech portfolio, live URL to capture | [One Page Love Cargo](https://onepagelove.com/tag/cargo) |
+| 87 | `jon-kyle` | Jon Kyle | Jon Kyle personal portfolio, live URL to capture | [One Page Love Cargo](https://onepagelove.com/tag/cargo) |
+| 88 | `aristide-benoist` | Aristide Benoist | Aristide Benoist freelance developer portfolio, live URL to capture | [Awwwards portfolio element](https://www.awwwards.com/inspiration/portfolio-of-aristide-benoist-freelance-developer) |
+| 89 | `davide-developer` | Davide Developer | Davide developer portfolio, live URL to capture | [Awwwards Aristide related element](https://www.awwwards.com/inspiration/portfolio-of-aristide-benoist-freelance-developer) |
+| 90 | `theud` | Theud | Theud portfolio, live URL to capture | [Awwwards Aristide related element](https://www.awwwards.com/inspiration/portfolio-of-aristide-benoist-freelance-developer) |
+| 91 | `bruno-simon` | Bruno Simon | [bruno-simon.com](https://bruno-simon.com/) | Curated portfolio reference retained from prior research |
+| 92 | `lynn-fisher` | Lynn Fisher | [lynnandtonic.com](https://lynnandtonic.com/) | Curated personal portfolio reference retained from prior research |
+| 93 | `brittany-chiang` | Brittany Chiang | [brittanychiang.com](https://brittanychiang.com/) | Curated personal portfolio reference retained from prior research |
+| 94 | `rauno-freiberg` | Rauno Freiberg | [rauno.me](https://rauno.me/) | Curated personal/product designer portfolio reference retained from prior research |
+| 95 | `maggie-appleton` | Maggie Appleton | [maggieappleton.com](https://maggieappleton.com/) | Personal site/digital garden reference |
+| 96 | `andy-matuschak` | Andy Matuschak | [notes.andymatuschak.org](https://notes.andymatuschak.org/) | Personal notes/portfolio reference |
+| 97 | `simon-willison` | Simon Willison | [simonwillison.net](https://simonwillison.net/) | Personal blog/portfolio reference |
+| 98 | `daring-fireball` | John Gruber / Daring Fireball | [daringfireball.net](https://daringfireball.net/) | Personal writing site reference |
+| 99 | `gwern` | Gwern | [gwern.net](https://gwern.net/) | Personal writing/research site reference |
+| 100 | `tom-critchlow` | Tom Critchlow | [tomcritchlow.com](https://tomcritchlow.com/) | Personal wiki/site reference |
 
 ## Per-Theme Reference File Template
 
 Each target gets a reference file:
 
 ```md
-# hacker-news
+# taliahhh
 
-Target: https://news.ycombinator.com/
+Target: https://taliahhh.com/
 Capture date: YYYY-MM-DD
 Status: planned
 
 ## Required Mimicry
 
-- Top navigation must mimic the orange HN bar.
-- Home must mimic ranked story rows.
-- Blog index must mimic story listing rows.
-- Blog post must mimic an item discussion page, with Ryan essay as the linked text/content.
-- Archives must mimic paginated HN lists.
-- Theme picker must mimic a HN-style table.
+- Home must mimic Taliahhh's actual landing structure.
+- Blog index must map Ryan posts into Taliahhh's work-list or project-index pattern.
+- Blog post must map one Ryan essay into Taliahhh's project-detail structure.
+- Archives must use the same navigation and spacing system as the target.
+- Theme picker must look like an internal page from the same target site, not a generic gallery.
 
 ## Screenshots
 
@@ -362,10 +369,10 @@ Status: planned
 
 ## Rejection Criteria
 
-- Generic orange page.
-- Cards.
-- Modern spacing.
-- Missing rank numbers.
+- Generic portfolio grid.
+- Any layout that could belong to another Framer portfolio.
+- Reusing a shared portfolio renderer.
+- Missing target-specific navigation, spacing, or typography.
 ```
 
 ## Rejection Criteria For The Whole Project
