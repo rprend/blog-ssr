@@ -435,7 +435,7 @@ function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, co
   <link rel="canonical" href="${escapeHtml(options.canonicalUrl || `https://ryan-prendergast.com${options.currentPage}`)}">
   ${options.structuredData || ""}
 </head>
-<body>
+<body class="theme-layout theme-${escapeHtml(options.theme.slug)} family-${ctx.family} ${options.bodyClass || ""}">
   <header>
     <h1><a href="/">Ryan Prendergast</a></h1>
     <p>No CSS Club mimic of <a href="${ctx.theme.targetUrl}">${ctx.theme.targetUrl}</a></p>

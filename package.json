@@ -5,6 +5,7 @@
     "dev": "wrangler dev src/worker.ts",
     "build": "node scripts/generatePosts.js && node scripts/generateLinks.js && node scripts/generateTemplates.js && node scripts/generateRSS.js",
     "audit:themes": "node scripts/auditThemeLayouts.js",
+    "probe:themes": "node scripts/probeThemeRoutes.js",
     "start": "wrangler dev src/worker.ts",
     "deploy": "npm run build && npx wrangler deploy"
   },

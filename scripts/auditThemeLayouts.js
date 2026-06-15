@@ -4,6 +4,7 @@ const sourceList = fs.readFileSync("docs/theme-references/user-supplied-sites.md
 const plan = fs.readFileSync("docs/theme-references/user-supplied-theme-plan.md", "utf8");
 const themesSource = fs.readFileSync("src/themes.ts", "utf8");
 const renderersSource = fs.readFileSync("src/theme-renderers.ts", "utf8");
+const packageSource = fs.readFileSync("package.json", "utf8");
 
 const suppliedUrls = sourceList
   .split("\n")
@@ -105,6 +106,14 @@ for (const slug of builtSlugs) {
 
 if (!renderersSource.includes("family-spartan") && !renderersSource.includes('"spartan"')) {
   failures.push("Spartan renderer family is missing.");
+}
+
+if (!fs.existsSync("scripts/probeThemeRoutes.js")) {
+  failures.push("Missing theme route probe script.");
+}
+
+if (!packageSource.includes('"probe:themes"')) {
+  failures.push("package.json is missing probe:themes.");
 }
 
 if (failures.length) {

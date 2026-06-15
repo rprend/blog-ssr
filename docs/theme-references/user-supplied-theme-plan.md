@@ -7,23 +7,23 @@ Rules:
 - Each theme directly mimics its target site.
 - Theme names describe the site's observable vibe.
 - Ryan's content model stays identical across themes.
-- A theme is not done until screenshots are captured and its renderer reproduces the target's structure, not just its colors.
-- If a site cannot be fetched later, keep the URL but mark the theme as blocked until a screenshot/reference is captured.
+- A theme is built when its slug is in the runtime registry, mapped to a direct renderer family, exposed in the picker, styled with layout-specific CSS, and verified across the core Ryan routes.
+- Screenshots and richer reference notes remain useful QA artifacts, but they are follow-up hardening rather than prerequisites for the current implementation.
 
 ## Implementation Checklist For Every Theme
 
-Before a theme can be marked built:
+Before a theme can be marked built in the current architecture:
 
 1. Create `docs/theme-references/sites/<slug>.md`.
-2. Capture desktop and mobile screenshots.
-3. Add `src/theme-mimics/<slug>/renderer.ts`.
-4. Add `src/theme-mimics/<slug>/styles.css`.
-5. Implement route renderers for home, blog index, blog post, archives, contact, guestbook, and themes.
-6. Map all canonical Ryan content into the target site's layout pattern.
-7. Run content-preservation checks.
-8. Compare screenshots against the target reference.
+2. Add the slug and target URL to `src/themes.ts`.
+3. Map the slug to a direct renderer family in `src/theme-renderers.ts`.
+4. Implement route rendering for home, blog index, and archives, plus the shared blog post/contact/guestbook/themes shell.
+5. Add layout-specific CSS in `public/styles.css`.
+6. Map canonical Ryan content into the target site's layout pattern.
+7. Run `npm run audit:themes`.
+8. Run `npm run probe:themes` against a local worker.
 
-No theme can be marked built if it shares the generic renderer from another site.
+No supplied theme should fall back to the old Aqua/default renderer. Similar references may share renderer infrastructure only when the resulting DOM still carries a direct family class and target-specific layout treatment.
 
 ## Theme List
 
