@@ -412,6 +412,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "builder-notes") return renderBuilderNotesGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "manual") return renderManualGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "art-library") return renderArtLibraryGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "studio-index") return renderStudioIndexGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -676,7 +677,11 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "studio-index") {
-    return `<section class="studio-index">${homeHeader}<nav>Index Studies Information Objects All</nav><div class="studio-studies">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><span>${escapeHtml(link.domain)}</span></article>`).join("")}</div></section>`;
+    const projects = model.links.map((link, index) => renderStudioIndexProject(link.title, link.url, link.domain, link.date, link.image, index)).join("");
+    const recent = model.recentPosts
+      .map((post, index) => renderStudioIndexTextRow(post.title, post.href, post.date, post.readTime || "Essay", index))
+      .join("");
+    return `<section class="studio-index">${renderStudioIndexHeader(ctx, model.introHtml, "Index")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Interface", "Systems", "Writing", "Images", "References"])}<div class="studio-index-content"><section class="studio-index-manifesto">${model.aboutHtml}</section><div class="studio-index-grid">${projects}</div><section class="studio-index-panel"><div class="studio-index-panel-title">Studies</div><div class="studio-index-list">${recent}</div></section></div></div></section>`;
   }
 
   if (ctx.family === "cargo-cv") {
@@ -864,7 +869,9 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     if (ctx.family === "wordmark-studio") {
       return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Grid</p><h2>Writing</h2><span>${escapeHtml(model.description)}</span></header><div class="wordmark-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(group.year)} · ${escapeHtml(post.date)}</small></a>`)).join("")}</div></section>`;
     }
-    return `<section class="${ctx.family}"><h2>Studies Index</h2><div class="work-grid">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(group.year)} · ${escapeHtml(post.date)}</small></a>`)).join("")}</div></section>`;
+    const studyRows = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
+    const posts = studyRows.map((post, index) => renderStudioIndexTextRow(post.title, post.href, post.date, post.year, index)).join("");
+    return `<section class="studio-index">${renderStudioIndexHeader(ctx, model.description, "Studies")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Essays", "Notes", "Archive"])}<div class="studio-index-content"><div class="studio-index-list studio-index-list-large">${posts}</div></div></div></section>`;
   }
   if (ctx.family === "builder-notes" || ctx.family === "garden-notebook") {
     if (ctx.family === "builder-notes") {
@@ -941,6 +948,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "wordmark-studio") {
     return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="wordmark-page-header"><p>${meta}</p><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<span>${escapeHtml(model.subtitle)}</span>` : ""}</header><div class="blog-post-content">${model.contentHtml}</div></article>`;
   }
+  if (ctx.family === "studio-index") {
+    return `<article class="studio-index studio-index-article">${renderStudioIndexHeader(ctx, model.subtitle ? escapeHtml(model.subtitle) : meta, "Studies")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Essays", "Notes", "Archive"])}<div class="studio-index-content"><a class="studio-index-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="studio-index-article-head"><h2>${escapeHtml(model.title)}</h2><p>${meta}</p></header><div class="blog-post-content studio-index-copy">${model.contentHtml}</div></div></div></article>`;
+  }
   if (ctx.family === "builder-notes") {
     return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><header><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p>${meta}</p></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
   }
@@ -985,7 +995,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   if (ctx.family === "builder-notes") {
     return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>archive</h1>${model.months.map((month) => `<section class="builder-notes-section"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
   }
-  if (["studio-index", "research-tools", "artist-ledger", "garden-notebook"].includes(ctx.family)) {
+  if (ctx.family === "studio-index") {
+    const months = model.months.map((month, index) => renderStudioIndexTextRow(month.label, `#${slugify(month.label)}`, `${month.posts.length} posts`, month.key, index)).join("");
+    const records = model.months.map((month) => `<section id="${slugify(month.label)}" class="studio-index-month"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post, index) => renderStudioIndexTextRow(post.title, post.href, post.date, post.readTime || "Post", index)).join("")}</section>`).join("");
+    return `<section class="studio-index">${renderStudioIndexHeader(ctx, `${model.totalPosts} entries across ${model.months.length} months.`, "Index")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Months", "Posts", "Chronology"])}<div class="studio-index-content"><div class="studio-index-list">${months}</div>${records}</div></div></section>`;
+  }
+  if (["research-tools", "artist-ledger", "garden-notebook"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "art-library") {
@@ -1029,6 +1044,9 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
   if (ctx.family === "art-library") {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Guestbook", "")}<section class="guestbook-header">${button}</section>${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.entries.map((entry) => [escapeHtml(entry.message), escapeHtml(entry.name), escapeHtml(entry.date), "Guestbook"]))}</section>${guestbookModalScript()}`;
   }
+  if (ctx.family === "studio-index") {
+    return `<section class="studio-index">${renderStudioIndexHeader(ctx, `<p>${model.entries.length} entries</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Guestbook", "Messages"])}<div class="studio-index-content"><section class="guestbook-header">${button}</section><div class="studio-index-list">${entries}</div></div></div></section>${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -1046,6 +1064,11 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
   }
   if (ctx.family === "art-library") {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Themes", `<p>${model.themes.length} layouts from Ryan's reference list.</p>`)}<div class="themes-console art-library-search"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div></div>${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.themes.map((theme) => [`<a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a>`, escapeHtml(theme.vibe), theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status), escapeHtml(theme.category)]))}</section>`;
+  }
+  if (ctx.family === "studio-index") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes.map((theme, index) => renderStudioIndexTextRow(theme.name, `?theme=${theme.slug}`, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, index)).join("");
+    return `<section class="studio-index">${renderStudioIndexHeader(ctx, `<p>${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Built", "Planned", "Reference"])}<div class="studio-index-content"><div class="themes-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="studio-index-list">${rows}</div></div></div></section>`;
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
@@ -1157,6 +1180,36 @@ function renderManualGeneric(model: GenericPageModel, ctx: RenderContext): strin
 
 function renderArtLibraryGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return `<article class="art-library art-library-record">${renderArtLibraryHeader(ctx, model.heading, "")}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], [[escapeHtml(model.heading), "Ryan Prendergast", escapeHtml(ctx.currentPage || "/"), "Page"]])}<div class="blog-post-content">${model.contentHtml}</div></article>`;
+}
+
+function renderStudioIndexHeader(ctx: RenderContext, introHtml: string, activeTab: string): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const tabs = [
+    ["/", "Index"],
+    ["/blog", "Studies"],
+    ["/contact", "Information"],
+    ["/photos", "Objects"],
+  ] as Array<[string, string]>;
+  return `<header class="studio-index-header"><div class="studio-index-brand"><a href="/">Ryan Prendergast</a><div>${introHtml}</div></div><div class="studio-index-mode">Studio</div><nav class="studio-index-tabs" aria-label="Core site areas">${tabs.map(([href, label]) => `<a class="${active(href)} ${label === activeTab ? "is-current" : ""}" href="${href}">${label === activeTab ? `[ ${label} ]` : label}</a>`).join("")}<a class="${active("/archives")}" href="/archives">Archive</a><a class="${active("/guestbook")}" href="/guestbook">Guestbook</a><a href="/rss.xml">RSS</a><a class="${active("/themes")}" href="/themes">Themes</a></nav></header>`;
+}
+
+function renderStudioIndexFilters(filters: string[]): string {
+  return `<aside class="studio-index-filters"><span>Type</span>${filters.map((filter, index) => `<a class="${index === 0 ? "is-active" : ""}" href="#">${index === 0 ? `[ ${escapeHtml(filter)} ]` : escapeHtml(filter)}</a>`).join("")}</aside>`;
+}
+
+function renderStudioIndexProject(title: string, href: string, source: string, date: string, image: string | null, index: number): string {
+  const media = image
+    ? `<img src="${image}" alt="" loading="lazy">`
+    : `<div class="studio-index-placeholder" aria-hidden="true"><span>${String(index + 1).padStart(2, "0")}</span></div>`;
+  return `<article class="studio-index-project"><a href="${href}">${media}<span>${escapeHtml(title)}</span></a><p>${escapeHtml(source)}</p><time>${escapeHtml(date)}</time></article>`;
+}
+
+function renderStudioIndexTextRow(title: string, href: string, date: string, type: string, index: number): string {
+  return `<a class="studio-index-row" href="${href}"><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(title)}</strong><small>${escapeHtml(type)}</small><time>${escapeHtml(date)}</time></a>`;
+}
+
+function renderStudioIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="studio-index studio-index-article">${renderStudioIndexHeader(ctx, `<p>${escapeHtml(ctx.currentPage || "/")}</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Information", "Contact", "Pages"])}<div class="studio-index-content"><header class="studio-index-article-head"><h2>${escapeHtml(model.heading)}</h2></header><div class="blog-post-content studio-index-copy">${model.contentHtml}</div></div></div></article>`;
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
