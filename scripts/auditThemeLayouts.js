@@ -1,46 +1,65 @@
 import fs from "node:fs";
 
+const sourceList = fs.readFileSync("docs/theme-references/user-supplied-sites.md", "utf8");
+const plan = fs.readFileSync("docs/theme-references/user-supplied-theme-plan.md", "utf8");
 const themesSource = fs.readFileSync("src/themes.ts", "utf8");
 const renderersSource = fs.readFileSync("src/theme-renderers.ts", "utf8");
 
-const themeSlugs = [...themesSource.matchAll(/\["([^"]+)",\s*"[^"]+",\s*"[^"]+"\]/g)].map(
-  (match) => match[1]
-);
-const mappedSlugs = new Set(
-  [...renderersSource.matchAll(/^\s{2}"?([a-z0-9-]+)"?:\s*"(?:aqua|desktop|terminal|editor|hn|wiki|old-web|publishing|cards|catalog|grid|minimal|maximal|dashboard)",/gm)].map(
-    (match) => match[1]
-  )
-);
-const readyMatch = themesSource.match(/readyLayoutThemes = new Set\(\[([^\]]+)\]\)/);
-const readySlugs = readyMatch
-  ? [...readyMatch[1].matchAll(/"([^"]+)"/g)].map((match) => match[1])
-  : [];
+const suppliedUrls = sourceList
+  .split("\n")
+  .map((line) => line.match(/https?:\/\/\S+/)?.[0])
+  .filter(Boolean);
+
+const plannedRows = plan
+  .split("\n")
+  .filter((line) => line.startsWith("| ") && /^\d+$/.test(line.split("|")[1].trim()));
+
+const registryUrls = [...themesSource.matchAll(/targetUrl:\s*"([^"]+)"/g)].map((match) => match[1]);
+const registrySlugs = [...themesSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
+const builtSlugs = [...new Set([...themesSource.matchAll(/"([^"]+)",/g)]
+  .map((match) => match[1])
+  .filter((slug) =>
+    [
+      "spartan-essay-table",
+      "monospace-manual",
+      "plaintext-scoreboard",
+      "fashion-archive-index",
+      "playful-climber-scrapbook",
+      "coordinates-art-index",
+      "no-css-club",
+      "annotated-research-sidenotes",
+    ].includes(slug)
+  ))];
 
 const failures = [];
 
-if (themeSlugs.length !== 100) {
-  failures.push(`Expected 100 themes, found ${themeSlugs.length}.`);
+if (suppliedUrls.length !== 53) failures.push(`Expected 53 supplied URLs, found ${suppliedUrls.length}.`);
+if (plannedRows.length !== 53) failures.push(`Expected 53 planned theme rows, found ${plannedRows.length}.`);
+if (registryUrls.length !== 53) failures.push(`Expected 53 registry URLs, found ${registryUrls.length}.`);
+
+for (const url of suppliedUrls) {
+  if (!registryUrls.includes(url)) failures.push(`Supplied URL missing from registry: ${url}`);
 }
 
-for (const slug of themeSlugs) {
-  if (!mappedSlugs.has(slug)) failures.push(`Theme ${slug} is missing a renderer-family mapping.`);
+for (const slug of registrySlugs) {
+  if (!plan.includes(`\`${slug}\``)) failures.push(`Registry slug missing from supplied plan: ${slug}`);
+  if (!fs.existsSync(`docs/theme-references/sites/${slug}.md`)) {
+    failures.push(`Missing reference file for ${slug}.`);
+  }
 }
 
-for (const slug of readySlugs) {
-  if (!themeSlugs.includes(slug)) failures.push(`Ready theme ${slug} is not in the theme registry.`);
-  if (!mappedSlugs.has(slug)) failures.push(`Ready theme ${slug} is not mapped to a renderer family.`);
+for (const oldSlug of ["hacker-news", "win98", "tufte", "aqua", "theme-museum"]) {
+  if (registrySlugs.includes(oldSlug)) failures.push(`Old invented theme still present: ${oldSlug}`);
 }
 
-if (readySlugs.length < 5) {
-  failures.push(`Expected at least 5 layout-ready proof themes, found ${readySlugs.length}.`);
+for (const slug of builtSlugs) {
+  if (!renderersSource.includes(`"${slug}":`) && !renderersSource.includes(`${slug}:`)) {
+    failures.push(`Built theme ${slug} is missing a renderer mapping.`);
+  }
 }
 
-if (!themesSource.includes('status: readyLayoutThemes.has(slug) ? "ready"')) {
-  failures.push("Theme registry is not deriving ready/layout-draft status from readyLayoutThemes.");
-}
-
-if (!renderersSource.includes("renderThemedPage")) {
-  failures.push("Renderer entry point renderThemedPage is missing.");
+if (!renderersSource.includes("family-spartan") && !renderersSource.includes('"spartan"')) {
+  failures.push("Spartan renderer family is missing.");
 }
 
 if (failures.length) {
@@ -51,9 +70,10 @@ if (failures.length) {
 console.log(
   JSON.stringify(
     {
-      themes: themeSlugs.length,
-      mappedThemes: mappedSlugs.size,
-      readyThemes: readySlugs,
+      suppliedUrls: suppliedUrls.length,
+      plannedRows: plannedRows.length,
+      registryThemes: registryUrls.length,
+      builtThemes: builtSlugs,
     },
     null,
     2

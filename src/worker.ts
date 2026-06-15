@@ -65,6 +65,7 @@ function escapeHtml(value: string): string {
 }
 
 function formatCategory(category: string): string {
+  if (category === "supplied") return "Supplied Sites";
   if (category === "retro-os") return "Retro OS";
   return category
     .split("-")
@@ -141,11 +142,13 @@ function renderThemeCard(theme: SiteTheme): string {
     .map((tag) => `<span class="theme-tag">${escapeHtml(tag)}</span>`)
     .join("");
   const statusLabel =
-    theme.status === "ready"
-      ? "Layout Ready"
-      : theme.status === "layout-draft"
-        ? "Layout Draft"
-        : "Skin";
+    theme.status === "built"
+      ? "Built"
+      : theme.status === "referenced"
+        ? "Referenced"
+        : theme.status === "blocked"
+          ? "Blocked"
+          : "Planned";
 
   return `
     <article class="theme-card" data-theme-card="${theme.slug}" data-theme-category="${theme.category}">
@@ -156,6 +159,7 @@ function renderThemeCard(theme: SiteTheme): string {
         <div class="theme-card-kicker">${formatCategory(theme.category)} / ${statusLabel}</div>
         <h2 class="theme-card-title">${escapeHtml(theme.name)}</h2>
         <p class="theme-card-description">${escapeHtml(theme.description)}</p>
+        <p class="theme-card-target"><a href="${theme.targetUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(theme.targetUrl)}</a></p>
         <div class="theme-card-tags">${tags}</div>
         <div class="theme-card-actions">
           <button type="button" data-theme-apply="${theme.slug}">Apply</button>
@@ -517,7 +521,7 @@ app.get("/themes", (c) => {
   const themesByCategory = getThemesByCategory();
   const categories = Object.keys(themesByCategory);
   const categoryControls = [
-    `<button type="button" class="theme-filter is-active" data-theme-filter="all">All 100</button>`,
+    `<button type="button" class="theme-filter is-active" data-theme-filter="all">All ${siteThemes.length}</button>`,
     ...categories.map(
       (category) =>
         `<button type="button" class="theme-filter" data-theme-filter="${category}">${formatCategory(category)}</button>`
@@ -558,8 +562,8 @@ app.get("/themes", (c) => {
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      "name": "Theme Museum",
-      "description": "Browse 100 visual themes for Ryan Prendergast's personal site",
+      "name": "Supplied Site Mimics",
+      "description": "Browse Ryan's supplied site-mimic themes",
       "url": "https://ryan-prendergast.com/themes",
       "author": {
         "@type": "Person",

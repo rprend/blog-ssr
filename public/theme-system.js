@@ -12,7 +12,7 @@
   }
 
   function getCurrentSlug() {
-    return root.dataset.theme || localStorage.getItem(storageKey) || "aqua";
+    return root.dataset.theme || localStorage.getItem(storageKey) || "spartan-essay-table";
   }
 
   function findTheme(slug) {
@@ -117,12 +117,12 @@
     .then((data) => {
       themes = data.themes || [];
       const requested = getRequestedTheme();
-      const current = requested || localStorage.getItem(storageKey) || data.defaultTheme || "aqua";
+      const current = requested || localStorage.getItem(storageKey) || data.defaultTheme || "spartan-essay-table";
       setTheme(current, { updateUrl: false });
       bindControls();
     })
     .catch(() => {
-      updateUi({ slug: getCurrentSlug(), name: getCurrentSlug() });
+      updateUi({ slug: getCurrentSlug(), name: getCurrentSlug() || "spartan-essay-table" });
       bindControls();
     });
 })();

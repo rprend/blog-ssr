@@ -1,14 +1,6 @@
-export type ThemeCategory =
-  | "retro-os"
-  | "writing"
-  | "old-web"
-  | "terminal"
-  | "personal"
-  | "physical"
-  | "institutional"
-  | "minimal"
-  | "maximal"
-  | "seasonal";
+export type ThemeCategory = "supplied";
+
+export type ThemeStatus = "planned" | "referenced" | "built" | "blocked";
 
 export interface SiteTheme {
   slug: string;
@@ -16,214 +8,417 @@ export interface SiteTheme {
   category: ThemeCategory;
   description: string;
   tags: string[];
-  status: "ready" | "layout-draft" | "skin";
-  depth: "layout" | "token" | "interaction";
+  status: ThemeStatus;
+  depth: "layout";
+  targetUrl: string;
+  vibe: string;
+  stylesheet: string;
+  referencePath: string;
+  screenshots: { desktop?: string; mobile?: string };
 }
 
-const readyLayoutThemes = new Set(["aqua", "hacker-news", "win98", "tufte", "green-terminal"]);
+const builtThemeSlugs = new Set([
+  "spartan-essay-table",
+  "monospace-manual",
+  "plaintext-scoreboard",
+  "fashion-archive-index",
+  "playful-climber-scrapbook",
+  "coordinates-art-index",
+  "no-css-club",
+  "annotated-research-sidenotes",
+]);
 
-const themeGroups: Array<{
-  category: ThemeCategory;
-  tags: string[];
-  themes: Array<[string, string, string]>;
-}> = [
+const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "depth" | "stylesheet" | "referencePath" | "screenshots">> = [
   {
-    category: "retro-os",
-    tags: ["retro", "operating system"],
-    themes: [
-      ["aqua", "Aqua", "Early-2000s Apple blog chrome with glassy navigation."],
-      ["classic-mac", "Classic Mac", "Monochrome System-era windows and crisp document panels."],
-      ["win95", "Windows 95", "Gray beveled panels and utilitarian desktop controls."],
-      ["win98", "Windows 98", "Sharper classic Windows shell with blue title-bar energy."],
-      ["windows-xp", "Windows XP", "Friendly blue and green desktop gloss."],
-      ["windows-7", "Windows 7", "Translucent Aero-inspired polish and calm gradients."],
-      ["dos", "DOS", "Black screen, bright text, command-line density."],
-      ["commodore-64", "Commodore 64", "Blue 8-bit home-computer console styling."],
-      ["palmpilot", "PalmPilot", "Tiny grayscale PDA notes and compact controls."],
-      ["ipod", "iPod", "White plastic, chrome hints, and click-wheel-era simplicity."],
-    ],
+    slug: "spaced-wordmark-studio",
+    name: "Spaced Wordmark Studio",
+    targetUrl: "https://jarcos.work/",
+    vibe: "Spaced Wordmark Studio",
+    description: "JARCOS: sparse studio header, large spaced-out wordmark typography, tight work/grid navigation, minimal inquiry link, portfolio entries treated as brand/digital projects.",
   },
   {
-    category: "writing",
-    tags: ["writing", "publishing"],
-    themes: [
-      ["tufte", "Tufte", "Bookish longform layout with warm paper and serif text."],
-      ["latex", "LaTeX", "Academic paper typography and formal document rhythm."],
-      ["newspaper", "Newspaper", "Columned editorial page with masthead drama."],
-      ["magazine", "Magazine", "Bold editorial hierarchy for a personal publication."],
-      ["paperback", "Paperback", "Compact novel-like pages with soft paper tones."],
-      ["academic-journal", "Academic Journal", "Dense research archive with citation-like metadata."],
-      ["field-notes", "Field Notes", "Pocket notebook colors and ruled-paper details."],
-      ["legal-brief", "Legal Brief", "Formal pleading-paper structure and restrained typography."],
-      ["encyclopedia", "Encyclopedia", "Reference-book hierarchy and cross-link emphasis."],
-      ["markdown-reader", "Markdown Reader", "Clean rendered Markdown with README-like defaults."],
-    ],
+    slug: "intimate-builder-notes",
+    name: "Intimate Builder Notes",
+    targetUrl: "https://www.jia.build/",
+    vibe: "Intimate Builder Notes",
+    description: "Jia: direct first-person homepage, small nav for about/friends/writing, low-ceremony personal text, visible age/background/work notes, writing links as plain personal artifacts.",
   },
   {
-    category: "old-web",
-    tags: ["old web", "internet history"],
-    themes: [
-      ["html-1", "HTML 1.0", "Almost raw browser defaults with barely any decoration."],
-      ["geocities", "GeoCities", "Maximal old-web color, tiled-feeling surfaces, and badges."],
-      ["blogger", "Blogger", "Early hosted-blog layout with simple modules."],
-      ["myspace", "MySpace", "Profile-page panels with saturated personality."],
-      ["tumblr", "Tumblr", "Microblog cards and reblog-era compact post rhythm."],
-      ["craigslist", "Craigslist", "Plain classified listings and blue-link utility."],
-      ["hacker-news", "Hacker News", "Dense orange-tinted link feed styling."],
-      ["wikipedia", "Wikipedia", "Reference page with tabs, sidebars, and serif content."],
-      ["rss-reader", "RSS Reader", "Feed-reader panes and scan-first item lists."],
-      ["webring", "Webring", "Community portal with badges, rings, and outward links."],
-    ],
+    slug: "monospace-manual",
+    name: "Monospace Manual",
+    targetUrl: "https://owickstrom.github.io/the-monospace-web/",
+    vibe: "Monospace Manual",
+    description: "The Monospace Web: single-column monospaced manual, metadata table at top, contents list, sectioned docs, ASCII drawings, tables/forms styled as text UI.",
   },
   {
-    category: "terminal",
-    tags: ["terminal", "editor"],
-    themes: [
-      ["green-terminal", "Green Terminal", "Phosphor green command-line interface."],
-      ["amber-terminal", "Amber Terminal", "Amber CRT glow and dark shell surfaces."],
-      ["solarized-light", "Solarized Light", "Low-contrast editor palette in light mode."],
-      ["solarized-dark", "Solarized Dark", "Low-contrast editor palette in dark mode."],
-      ["monokai", "Monokai", "Saturated code-editor dark mode."],
-      ["dracula", "Dracula", "Purple-black editor theme with bright accents."],
-      ["gruvbox", "Gruvbox", "Warm retro editor colors with earthy contrast."],
-      ["nord", "Nord", "Arctic blue-gray editor calm."],
-      ["catppuccin", "Catppuccin", "Soft pastel code-editor palette."],
-      ["vim-help", "Vim Help", "Text manual layout inspired by editor help buffers."],
-    ],
+    slug: "research-tools-studio",
+    name: "Research Tools Studio",
+    targetUrl: "https://those.tools/",
+    vibe: "Research Tools Studio",
+    description: "those.tools: tiny studio mark, editorial/software practice copy, sparse contact/social links, project descriptions for arts/social-science software, restrained typographic rhythm.",
   },
   {
-    category: "personal",
-    tags: ["personal site", "archetype"],
-    themes: [
-      ["personal-blog", "Personal Blog", "Classic reverse-chronological personal publishing."],
-      ["digital-garden", "Digital Garden", "Notes, links, and evergreen knowledge fragments."],
-      ["public-wiki", "Public Wiki", "Personal knowledge base with reference-site structure."],
-      ["cv", "CV", "Credential-forward resume and experience presentation."],
-      ["portfolio", "Portfolio", "Selected work grid and case-study polish."],
-      ["now-page", "Now Page", "Current-focus page with update-oriented clarity."],
-      ["uses-page", "Uses Page", "Tools and setup inventory styling."],
-      ["colophon", "Colophon", "Site-making notes and technical credits."],
-      ["guestbook", "Guestbook", "Visitor-note energy and community artifacts."],
-      ["personal-portal", "Personal Portal", "Dashboard of links, status, posts, and modules."],
-    ],
+    slug: "contemporary-art-library",
+    name: "Contemporary Art Library",
+    targetUrl: "https://www.midwayart.org/library/",
+    vibe: "Contemporary Art Library",
+    description: "Midway library: institutional art nav, library/catalog framing, title/name rows, opening-hours utility, archive/library page density.",
   },
   {
-    category: "physical",
-    tags: ["physical metaphor"],
-    themes: [
-      ["receipt", "Receipt", "Narrow thermal-paper strip and transaction-like metadata."],
-      ["index-cards", "Index Cards", "Stacked cards, labels, and catalog notes."],
-      ["filing-cabinet", "Filing Cabinet", "Folders, tabs, and office archive organization."],
-      ["notebook", "Notebook", "Ruled-paper writing surface and margin cues."],
-      ["corkboard", "Corkboard", "Pinned notes and warm board texture."],
-      ["whiteboard", "Whiteboard", "Marker-like headings and clean planning space."],
-      ["blueprint", "Blueprint", "Technical drawing lines on deep blue."],
-      ["calendar", "Calendar", "Date-grid structure and planning interface."],
-      ["map", "Map", "Cartographic labels, route-like rules, and terrain colors."],
-      ["museum-label", "Museum Label", "Gallery wall label precision and quiet captions."],
-    ],
+    slug: "plaintext-scoreboard",
+    name: "Plaintext Scoreboard",
+    targetUrl: "https://plaintextsports.com/",
+    vibe: "Plaintext Scoreboard",
+    description: "Plain Text Sports: timestamped page state, dark/light toggle, date pager, league filters, dense text tables for entries and archives.",
   },
   {
-    category: "institutional",
-    tags: ["institutional", "utility"],
-    themes: [
-      ["government-form", "Government Form", "Plain civic form design with official structure."],
-      ["university-page", "University Page", "Academic department homepage styling."],
-      ["library-catalog", "Library Catalog", "Search-result records and catalog-card hierarchy."],
-      ["airline-departures", "Airline Departures", "Airport board timing and travel-system density."],
-      ["diner-menu", "Diner Menu", "Laminated menu typography and friendly categories."],
-      ["record-store", "Record Store", "Crate labels and music-shop browsing."],
-      ["art-gallery", "Art Gallery", "White-wall exhibition text and spare grids."],
-      ["hardware-manual", "Hardware Manual", "Industrial diagrams and instruction-sheet structure."],
-      ["financial-terminal", "Financial Terminal", "Market-screen data density and bright figures."],
-      ["classified-ads", "Classified Ads", "Small-print listings and newspaper ad blocks."],
-    ],
+    slug: "fashion-archive-index",
+    name: "Fashion Archive Index",
+    targetUrl: "https://www.032carchive.com/",
+    vibe: "Fashion Archive Index",
+    description: "032c archive: huge archive premise, all/authors/photographers/stylists/talent filters, alphabetized names with counts, archive-first rather than blog-first navigation.",
   },
   {
-    category: "minimal",
-    tags: ["minimal", "accessibility"],
-    themes: [
-      ["plain-html", "Plain HTML", "Browser-default inspired baseline."],
-      ["brutalist", "Brutalist", "Hard lines, raw structure, and no softness."],
-      ["swiss-grid", "Swiss Grid", "Modernist grid, red accents, and disciplined type."],
-      ["monochrome", "Monochrome", "Black, white, and controlled grayscale."],
-      ["high-contrast", "High Contrast", "Large accessible contrast and loud focus states."],
-      ["print", "Print", "Ink-first layout optimized for paper."],
-      ["large-type", "Large Type", "Oversized readable text and spacious rhythm."],
-      ["no-css", "No CSS", "Deliberately reduced styling while preserving function."],
-      ["reader-mode", "Reader Mode", "Calm longform reading with minimal chrome."],
-      ["low-bandwidth", "Low Bandwidth", "Small, fast, and low-decoration design."],
-    ],
+    slug: "idealist-studio-index",
+    name: "Idealist Studio Index",
+    targetUrl: "https://www.workbyland.com/",
+    vibe: "Idealist Studio Index",
+    description: "LAND: studio manifesto header, index/studies/information/object tabs, project filtering by discipline, large calm editorial project grid.",
   },
   {
-    category: "maximal",
-    tags: ["maximal", "expressive"],
-    themes: [
-      ["sticker-sheet", "Sticker Sheet", "Layered labels and playful collected graphics."],
-      ["badge-wall", "Badge Wall", "Web badges, buttons, and compact modules."],
-      ["tiled-background", "Tiled Background", "Pattern-heavy page inspired by early sites."],
-      ["pixel-art", "Pixel Art", "Chunky borders, crisp shadows, and game-screen color."],
-      ["vaporwave", "Vaporwave", "Neon sunset palette and retro-future contrast."],
-      ["cyberpunk", "Cyberpunk", "High-voltage dark UI with warning accents."],
-      ["scrapbook", "Scrapbook", "Cut-paper sections and handmade layering."],
-      ["collage", "Collage", "Asymmetric clipped panels and mixed textures."],
-      ["arcade", "Arcade", "Cabinet-like color and score-display details."],
-      ["toy-ui", "Toy UI", "Chunky friendly controls and playful scale."],
-    ],
+    slug: "playful-climber-scrapbook",
+    name: "Playful Climber Scrapbook",
+    targetUrl: "https://ashimashiraishi.com/",
+    vibe: "Playful Climber Scrapbook",
+    description: "Ashima Shiraishi: cheerful emoji-heavy intro, personal contact line, loose list of climbs/projects, art/craft/climbing mix, handmade personal energy.",
   },
   {
-    category: "seasonal",
-    tags: ["seasonal", "easter egg"],
-    themes: [
-      ["winter", "Winter", "Cool paper, pale blue shadows, and quiet contrast."],
-      ["summer", "Summer", "Bright sunlit colors and relaxed spacing."],
-      ["midnight", "Midnight", "Deep night palette with soft reading contrast."],
-      ["sunrise", "Sunrise", "Warm morning gradients and gentle accents."],
-      ["birthday", "Birthday", "Confetti-like color and celebratory details."],
-      ["launch-day", "Launch Day", "Product-launch polish with announcement energy."],
-      ["archive-mode", "Archive Mode", "Muted preservation palette for old posts."],
-      ["random-chaos", "Random Chaos", "Intentionally unruly layout accents."],
-      ["secret-mode", "Secret Mode", "Hidden-room dark palette and quiet mystery."],
-      ["theme-museum", "Theme Museum", "Curated exhibit styling for the theme system itself."],
-    ],
+    slug: "lifeworks-cargo-cv",
+    name: "Lifeworks Cargo CV",
+    targetUrl: "https://tamikaabakawood.com/",
+    vibe: "Lifeworks Cargo CV",
+    description: "Tamika Abaka-Wood: Cargo-like sidebar/title, numbered lifework roles, CV/profile as a dense life-practice list, minimal chrome.",
+  },
+  {
+    slug: "artist-news-ledger",
+    name: "Artist News Ledger",
+    targetUrl: "https://tegabrain.com/",
+    vibe: "Artist News Ledger",
+    description: "Tega Brain: latest-news strip, artist name nav, about/news/work sections, exhibition/project announcements as compact dated ledger entries.",
+  },
+  {
+    slug: "latent-garden-notebook",
+    name: "Latent Garden Notebook",
+    targetUrl: "https://www.nomad.garden/",
+    vibe: "Latent Garden Notebook",
+    description: "Nomad Garden: personal garden intro, casual image/caption lead, AI/semiotics research notes, loose posts arranged like a cultivated personal notebook.",
+  },
+  {
+    slug: "fragment-library-journal",
+    name: "Fragment Library Journal",
+    targetUrl: "https://winnielim.org/",
+    vibe: "Fragment Library Journal",
+    description: "Winnie Lim: menu for about/playlists/journal/notes/library/poetry/archive, latest posts and notes, fragments expressed as a whole, soft literary index.",
+  },
+  {
+    slug: "spartan-essay-table",
+    name: "Spartan Essay Table",
+    targetUrl: "https://paulgraham.com/",
+    vibe: "Spartan Essay Table",
+    description: "Paul Graham: almost bare HTML, small centered page, simple top \"New\" links, essay list with minimal typography, no modern cards.",
+  },
+  {
+    slug: "coordinates-art-index",
+    name: "Coordinates Art Index",
+    targetUrl: "https://jonrafman.com/",
+    vibe: "Coordinates Art Index",
+    description: "Jon Rafman: lat/lng header, artist title, year-grouped selected works, cryptic symbols, gallery-representation note, dense artwork chronology.",
+  },
+  {
+    slug: "ucoz-folk-archive",
+    name: "Ucoz Folk Archive",
+    targetUrl: "https://mopppoppp.moy.su/load/rybalka/o_rybalka/ehduard_uspenskij_k_cheloveku_boris_mikhajlov/3-1-0-32",
+    vibe: "Ucoz Folk Archive",
+    description: "uCoz/Russian file catalog: old portal chrome, registration/catalog links, nested category breadcrumbs, small text modules, file-entry page structure.",
+  },
+  {
+    slug: "empty-uncertainty-schema",
+    name: "Empty Uncertainty Schema",
+    targetUrl: "https://schemasofuncertainty.com/",
+    vibe: "Empty Uncertainty Schema",
+    description: "Schemas of Uncertainty: extreme minimal blankness, title-as-object, page as conceptual pause, content surfaced with large negative space.",
+  },
+  {
+    slug: "transparent-news-briefing",
+    name: "Transparent News Briefing",
+    targetUrl: "https://www.semafor.com/",
+    vibe: "Transparent News Briefing",
+    description: "Semafor because it is user-supplied: global nav, briefing sections, headline/dek cards, news-column density, clear topic rails.",
+  },
+  {
+    slug: "graphic-bookmaker-card",
+    name: "Graphic Bookmaker Card",
+    targetUrl: "https://virginiegauthier.info/",
+    vibe: "Graphic Bookmaker Card",
+    description: "Virginie Gauthier: compact graphic-designer/book-maker identity card, contact-forward layout, plain personal details, light interactive reload/hello flavor.",
+  },
+  {
+    slug: "experimental-publication-loop",
+    name: "Experimental Publication Loop",
+    targetUrl: "https://re-coding.technology/",
+    vibe: "Experimental Publication Loop",
+    description: "re-coding: repeated publication statement, digital/experimental/hybrid framing, unusual input/output media, article modules as experimental publication units.",
+  },
+  {
+    slug: "taste-directory",
+    name: "Taste Directory",
+    targetUrl: "https://www.pi.fyi/",
+    vibe: "Taste Directory",
+    description: "PI.FYI: theme toggle, rising/browse nav, categories for music/film/TV/books/etc., recommendation directory made from Ryan's links/posts.",
+  },
+  {
+    slug: "recent-writer-ledger",
+    name: "Recent Writer Ledger",
+    targetUrl: "https://rmorrislevine.info/",
+    vibe: "Recent Writer Ledger",
+    description: "R Morris Levine: \"recently...\" heading, short linked activity list, writer bio minimalism, essays/events as chronological notes.",
+  },
+  {
+    slug: "artist-menu-works",
+    name: "Artist Menu Works",
+    targetUrl: "https://setarehshahbazi.com/",
+    vibe: "Artist Menu Works",
+    description: "Setareh Shahbazi: simple artist home, menu overlay feel, projects/publications/about/contact sections, works listed as title-forward archive.",
+  },
+  {
+    slug: "friendly-nerd-hub",
+    name: "Friendly Nerd Hub",
+    targetUrl: "https://visakanv.com/",
+    vibe: "Friendly Nerd Hub",
+    description: "Visa: emoji-rich personal hub, \"Hi, I'm...\" intro, many self-links, bookshelf/email/mentions/pics/contribute nav, warm maximal personality.",
+  },
+  {
+    slug: "playful-games-cabinet",
+    name: "Playful Games Cabinet",
+    targetUrl: "https://eieio.games/",
+    vibe: "Playful Games Cabinet",
+    description: "eieio.games: playful personal game/work cabinet, meta-controls, media/speaking/blog/all-work/about nav, game-like text distortion/interaction.",
+  },
+  {
+    slug: "creativity-portal-gallery",
+    name: "Creativity Portal Gallery",
+    targetUrl: "https://www.enterportal.xyz/",
+    vibe: "Creativity Portal Gallery",
+    description: "Enter Portal: gallery/uncovered/curate-together nav, \"garden of human creativity\" landing, portal-like browsing of collected work.",
+  },
+  {
+    slug: "design-archive-repository",
+    name: "Design Archive Repository",
+    targetUrl: "https://archives.design/",
+    vibe: "Design Archive Repository",
+    description: "archives.design: digital archive description, availability filters, repository/list browsing, graphic-design archive records.",
+  },
+  {
+    slug: "weblog-topic-facets",
+    name: "Weblog With Topic Facets",
+    targetUrl: "https://simonwillison.net/",
+    vibe: "Weblog With Topic Facets",
+    description: "Simon Willison: weblog title, About/Subscribe/TILs/Tools nav, topic tag counts, chronological posts with utility/tool density.",
+  },
+  {
+    slug: "research-lab-index",
+    name: "Research Lab Index",
+    targetUrl: "https://www.anthropic.com/research",
+    vibe: "Research Lab Index",
+    description: "Anthropic Research because it is user-supplied: sober research landing, policy/learn/news nav, research-team intro, report/article grid.",
+  },
+  {
+    slug: "visual-culture-practice",
+    name: "Visual Culture Practice",
+    targetUrl: "https://paradyme.zone/",
+    vibe: "Visual Culture Practice",
+    description: "PARADYME: practice title, merged-collaborative studio statement, visual-culture framing, archive of practice/projects.",
+  },
+  {
+    slug: "room-wall-portfolio",
+    name: "Room Wall Portfolio",
+    targetUrl: "https://www.nataliajordanova.com/index.htm",
+    vibe: "Room Wall Portfolio",
+    description: "Natalia Jordanova: old-school personal artist page, contact/social/CV row, poetic statement, sparse artwork/project text.",
+  },
+  {
+    slug: "artist-book-microsite",
+    name: "Artist Book Microsite",
+    targetUrl: "https://barbaraforever.everyoceanhughes.com/",
+    vibe: "Artist Book Microsite",
+    description: "Barbara Forever: book/microsite landing, NEXT navigation, editor/designer credit block, publication-object structure.",
+  },
+  {
+    slug: "cyberfeminist-download-index",
+    name: "Cyberfeminist Download Index",
+    targetUrl: "https://cyberfeminismindex.com/",
+    vibe: "Cyberfeminist Download Index",
+    description: "Cyberfeminism Index: entry download logs, index/database framing, dense records, activist archive tone, timestamped data traces.",
+  },
+  {
+    slug: "nonfiction-visual-index",
+    name: "Nonfiction Visual Index",
+    targetUrl: "https://www.maxkohler.com/",
+    vibe: "Nonfiction Visual Index",
+    description: "Max Kohler: name + \"Non-Fiction Visual Communication\", project index by year/month, compact client/work rows, utilitarian portfolio list.",
+  },
+  {
+    slug: "personal-html-bulletin",
+    name: "Personal HTML Bulletin",
+    targetUrl: "https://cynnality.com/index.html",
+    vibe: "Personal HTML Bulletin",
+    description: "cynnality: simple HTML homepage, \"collecting, making, sharing\", last-update note, personal links, work-in-progress bulletin board.",
+  },
+  {
+    slug: "daily-consumption-digest",
+    name: "Daily Consumption Digest",
+    targetUrl: "https://consumed.today/",
+    vibe: "Daily Consumption Digest",
+    description: "consumed.today: daily digest of food/media, date headings, categorized consumed items, lightweight diary/archive structure.",
+  },
+  {
+    slug: "data-graphics-portfolio",
+    name: "Data Graphics Portfolio",
+    targetUrl: "https://www.ashleycai.com/",
+    vibe: "Data Graphics Portfolio",
+    description: "Ashley Cai: data/graphics journalist intro, CV/social/collections links, view toggles, project thumbnails/list as reporting portfolio.",
+  },
+  {
+    slug: "internet-map-diagram",
+    name: "Internet Map Diagram",
+    targetUrl: "https://diagram.website/",
+    vibe: "Internet Map Diagram",
+    description: "Diagram Website: random mode/labels/info/submit/index/roadmap controls, internet map framing, link nodes and index browsing.",
+  },
+  {
+    slug: "vernacular-web-essay",
+    name: "Vernacular Web Essay",
+    targetUrl: "https://art.teleportacia.org/observation/vernacular/",
+    vibe: "Vernacular Web Essay",
+    description: "Olia Lialina essay: old web academic essay, language/version links, long illustrated essay structure, blue-link historical web style.",
+  },
+  {
+    slug: "cheap-web-manifesto",
+    name: "Cheap Web Manifesto",
+    targetUrl: "https://potato.cheap/",
+    vibe: "Cheap Web Manifesto",
+    description: "The Cheap Web: decorative text hearts, manifesto definitions, small-web link exploration, playful low-cost web philosophy.",
+  },
+  {
+    slug: "no-css-club",
+    name: "No CSS Club",
+    targetUrl: "https://nocss.club/",
+    vibe: "No CSS Club",
+    description: "No CSS Club: browser-default HTML, anti-modern-web manifesto, club/list membership, no styling beyond semantic structure.",
+  },
+  {
+    slug: "poetic-computation-article",
+    name: "Poetic Computation Article",
+    targetUrl: "https://sfpc.study/blog/cellular-automata",
+    vibe: "Poetic Computation Article",
+    description: "SFPC blog: school nav, donate/store/newsletter links, article title with experimental-school framing, playful institutional blog layout.",
+  },
+  {
+    slug: "feral-web-essay",
+    name: "Feral Web Essay",
+    targetUrl: "https://paragraph.com/@austinwadesmith/queer-servers-and-feral-webs",
+    vibe: "Feral Web Essay",
+    description: "Paragraph article: publication article shell, title-first essay, readable longform, newsletter/platform article affordances.",
+  },
+  {
+    slug: "performance-club-index",
+    name: "Performance Club Index",
+    targetUrl: "https://250kb.club/",
+    vibe: "Performance Club Index",
+    description: "250KB Club: club manifesto, lightweight website directory, values statement, member/list table with performance-oriented framing.",
+  },
+  {
+    slug: "recurse-link-joy",
+    name: "Recurse Link Joy",
+    targetUrl: "https://joy.recurse.com/",
+    vibe: "Recurse Link Joy",
+    description: "Joy of Computing: daily community link, home/about/subscribe/RC nav, weekday post stream, Atom feed prominence.",
+  },
+  {
+    slug: "scenario-forecast-report",
+    name: "Scenario Forecast Report",
+    targetUrl: "https://ai-2027.com/",
+    vibe: "Scenario Forecast Report",
+    description: "AI 2027: report nav, summary/research/forecast sections, author/date block, PDF/listen/watch affordances, long scenario document.",
+  },
+  {
+    slug: "rationalist-forum-frontpage",
+    name: "Rationalist Forum Frontpage",
+    targetUrl: "https://www.lesswrong.com/",
+    vibe: "Rationalist Forum Frontpage",
+    description: "LessWrong: forum app shell, quick takes/recent/recommended nav, concepts/library links, dense post feed.",
+  },
+  {
+    slug: "blogroll-essay-archive",
+    name: "Blogroll Essay Archive",
+    targetUrl: "https://slatestarcodex.com/",
+    vibe: "Blogroll Essay Archive",
+    description: "Slate Star Codex: WordPress-like blog header, top-post/archive/comment/feed nav, blogroll sidebar sections, chronological essay list.",
+  },
+  {
+    slug: "annotated-research-sidenotes",
+    name: "Annotated Research Sidenotes",
+    targetUrl: "https://gwern.net/",
+    vibe: "Annotated Research Sidenotes",
+    description: "Gwern: categorized essay index, warnings/feature notes, sidenotes/link annotations/backlinks feel, dense research typography.",
+  },
+  {
+    slug: "now-page-directory",
+    name: "Now Page Directory",
+    targetUrl: "https://nownownow.com/about",
+    vibe: "Now Page Directory",
+    description: "nownownow about: explanatory personal-web copy, now-page concept, directory framing, simple centered text links.",
+  },
+  {
+    slug: "conversational-minimalist",
+    name: "Conversational Minimalist",
+    targetUrl: "https://sive.rs/",
+    vibe: "Conversational Minimalist",
+    description: "Derek Sivers: centered personal intro, compact self-description, simple nav links, essay/book/course list with conversational tone.",
+  },
+  {
+    slug: "founder-link-index",
+    name: "Founder Link Index",
+    targetUrl: "https://patrickcollison.com/",
+    vibe: "Founder Link Index",
+    description: "Patrick Collison: bare personal nav, concise section links, link index of advice/blog/bookshelf/culture/labs/progress/questions.",
+  },
+  {
+    slug: "ai-grant-application-page",
+    name: "AI Grant Application Page",
+    targetUrl: "https://aigrant.com/",
+    vibe: "AI Grant Application Page",
+    description: "AI Grant because it is user-supplied: accelerator landing page, grant amount hero, credits/summit/advisor details, application CTA structure.",
   },
 ];
 
-export const siteThemes: SiteTheme[] = themeGroups.flatMap((group) =>
-  group.themes.map(([slug, name, description]) => ({
-    slug,
-    name,
-    category: group.category,
-    description,
-    tags: [...group.tags],
-    status: readyLayoutThemes.has(slug) ? "ready" as const : "layout-draft" as const,
-    depth: "layout" as const,
-  }))
-);
+export const siteThemes: SiteTheme[] = suppliedThemes.map((theme) => ({
+  ...theme,
+  category: "supplied",
+  tags: ["user supplied", "site mimic"],
+  status: builtThemeSlugs.has(theme.slug) ? "built" : "planned",
+  depth: "layout",
+  stylesheet: `/theme-mimics/${theme.slug}.css`,
+  referencePath: `docs/theme-references/sites/${theme.slug}.md`,
+  screenshots: {},
+}));
 
-export const defaultThemeSlug = "aqua";
+export const defaultThemeSlug = "spartan-essay-table";
 
 export function getThemeBySlug(slug: string | null | undefined): SiteTheme {
   return siteThemes.find((theme) => theme.slug === slug) || siteThemes[0];
 }
 
 export function getThemesByCategory(): Record<ThemeCategory, SiteTheme[]> {
-  return siteThemes.reduce(
-    (groups, theme) => {
-      groups[theme.category].push(theme);
-      return groups;
-    },
-    {
-      "retro-os": [],
-      writing: [],
-      "old-web": [],
-      terminal: [],
-      personal: [],
-      physical: [],
-      institutional: [],
-      minimal: [],
-      maximal: [],
-      seasonal: [],
-    } as Record<ThemeCategory, SiteTheme[]>
-  );
+  return { supplied: siteThemes };
 }

@@ -121,6 +121,14 @@ interface RenderContext {
 
 type RendererFamily =
   | "aqua"
+  | "spartan"
+  | "manual"
+  | "scoreboard"
+  | "archive-index"
+  | "scrapbook"
+  | "art-index"
+  | "no-css"
+  | "research-sidenotes"
   | "desktop"
   | "terminal"
   | "editor"
@@ -147,7 +155,14 @@ const navItemsBase: NavItem[] = [
 ];
 
 const familyBySlug: Record<string, RendererFamily> = {
-  aqua: "aqua",
+  "spartan-essay-table": "spartan",
+  "monospace-manual": "manual",
+  "plaintext-scoreboard": "scoreboard",
+  "fashion-archive-index": "archive-index",
+  "playful-climber-scrapbook": "scrapbook",
+  "coordinates-art-index": "art-index",
+  "no-css-club": "no-css",
+  "annotated-research-sidenotes": "research-sidenotes",
   "classic-mac": "desktop",
   win95: "desktop",
   win98: "desktop",
@@ -274,6 +289,10 @@ export function renderThemedPage<T extends PageModel>(options: RenderPageOptions
     return renderAquaShell(options, content);
   }
 
+  if (family === "no-css") {
+    return renderNoCssShell(options, content, ctx);
+  }
+
   return renderCustomShell(options, content, ctx);
 }
 
@@ -312,6 +331,33 @@ function renderAquaShell<T extends PageModel>(options: RenderPageOptions<T>, con
     structuredData: options.structuredData || "",
     bodyClass: `theme-rendered theme-${options.theme.slug} family-aqua ${options.bodyClass || ""}`,
   }).replace('data-theme="aqua"', `data-theme="${escapeHtml(options.theme.slug)}"`);
+}
+
+function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, content: string, ctx: RenderContext): string {
+  const description = options.description || "Ryan Prendergast's personal website and blog";
+  return `<!DOCTYPE html>
+<html lang="en" data-theme="${escapeHtml(options.theme.slug)}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(options.title)}</title>
+  <meta name="description" content="${escapeHtml(description)}">
+  <link rel="canonical" href="${escapeHtml(options.canonicalUrl || `https://ryan-prendergast.com${options.currentPage}`)}">
+  ${options.structuredData || ""}
+</head>
+<body>
+  <header>
+    <h1><a href="/">Ryan Prendergast</a></h1>
+    <p>No CSS Club mimic of <a href="${ctx.theme.targetUrl}">${ctx.theme.targetUrl}</a></p>
+    <nav>${ctx.navItems.map((item) => `<a href="${item.href}">${escapeHtml(item.label)}</a>`).join(" | ")}</nav>
+    <hr>
+  </header>
+  <main>${content}</main>
+  <hr>
+  <footer><p><a href="/themes">Themes</a> | <a href="/rss.xml">RSS</a></p></footer>
+  <script src="/theme-system.js" defer></script>
+</body>
+</html>`;
 }
 
 function renderCustomShell<T extends PageModel>(options: RenderPageOptions<T>, content: string, ctx: RenderContext): string {
@@ -403,6 +449,34 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   const links = model.links.map((link, index) => renderLinkEntry(link, index, ctx)).join("");
   const posts = model.recentPosts.map((post, index) => renderPostSummary(post, index, ctx)).join("");
 
+  if (ctx.family === "spartan") {
+    return `<table class="pg-home"><tbody><tr><td><h2>Ryan Prendergast</h2>${model.introHtml}<p><b>New:</b> ${model.recentPosts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" | ")}</p><hr><p>${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("<br>")}</p></td></tr></tbody></table>`;
+  }
+
+  if (ctx.family === "manual") {
+    return `<article class="manual-page"><h2>Ryan Prendergast Manual</h2><table><tbody><tr><th>Version</th><td>linklog</td></tr><tr><th>Author</th><td>Ryan Prendergast</td></tr><tr><th>Target</th><td>${escapeHtml(ctx.theme.targetUrl)}</td></tr></tbody></table><h3>Contents</h3><ol><li><a href="#intro">Introduction</a></li><li><a href="#links">Links</a></li><li><a href="#essays">Recent Essays</a></li></ol><h3 id="intro">Introduction</h3>${model.introHtml}<h3 id="links">Links</h3>${links}<h3 id="essays">Recent Essays</h3>${posts}</article>`;
+  }
+
+  if (ctx.family === "scoreboard") {
+    return `<section class="scoreboard"><div class="scorebar">Page loaded: ${new Date().toLocaleTimeString("en-US")} ET <span>Dark Mode</span> <span>Light Mode</span></div><h2>Ryan Prendergast Schedule</h2><div class="league-tabs">LINKS BLOG ARCHIVES THEMES</div><table><tbody>${model.links.map((link) => `<tr><td>${escapeHtml(link.date)}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td></tr>`).join("")}</tbody></table></section>`;
+  }
+
+  if (ctx.family === "archive-index") {
+    return `<section class="archive-index"><h2>Ryan archive</h2><p>every link every essay every project ever mentioned</p><nav>All · Authors · Sources · Posts · Links</nav><div class="name-counts">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.domain)} <span>1</span></a>`).join("")}</div></section>`;
+  }
+
+  if (ctx.family === "scrapbook") {
+    return `<section class="scrapbook"><h2>ようこそー Ryan's scrapbook ✨</h2>${model.introHtml}<p class="mail">if you want to get in touch, please use the contact page 📭</p><div class="scrap-list">${model.links.map((link) => `<article><span>🌀</span><a href="${link.url}">${escapeHtml(link.title)}</a><div>${link.contentHtml}</div></article>`).join("")}</div></section>`;
+  }
+
+  if (ctx.family === "art-index") {
+    return `<section class="art-index"><p>LAT: 40.7128 LNG: -74.0060</p><h2>RYAN PRENDERGAST</h2><p>selected work</p>${model.links.map((link, index) => `<div class="art-row"><span>${2026 - (index % 8)}</span><a href="${link.url}">𓁹 ${escapeHtml(link.title)}</a><em>${escapeHtml(link.domain)}</em></div>`).join("")}</section>`;
+  }
+
+  if (ctx.family === "research-sidenotes") {
+    return `<article class="research-page"><h2>Essays and Links</h2><aside>Warning: JavaScript optional. Link annotations and sidenotes are simulated for Ryan's content.</aside>${model.introHtml}<h3>Annotated Links</h3>${model.links.map((link, index) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><label for="sn-${index}" class="sidenote-number"></label><span class="sidenote">${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</span></p>`).join("")}<h3>Recent Essays</h3>${posts}</article>`;
+  }
+
   if (ctx.family === "hn") {
     return `<section class="hn-feed"><div class="hn-intro">${model.introHtml}</div><table><tbody>${model.links
       .map((link, index) => `<tr><td class="rank">${index + 1}.</td><td><a href="${link.url}">${escapeHtml(link.title)}</a><span class="sitebit"> (${escapeHtml(link.domain)})</span><div class="subtext">${escapeHtml(link.date)} | ${stripHtml(link.contentHtml)}</div></td></tr>`)
@@ -428,6 +502,27 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   const groups = model.postsByYear
     .map((group) => `<section class="theme-year-group"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderPostSummary(post, index, ctx)).join("")}</section>`)
     .join("");
+  if (ctx.family === "spartan") {
+    return `<table class="pg-home"><tbody><tr><td><h2>Essays</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><br><font size="2">${escapeHtml(post.date)}</font></p>`)).join("")}</td></tr></tbody></table>`;
+  }
+  if (ctx.family === "manual") {
+    return `<article class="manual-page"><h2>Blog Index</h2><pre>find ./essays -type f</pre>${groups}</article>`;
+  }
+  if (ctx.family === "scoreboard") {
+    return `<section class="scoreboard"><h2>Blog League Schedule</h2><table><tbody>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<tr><td>${escapeHtml(post.date)}</td><td><a href="${post.href}">${escapeHtml(post.title)}</a></td><td>${escapeHtml(group.year)}</td></tr>`)).join("")}</tbody></table></section>`;
+  }
+  if (ctx.family === "archive-index") {
+    return `<section class="archive-index"><h2>all posts</h2><nav>All · Years · Titles · Dates</nav><div class="name-counts">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)} <span>${escapeHtml(group.year)}</span></a>`)).join("")}</div></section>`;
+  }
+  if (ctx.family === "art-index") {
+    return `<section class="art-index"><h2>SELECTED TEXTS</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<div class="art-row"><span>${escapeHtml(group.year)}</span><a href="${post.href}">𓆓 ${escapeHtml(post.title)}</a></div>`).join("")}`).join("")}</section>`;
+  }
+  if (ctx.family === "no-css") {
+    return `<h2>Blog</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> (${escapeHtml(post.date)})</li>`).join("")}</ul>`).join("")}`;
+  }
+  if (ctx.family === "research-sidenotes") {
+    return `<article class="research-page"><h2>Essays</h2><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(post.date)} · ${post.readTime || ""}</span></p>`).join("")}</section>`).join("")}</article>`;
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<section class="terminal-output"><p class="prompt">$ find ./blog -type f</p>${model.postsByYear
       .map((group) => `<div class="terminal-dir">./${group.year}</div>${group.posts.map((post) => `<a class="terminal-line" href="${post.href}">${escapeHtml(post.rawDate)} ${escapeHtml(post.title)}</a>`).join("")}`)
@@ -443,6 +538,24 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
 
 function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   const meta = `${escapeHtml(model.date)}${model.author ? ` - ${escapeHtml(model.author)}` : ""}`;
+  if (ctx.family === "spartan") {
+    return `<table class="pg-home"><tbody><tr><td><h2>${escapeHtml(model.title)}</h2><font size="2">${meta}</font>${model.subtitle ? `<p><i>${escapeHtml(model.subtitle)}</i></p>` : ""}<br>${model.contentHtml}<p><a href="${model.backHref}">Back</a></p></td></tr></tbody></table>`;
+  }
+  if (ctx.family === "manual") {
+    return `<article class="manual-page"><h2>${escapeHtml(model.title)}</h2><table><tbody><tr><th>Date</th><td>${meta}</td></tr><tr><th>Path</th><td>${escapeHtml(model.backHref)}</td></tr></tbody></table><h3>Document</h3>${model.contentHtml}</article>`;
+  }
+  if (ctx.family === "scoreboard") {
+    return `<section class="scoreboard"><h2>Box Score</h2><table><tbody><tr><td>Title</td><td>${escapeHtml(model.title)}</td></tr><tr><td>Date</td><td>${meta}</td></tr></tbody></table><article>${model.contentHtml}</article></section>`;
+  }
+  if (ctx.family === "art-index") {
+    return `<article class="art-index"><p>LAT: 40.7128 LNG: -74.0060</p><h2>𓁹 ${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
+  }
+  if (ctx.family === "no-css") {
+    return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
+  }
+  if (ctx.family === "research-sidenotes") {
+    return `<article class="research-page"><h2>${escapeHtml(model.title)}</h2><p>${meta}</p><aside>${model.subtitle ? escapeHtml(model.subtitle) : "Ryan Prendergast essay"}</aside>${model.contentHtml}</article>`;
+  }
   if (ctx.family === "publishing") {
     return `<article class="publishing-article"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="article-meta">${meta}</p></header><div class="article-body">${model.contentHtml}</div></article>`;
   }
@@ -456,6 +569,24 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
 }
 
 function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
+  if (ctx.family === "spartan" || ctx.family === "no-css") {
+    return `<h2>Archives</h2>${model.months.map((month) => `<h3>${escapeHtml(month.label)}</h3><ul>${month.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a></li>`).join("")}</ul>`).join("")}`;
+  }
+  if (ctx.family === "manual") {
+    return `<article class="manual-page"><h2>Archive Tree</h2><pre>${model.months.map((month) => `${month.key}/\\n${month.posts.map((post) => `  ${post.slug}.html`).join("\\n")}`).join("\\n")}</pre>${model.months.map((month) => `<h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}`).join("")}</article>`;
+  }
+  if (ctx.family === "scoreboard") {
+    return `<section class="scoreboard"><h2>Archive Standings</h2><table><tbody>${model.months.map((month) => `<tr><td>${escapeHtml(month.label)}</td><td>${month.posts.length}</td><td>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" · ")}</td></tr>`).join("")}</tbody></table></section>`;
+  }
+  if (ctx.family === "archive-index") {
+    return `<section class="archive-index"><h2>every post ever archived</h2><nav>All · Months · Titles</nav><div class="name-counts">${model.months.map((month) => `<a href="#${month.key}">${escapeHtml(month.label)} <span>${month.posts.length}</span></a>`).join("")}</div>${model.months.map((month) => `<section id="${month.key}"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
+  }
+  if (ctx.family === "art-index") {
+    return `<section class="art-index"><h2>CHRONOLOGY</h2>${model.months.map((month) => `<div class="art-row"><span>${escapeHtml(month.key)}</span><strong>${escapeHtml(month.label)}</strong><em>${month.posts.length} works</em></div>`).join("")}</section>`;
+  }
+  if (ctx.family === "research-sidenotes") {
+    return `<article class="research-page"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(month.key)}</span></p>`).join("")}</section>`).join("")}</article>`;
+  }
   if (ctx.family === "desktop") {
     return `<section class="file-grid">${model.months.map((month) => `<article class="file-folder"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</article>`).join("")}</section>`;
   }
@@ -477,8 +608,8 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
   if (ctx.family === "catalog") {
     return `<section class="catalog-table theme-catalog"><header><span>Theme</span><span>Category</span><span>Status</span></header>${model.themes.map((theme) => `<a href="?theme=${theme.slug}"><span>${escapeHtml(theme.name)}</span><span>${escapeHtml(theme.category)}</span><span>${theme.slug === ctx.theme.slug ? "active" : "ready"}</span></a>`).join("")}</section>`;
   }
-  const readyCount = model.themes.filter((theme) => theme.status === "ready").length;
-  return `<section class="themes-hero"><div><p class="themes-eyebrow">Theme Museum</p><h2>100 ways to read the same personal site.</h2><p>The content stays stable while the layout changes around it. ${readyCount} proof themes are marked layout-ready; the rest are layout drafts mapped to renderer families.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
+  const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+  return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
