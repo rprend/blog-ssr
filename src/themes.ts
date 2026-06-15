@@ -34,6 +34,14 @@ const builtThemeSlugs = new Set([
   "lifeworks-cargo-cv",
   "artist-news-ledger",
   "latent-garden-notebook",
+  "fragment-library-journal",
+  "ucoz-folk-archive",
+  "empty-uncertainty-schema",
+  "transparent-news-briefing",
+  "graphic-bookmaker-card",
+  "experimental-publication-loop",
+  "taste-directory",
+  "recent-writer-ledger",
 ]);
 
 const suppliedThemes: Array<Omit<SiteTheme, "category" | "tags" | "status" | "depth" | "stylesheet" | "referencePath" | "screenshots">> = [

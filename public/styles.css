@@ -778,6 +778,194 @@ body {
   }
 }
 
+.family-fragment-journal {
+  background: #fbfaf7;
+  color: #222;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.fragment-journal nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+}
+
+.latest-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.family-ucoz-archive {
+  background: #e9edf8;
+  color: #102060;
+  font: 12px Verdana, Arial, sans-serif;
+}
+
+.ucoz-archive {
+  border: 1px solid #8a95bd;
+  background: #fff;
+  padding: 8px;
+}
+
+.ucoz-top,
+.ucoz-archive nav {
+  background: #d7ddf1;
+  border: 1px solid #9ba6cb;
+  padding: 5px;
+  margin-bottom: 8px;
+}
+
+.ucoz-file {
+  border: 1px solid #c5cbe0;
+  background: #f7f8ff;
+  margin: 8px 0;
+  padding: 8px;
+}
+
+.family-uncertainty {
+  background: #fff;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.uncertainty {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.uncertainty h2 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.uncertain-content {
+  max-width: 520px;
+  opacity: .62;
+}
+
+.family-briefing {
+  background: #fff7ea;
+  color: #151515;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.briefing nav {
+  display: flex;
+  gap: 16px;
+  border-bottom: 2px solid #111;
+  padding-bottom: 10px;
+  font-weight: 700;
+}
+
+.briefing h2 {
+  font-size: clamp(42px, 9vw, 118px);
+  line-height: .9;
+}
+
+.brief-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  border-top: 1px solid #111;
+  border-left: 1px solid #111;
+}
+
+.brief-grid article {
+  border-right: 1px solid #111;
+  border-bottom: 1px solid #111;
+  padding: 16px;
+}
+
+.brief-grid span {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.family-bookmaker-card {
+  background: #f5f5f5;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bookmaker-card {
+  max-width: 540px;
+  margin: 12vh auto;
+  border: 1px solid #111;
+  padding: 18px;
+}
+
+.bookmaker-card h2 {
+  font-size: 22px;
+  margin-top: 0;
+}
+
+.family-experimental-loop {
+  background: #d8ff00;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.experimental-loop {
+  font-size: clamp(22px, 5vw, 60px);
+  line-height: 1.05;
+}
+
+.experimental-loop p:nth-of-type(2) {
+  transform: rotate(.7deg);
+}
+
+.family-taste-directory {
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.taste-directory nav,
+.taste-cats {
+  border: 1px solid #111;
+  padding: 10px;
+  margin-bottom: 14px;
+}
+
+.taste-directory article {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.family-writer-ledger {
+  background: #fff;
+  color: #111;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.writer-ledger {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.writer-ledger h2 {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.writer-ledger p {
+  margin: 0 0 10px;
+}
+
+@media (max-width: 760px) {
+  .latest-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Aqua navigation bar */
 .aqua-bar {
   width: 100%;

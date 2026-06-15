@@ -137,6 +137,14 @@ type RendererFamily =
   | "cargo-cv"
   | "artist-ledger"
   | "garden-notebook"
+  | "fragment-journal"
+  | "ucoz-archive"
+  | "uncertainty"
+  | "briefing"
+  | "bookmaker-card"
+  | "experimental-loop"
+  | "taste-directory"
+  | "writer-ledger"
   | "desktop"
   | "terminal"
   | "editor"
@@ -179,6 +187,14 @@ const familyBySlug: Record<string, RendererFamily> = {
   "lifeworks-cargo-cv": "cargo-cv",
   "artist-news-ledger": "artist-ledger",
   "latent-garden-notebook": "garden-notebook",
+  "fragment-library-journal": "fragment-journal",
+  "ucoz-folk-archive": "ucoz-archive",
+  "empty-uncertainty-schema": "uncertainty",
+  "transparent-news-briefing": "briefing",
+  "graphic-bookmaker-card": "bookmaker-card",
+  "experimental-publication-loop": "experimental-loop",
+  "taste-directory": "taste-directory",
+  "recent-writer-ledger": "writer-ledger",
   "classic-mac": "desktop",
   win95: "desktop",
   win98: "desktop",
@@ -526,6 +542,31 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return `<section class="garden-notebook"><figure><div class="garden-image">latent space</div><figcaption>Getting my notes signed by the internet</figcaption></figure><h2>Hi, I'm Ryan.</h2>${model.introHtml}<div class="garden-beds">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
   }
 
+  if (ctx.family === "fragment-journal") {
+    return `<section class="fragment-journal"><h2>Ryan Prendergast</h2><nav>about playlists journal notes library poetry archive</nav><div class="latest-columns"><section><h3>latest posts</h3>${posts}</section><section><h3>latest notes</h3>${links}</section></div></section>`;
+  }
+  if (ctx.family === "ucoz-archive") {
+    return `<section class="ucoz-archive"><div class="ucoz-top">narod.ru ucoz.ru blogspot.ru</div><nav>Главная | Каталог файлов | Регистрация | Вход</nav><h2>Каталог файлов</h2>${links}</section>`;
+  }
+  if (ctx.family === "uncertainty") {
+    return `<section class="uncertainty"><h2>Schemas of Uncertainty</h2><div class="uncertain-content">${model.introHtml}${links}</div></section>`;
+  }
+  if (ctx.family === "briefing") {
+    return `<section class="briefing"><nav>Home Politics Business Technology Energy</nav><h2>Ryan Briefing</h2><div class="brief-grid">${model.links.map((link) => `<article><span>THE NEWS</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+  }
+  if (ctx.family === "bookmaker-card") {
+    return `<section class="bookmaker-card"><h2>Ryan Prendergast</h2><p>Graphic systems, essays, links, and AI work.</p><p>Based on the supplied Virginie Gauthier reference.</p><address><a href="/contact">contact</a> · <a href="/blog">writing</a> · <a href="/archives">archive</a></address></section>`;
+  }
+  if (ctx.family === "experimental-loop") {
+    return `<section class="experimental-loop"><h2>re-coding everyday Ryan</h2><p>re-coding everyday Ryan is a digital / experimental / hybrid publication by a working group of one.</p><p>re-coding everyday Ryan is a digital / experimental / hybrid publication by a working group of one.</p>${links}</section>`;
+  }
+  if (ctx.family === "taste-directory") {
+    return `<section class="taste-directory"><nav>Sign up / login Theme: Ryan Classic Rising Browse</nav><h2>A TASTE OF TASTE</h2><div class="taste-cats">Music · Film · TV · Books · Places · Links</div>${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
+  }
+  if (ctx.family === "writer-ledger") {
+    return `<section class="writer-ledger"><h2>recently...</h2>${model.recentPosts.map((post) => `<p>an essay on <a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}${model.links.slice(0, 8).map((link) => `<p>notes on <a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</section>`;
+  }
+
   if (ctx.family === "hn") {
     return `<section class="hn-feed"><div class="hn-intro">${model.introHtml}</div><table><tbody>${model.links
       .map((link, index) => `<tr><td class="rank">${index + 1}.</td><td><a href="${link.url}">${escapeHtml(link.title)}</a><span class="sitebit"> (${escapeHtml(link.domain)})</span><div class="subtext">${escapeHtml(link.date)} | ${stripHtml(link.contentHtml)}</div></td></tr>`)
@@ -586,6 +627,24 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "cargo-cv") {
     return `<section class="cargo-cv"><aside>Writing</aside><main>${model.postsByYear.map((group) => `<h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => `<p>${index + 1} <a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}`).join("")}</main></section>`;
+  }
+  if (["fragment-journal", "writer-ledger", "experimental-loop"].includes(ctx.family)) {
+    return `<section class="${ctx.family}"><h2>${ctx.family === "writer-ledger" ? "recently..." : "journal"}</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
+  }
+  if (ctx.family === "ucoz-archive") {
+    return `<section class="ucoz-archive"><nav>Главная | Каталог файлов | Блог</nav><h2>Материалы сайта</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<div class="ucoz-file"><a href="${post.href}">${escapeHtml(post.title)}</a><br><small>${escapeHtml(post.date)} / ${escapeHtml(group.year)}</small></div>`)).join("")}</section>`;
+  }
+  if (ctx.family === "uncertainty") {
+    return `<section class="uncertainty"><h2>Index</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`)).join("")}</section>`;
+  }
+  if (ctx.family === "briefing") {
+    return `<section class="briefing"><h2>Briefings</h2><div class="brief-grid">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<article><span>${escapeHtml(group.year)}</span><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><p>${escapeHtml(post.date)}</p></article>`)).join("")}</div></section>`;
+  }
+  if (ctx.family === "bookmaker-card") {
+    return `<section class="bookmaker-card"><h2>Writing</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> — ${escapeHtml(post.date)}</p>`)).join("")}</section>`;
+  }
+  if (ctx.family === "taste-directory") {
+    return `<section class="taste-directory"><h2>Browse Writing</h2><div class="taste-cats">Essays · Reviews · Notes · Archives</div>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<article><a href="${post.href}">${escapeHtml(post.title)}</a><p>${escapeHtml(group.year)}</p></article>`)).join("")}</section>`;
   }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<section class="terminal-output"><p class="prompt">$ find ./blog -type f</p>${model.postsByYear
@@ -659,6 +718,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   }
   if (ctx.family === "cargo-cv") {
     return `<section class="cargo-cv"><aside>Archive</aside><main>${model.months.map((month, index) => `<p>${index + 1} ${escapeHtml(month.label)} — ${month.posts.length} entries</p>`).join("")}</main></section>`;
+  }
+  if (["fragment-journal", "writer-ledger", "experimental-loop", "briefing", "taste-directory", "bookmaker-card", "uncertainty"].includes(ctx.family)) {
+    return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
+  }
+  if (ctx.family === "ucoz-archive") {
+    return `<section class="ucoz-archive"><h2>Архив файлов</h2>${model.months.map((month) => `<div class="ucoz-file"><b>${escapeHtml(month.label)}</b><br>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("<br>")}</div>`).join("")}</section>`;
   }
   if (ctx.family === "desktop") {
     return `<section class="file-grid">${model.months.map((month) => `<article class="file-folder"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</article>`).join("")}</section>`;

@@ -36,6 +36,14 @@ const builtSlugs = [...new Set([...themesSource.matchAll(/"([^"]+)",/g)]
       "lifeworks-cargo-cv",
       "artist-news-ledger",
       "latent-garden-notebook",
+      "fragment-library-journal",
+      "ucoz-folk-archive",
+      "empty-uncertainty-schema",
+      "transparent-news-briefing",
+      "graphic-bookmaker-card",
+      "experimental-publication-loop",
+      "taste-directory",
+      "recent-writer-ledger",
     ].includes(slug)
   ))];
 
