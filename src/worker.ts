@@ -140,6 +140,12 @@ function renderThemeCard(theme: SiteTheme): string {
   const tags = theme.tags
     .map((tag) => `<span class="theme-tag">${escapeHtml(tag)}</span>`)
     .join("");
+  const statusLabel =
+    theme.status === "ready"
+      ? "Layout Ready"
+      : theme.status === "layout-draft"
+        ? "Layout Draft"
+        : "Skin";
 
   return `
     <article class="theme-card" data-theme-card="${theme.slug}" data-theme-category="${theme.category}">
@@ -147,7 +153,7 @@ function renderThemeCard(theme: SiteTheme): string {
         <span>${escapeHtml(theme.name)}</span>
       </div>
       <div class="theme-card-body">
-        <div class="theme-card-kicker">${formatCategory(theme.category)}</div>
+        <div class="theme-card-kicker">${formatCategory(theme.category)} / ${statusLabel}</div>
         <h2 class="theme-card-title">${escapeHtml(theme.name)}</h2>
         <p class="theme-card-description">${escapeHtml(theme.description)}</p>
         <div class="theme-card-tags">${tags}</div>

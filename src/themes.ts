@@ -16,8 +16,11 @@ export interface SiteTheme {
   category: ThemeCategory;
   description: string;
   tags: string[];
-  status: "ready";
+  status: "ready" | "layout-draft" | "skin";
+  depth: "layout" | "token" | "interaction";
 }
+
+const readyLayoutThemes = new Set(["aqua", "hacker-news", "win98", "tufte", "green-terminal"]);
 
 const themeGroups: Array<{
   category: ThemeCategory;
@@ -193,7 +196,8 @@ export const siteThemes: SiteTheme[] = themeGroups.flatMap((group) =>
     category: group.category,
     description,
     tags: [...group.tags],
-    status: "ready" as const,
+    status: readyLayoutThemes.has(slug) ? "ready" as const : "layout-draft" as const,
+    depth: "layout" as const,
   }))
 );
 
@@ -223,4 +227,3 @@ export function getThemesByCategory(): Record<ThemeCategory, SiteTheme[]> {
     } as Record<ThemeCategory, SiteTheme[]>
   );
 }
-
