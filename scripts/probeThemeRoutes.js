@@ -17,6 +17,7 @@ const forbiddenPhrases = [
   "Come for a stroll",
   "Downloaded entries from Ryan",
 ];
+const canonicalHomeText = "Ryan is a startup founder focused on quantitative humanities research";
 const failures = [];
 
 if (slugs.length !== 53) failures.push(`Expected 53 theme slugs, found ${slugs.length}.`);
@@ -54,6 +55,9 @@ for (const slug of slugs) {
       }
       if (html.includes("family-aqua") && slug !== "aqua") {
         failures.push(`${slug} ${route} fell back to family-aqua.`);
+      }
+      if (route === "/" && !html.includes(canonicalHomeText)) {
+        failures.push(`${slug} ${route} is missing the canonical home subheader.`);
       }
       for (const phrase of forbiddenPhrases) {
         if (html.includes(phrase)) {

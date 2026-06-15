@@ -437,7 +437,6 @@ function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, co
 <body class="theme-layout theme-${escapeHtml(options.theme.slug)} family-${ctx.family} ${options.bodyClass || ""}">
   <header>
     <h1><a href="/">Ryan Prendergast</a></h1>
-    <p>No CSS Club mimic of <a href="${ctx.theme.targetUrl}">${ctx.theme.targetUrl}</a></p>
     <nav>${ctx.navItems.map((item) => `<a href="${item.href}">${escapeHtml(item.label)}</a>`).join(" | ")}</nav>
     <hr>
   </header>
@@ -528,204 +527,209 @@ function renderMiniThemePicker(theme: SiteTheme): string {
   return `<div class="mini-theme-picker sticky-theme-picker"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${options}</select><button type="button" data-theme-random>Random</button></div>`;
 }
 
+function renderCanonicalHomeHeader(model: HomeModel): string {
+  return `<header class="canonical-home-header"><h2>Ryan Prendergast</h2>${model.introHtml}</header>`;
+}
+
 function renderHome(model: HomeModel, ctx: RenderContext): string {
   const links = model.links.map((link, index) => renderLinkEntry(link, index, ctx)).join("");
   const posts = model.recentPosts.map((post, index) => renderPostSummary(post, index, ctx)).join("");
+  const homeHeader = renderCanonicalHomeHeader(model);
 
   if (ctx.family === "spartan") {
-    return `<table class="pg-home"><tbody><tr><td><h2>Ryan Prendergast</h2>${model.introHtml}<p><b>New:</b> ${model.recentPosts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" | ")}</p><hr><p>${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("<br>")}</p></td></tr></tbody></table>`;
+    return `<table class="pg-home"><tbody><tr><td>${homeHeader}<p><b>New:</b> ${model.recentPosts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" | ")}</p><hr><p>${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("<br>")}</p></td></tr></tbody></table>`;
   }
 
   if (ctx.family === "manual") {
-    return `<article class="manual-page"><h2>Ryan Prendergast Manual</h2><table><tbody><tr><th>Version</th><td>linklog</td></tr><tr><th>Author</th><td>Ryan Prendergast</td></tr><tr><th>Target</th><td>${escapeHtml(ctx.theme.targetUrl)}</td></tr></tbody></table><h3>Contents</h3><ol><li><a href="#intro">Introduction</a></li><li><a href="#links">Links</a></li><li><a href="#essays">Recent Essays</a></li></ol><h3 id="intro">Introduction</h3>${model.introHtml}<h3 id="links">Links</h3>${links}<h3 id="essays">Recent Essays</h3>${posts}</article>`;
+    return `<article class="manual-page">${homeHeader}<table><tbody><tr><th>Version</th><td>linklog</td></tr><tr><th>Author</th><td>Ryan Prendergast</td></tr></tbody></table><h3>Contents</h3><ol><li><a href="#links">Links</a></li><li><a href="#essays">Recent Essays</a></li></ol><h3 id="links">Links</h3>${links}<h3 id="essays">Recent Essays</h3>${posts}</article>`;
   }
 
   if (ctx.family === "scoreboard") {
-    return `<section class="scoreboard"><div class="scorebar">${escapeHtml(model.links[0]?.date || "")}</div><h2>Ryan Prendergast</h2><div class="league-tabs">LINKS BLOG ARCHIVES</div><table><tbody>${model.links.map((link) => `<tr><td>${escapeHtml(link.date)}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td></tr>`).join("")}</tbody></table></section>`;
+    return `<section class="scoreboard"><div class="scorebar">${escapeHtml(model.links[0]?.date || "")}</div>${homeHeader}<div class="league-tabs">LINKS BLOG ARCHIVES</div><table><tbody>${model.links.map((link) => `<tr><td>${escapeHtml(link.date)}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td></tr>`).join("")}</tbody></table></section>`;
   }
 
   if (ctx.family === "archive-index") {
-    return `<section class="archive-index"><h2>Ryan Prendergast</h2><nav>All · Sources · Posts · Links</nav><div class="name-counts">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.domain)} <span>1</span></a>`).join("")}</div></section>`;
+    return `<section class="archive-index">${homeHeader}<nav>All · Sources · Posts · Links</nav><div class="name-counts">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.domain)} <span>1</span></a>`).join("")}</div></section>`;
   }
 
   if (ctx.family === "scrapbook") {
-    return `<section class="scrapbook"><h2>Ryan Prendergast</h2>${model.introHtml}<div class="scrap-list">${model.links.map((link) => `<article><span>🌀</span><a href="${link.url}">${escapeHtml(link.title)}</a><div>${link.contentHtml}</div></article>`).join("")}</div></section>`;
+    return `<section class="scrapbook">${homeHeader}<div class="scrap-list">${model.links.map((link) => `<article><span>🌀</span><a href="${link.url}">${escapeHtml(link.title)}</a><div>${link.contentHtml}</div></article>`).join("")}</div></section>`;
   }
 
   if (ctx.family === "art-index") {
-    return `<section class="art-index"><p>LAT: 40.7128 LNG: -74.0060</p><h2>RYAN PRENDERGAST</h2><p>selected work</p>${model.links.map((link, index) => `<div class="art-row"><span>${2026 - (index % 8)}</span><a href="${link.url}">𓁹 ${escapeHtml(link.title)}</a><em>${escapeHtml(link.domain)}</em></div>`).join("")}</section>`;
+    return `<section class="art-index"><p>LAT: 40.7128 LNG: -74.0060</p>${homeHeader}${model.links.map((link, index) => `<div class="art-row"><span>${2026 - (index % 8)}</span><a href="${link.url}">𓁹 ${escapeHtml(link.title)}</a><em>${escapeHtml(link.domain)}</em></div>`).join("")}</section>`;
   }
 
   if (ctx.family === "research-sidenotes") {
-    return `<article class="research-page"><h2>Essays and Links</h2>${model.introHtml}<h3>Links</h3>${model.links.map((link, index) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><label for="sn-${index}" class="sidenote-number"></label><span class="sidenote">${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</span></p>`).join("")}<h3>Recent Essays</h3>${posts}</article>`;
+    return `<article class="research-page">${homeHeader}<h3>Links</h3>${model.links.map((link, index) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><label for="sn-${index}" class="sidenote-number"></label><span class="sidenote">${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</span></p>`).join("")}<h3>Recent Essays</h3>${posts}</article>`;
   }
 
   if (ctx.family === "wordmark-studio") {
-    return `<section class="wordmark-studio"><nav>Work Grid Inquiries</nav><h2>R Y A N&nbsp;&nbsp;P R E N D E R G A S T</h2><p class="studio-statement">${stripHtml(model.introHtml)}</p><div class="work-grid">${model.links.map((link) => `<a href="${link.url}"><span>${escapeHtml(link.title)}</span><small>${escapeHtml(link.domain)}</small></a>`).join("")}</div></section>`;
+    return `<section class="wordmark-studio"><nav>Work Grid Inquiries</nav>${homeHeader}<div class="work-grid">${model.links.map((link) => `<a href="${link.url}"><span>${escapeHtml(link.title)}</span><small>${escapeHtml(link.domain)}</small></a>`).join("")}</div></section>`;
   }
 
   if (ctx.family === "builder-notes") {
-    return `<section class="builder-notes"><nav>about writing links</nav><h2>Ryan Prendergast</h2>${model.introHtml}<h3>writing</h3>${posts}<h3>links</h3>${links}</section>`;
+    return `<section class="builder-notes"><nav>about writing links</nav>${homeHeader}<h3>writing</h3>${posts}<h3>links</h3>${links}</section>`;
   }
 
   if (ctx.family === "research-tools") {
-    return `<section class="research-tools"><h2>Ryan Prendergast</h2>${model.introHtml}<div class="tool-list">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</div></section>`;
+    return `<section class="research-tools">${homeHeader}<div class="tool-list">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</div></section>`;
   }
 
   if (ctx.family === "art-library") {
-    return `<section class="art-library"><header><strong>Midway Contemporary Art</strong><span>Library</span><span>11am-5pm</span></header><table><thead><tr><th>Title</th><th>Name</th><th>Date</th></tr></thead><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
+    return `<section class="art-library">${homeHeader}<table><thead><tr><th>Title</th><th>Name</th><th>Date</th></tr></thead><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
   }
 
   if (ctx.family === "studio-index") {
-    return `<section class="studio-index"><h2>Ryan Prendergast</h2><nav>Index Studies Information Objects All</nav><div class="studio-studies">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><span>${escapeHtml(link.domain)}</span></article>`).join("")}</div></section>`;
+    return `<section class="studio-index">${homeHeader}<nav>Index Studies Information Objects All</nav><div class="studio-studies">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><span>${escapeHtml(link.domain)}</span></article>`).join("")}</div></section>`;
   }
 
   if (ctx.family === "cargo-cv") {
-    return `<section class="cargo-cv"><aside>Ryan Prendergast<br>Info</aside><main>${model.introHtml}<h3>Selected links</h3>${links}</main></section>`;
+    return `<section class="cargo-cv"><aside>Ryan Prendergast<br>Info</aside><main>${homeHeader}<h3>Selected links</h3>${links}</main></section>`;
   }
 
   if (ctx.family === "artist-ledger") {
-    return `<section class="artist-ledger"><p class="latest">Latest: ${model.recentPosts[0] ? `<a href="${model.recentPosts[0].href}">${escapeHtml(model.recentPosts[0].title)}</a>` : "Ryan's linklog"}</p><h2>RYAN PRENDERGAST</h2><nav>ABOUT NEWS WORK</nav><div class="ledger-list">${model.links.map((link) => `<p><time>${escapeHtml(link.date)}</time> <a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</div></section>`;
+    return `<section class="artist-ledger"><p class="latest">Latest: ${model.recentPosts[0] ? `<a href="${model.recentPosts[0].href}">${escapeHtml(model.recentPosts[0].title)}</a>` : "Ryan's linklog"}</p>${homeHeader}<nav>ABOUT NEWS WORK</nav><div class="ledger-list">${model.links.map((link) => `<p><time>${escapeHtml(link.date)}</time> <a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</div></section>`;
   }
 
   if (ctx.family === "garden-notebook") {
-    return `<section class="garden-notebook"><h2>Ryan Prendergast</h2>${model.introHtml}<div class="garden-beds">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+    return `<section class="garden-notebook">${homeHeader}<div class="garden-beds">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
   }
 
   if (ctx.family === "fragment-journal") {
-    return `<section class="fragment-journal"><h2>Ryan Prendergast</h2><nav>about playlists journal notes library poetry archive</nav><div class="latest-columns"><section><h3>latest posts</h3>${posts}</section><section><h3>latest notes</h3>${links}</section></div></section>`;
+    return `<section class="fragment-journal">${homeHeader}<nav>about playlists journal notes library poetry archive</nav><div class="latest-columns"><section><h3>latest posts</h3>${posts}</section><section><h3>latest notes</h3>${links}</section></div></section>`;
   }
   if (ctx.family === "ucoz-archive") {
-    return `<section class="ucoz-archive"><div class="ucoz-top">narod.ru ucoz.ru blogspot.ru</div><nav>Главная | Каталог файлов | Регистрация | Вход</nav><h2>Каталог файлов</h2>${links}</section>`;
+    return `<section class="ucoz-archive"><div class="ucoz-top">narod.ru ucoz.ru blogspot.ru</div><nav>Главная | Каталог файлов | Регистрация | Вход</nav>${homeHeader}<h3>Каталог файлов</h3>${links}</section>`;
   }
   if (ctx.family === "uncertainty") {
-    return `<section class="uncertainty"><h2>Schemas of Uncertainty</h2><div class="uncertain-content">${model.introHtml}${links}</div></section>`;
+    return `<section class="uncertainty"><div class="uncertain-content">${homeHeader}${links}</div></section>`;
   }
   if (ctx.family === "briefing") {
-    return `<section class="briefing"><nav>Home Politics Business Technology Energy</nav><h2>Ryan Briefing</h2><div class="brief-grid">${model.links.map((link) => `<article><span>THE NEWS</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+    return `<section class="briefing"><nav>Home Politics Business Technology Energy</nav>${homeHeader}<div class="brief-grid">${model.links.map((link) => `<article><span>THE NEWS</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
   }
   if (ctx.family === "bookmaker-card") {
-    return `<section class="bookmaker-card"><h2>Ryan Prendergast</h2>${model.introHtml}<address><a href="/contact">contact</a> · <a href="/blog">writing</a> · <a href="/archives">archive</a></address></section>`;
+    return `<section class="bookmaker-card">${homeHeader}<address><a href="/contact">contact</a> · <a href="/blog">writing</a> · <a href="/archives">archive</a></address></section>`;
   }
   if (ctx.family === "experimental-loop") {
-    return `<section class="experimental-loop"><h2>Ryan Prendergast</h2>${model.introHtml}${links}</section>`;
+    return `<section class="experimental-loop">${homeHeader}${links}</section>`;
   }
   if (ctx.family === "taste-directory") {
-    return `<section class="taste-directory"><nav>Rising Browse</nav><h2>Ryan Prendergast</h2><div class="taste-cats">Links · Writing · Archives</div>${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
+    return `<section class="taste-directory"><nav>Rising Browse</nav>${homeHeader}<div class="taste-cats">Links · Writing · Archives</div>${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
   }
   if (ctx.family === "writer-ledger") {
-    return `<section class="writer-ledger"><h2>recently...</h2>${model.recentPosts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}${model.links.slice(0, 8).map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</section>`;
+    return `<section class="writer-ledger">${homeHeader}<h3>recently...</h3>${model.recentPosts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}${model.links.slice(0, 8).map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</section>`;
   }
 
   if (ctx.family === "artist-menu") {
-    return `<section class="artist-menu"><button>Menu</button><h2>Ryan Prendergast</h2><nav>Projects & Collaborations Publications About Contact</nav><div class="works-list">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
+    return `<section class="artist-menu"><button>Menu</button>${homeHeader}<nav>Projects & Collaborations Publications About Contact</nav><div class="works-list">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
   }
   if (ctx.family === "friendly-hub") {
-    return `<section class="friendly-hub"><h2>@ryanprendergast</h2><nav>Hi · writing · links · contact</nav>${model.introHtml}${links}</section>`;
+    return `<section class="friendly-hub">${homeHeader}<nav>Hi · writing · links · contact</nav>${links}</section>`;
   }
   if (ctx.family === "games-cabinet") {
-    return `<section class="games-cabinet"><h2>Ryan Prendergast</h2><nav>blog all work about</nav><div class="game-grid">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
+    return `<section class="games-cabinet">${homeHeader}<nav>blog all work about</nav><div class="game-grid">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
   }
   if (ctx.family === "portal-gallery") {
-    return `<section class="portal-gallery"><nav>gallery index links</nav><h2>Ryan Prendergast</h2><div class="portal-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
+    return `<section class="portal-gallery"><nav>gallery index links</nav>${homeHeader}<div class="portal-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
   }
   if (ctx.family === "design-repository") {
-    return `<section class="design-repository"><h2>Ryan Prendergast</h2><nav>links · writing · archive</nav>${links}</section>`;
+    return `<section class="design-repository">${homeHeader}<nav>links · writing · archive</nav>${links}</section>`;
   }
   if (ctx.family === "weblog-facets") {
     const tags = ["ai", "security", "tools", "links", "books", "web"];
-    return `<section class="weblog-facets"><h2>Ryan Prendergast's Weblog</h2><nav>About Subscribe TILs Tools</nav><div class="tag-cloud">${tags.map((tag, index) => `<a href="/blog">${tag} ${300 - index * 23}</a>`).join("")}</div>${posts}${links}</section>`;
+    return `<section class="weblog-facets">${homeHeader}<nav>About Subscribe TILs Tools</nav><div class="tag-cloud">${tags.map((tag, index) => `<a href="/blog">${tag} ${300 - index * 23}</a>`).join("")}</div>${posts}${links}</section>`;
   }
   if (ctx.family === "research-lab") {
-    return `<section class="research-lab"><nav>Research Learn News</nav><h2>Ryan Prendergast</h2>${model.introHtml}<div class="research-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+    return `<section class="research-lab"><nav>Research Learn News</nav>${homeHeader}<div class="research-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
   }
   if (ctx.family === "visual-culture") {
-    return `<section class="visual-culture"><h2>Ryan Prendergast</h2>${model.introHtml}${links}</section>`;
+    return `<section class="visual-culture">${homeHeader}${links}</section>`;
   }
 
   if (ctx.family === "room-wall") {
-    return `<section class="room-wall"><nav>work contact instagram cv</nav><h2>Ryan Prendergast</h2><p class="wall-note">${stripHtml(model.introHtml)}</p><div class="wall-links">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
+    return `<section class="room-wall"><nav>work contact instagram cv</nav>${homeHeader}<div class="wall-links">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
   }
   if (ctx.family === "book-microsite") {
-    return `<section class="book-microsite"><p class="next">NEXT</p><h2>Ryan Prendergast</h2><div class="credit-grid"><span>entries</span><b>${model.links.length}</b></div>${links}</section>`;
+    return `<section class="book-microsite"><p class="next">NEXT</p>${homeHeader}<div class="credit-grid"><span>entries</span><b>${model.links.length}</b></div>${links}</section>`;
   }
   if (ctx.family === "download-index") {
-    return `<section class="download-index"><h2>Ryan Prendergast</h2><table><tbody>${model.links.map((link, index) => `<tr><td>${String(index + 1).padStart(4, "0")}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
+    return `<section class="download-index">${homeHeader}<table><tbody>${model.links.map((link, index) => `<tr><td>${String(index + 1).padStart(4, "0")}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
   }
   if (ctx.family === "visual-index") {
-    return `<section class="visual-index"><h2>Ryan Prendergast</h2>${model.introHtml}<div class="visual-rows">${model.links.map((link, index) => `<a href="${link.url}"><span>${2026 - (index % 6)}</span><strong>${escapeHtml(link.title)}</strong><em>${escapeHtml(link.domain)}</em></a>`).join("")}</div></section>`;
+    return `<section class="visual-index">${homeHeader}<div class="visual-rows">${model.links.map((link, index) => `<a href="${link.url}"><span>${2026 - (index % 6)}</span><strong>${escapeHtml(link.title)}</strong><em>${escapeHtml(link.domain)}</em></a>`).join("")}</div></section>`;
   }
   if (ctx.family === "html-bulletin") {
-    return `<section class="html-bulletin"><h2>collecting, making, sharing</h2><p>last updated: ${model.recentPosts[0]?.date || "today"}</p>${model.introHtml}<h3>bulletin</h3><ul>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> - ${escapeHtml(link.domain)}</li>`).join("")}</ul></section>`;
+    return `<section class="html-bulletin">${homeHeader}<p>last updated: ${model.recentPosts[0]?.date || ""}</p><h3>bulletin</h3><ul>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> - ${escapeHtml(link.domain)}</li>`).join("")}</ul></section>`;
   }
   if (ctx.family === "consumption-digest") {
-    return `<section class="consumption-digest"><h2>Ryan Prendergast</h2>${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
+    return `<section class="consumption-digest">${homeHeader}${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
   }
   if (ctx.family === "data-portfolio") {
-    return `<section class="data-portfolio"><header><h2>Ryan Prendergast</h2><nav>projects writing links</nav></header>${model.introHtml}<div class="view-toggle">grid / list</div><div class="data-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+    return `<section class="data-portfolio"><header>${homeHeader}<nav>projects writing links</nav></header><div class="view-toggle">grid / list</div><div class="data-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
   }
   if (ctx.family === "internet-diagram") {
-    return `<section class="internet-diagram"><nav>random labels info index</nav><h2>Ryan Prendergast</h2><div class="node-map">${model.links.slice(0, 12).map((link, index) => `<a style="--x:${(index * 17) % 83}%;--y:${(index * 29) % 76}%;" href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</div></section>`;
+    return `<section class="internet-diagram"><nav>random labels info index</nav>${homeHeader}<div class="node-map">${model.links.slice(0, 12).map((link, index) => `<a style="--x:${(index * 17) % 83}%;--y:${(index * 29) % 76}%;" href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</div></section>`;
   }
   if (ctx.family === "vernacular-essay") {
-    return `<article class="vernacular-essay"><nav>english / print</nav><h2>Ryan Prendergast</h2>${model.introHtml}<hr>${model.links.map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><br>${stripHtml(link.contentHtml)}</p>`).join("")}</article>`;
+    return `<article class="vernacular-essay"><nav>english / print</nav>${homeHeader}<hr>${model.links.map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><br>${stripHtml(link.contentHtml)}</p>`).join("")}</article>`;
   }
   if (ctx.family === "cheap-manifesto") {
-    return `<section class="cheap-manifesto"><h2>Ryan Prendergast</h2>${model.introHtml}${links}</section>`;
+    return `<section class="cheap-manifesto">${homeHeader}${links}</section>`;
   }
   if (ctx.family === "poetic-article") {
-    return `<article class="poetic-article"><nav>blog newsletter</nav><h2>Ryan Prendergast</h2>${model.introHtml}<div class="article-links">${links}</div></article>`;
+    return `<article class="poetic-article"><nav>blog newsletter</nav>${homeHeader}<div class="article-links">${links}</div></article>`;
   }
   if (ctx.family === "feral-essay") {
-    return `<article class="feral-essay"><h2>Ryan Prendergast</h2>${model.introHtml}${posts}</article>`;
+    return `<article class="feral-essay">${homeHeader}${posts}</article>`;
   }
   if (ctx.family === "performance-club") {
-    return `<section class="performance-club"><h2>Ryan Prendergast</h2><table><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.domain)}</a></td><td>${escapeHtml(link.title)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
+    return `<section class="performance-club">${homeHeader}<table><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.domain)}</a></td><td>${escapeHtml(link.title)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
   }
   if (ctx.family === "recurse-joy") {
-    return `<section class="recurse-joy"><nav>Home About Subscribe Atom</nav><h2>Ryan Prendergast</h2>${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</section>`;
+    return `<section class="recurse-joy"><nav>Home About Subscribe Atom</nav>${homeHeader}${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</section>`;
   }
   if (ctx.family === "forecast-report") {
-    return `<article class="forecast-report"><nav>summary research forecast</nav><h2>Ryan Prendergast</h2>${model.introHtml}<ol>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a></li>`).join("")}</ol></article>`;
+    return `<article class="forecast-report"><nav>summary research forecast</nav>${homeHeader}<ol>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a></li>`).join("")}</ol></article>`;
   }
   if (ctx.family === "forum-frontpage") {
-    return `<section class="forum-frontpage"><aside>Recent Recommended Concepts Library</aside><main><h2>Ryan Prendergast</h2>${model.links.map((link, index) => `<article><span>${index + 1}</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</p></article>`).join("")}</main></section>`;
+    return `<section class="forum-frontpage"><aside>Recent Recommended Concepts Library</aside><main>${homeHeader}${model.links.map((link, index) => `<article><span>${index + 1}</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</p></article>`).join("")}</main></section>`;
   }
   if (ctx.family === "essay-blogroll") {
-    return `<section class="essay-blogroll"><main><h2>Ryan Prendergast</h2>${posts}${links}</main><aside><h3>Posts</h3><a href="/blog">Archives</a><a href="/rss.xml">Feed</a><h3>Links</h3>${model.links.slice(0, 6).map((link) => `<a href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</aside></section>`;
+    return `<section class="essay-blogroll"><main>${homeHeader}${posts}${links}</main><aside><h3>Posts</h3><a href="/blog">Archives</a><a href="/rss.xml">Feed</a><h3>Links</h3>${model.links.slice(0, 6).map((link) => `<a href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</aside></section>`;
   }
   if (ctx.family === "now-directory") {
-    return `<section class="now-directory"><h2>Ryan Prendergast</h2>${model.introHtml}${links}</section>`;
+    return `<section class="now-directory">${homeHeader}${links}</section>`;
   }
   if (ctx.family === "conversational-minimal") {
-    return `<section class="conversational-minimal"><h2>Hi. I'm Ryan.</h2>${model.introHtml}<nav>essays books projects now contact</nav>${posts}${links}</section>`;
+    return `<section class="conversational-minimal">${homeHeader}<nav>essays books projects now contact</nav>${posts}${links}</section>`;
   }
   if (ctx.family === "founder-index") {
-    return `<section class="founder-index"><h2>Ryan Prendergast</h2><nav>advice blog bookshelf culture labs progress questions</nav><div class="founder-columns">${["Writing", "Links", "Projects"].map((heading) => `<section><h3>${heading}</h3>${links}</section>`).join("")}</div></section>`;
+    return `<section class="founder-index">${homeHeader}<nav>advice blog bookshelf culture labs progress questions</nav><div class="founder-columns">${["Writing", "Links", "Projects"].map((heading) => `<section><h3>${heading}</h3>${links}</section>`).join("")}</div></section>`;
   }
   if (ctx.family === "grant-page") {
-    return `<section class="grant-page"><h2>Ryan Prendergast</h2>${model.introHtml}<a class="grant-cta" href="/contact">Contact</a><div class="grant-grid">${model.links.slice(0, 6).map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
+    return `<section class="grant-page">${homeHeader}<a class="grant-cta" href="/contact">Contact</a><div class="grant-grid">${model.links.slice(0, 6).map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
   }
 
   if (ctx.family === "hn") {
-    return `<section class="hn-feed"><div class="hn-intro">${model.introHtml}</div><table><tbody>${model.links
+    return `<section class="hn-feed"><div class="hn-intro">${homeHeader}</div><table><tbody>${model.links
       .map((link, index) => `<tr><td class="rank">${index + 1}.</td><td><a href="${link.url}">${escapeHtml(link.title)}</a><span class="sitebit"> (${escapeHtml(link.domain)})</span><div class="subtext">${escapeHtml(link.date)} | ${stripHtml(link.contentHtml)}</div></td></tr>`)
       .join("")}</tbody></table><div class="hn-recent"><strong>Recent Essays</strong>${posts}</div></section>`;
   }
 
   if (ctx.family === "desktop") {
-    return `<section class="desktop-window is-main"><div class="window-title">Linklog</div><div class="window-body">${model.introHtml}<div class="file-grid">${links}</div></div></section><section class="desktop-window"><div class="window-title">Recent Essays</div><div class="window-body">${posts}</div></section>`;
+    return `<section class="desktop-window is-main"><div class="window-title">Linklog</div><div class="window-body">${homeHeader}<div class="file-grid">${links}</div></div></section><section class="desktop-window"><div class="window-title">Recent Essays</div><div class="window-body">${posts}</div></section>`;
   }
 
   if (ctx.family === "terminal" || ctx.family === "editor") {
-    return `<section class="terminal-output"><p class="prompt">$ cat about.txt</p>${model.introHtml}<p class="prompt">$ tail -n ${model.links.length} links.log</p>${links}<p class="prompt">$ ls recent-essays</p>${posts}</section>`;
+    return `<section class="terminal-output"><p class="prompt">$ cat about.txt</p>${homeHeader}<p class="prompt">$ tail -n ${model.links.length} links.log</p>${links}<p class="prompt">$ ls recent-essays</p>${posts}</section>`;
   }
 
   if (ctx.family === "wiki") {
-    return `<article class="wiki-article"><aside class="wiki-toc"><a href="#about">About</a><a href="#links">Links</a><a href="#posts">Recent posts</a></aside><section id="about">${model.introHtml}</section><h2 id="links">External links</h2>${links}<h2 id="posts">Recent posts</h2>${posts}</article>`;
+    return `<article class="wiki-article"><aside class="wiki-toc"><a href="#about">About</a><a href="#links">Links</a><a href="#posts">Recent posts</a></aside><section id="about">${homeHeader}</section><h2 id="links">External links</h2>${links}<h2 id="posts">Recent posts</h2>${posts}</article>`;
   }
 
-  return `<section class="theme-home-intro">${model.introHtml}</section><section class="theme-link-list">${links}</section><section class="theme-recent-posts"><h2>Recent Essays</h2>${posts}</section>`;
+  return `<section class="theme-home-intro">${homeHeader}</section><section class="theme-link-list">${links}</section><section class="theme-recent-posts"><h2>Recent Essays</h2>${posts}</section>`;
 }
 
 function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
