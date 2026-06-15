@@ -111,9 +111,41 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 32px;
   padding-top: 16px;
   border-top: 1px solid currentColor;
+  font-size: 12px;
+}
+
+.theme-utility-footer > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  opacity: .72;
+}
+
+.theme-utility-footer .theme-shell-nav {
+  margin-bottom: 0;
+}
+
+.theme-utility-footer .theme-shell-nav a {
+  padding: 2px 0;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.theme-utility-footer .theme-shell-nav a.is-active {
+  color: inherit;
+  background: transparent;
+  font-weight: 700;
+}
+
+.theme-utility-footer .mini-theme-picker select,
+.theme-utility-footer .mini-theme-picker button {
+  min-height: 28px;
   font-size: 12px;
 }
 

@@ -483,21 +483,14 @@ function renderCustomShell<T extends PageModel>(options: RenderPageOptions<T>, c
 <body class="site-shell theme-layout theme-${escapeHtml(options.theme.slug)} family-${ctx.family} ${options.bodyClass || ""}">
   ${shellChrome.before}
   <div class="theme-shell-frame">
-    <header class="theme-shell-header">
-      <div>
-        <p class="theme-shell-kicker">${escapeHtml(options.theme.name)} / ${escapeHtml(ctx.family)}</p>
-        <h1><a href="/">Ryan Prendergast</a></h1>
-        ${ctx.pageSubtitle ? `<p>${escapeHtml(ctx.pageSubtitle)}</p>` : ""}
-      </div>
-      ${picker}
-    </header>
-    <nav class="theme-shell-nav">${navHtml}</nav>
     <main class="theme-shell-main">${content}</main>
-    <footer class="theme-shell-footer">
-      <span>Ryan Prendergast Worldwide</span>
-      <a href="/colophon">Colophon</a>
-      <a href="/themes">Themes</a>
-      <a href="/rss.xml">RSS</a>
+    <footer class="theme-shell-footer theme-utility-footer">
+      <div>
+        <span>Ryan Prendergast</span>
+        <span>${escapeHtml(options.theme.name)}</span>
+      </div>
+      <nav class="theme-shell-nav">${navHtml}</nav>
+      ${picker}
     </footer>
   </div>
   ${shellChrome.after}

@@ -48,6 +48,12 @@
       url.searchParams.set("theme", theme.slug);
       history.replaceState({}, "", url);
     }
+
+    if (options && options.reload) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("theme", theme.slug);
+      window.location.assign(url.toString());
+    }
   }
 
   function shiftTheme(direction) {
@@ -55,7 +61,7 @@
     const current = getCurrentSlug();
     const currentIndex = Math.max(0, themes.findIndex((theme) => theme.slug === current));
     const nextIndex = (currentIndex + direction + themes.length) % themes.length;
-    setTheme(themes[nextIndex].slug, { updateUrl: false });
+    setTheme(themes[nextIndex].slug, { updateUrl: true, reload: true });
   }
 
   function randomTheme() {
@@ -63,13 +69,13 @@
     const current = getCurrentSlug();
     const pool = themes.filter((theme) => theme.slug !== current);
     const next = pool[Math.floor(Math.random() * pool.length)] || themes[0];
-    setTheme(next.slug, { updateUrl: false });
+    setTheme(next.slug, { updateUrl: true, reload: true });
   }
 
   function bindControls() {
     document.querySelectorAll("[data-theme-apply]").forEach((button) => {
       button.addEventListener("click", () => {
-        setTheme(button.getAttribute("data-theme-apply"), { updateUrl: true });
+        setTheme(button.getAttribute("data-theme-apply"), { updateUrl: true, reload: true });
       });
     });
 
@@ -94,7 +100,7 @@
 
     document.querySelectorAll("[data-theme-select]").forEach((select) => {
       select.addEventListener("change", () => {
-        setTheme(select.value, { updateUrl: true });
+        setTheme(select.value, { updateUrl: true, reload: true });
       });
     });
 
