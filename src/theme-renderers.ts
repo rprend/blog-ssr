@@ -409,6 +409,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (routeType === "themes") return renderThemes(model as ThemesModel, ctx);
   if (ctx.family === "wordmark-studio") return renderWordmarkGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "builder-notes") return renderBuilderNotesGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "manual") return renderManualGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -548,6 +549,37 @@ function renderCanonicalHomeHeader(model: HomeModel): string {
   return `<header class="canonical-home-header"><nav class="canonical-site-nav"><a href="/">Linkblog</a><a href="/blog">Blog</a><a href="/photos">Photos</a><a href="/archives">Archives</a><a href="/guestbook">Guestbook</a><a href="/contact">Contact</a><a href="/rss.xml">RSS</a></nav><h2>Ryan Prendergast</h2>${model.introHtml}</header>`;
 }
 
+function renderManualHeader(ctx: RenderContext, title: string, description: string, rows: Array<[string, string]> = []): string {
+  const nav = ctx.navItems
+    .map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`)
+    .join("");
+  const metaRows = [
+    ["Title", escapeHtml(title)],
+    ["Author", "Ryan Prendergast"],
+    ["Section", escapeHtml(ctx.currentPage || "/")],
+    ...rows,
+  ];
+  const descriptionHtml = description ? `<p>${escapeHtml(description)}</p>` : "";
+  return `<header class="manual-header"><h1>${escapeHtml(title)}</h1>${descriptionHtml}<table class="manual-meta"><tbody>${metaRows.map(([key, value]) => `<tr><th>${escapeHtml(key)}</th><td>${value}</td></tr>`).join("")}</tbody></table><label class="manual-debug-toggle"><input type="checkbox" disabled> Debug mode</label><nav class="manual-nav" aria-label="Core site areas">${nav}<a class="${ctx.currentPage === "/themes" ? "is-active" : ""}" href="/themes">Themes</a></nav></header>`;
+}
+
+function renderManualRule(): string {
+  return `<hr class="manual-rule">`;
+}
+
+function renderManualToc(items: Array<[string, string]>): string {
+  return `<section class="manual-toc" aria-labelledby="manual-contents"><h2 id="manual-contents">Contents</h2><ol>${items.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ol></section>`;
+}
+
+function renderManualLinkEntry(link: LinkEntryModel, index: number): string {
+  const image = link.image ? `<figure class="manual-media"><img src="${link.image}" alt="" loading="lazy"><figcaption>${escapeHtml(link.title)}</figcaption></figure>` : "";
+  return `<article class="manual-entry"><h3 id="link-${index + 1}"><a href="${link.url}">${escapeHtml(link.title)}</a></h3><table><tbody><tr><th>Source</th><td>${escapeHtml(link.domain)}</td></tr><tr><th>Date</th><td>${escapeHtml(link.date)}</td></tr></tbody></table>${image}<div class="manual-entry-body">${link.contentHtml}</div></article>`;
+}
+
+function renderManualPostSummary(post: PostSummaryModel, index: number): string {
+  return `<article class="manual-entry"><h3 id="post-${index + 1}"><a href="${post.href}">${escapeHtml(post.title)}</a></h3><table><tbody><tr><th>Date</th><td>${escapeHtml(post.date)}</td></tr>${post.readTime ? `<tr><th>Read time</th><td>${escapeHtml(post.readTime)}</td></tr>` : ""}</tbody></table>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</article>`;
+}
+
 function renderHome(model: HomeModel, ctx: RenderContext): string {
   const links = model.links.map((link, index) => renderLinkEntry(link, index, ctx)).join("");
   const posts = model.recentPosts.map((post, index) => renderPostSummary(post, index, ctx)).join("");
@@ -558,7 +590,14 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "manual") {
-    return `<article class="manual-page">${homeHeader}<table><tbody><tr><th>Version</th><td>linklog</td></tr><tr><th>Author</th><td>Ryan Prendergast</td></tr></tbody></table><h3>Contents</h3><ol><li><a href="#links">Links</a></li><li><a href="#essays">Recent Essays</a></li></ol><h3 id="links">Links</h3>${links}<h3 id="essays">Recent Essays</h3>${posts}</article>`;
+    return `<article class="manual-page">${renderManualHeader(ctx, "Ryan Prendergast", stripHtml(model.introHtml), [["Version", "linklog"], ["Links", String(model.links.length)], ["Recent essays", String(model.recentPosts.length)]])}${renderManualToc([["#links", "Links"], ["#essays", "Recent Essays"], ["#navigation", "Navigation"]])}${renderManualRule()}<section id="links"><h2>Links</h2>${model.links.map((link, index) => renderManualLinkEntry(link, index)).join("")}</section>${renderManualRule()}<section id="essays"><h2>Recent Essays</h2>${model.recentPosts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section><figure id="navigation" class="manual-ascii"><pre>Ryan Prendergast
+-- Home
+-- Blog
+-- Photos
+-- Archives
+-- Guestbook
+-- Contact
+-- RSS</pre></figure></article>`;
   }
 
   if (ctx.family === "scoreboard") {
@@ -763,7 +802,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<table class="pg-home"><tbody><tr><td><h2>Essays</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><br><font size="2">${escapeHtml(post.date)}</font></p>`)).join("")}</td></tr></tbody></table>`;
   }
   if (ctx.family === "manual") {
-    return `<article class="manual-page"><h2>Blog Index</h2><pre>find ./essays -type f</pre>${groups}</article>`;
+    return `<article class="manual-page">${renderManualHeader(ctx, "Blog Index", model.description, [["Entries", String(model.totalPosts)], ["Years", model.yearRange ? `${model.yearRange[0]}-${model.yearRange[1]}` : ""]])}${renderManualToc(model.postsByYear.map((group) => [`#year-${group.year}`, group.year]))}${renderManualRule()}<pre>find ./essays -type f</pre>${model.postsByYear.map((group) => `<section id="year-${group.year}" class="manual-year"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
   }
   if (ctx.family === "scoreboard") {
     return `<section class="scoreboard"><h2>Blog League Schedule</h2><table><tbody>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<tr><td>${escapeHtml(post.date)}</td><td><a href="${post.href}">${escapeHtml(post.title)}</a></td><td>${escapeHtml(group.year)}</td></tr>`)).join("")}</tbody></table></section>`;
@@ -841,7 +880,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     return `<table class="pg-home"><tbody><tr><td><h2>${escapeHtml(model.title)}</h2><font size="2">${meta}</font>${model.subtitle ? `<p><i>${escapeHtml(model.subtitle)}</i></p>` : ""}<br>${model.contentHtml}<p><a href="${model.backHref}">Back</a></p></td></tr></tbody></table>`;
   }
   if (ctx.family === "manual") {
-    return `<article class="manual-page"><h2>${escapeHtml(model.title)}</h2><table><tbody><tr><th>Date</th><td>${meta}</td></tr><tr><th>Path</th><td>${escapeHtml(model.backHref)}</td></tr></tbody></table><h3>Document</h3>${model.contentHtml}</article>`;
+    return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.title, model.subtitle || "Ryan Prendergast essay", [["Date", meta], ["Path", escapeHtml(model.backHref)]])}${renderManualToc([["#document", "Document"]])}${renderManualRule()}<section id="document" class="manual-entry-body"><h2>Document</h2>${model.contentHtml}</section><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p></article>`;
   }
   if (ctx.family === "scoreboard") {
     return `<section class="scoreboard"><h2>Box Score</h2><table><tbody><tr><td>Title</td><td>${escapeHtml(model.title)}</td></tr><tr><td>Date</td><td>${meta}</td></tr></tbody></table><article>${model.contentHtml}</article></section>`;
@@ -878,7 +917,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<h2>Archives</h2>${model.months.map((month) => `<h3>${escapeHtml(month.label)}</h3><ul>${month.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a></li>`).join("")}</ul>`).join("")}`;
   }
   if (ctx.family === "manual") {
-    return `<article class="manual-page"><h2>Archive Tree</h2><pre>${model.months.map((month) => `${month.key}/\\n${month.posts.map((post) => `  ${post.slug}.html`).join("\\n")}`).join("\\n")}</pre>${model.months.map((month) => `<h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}`).join("")}</article>`;
+    return `<article class="manual-page">${renderManualHeader(ctx, "Archive Tree", "", [["Entries", String(model.totalPosts)], ["Months", String(model.months.length)]])}${renderManualToc(model.months.map((month) => [`#${month.key}`, month.label]))}${renderManualRule()}<pre>${model.months.map((month) => `${month.key}/\\n${month.posts.map((post) => `  ${post.slug}.html`).join("\\n")}`).join("\\n")}</pre>${model.months.map((month) => `<section id="${month.key}" class="manual-year"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
   }
   if (ctx.family === "scoreboard") {
     return `<section class="scoreboard"><h2>Archive Standings</h2><table><tbody>${model.months.map((month) => `<tr><td>${escapeHtml(month.label)}</td><td>${month.posts.length}</td><td>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" · ")}</td></tr>`).join("")}</tbody></table></section>`;
@@ -930,6 +969,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
     ? model.entries.map((entry) => `<article class="guestbook-entry"><time>${escapeHtml(entry.date)}</time><p>${escapeHtml(entry.message)}</p><strong>${escapeHtml(entry.name)}</strong></article>`).join("")
     : `<p class="text-muted">No entries yet. Be the first to sign the guestbook!</p>`;
   const button = model.canSign ? `<button onclick="showGuestbookModal()">Sign Guestbook</button>` : "";
+  if (ctx.family === "manual") {
+    const manualEntries = model.entries.length
+      ? model.entries.map((entry, index) => `<article class="manual-entry"><h3 id="entry-${index + 1}">${escapeHtml(entry.name)}</h3><table><tbody><tr><th>Date</th><td>${escapeHtml(entry.date)}</td></tr><tr><th>Name</th><td>${escapeHtml(entry.name)}</td></tr></tbody></table><p>${escapeHtml(entry.message)}</p></article>`).join("")
+      : `<p class="text-muted">No entries yet. Be the first to sign the guestbook!</p>`;
+    return `<article class="manual-page">${renderManualHeader(ctx, "Guestbook", "", [["Entries", String(model.entries.length)]])}${renderManualToc([["#entries", "Entries"], ["#sign", "Sign"]])}${renderManualRule()}<section id="entries"><h2>Entries</h2>${manualEntries}</section><section id="sign" class="manual-form"><h2>Sign</h2>${button}</section></article>${guestbookModalScript()}`;
+  }
   if (ctx.family === "wordmark-studio") {
     return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Inquiries</p><h2>Guestbook</h2></header><section class="guestbook-header">${button}</section><div class="wordmark-entries">${entries}</div></section>${guestbookModalScript()}`;
   }
@@ -937,6 +982,10 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
 }
 
 function renderThemes(model: ThemesModel, ctx: RenderContext): string {
+  if (ctx.family === "manual") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    return `<article class="manual-page">${renderManualHeader(ctx, "Themes", "", [["Themes", String(model.themes.length)], ["Built", String(builtCount)]])}${renderManualToc([["#select", "Current Theme"], ["#catalog", "Catalog"]])}${renderManualRule()}<section id="select" class="manual-form"><h2>Current Theme</h2><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></section><section id="catalog"><h2>Catalog</h2><table><thead><tr><th>Theme</th><th>Vibe</th><th>Status</th></tr></thead><tbody>${model.themes.map((theme) => `<tr><td><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a></td><td>${escapeHtml(theme.vibe)}</td><td>${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)}</td></tr>`).join("")}</tbody></table></section></article>`;
+  }
   if (ctx.family === "wordmark-studio") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Themes</p><h2>Theme Grid</h2><span>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</span></header><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}</section>`;
@@ -976,6 +1025,10 @@ function renderWordmarkGeneric(model: GenericPageModel, ctx: RenderContext): str
 
 function renderBuilderNotesGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<header><h1>${escapeHtml(model.heading)}</h1></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
+}
+
+function renderManualGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.heading, "")}${renderManualToc([["#document", "Document"]])}${renderManualRule()}<section id="document" class="manual-entry-body"><h2>Document</h2>${model.contentHtml}</section></article>`;
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
