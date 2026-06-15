@@ -153,6 +153,27 @@ type RendererFamily =
   | "weblog-facets"
   | "research-lab"
   | "visual-culture"
+  | "room-wall"
+  | "book-microsite"
+  | "download-index"
+  | "visual-index"
+  | "html-bulletin"
+  | "consumption-digest"
+  | "data-portfolio"
+  | "internet-diagram"
+  | "vernacular-essay"
+  | "cheap-manifesto"
+  | "poetic-article"
+  | "feral-essay"
+  | "performance-club"
+  | "recurse-joy"
+  | "forecast-report"
+  | "forum-frontpage"
+  | "essay-blogroll"
+  | "now-directory"
+  | "conversational-minimal"
+  | "founder-index"
+  | "grant-page"
   | "desktop"
   | "terminal"
   | "editor"
@@ -211,6 +232,27 @@ const familyBySlug: Record<string, RendererFamily> = {
   "weblog-topic-facets": "weblog-facets",
   "research-lab-index": "research-lab",
   "visual-culture-practice": "visual-culture",
+  "room-wall-portfolio": "room-wall",
+  "artist-book-microsite": "book-microsite",
+  "cyberfeminist-download-index": "download-index",
+  "nonfiction-visual-index": "visual-index",
+  "personal-html-bulletin": "html-bulletin",
+  "daily-consumption-digest": "consumption-digest",
+  "data-graphics-portfolio": "data-portfolio",
+  "internet-map-diagram": "internet-diagram",
+  "vernacular-web-essay": "vernacular-essay",
+  "cheap-web-manifesto": "cheap-manifesto",
+  "poetic-computation-article": "poetic-article",
+  "feral-web-essay": "feral-essay",
+  "performance-club-index": "performance-club",
+  "recurse-link-joy": "recurse-joy",
+  "scenario-forecast-report": "forecast-report",
+  "rationalist-forum-frontpage": "forum-frontpage",
+  "blogroll-essay-archive": "essay-blogroll",
+  "now-page-directory": "now-directory",
+  "conversational-minimalist": "conversational-minimal",
+  "founder-link-index": "founder-index",
+  "ai-grant-application-page": "grant-page",
   "classic-mac": "desktop",
   win95: "desktop",
   win98: "desktop",
@@ -609,6 +651,70 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return `<section class="visual-culture"><h2>PARADYME</h2><p>Practice for Visual Culture</p><p>A unique and multi-angled view on contemporary visual culture, beyond a single medium.</p>${links}</section>`;
   }
 
+  if (ctx.family === "room-wall") {
+    return `<section class="room-wall"><nav>work contact instagram cv</nav><h2>Ryan Prendergast</h2><p class="wall-note">${stripHtml(model.introHtml)}</p><div class="wall-links">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
+  }
+  if (ctx.family === "book-microsite") {
+    return `<section class="book-microsite"><p class="next">NEXT</p><h2>Ryan Forever</h2><p>Edited, designed, and assembled from the same content as the rest of the site.</p><div class="credit-grid"><span>editor</span><b>Ryan Prendergast</b><span>designer</span><b>theme mimic</b><span>entries</span><b>${model.links.length}</b></div>${links}</section>`;
+  }
+  if (ctx.family === "download-index") {
+    return `<section class="download-index"><h2>Cyberfeminism Index</h2><p>Downloaded entries from Ryan's reading and writing archive.</p><table><tbody>${model.links.map((link, index) => `<tr><td>${String(index + 1).padStart(4, "0")}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
+  }
+  if (ctx.family === "visual-index") {
+    return `<section class="visual-index"><h2>Ryan Prendergast</h2><p>Non-Fiction Visual Communication</p><div class="visual-rows">${model.links.map((link, index) => `<a href="${link.url}"><span>${2026 - (index % 6)}</span><strong>${escapeHtml(link.title)}</strong><em>${escapeHtml(link.domain)}</em></a>`).join("")}</div></section>`;
+  }
+  if (ctx.family === "html-bulletin") {
+    return `<section class="html-bulletin"><h2>collecting, making, sharing</h2><p>last updated: ${model.recentPosts[0]?.date || "today"}</p>${model.introHtml}<h3>bulletin</h3><ul>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> - ${escapeHtml(link.domain)}</li>`).join("")}</ul></section>`;
+  }
+  if (ctx.family === "consumption-digest") {
+    return `<section class="consumption-digest"><h2>Consumed Today</h2>${model.links.map((link, index) => `<article><time>${escapeHtml(link.date)}</time><h3>${index % 3 === 0 ? "read" : index % 3 === 1 ? "watched" : "saved"}</h3><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
+  }
+  if (ctx.family === "data-portfolio") {
+    return `<section class="data-portfolio"><header><h2>Ryan Prendergast</h2><nav>projects writing cv collections</nav></header><p>Data, graphics, systems, and reporting-adjacent notes.</p><div class="view-toggle">grid / list</div><div class="data-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+  }
+  if (ctx.family === "internet-diagram") {
+    return `<section class="internet-diagram"><nav>random labels info submit index roadmap</nav><h2>diagram.website / ryan map</h2><div class="node-map">${model.links.slice(0, 12).map((link, index) => `<a style="--x:${(index * 17) % 83}%;--y:${(index * 29) % 76}%;" href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</div></section>`;
+  }
+  if (ctx.family === "vernacular-essay") {
+    return `<article class="vernacular-essay"><nav>english / russian / deutsch / print</nav><h2>A Vernacular Web of Ryan</h2>${model.introHtml}<hr>${model.links.map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><br>${stripHtml(link.contentHtml)}</p>`).join("")}</article>`;
+  }
+  if (ctx.family === "cheap-manifesto") {
+    return `<section class="cheap-manifesto"><h2>&lt;3 The Cheap Ryan Web &lt;3</h2><p>A website should be cheap to read, cheap to host, cheap to copy, and expensive only in attention.</p>${links}</section>`;
+  }
+  if (ctx.family === "poetic-article") {
+    return `<article class="poetic-article"><nav>school for poetic computation donate store newsletter</nav><p class="school">SFPC-style blog</p><h2>Cellular Notes for a Personal Site</h2>${model.introHtml}<div class="article-links">${links}</div></article>`;
+  }
+  if (ctx.family === "feral-essay") {
+    return `<article class="feral-essay"><p>Paragraph / Ryan Prendergast</p><h2>Queer Servers and Feral Links</h2><p class="subscribe">Subscribe to receive future essays.</p>${model.introHtml}${posts}</article>`;
+  }
+  if (ctx.family === "performance-club") {
+    return `<section class="performance-club"><h2>250KB Club</h2><p>Lightweight entries from Ryan's web. No payload should carry more ceremony than the idea needs.</p><table><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.domain)}</a></td><td>${escapeHtml(link.title)}</td><td>&lt;250KB</td></tr>`).join("")}</tbody></table></section>`;
+  }
+  if (ctx.family === "recurse-joy") {
+    return `<section class="recurse-joy"><nav>Home About Subscribe RC Atom</nav><h2>Joy of Ryan</h2>${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</section>`;
+  }
+  if (ctx.family === "forecast-report") {
+    return `<article class="forecast-report"><nav>summary research forecast pdf listen watch</nav><h2>AI 2027, but for Ryan's site</h2><p class="byline">A scenario report assembled from shared content.</p>${model.introHtml}<ol>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a></li>`).join("")}</ol></article>`;
+  }
+  if (ctx.family === "forum-frontpage") {
+    return `<section class="forum-frontpage"><aside>Quick takes Recent Recommended Concepts Library</aside><main><h2>LessWrong-style Frontpage</h2>${model.links.map((link, index) => `<article><span>${index + 1}</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</p></article>`).join("")}</main></section>`;
+  }
+  if (ctx.family === "essay-blogroll") {
+    return `<section class="essay-blogroll"><main><h2>Slate Star Ryan</h2>${posts}${links}</main><aside><h3>Top Posts</h3><a href="/blog">Archives</a><a href="/rss.xml">Feed</a><h3>Blogroll</h3>${model.links.slice(0, 6).map((link) => `<a href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</aside></section>`;
+  }
+  if (ctx.family === "now-directory") {
+    return `<section class="now-directory"><h2>What is Ryan doing now?</h2><p>This is a now page directory treatment: simple copy, direct links, and a living index.</p>${model.introHtml}${links}</section>`;
+  }
+  if (ctx.family === "conversational-minimal") {
+    return `<section class="conversational-minimal"><h2>Hi. I'm Ryan.</h2>${model.introHtml}<nav>essays books projects now contact</nav>${posts}${links}</section>`;
+  }
+  if (ctx.family === "founder-index") {
+    return `<section class="founder-index"><h2>Ryan Prendergast</h2><nav>advice blog bookshelf culture labs progress questions</nav><div class="founder-columns">${["Writing", "Links", "Projects"].map((heading) => `<section><h3>${heading}</h3>${links}</section>`).join("")}</div></section>`;
+  }
+  if (ctx.family === "grant-page") {
+    return `<section class="grant-page"><h2>AI Grant</h2><p class="grant-amount">$250k for ambitious independent work</p><p>Application-style landing page for the same Ryan content.</p><a class="grant-cta" href="/contact">Apply / get in touch</a><div class="grant-grid">${model.links.slice(0, 6).map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
+  }
+
   if (ctx.family === "hn") {
     return `<section class="hn-feed"><div class="hn-intro">${model.introHtml}</div><table><tbody>${model.links
       .map((link, index) => `<tr><td class="rank">${index + 1}.</td><td><a href="${link.url}">${escapeHtml(link.title)}</a><span class="sitebit"> (${escapeHtml(link.domain)})</span><div class="subtext">${escapeHtml(link.date)} | ${stripHtml(link.contentHtml)}</div></td></tr>`)
@@ -688,7 +794,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   if (ctx.family === "taste-directory") {
     return `<section class="taste-directory"><h2>Browse Writing</h2><div class="taste-cats">Essays · Reviews · Notes · Archives</div>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<article><a href="${post.href}">${escapeHtml(post.title)}</a><p>${escapeHtml(group.year)}</p></article>`)).join("")}</section>`;
   }
-  if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture"].includes(ctx.family)) {
+  if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>${ctx.family === "research-lab" ? "Research" : "Index"}</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "terminal" || ctx.family === "editor") {
@@ -770,7 +876,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   if (ctx.family === "ucoz-archive") {
     return `<section class="ucoz-archive"><h2>Архив файлов</h2>${model.months.map((month) => `<div class="ucoz-file"><b>${escapeHtml(month.label)}</b><br>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("<br>")}</div>`).join("")}</section>`;
   }
-  if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture"].includes(ctx.family)) {
+  if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "desktop") {
