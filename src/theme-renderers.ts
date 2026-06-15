@@ -407,6 +407,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (routeType === "archives") return renderArchives(model as ArchiveModel, ctx);
   if (routeType === "guestbook") return renderGuestbook(model as GuestbookModel, ctx);
   if (routeType === "themes") return renderThemes(model as ThemesModel, ctx);
+  if (ctx.family === "wordmark-studio") return renderWordmarkGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -580,7 +581,13 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "wordmark-studio") {
-    return `<section class="wordmark-studio"><nav>Work Grid Inquiries</nav>${homeHeader}<div class="work-grid">${model.links.map((link) => `<a href="${link.url}"><span>${escapeHtml(link.title)}</span><small>${escapeHtml(link.domain)}</small></a>`).join("")}</div></section>`;
+    const linkProjects = model.links
+      .map((link) => `<a class="wordmark-project" href="${link.url}"><span>${escapeHtml(link.title)}</span><small>${escapeHtml(link.domain)}</small></a>`)
+      .join("");
+    const writingProjects = model.recentPosts
+      .map((post) => `<a class="wordmark-project" href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(post.date)}${post.readTime ? ` · ${escapeHtml(post.readTime)}` : ""}</small></a>`)
+      .join("");
+    return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}${renderWordmarkHero(model.introHtml)}<section id="work" class="wordmark-panel wordmark-overview"><div><p>${model.links.length} links</p><p>${model.recentPosts.length} recent posts</p></div><div>${model.aboutHtml}</div><a href="/contact">Inquiries</a></section><section id="grid" class="wordmark-section"><div class="wordmark-section-head"><h2>Grid</h2><a href="/archives">Archive</a></div><div class="wordmark-grid">${linkProjects}</div></section><section class="wordmark-section"><div class="wordmark-section-head"><h2>Writing</h2><a href="/blog">All writing</a></div><div class="wordmark-grid">${writingProjects}</div></section></section>`;
   }
 
   if (ctx.family === "builder-notes") {
@@ -773,7 +780,10 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<article class="research-page"><h2>Essays</h2><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(post.date)} · ${post.readTime || ""}</span></p>`).join("")}</section>`).join("")}</article>`;
   }
   if (ctx.family === "wordmark-studio" || ctx.family === "studio-index") {
-    return `<section class="${ctx.family}"><h2>${ctx.family === "wordmark-studio" ? "W O R K" : "Studies Index"}</h2><div class="work-grid">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(group.year)} · ${escapeHtml(post.date)}</small></a>`)).join("")}</div></section>`;
+    if (ctx.family === "wordmark-studio") {
+      return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Grid</p><h2>Writing</h2><span>${escapeHtml(model.description)}</span></header><div class="wordmark-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(group.year)} · ${escapeHtml(post.date)}</small></a>`)).join("")}</div></section>`;
+    }
+    return `<section class="${ctx.family}"><h2>Studies Index</h2><div class="work-grid">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(group.year)} · ${escapeHtml(post.date)}</small></a>`)).join("")}</div></section>`;
   }
   if (ctx.family === "builder-notes" || ctx.family === "garden-notebook") {
     return `<section class="${ctx.family}"><h2>writing</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
@@ -841,6 +851,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "research-sidenotes") {
     return `<article class="research-page"><h2>${escapeHtml(model.title)}</h2><p>${meta}</p><aside>${model.subtitle ? escapeHtml(model.subtitle) : "Ryan Prendergast essay"}</aside>${model.contentHtml}</article>`;
   }
+  if (ctx.family === "wordmark-studio") {
+    return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="wordmark-page-header"><p>${meta}</p><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<span>${escapeHtml(model.subtitle)}</span>` : ""}</header><div class="blog-post-content">${model.contentHtml}</div></article>`;
+  }
   if (ctx.family === "publishing") {
     return `<article class="publishing-article"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="article-meta">${meta}</p></header><div class="article-body">${model.contentHtml}</div></article>`;
   }
@@ -872,7 +885,10 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   if (ctx.family === "research-sidenotes") {
     return `<article class="research-page"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(month.key)}</span></p>`).join("")}</section>`).join("")}</article>`;
   }
-  if (["wordmark-studio", "studio-index", "research-tools", "artist-ledger", "builder-notes", "garden-notebook"].includes(ctx.family)) {
+  if (ctx.family === "wordmark-studio") {
+    return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Archive</p><h2>Chronology</h2><span>${model.totalPosts} entries across ${model.months.length} months</span></header><div class="wordmark-archive">${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</section>`).join("")}</div></section>`;
+  }
+  if (["studio-index", "research-tools", "artist-ledger", "builder-notes", "garden-notebook"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "art-library") {
@@ -904,15 +920,35 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
     ? model.entries.map((entry) => `<article class="guestbook-entry"><time>${escapeHtml(entry.date)}</time><p>${escapeHtml(entry.message)}</p><strong>${escapeHtml(entry.name)}</strong></article>`).join("")
     : `<p class="text-muted">No entries yet. Be the first to sign the guestbook!</p>`;
   const button = model.canSign ? `<button onclick="showGuestbookModal()">Sign Guestbook</button>` : "";
+  if (ctx.family === "wordmark-studio") {
+    return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Inquiries</p><h2>Guestbook</h2></header><section class="guestbook-header">${button}</section><div class="wordmark-entries">${entries}</div></section>${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
 function renderThemes(model: ThemesModel, ctx: RenderContext): string {
+  if (ctx.family === "wordmark-studio") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Themes</p><h2>Theme Grid</h2><span>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</span></header><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}</section>`;
+  }
   if (ctx.family === "catalog") {
     return `<section class="catalog-table theme-catalog"><header><span>Theme</span><span>Category</span><span>Status</span></header>${model.themes.map((theme) => `<a href="?theme=${theme.slug}"><span>${escapeHtml(theme.name)}</span><span>${escapeHtml(theme.category)}</span><span>${theme.slug === ctx.theme.slug ? "active" : "ready"}</span></a>`).join("")}</section>`;
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
+}
+
+function renderWordmarkNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  return `<header class="wordmark-top"><nav class="wordmark-primary" aria-label="Primary"><a class="${active("/")}" href="/">Work</a><a class="${active("/blog")}" href="/blog">Grid</a><a class="${active("/contact")}" href="/contact">Inquiries</a></nav><nav class="wordmark-secondary" aria-label="Core site areas">${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav></header>`;
+}
+
+function renderWordmarkHero(introHtml: string): string {
+  return `<header class="wordmark-hero"><div class="wordmark-hero-copy"><h1>Ryan Prendergast</h1><div>${introHtml}</div><div aria-hidden="true">${introHtml}</div></div></header>`;
+}
+
+function renderWordmarkGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Inquiries</p><h2>${escapeHtml(model.heading)}</h2></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {

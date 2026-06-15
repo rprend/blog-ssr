@@ -732,24 +732,147 @@ body {
 }
 
 .family-wordmark-studio {
-  background: #f8f7f2;
-  color: #111;
+  --theme-bg: #f4f2ec;
+  --theme-text: #11110f;
+  background: var(--theme-bg);
+  color: var(--theme-text);
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.16;
 }
 
-.wordmark-studio nav {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8vw;
+.family-wordmark-studio .theme-shell-frame {
+  width: min(100%, calc(100vw - 28px));
+  max-width: none;
+  margin: 12px auto 54px;
+}
+
+.family-wordmark-studio .theme-shell-footer {
+  margin-top: 7vw;
+  padding: 12px 0 0;
+  border-top: 1px solid rgba(17, 17, 15, .28);
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 10px;
+  letter-spacing: .06em;
+}
+
+.family-wordmark-studio .theme-utility-footer .theme-shell-nav a {
+  text-decoration: none;
+}
+
+.wordmark-studio {
+  min-height: calc(100vh - 140px);
+}
+
+.wordmark-studio a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.wordmark-studio a:hover,
+.family-wordmark-studio .theme-shell-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.wordmark-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 58px;
+  margin-bottom: clamp(42px, 7vw, 118px);
+  text-transform: none;
+}
+
+.wordmark-primary,
+.wordmark-secondary {
+  display: flex;
+  gap: clamp(18px, 3vw, 46px);
+  align-items: center;
+}
+
+.wordmark-primary {
+  font-size: 14px;
+}
+
+.wordmark-secondary {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  max-width: 620px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.wordmark-top a.is-active {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.wordmark-hero {
+  margin-bottom: clamp(44px, 8vw, 128px);
+}
+
+.wordmark-hero-copy {
+  max-width: 1120px;
+}
+
+.wordmark-hero h1,
+.wordmark-page-header h2 {
+  margin: 0;
+  font-size: clamp(39px, 8.7vw, 168px);
+  line-height: .88;
+  font-weight: 400;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.wordmark-hero-copy div {
+  max-width: 1040px;
+  margin-top: clamp(18px, 2.4vw, 34px);
+  font-size: clamp(21px, 3.2vw, 58px);
+  line-height: 1.04;
+  font-weight: 400;
+  letter-spacing: .32em;
+  text-transform: lowercase;
+}
+
+.wordmark-hero-copy div + div {
+  margin-top: clamp(26px, 4.2vw, 76px);
+}
+
+.wordmark-hero-copy p {
+  margin: 0;
+}
+
+.wordmark-panel {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 560px) 120px;
+  gap: clamp(18px, 4vw, 70px);
+  align-items: start;
+  margin-bottom: clamp(48px, 8vw, 132px);
+  padding-top: 12px;
+  border-top: 1px solid rgba(17, 17, 15, .36);
+}
+
+.wordmark-panel p {
+  margin: 0 0 12px;
+}
+
+.wordmark-overview {
+  font-size: clamp(15px, 1.65vw, 24px);
+  line-height: 1.18;
 }
 
 .wordmark-studio h2 {
-  font-size: clamp(42px, 13vw, 180px);
-  line-height: .85;
+  margin: 0;
+  font-size: clamp(28px, 5vw, 92px);
+  line-height: .9;
   font-weight: 400;
-  letter-spacing: .16em;
+  letter-spacing: .28em;
+  text-transform: uppercase;
   overflow-wrap: anywhere;
 }
 
@@ -765,6 +888,231 @@ body {
   justify-content: space-between;
   text-transform: uppercase;
   font-size: 12px;
+}
+
+.wordmark-section {
+  margin-top: clamp(42px, 7vw, 118px);
+}
+
+.wordmark-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: clamp(18px, 3vw, 44px);
+}
+
+.wordmark-section-head > a {
+  font-size: 12px;
+}
+
+.wordmark-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid currentColor;
+}
+
+.wordmark-project,
+.wordmark-list a {
+  display: grid;
+  min-height: clamp(118px, 16vw, 230px);
+  align-content: space-between;
+  gap: 20px;
+  padding: 12px 12px 14px 0;
+  border-bottom: 1px solid currentColor;
+  font-size: clamp(18px, 2.2vw, 38px);
+  line-height: .96;
+}
+
+.wordmark-project:not(:nth-child(3n)),
+.wordmark-list a {
+  border-right: 1px solid currentColor;
+}
+
+.wordmark-project:nth-child(3n + 2),
+.wordmark-project:nth-child(3n + 3) {
+  padding-left: 12px;
+}
+
+.wordmark-project small,
+.wordmark-list small {
+  display: block;
+  max-width: 260px;
+  font-size: 11px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.wordmark-page-header {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: clamp(18px, 4vw, 72px);
+  align-items: start;
+  margin: 0 0 clamp(42px, 7vw, 104px);
+}
+
+.wordmark-page-header p,
+.wordmark-page-header span {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.wordmark-page-header span {
+  grid-column: 2;
+  max-width: 720px;
+  font-size: clamp(15px, 1.6vw, 24px);
+}
+
+.wordmark-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid currentColor;
+}
+
+.wordmark-list a {
+  grid-template-columns: minmax(0, 1fr) 220px;
+  min-height: 82px;
+  align-items: end;
+  border-right: 0;
+}
+
+.wordmark-list small {
+  justify-self: end;
+  text-align: right;
+}
+
+.wordmark-archive {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px 16px;
+}
+
+.wordmark-archive section {
+  min-height: 180px;
+  padding-top: 10px;
+  border-top: 1px solid currentColor;
+}
+
+.wordmark-archive h3 {
+  margin: 0 0 18px;
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.wordmark-archive a,
+.wordmark-entries .guestbook-entry {
+  display: block;
+  margin: 0 0 8px;
+}
+
+.wordmark-article .back-link {
+  display: inline-block;
+  margin-bottom: 32px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.wordmark-article .blog-post-content {
+  width: min(760px, 100%);
+  margin-left: clamp(0px, 24vw, 360px);
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.28;
+}
+
+.wordmark-article .blog-post-content h2,
+.wordmark-article .blog-post-content h3 {
+  margin-top: 2.4em;
+  font-size: 1em;
+  letter-spacing: .12em;
+}
+
+.wordmark-article .blog-post-content a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.family-wordmark-studio .themes-console,
+.family-wordmark-studio .theme-filters {
+  border-color: currentColor;
+}
+
+.family-wordmark-studio .sticky-theme-picker {
+  background: rgba(244, 242, 236, .92);
+  border-top-color: rgba(17, 17, 15, .36);
+  box-shadow: none;
+}
+
+@media (max-width: 800px) {
+  .family-wordmark-studio .theme-shell-frame {
+    width: min(100%, calc(100vw - 18px));
+    margin-top: 9px;
+  }
+
+  .wordmark-top,
+  .wordmark-panel,
+  .wordmark-page-header {
+    grid-template-columns: 1fr;
+  }
+
+  .wordmark-top {
+    display: grid;
+    min-height: 0;
+    gap: 14px;
+    margin-bottom: 42px;
+  }
+
+  .wordmark-primary,
+  .wordmark-secondary {
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .wordmark-secondary {
+    justify-content: flex-start;
+  }
+
+  .wordmark-hero h1,
+  .wordmark-page-header h2 {
+    letter-spacing: .22em;
+  }
+
+  .wordmark-hero-copy div {
+    letter-spacing: .2em;
+  }
+
+  .wordmark-grid,
+  .wordmark-archive {
+    grid-template-columns: 1fr;
+  }
+
+  .wordmark-project,
+  .wordmark-project:not(:nth-child(3n)),
+  .wordmark-list a {
+    border-right: 0;
+    padding-left: 0;
+  }
+
+  .wordmark-list a {
+    grid-template-columns: 1fr;
+  }
+
+  .wordmark-list small {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .wordmark-page-header span {
+    grid-column: auto;
+  }
+
+  .wordmark-article .blog-post-content {
+    margin-left: 0;
+  }
 }
 
 .studio-statement {
