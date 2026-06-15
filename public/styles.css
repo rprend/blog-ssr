@@ -1775,49 +1775,295 @@ body {
 }
 
 .family-art-library {
+  --theme-bg: #fff;
+  --theme-text: #000;
   background: #fff;
-  color: #111;
-  font-family: Arial, Helvetica, sans-serif;
+  color: #000;
+  font-family: "BasicCommercialLTCom-Bold", "Arial Narrow", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.19;
+  letter-spacing: 0;
 }
 
-.art-library header {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 16px;
-  border-bottom: 1px solid #111;
-  padding-bottom: 12px;
-  margin-bottom: 24px;
-}
-
-.art-library table {
+.family-art-library .theme-shell-frame {
   width: 100%;
-  border-collapse: collapse;
+  margin: 0 auto 56px;
+  padding: 15px;
+}
+
+.family-art-library .theme-shell-main {
+  width: 100%;
+}
+
+.family-art-library .theme-shell-footer {
+  margin: 48px 0 0;
+  padding: 8px 0 0;
+  border-top: 1px solid #000;
   font-size: 14px;
 }
 
-.family-art-library .canonical-home-header {
+.family-art-library .theme-utility-footer .theme-shell-nav a {
+  text-decoration: none;
+}
+
+.family-art-library a {
+  color: #000;
+  text-decoration: none;
+}
+
+.family-art-library a:hover,
+.family-art-library a:focus {
+  color: #000;
+  outline: none;
+  text-decoration: none;
+}
+
+.art-library {
+  width: 100%;
+}
+
+.art-library-header {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 20px;
-  border-bottom: 1px solid #111;
-  padding-bottom: 14px;
+  grid-template-columns: minmax(190px, 1fr) minmax(220px, 1fr) minmax(180px, .85fr);
+  gap: 14px 28px;
+  margin: 15px 0 42px;
 }
 
-.family-art-library .canonical-home-header h2 {
-  font-size: 18px;
-  font-weight: 700;
+.art-library-brand {
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: .96;
 }
 
-.family-art-library .canonical-site-nav {
+.art-library-primary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(110px, 1fr));
+  gap: 0 18px;
+  align-content: start;
+  font-size: clamp(21px, 2.25vw, 32px);
+  line-height: 1.04;
+}
+
+.art-library-primary a,
+.art-library-categories span {
+  position: relative;
+  padding-left: 1.05em;
+}
+
+.art-library-primary a::before,
+.art-library-categories span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .1em;
+  width: .62em;
+  height: .62em;
+  border: 2px solid #000;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.art-library-primary a.is-active::before,
+.art-library-primary a:hover::before,
+.art-library-categories span.is-active::before,
+.art-library-categories span:hover::before {
+  background: #000;
+}
+
+.art-library-hours {
+  border: 2px solid #000;
+  padding: 6px 8px;
+  font-size: clamp(18px, 1.8vw, 25px);
+  line-height: 1.06;
+}
+
+.art-library-hours span,
+.art-library-hours strong,
+.art-library-hours a {
+  display: block;
+  font-weight: 400;
+}
+
+.art-library-section {
   grid-column: 1 / -1;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) minmax(300px, 2fr);
+  gap: 28px;
+  margin-top: 36px;
+  border-top: 1px solid #000;
+  padding-top: 5px;
 }
 
-.art-library th,
-.art-library td {
-  border-bottom: 1px solid #d8d8d8;
-  padding: 7px 8px;
+.art-library-section h2 {
+  margin: 0;
+  font: inherit;
+  font-size: clamp(24px, 2.8vw, 40px);
+  line-height: 1;
+}
+
+.art-library-section p {
+  max-width: 760px;
+  margin: 0 0 10px;
+  font-size: clamp(18px, 1.7vw, 25px);
+  line-height: 1.16;
+}
+
+.art-library-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 0 0 22px;
+  border-top: 2px solid #000;
+  padding-top: 7px;
+  font-size: clamp(18px, 1.7vw, 25px);
+  line-height: 1.16;
+}
+
+.art-library-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.art-library-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin: 0;
+}
+
+.art-library-table th,
+.art-library-table td {
+  padding: 0;
   text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.art-library-table th {
+  font-size: clamp(21px, 2vw, 30px);
+  line-height: 1.1;
+}
+
+.art-library-table td {
+  font-size: clamp(17px, 1.35vw, 21px);
+  line-height: 1.18;
+}
+
+.art-library-table th:first-child,
+.art-library-table td:first-child {
+  width: 43%;
+}
+
+.art-library-table th:nth-child(2),
+.art-library-table td:nth-child(2) {
+  width: 22%;
+}
+
+.art-library-table th:nth-child(3),
+.art-library-table td:nth-child(3) {
+  width: 20%;
+}
+
+.art-library-table .bordered {
+  display: block;
+  min-height: 1.55em;
+  margin-top: -1px;
+  border-top: 1px solid #000;
+  padding: 4px 10px 5px 0;
+}
+
+.art-library-table tbody tr:hover {
+  background: #000;
+  color: #fff;
+}
+
+.art-library-table tbody tr:hover a {
+  color: #fff;
+}
+
+.art-library-info,
+.art-library-record .blog-post-content {
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) minmax(300px, 2fr);
+  gap: 28px;
+  margin-top: 48px;
+  border-top: 2px solid #000;
+  padding-top: 8px;
+}
+
+.art-library-info > *,
+.art-library-record .blog-post-content > * {
+  grid-column: 2;
+  max-width: 760px;
+  margin-top: 0;
+  font-size: 21px;
+  line-height: 1.22;
+}
+
+.art-library-record .blog-post-content h2,
+.art-library-record .blog-post-content h3 {
+  font: inherit;
+  font-size: 28px;
+  line-height: 1;
+  border-bottom: 1px solid #000;
+  padding-bottom: 5px;
+}
+
+.art-library-search {
+  margin: 0 0 24px;
+  border: 2px solid #000;
+  padding: 7px;
+}
+
+.family-art-library .themes-console label,
+.family-art-library .mini-theme-picker label {
+  font-weight: 400;
+}
+
+.family-art-library select,
+.family-art-library button {
+  border: 1px solid #000;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  box-shadow: none;
+  font: inherit;
+}
+
+.family-art-library button:hover {
+  background: #000;
+  color: #fff;
+}
+
+.family-art-library .sticky-theme-picker {
+  background: #fff;
+  border-top: 2px solid #000;
+  box-shadow: none;
+}
+
+@media (max-width: 760px) {
+  .art-library-header,
+  .art-library-section,
+  .art-library-info,
+  .art-library-record .blog-post-content {
+    display: block;
+  }
+
+  .art-library-brand,
+  .art-library-primary,
+  .art-library-hours {
+    margin-bottom: 18px;
+  }
+
+  .art-library-primary {
+    grid-template-columns: 1fr;
+  }
+
+  .art-library-section p,
+  .art-library-info > *,
+  .art-library-record .blog-post-content > * {
+    font-size: 18px;
+  }
 }
 
 .family-studio-index {
