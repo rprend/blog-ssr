@@ -10,6 +10,21 @@ Rules:
 - A theme is not done until screenshots are captured and its renderer reproduces the target's structure, not just its colors.
 - If a site cannot be fetched later, keep the URL but mark the theme as blocked until a screenshot/reference is captured.
 
+## Implementation Checklist For Every Theme
+
+Before a theme can be marked built:
+
+1. Create `docs/theme-references/sites/<slug>.md`.
+2. Capture desktop and mobile screenshots.
+3. Add `src/theme-mimics/<slug>/renderer.ts`.
+4. Add `src/theme-mimics/<slug>/styles.css`.
+5. Implement route renderers for home, blog index, blog post, archives, contact, guestbook, and themes.
+6. Map all canonical Ryan content into the target site's layout pattern.
+7. Run content-preservation checks.
+8. Compare screenshots against the target reference.
+
+No theme can be marked built if it shares the generic renderer from another site.
+
 ## Theme List
 
 | # | Theme name | Slug | Target | Layout plan |
@@ -112,4 +127,3 @@ Captured: YYYY-MM-DD
 
 - ...
 ```
-
