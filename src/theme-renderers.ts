@@ -440,6 +440,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "book-microsite") return renderBookMicrositeGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "download-index") return renderDownloadIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "visual-index") return renderVisualIndexGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "html-bulletin") return renderHtmlBulletinGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -684,6 +685,34 @@ function renderSpartanNotice(label: string, html: string, className: string): st
 
 function renderCanonicalHomeHeader(model: HomeModel): string {
   return `<header class="canonical-home-header"><nav class="canonical-site-nav"><a href="/">Linkblog</a><a href="/blog">Blog</a><a href="/photos">Photos</a><a href="/archives">Archives</a><a href="/guestbook">Guestbook</a><a href="/contact">Contact</a><a href="/rss.xml">RSS</a></nav><h2>Ryan Prendergast</h2>${model.introHtml}</header>`;
+}
+
+function renderHtmlBulletinNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "linkblog"],
+    ["/blog", "blog"],
+    ["/photos", "photos"],
+    ["/archives", "archives"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/rss.xml", "rss"],
+    ["/themes", "themes"],
+  ] as Array<[string, string]>;
+  return `<p class="html-bulletin-nav">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${label}</a>`).join(" ")}</p>`;
+}
+
+function renderHtmlBulletinPage(ctx: RenderContext, title: string, contentHtml: string, introHtml = ""): string {
+  return `<section class="html-bulletin">
+    <h2><a href="/">Ryan Prendergast</a></h2>
+    ${introHtml}
+    ${renderHtmlBulletinNav(ctx)}
+    <h3>${escapeHtml(title)}</h3>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderHtmlBulletinGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderHtmlBulletinPage(ctx, model.heading, `<div class="html-bulletin-copy">${model.contentHtml}</div>`);
 }
 
 function renderResearchLabNav(ctx: RenderContext): string {
@@ -1404,7 +1433,19 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "html-bulletin") {
-    return `<section class="html-bulletin">${homeHeader}<p>last updated: ${model.recentPosts[0]?.date || ""}</p><h3>bulletin</h3><ul>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> - ${escapeHtml(link.domain)}</li>`).join("")}</ul></section>`;
+    const updates = [
+      ...model.links.map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a></p>${link.contentHtml ? `<div class="html-bulletin-note">${link.contentHtml}</div>` : ""}`),
+      ...model.recentPosts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>${post.excerpt ? `<p class="html-bulletin-note">${escapeHtml(post.excerpt)}</p>` : ""}`),
+    ].join("");
+    return `<section class="html-bulletin">
+      <h2>Ryan Prendergast</h2>
+      ${model.introHtml}
+      ${renderHtmlBulletinNav(ctx)}
+      <p>last update: ${escapeHtml(model.recentPosts[0]?.date || model.links[0]?.date || "")}</p>
+      <div class="html-bulletin-note">${model.aboutHtml}</div>
+      <h3>bulletin</h3>
+      ${updates}
+    </section>`;
   }
   if (ctx.family === "consumption-digest") {
     return `<section class="consumption-digest">${homeHeader}${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
@@ -1634,6 +1675,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderRoomWallPage(ctx, `<h1>Blog</h1><p>${escapeHtml(model.description)}</p><section class="room-wall-works">${posts}</section>`);
   }
+  if (ctx.family === "html-bulletin") {
+    const groups = model.postsByYear
+      .map((group) => `<h4>${escapeHtml(group.year)}</h4>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? `<br><small>${escapeHtml(post.date)}</small>` : ""}</p>`).join("")}`)
+      .join("");
+    return renderHtmlBulletinPage(ctx, "posts?", `<p>${escapeHtml(model.description)}</p>${groups}`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })));
@@ -1790,6 +1837,16 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
         <div class="blog-post-content">${model.contentHtml}</div>
       </article>`,
       "visual-culture-post",
+    );
+  }
+  if (ctx.family === "html-bulletin") {
+    return renderHtmlBulletinPage(
+      ctx,
+      model.title,
+      `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+      <p>${meta}</p>
+      ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
+      <div class="blog-post-content html-bulletin-copy">${model.contentHtml}</div>`,
     );
   }
   if (ctx.family === "no-css") {
@@ -2096,6 +2153,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .join("");
     return renderRoomWallPage(ctx, `<h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
+  if (ctx.family === "html-bulletin") {
+    const months = model.months
+      .map((month) => `<h4>${escapeHtml(month.label)}</h4>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? `<br><small>${escapeHtml(post.date)}</small>` : ""}</p>`).join("")}`)
+      .join("");
+    return renderHtmlBulletinPage(ctx, "archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -2215,6 +2278,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       ctx,
       `<section class="visual-index-intro"><p>${model.entries.length} entries.</p>${button}</section>${renderVisualIndexGroupedSection("Guestbook", records)}`,
     )}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "html-bulletin") {
+    const bulletinEntries = model.entries.length
+      ? model.entries.map((entry) => `<p><strong>${escapeHtml(entry.name)}</strong><br>${escapeHtml(entry.message)}<br><small>${escapeHtml(entry.date)}</small></p>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderHtmlBulletinPage(ctx, "guestbook", `<p>${button}</p>${bulletinEntries}`)}${guestbookModalScript()}`;
   }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
@@ -2372,6 +2441,19 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       </section>
       <div class="theme-filters visual-index-filters">${model.categoryControlsHtml}</div>
       ${renderVisualIndexGroupedSection("Themes", records)}`,
+    );
+  }
+  if (ctx.family === "html-bulletin") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<p><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a><br><small>${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)}</small></p>`)
+      .join("");
+    return renderHtmlBulletinPage(
+      ctx,
+      "themes",
+      `<p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      <div class="themes-console html-bulletin-console"><label for="theme-select">Theme</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>Previous</button> <button type="button" data-theme-random>Random</button> <button type="button" data-theme-next>Next</button></div>
+      ${rows}`,
     );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
