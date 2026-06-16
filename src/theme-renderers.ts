@@ -450,6 +450,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
     const generic = model as GenericPageModel;
     return renderRecurseJoyPage(ctx, `<article class="recurse-joy-page"><h2>${escapeHtml(generic.heading)}</h2><div class="recurse-joy-copy">${generic.contentHtml}</div></article>`, "Page");
   }
+  if (ctx.family === "forecast-report") return renderForecastReportGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
   if (ctx.family === "feral-essay") return renderFeralPage(ctx, (model as GenericPageModel).heading, `<div class="feral-copy">${(model as GenericPageModel).contentHtml}</div>`, "Page");
   if (ctx.family === "no-css") {
@@ -895,6 +896,73 @@ function renderRecurseJoyEntry(href: string, title: string, date: string, source
       ${summary ? `<p>${escapeHtml(summary)}</p>` : ""}
     </div>
   </article>`;
+}
+
+function renderForecastReportNav(ctx: RenderContext): string {
+  const sectionLinks = [
+    ["/", "Summary"],
+    ["/blog", "Research"],
+    ["/archives", "Forecast"],
+    ["/photos", "Charts"],
+  ] as Array<[string, string]>;
+  const utilityLinks = [
+    ["/guestbook", "Discuss"],
+    ["/contact", "About"],
+    ["/themes", "Themes"],
+    ["/rss.xml", "RSS"],
+  ] as Array<[string, string]>;
+  const link = ([href, label]: [string, string]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`;
+  return `<header class="forecast-report-top">
+    <a class="forecast-report-brand" href="/">Ryan Prendergast</a>
+    <nav class="forecast-report-sections" aria-label="Report sections">${sectionLinks.map(link).join("")}</nav>
+    <nav class="forecast-report-utils" aria-label="Core site areas">${utilityLinks.map(link).join("")}</nav>
+  </header>`;
+}
+
+function renderForecastReportActions(): string {
+  return `<div class="forecast-report-actions" aria-label="Report formats">
+    <a href="/rss.xml">PDF</a>
+    <a href="/rss.xml">Listen</a>
+    <a href="/photos">Watch</a>
+  </div>`;
+}
+
+function renderForecastReportPage(ctx: RenderContext, title: string, bodyHtml: string, options: { kicker?: string; meta?: string; subtitleHtml?: string; tocHtml?: string } = {}): string {
+  return `<section class="forecast-report">
+    ${renderForecastReportNav(ctx)}
+    <div class="forecast-report-layout">
+      <aside class="forecast-report-rail">
+        <p>Contents</p>
+        ${options.tocHtml || `<a href="/">Summary</a><a href="/blog">Research</a><a href="/archives">Forecast</a><a href="/contact">Author</a>`}
+      </aside>
+      <article class="forecast-report-document">
+        <div class="forecast-report-kicker">${escapeHtml(options.kicker || "Scenario Forecast Report")}</div>
+        <h1>${escapeHtml(title)}</h1>
+        ${options.subtitleHtml ? `<div class="forecast-report-dek">${options.subtitleHtml}</div>` : ""}
+        <div class="forecast-report-meta">
+          <span>Ryan Prendergast</span>
+          <span>${escapeHtml(options.meta || "Personal website and blog")}</span>
+        </div>
+        ${renderForecastReportActions()}
+        ${bodyHtml}
+      </article>
+    </div>
+  </section>`;
+}
+
+function renderForecastReportEntry(href: string, title: string, label: string, summary = "", index = 0): string {
+  return `<article class="forecast-report-entry">
+    <span>${String(index + 1).padStart(2, "0")}</span>
+    <div>
+      <p>${escapeHtml(label)}</p>
+      <h2><a href="${href}">${escapeHtml(title)}</a></h2>
+      ${summary ? `<div class="forecast-report-entry-summary">${summary}</div>` : ""}
+    </div>
+  </article>`;
+}
+
+function renderForecastReportGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderForecastReportPage(ctx, model.heading, `<div class="blog-post-content forecast-report-copy">${model.contentHtml}</div>`, { kicker: "Report Appendix", meta: ctx.theme.name });
 }
 
 function renderPoeticNav(ctx: RenderContext): string {
@@ -2005,7 +2073,23 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "forecast-report") {
-    return `<article class="forecast-report"><nav>summary research forecast</nav>${homeHeader}<ol>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a></li>`).join("")}</ol></article>`;
+    const linkEntries = model.links.map((link, index) => renderForecastReportEntry(link.url, link.title, `${link.domain} / ${link.date}`, link.contentHtml, index)).join("");
+    const writing = model.recentPosts
+      .map((post, index) => renderForecastReportEntry(post.href, post.title, post.date, post.excerpt ? escapeHtml(post.excerpt) : post.readTime || "", index))
+      .join("");
+    return renderForecastReportPage(
+      ctx,
+      "Ryan Prendergast",
+      `<section class="forecast-report-summary">${model.introHtml}</section>
+      <section class="forecast-report-panel"><h2>Summary</h2><div class="forecast-report-copy">${model.aboutHtml}</div></section>
+      <section class="forecast-report-panel"><h2>Research</h2>${linkEntries}</section>
+      <section class="forecast-report-panel"><h2>Forecast</h2>${writing}</section>`,
+      {
+        kicker: "Personal Scenario",
+        meta: "Updated continuously",
+        subtitleHtml: `<p>${escapeHtml(ctx.pageSubtitle)}</p>`,
+      },
+    );
   }
   if (ctx.family === "forum-frontpage") {
     return `<section class="forum-frontpage"><aside>Recent Recommended Concepts Library</aside><main>${homeHeader}${model.links.map((link, index) => `<article><span>${index + 1}</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</p></article>`).join("")}</main></section>`;
@@ -2264,6 +2348,17 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       ctx,
       `<header class="recurse-joy-page-head"><h2>Blog</h2><p>${escapeHtml(model.description)}</p><p><a href="/rss.xml">Atom feed</a> · ${model.totalPosts} posts${model.yearRange ? `, ${model.yearRange[0]}-${model.yearRange[1]}` : ""}</p></header>${entries}`,
       "Writing",
+    );
+  }
+  if (ctx.family === "forecast-report") {
+    const entries = model.postsByYear
+      .map((group) => `<section class="forecast-report-panel" id="year-${escapeHtml(group.year)}"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderForecastReportEntry(post.href, post.title, post.date, post.excerpt ? escapeHtml(post.excerpt) : post.readTime || "", index)).join("")}</section>`)
+      .join("");
+    return renderForecastReportPage(
+      ctx,
+      "Research",
+      `<section class="forecast-report-summary"><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p></section>${entries}`,
+      { kicker: "Report Section", meta: "Writing index" },
     );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
@@ -2534,6 +2629,19 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
         <div class="blog-post-content recurse-joy-copy">${model.contentHtml}</div>
       </article>`,
       "Writing",
+    );
+  }
+  if (ctx.family === "forecast-report") {
+    return renderForecastReportPage(
+      ctx,
+      model.title,
+      `<p class="forecast-report-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+      <div class="blog-post-content forecast-report-copy">${model.contentHtml}</div>`,
+      {
+        kicker: "Research Note",
+        meta,
+        subtitleHtml: model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : "",
+      },
     );
   }
   if (ctx.family === "no-css") {
@@ -2897,6 +3005,17 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       "Archive",
     );
   }
+  if (ctx.family === "forecast-report") {
+    const months = model.months
+      .map((month) => `<section class="forecast-report-panel" id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderForecastReportEntry(post.href, post.title, post.date, post.readTime || "Archive entry", index)).join("")}</section>`)
+      .join("");
+    return renderForecastReportPage(
+      ctx,
+      "Forecast",
+      `<section class="forecast-report-summary"><p>${model.totalPosts} entries across ${model.months.length} months.</p></section>${months}`,
+      { kicker: "Chronology", meta: "Archive index" },
+    );
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -3066,6 +3185,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
   if (ctx.family === "recurse-joy") {
     return `${renderRecurseJoyPage(ctx, `<header class="recurse-joy-page-head"><h2>Guestbook</h2><p>${model.entries.length} entries.</p>${button}</header><div class="recurse-joy-stream">${entries}</div>`, "Community")}${guestbookModalScript()}`;
   }
+  if (ctx.family === "forecast-report") {
+    const reportEntries = model.entries.length
+      ? model.entries.map((entry, index) => renderForecastReportEntry("/guestbook", entry.name, entry.date, escapeHtml(entry.message), index)).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderForecastReportPage(ctx, "Discuss", `<section class="forecast-report-summary"><p>${model.entries.length} entries.</p>${button}</section><section class="forecast-report-panel">${reportEntries}</section>`, { kicker: "Public Comment", meta: "Guestbook" })}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -3139,6 +3264,21 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       <div class="theme-filters recurse-joy-filters">${model.categoryControlsHtml}</div>
       <div class="recurse-joy-stream">${rows}</div>`,
       "Themes",
+    );
+  }
+  if (ctx.family === "forecast-report") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme, index) => renderForecastReportEntry(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status, escapeHtml(theme.description), index))
+      .join("");
+    return renderForecastReportPage(
+      ctx,
+      "Themes",
+      `<section class="forecast-report-summary"><p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p></section>
+      <form class="themes-console forecast-report-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></form>
+      <div class="theme-filters forecast-report-filters">${model.categoryControlsHtml}</div>
+      <section class="forecast-report-panel">${rows}</section>`,
+      { kicker: "Report Display", meta: ctx.theme.name },
     );
   }
   if (ctx.family === "manual") {
