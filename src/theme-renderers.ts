@@ -430,6 +430,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "writer-ledger") return renderWriterLedgerGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "artist-menu") return renderArtistMenuGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "friendly-hub") return renderFriendlyHubGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "games-cabinet") return renderGamesCabinetGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1067,7 +1068,19 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "games-cabinet") {
-    return `<section class="games-cabinet">${homeHeader}<nav>blog all work about</nav><div class="game-grid">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
+    const works = model.links.map((link, index) => renderGamesCabinetWork(link.url, link.title, `${link.domain} - ${link.date}`, link.contentHtml, link.image, index, true)).join("");
+    const writing = model.recentPosts.map((post, index) => renderGamesCabinetWork(post.href, post.title, post.date, post.excerpt || post.readTime || "", null, index + model.links.length)).join("");
+    return renderGamesCabinetPage(
+      ctx,
+      `<section class="games-cabinet-intro">
+        <h1>${renderGamesCabinetWavyText("Ryan Prendergast")}</h1>
+        <div class="games-cabinet-deck">${model.introHtml}</div>
+      </section>
+      <section class="games-cabinet-shelf" aria-labelledby="games-cabinet-work-title">
+        <h2 id="games-cabinet-work-title">${renderGamesCabinetWavyText("Here's what's here")}</h2>
+        <div class="games-cabinet-list">${works}${writing}</div>
+      </section>`,
+    );
   }
   if (ctx.family === "portal-gallery") {
     return `<section class="portal-gallery"><nav>gallery index links</nav>${homeHeader}<div class="portal-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
@@ -1290,6 +1303,10 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderFriendlyHubPage(ctx, `<article><h1>Blog</h1><p>${escapeHtml(model.description)}</p>${groups}</article>`);
   }
+  if (ctx.family === "games-cabinet") {
+    const entries = model.postsByYear.flatMap((group, groupIndex) => group.posts.map((post, postIndex) => renderGamesCabinetWork(post.href, post.title, `${group.year} - ${post.date}`, post.excerpt || post.readTime || "", null, groupIndex + postIndex))).join("");
+    return renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p></section><div class="games-cabinet-list">${entries}</div>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>${ctx.family === "research-lab" ? "Research" : "Index"}</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1320,6 +1337,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
         <p class="friendly-hub-updated">${meta}</p>
         ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
         <div class="friendly-hub-copy">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
+  if (ctx.family === "games-cabinet") {
+    return renderGamesCabinetPage(
+      ctx,
+      `<article class="games-cabinet-article">
+        <p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h1>${escapeHtml(model.title)}</h1>
+        <p class="games-cabinet-meta">${meta}</p>
+        ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
+        <div class="games-cabinet-copy">${model.contentHtml}</div>
       </article>`,
     );
   }
@@ -1564,6 +1593,10 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       `<article><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${model.months.map((month) => `<section class="friendly-hub-year"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, post.readTime || "")).join("")}</section>`).join("")}</article>`,
     );
   }
+  if (ctx.family === "games-cabinet") {
+    const entries = model.months.flatMap((month, monthIndex) => month.posts.map((post, postIndex) => renderGamesCabinetWork(post.href, post.title, month.label, post.readTime || post.date, null, monthIndex + postIndex))).join("");
+    return renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></section><div class="games-cabinet-list">${entries}</div>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1622,6 +1655,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       ? model.entries.map((entry, index) => `<article class="taste-card"><div class="taste-author"><span class="taste-avatar">${escapeHtml(entry.name.slice(0, 2).toUpperCase() || "RP")}</span><div><a href="/guestbook">@${escapeHtml(slugify(entry.name) || "guest")}</a><time>${escapeHtml(entry.date)}</time></div><strong>answered</strong></div><div class="taste-card-body"><h2>${escapeHtml(entry.name)}</h2><p>${escapeHtml(entry.message)}</p></div><footer class="taste-actions"><span>${tasteScore(entry.name, index)} likes</span><span>1 comment</span></footer></article>`).join("")
       : `<article class="taste-card"><div class="taste-card-body"><p>No entries yet. Be the first to sign the guestbook!</p></div></article>`;
     return `${renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Guestbook", `${model.entries.length} entries.`, "All Asks")}<section class="guestbook-header taste-signup">${button}</section><div class="taste-feed">${tasteEntries}</div>`, "Browse")}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "games-cabinet") {
+    const cabinetEntries = model.entries.length
+      ? model.entries.map((entry, index) => renderGamesCabinetWork("/guestbook", entry.name, entry.date, entry.message, null, index)).join("")
+      : renderGamesCabinetWork("/guestbook", "No entries yet. Be the first to sign the guestbook!", "guestbook", "", null, 0);
+    return `${renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>Guestbook</h1><p>${model.entries.length} entries.</p>${button}</section><div class="games-cabinet-list">${cabinetEntries}</div>`)}${guestbookModalScript()}`;
   }
   if (ctx.family === "artist-menu") {
     const artistEntries = model.entries.length
@@ -1706,6 +1745,19 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     const rows = model.themes.map((theme) => renderWriterLedgerRow(theme.name, `?theme=${theme.slug}`, theme.status, theme.category)).join("");
     return `<section class="writer-ledger">${renderWriterLedgerRecent(`${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.`)}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-theme-tools themes-console"><label for="theme-select">( theme )</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></section><section class="writer-ledger-work"><h2>Title <span>Status</span> <span>Category</span> <span>↓</span></h2><div class="writer-ledger-table">${rows}</div></section></section>`;
+  }
+  if (ctx.family === "games-cabinet") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes.map((theme, index) => renderGamesCabinetWork(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.description, null, index)).join("");
+    return renderGamesCabinetPage(
+      ctx,
+      `<section class="games-cabinet-page-head">
+        <h1>Themes</h1>
+        <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+        <div class="themes-console games-cabinet-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>
+      </section>
+      <div class="games-cabinet-list">${rows}</div>`,
+    );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
@@ -2162,6 +2214,55 @@ function renderFriendlyHubEntry(href: string, title: string, meta: string, detai
 
 function renderFriendlyHubGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderFriendlyHubPage(ctx, `<article class="friendly-hub-post"><h1>${escapeHtml(model.heading)}</h1><div class="friendly-hub-copy">${model.contentHtml}</div></article>`);
+}
+
+function renderGamesCabinetNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = [
+    ["/photos", "media & photos"],
+    ["/blog", "blog & all work"],
+    ["/contact", "what's my deal"],
+    ["/archives", "archive"],
+    ["/guestbook", "guestbook"],
+    ["/themes", "themes"],
+  ] as const;
+  return `<header class="games-cabinet-header">
+    <div class="games-cabinet-controls" aria-hidden="true"><span>Meta Controls</span><span>Controls</span></div>
+    <a class="games-cabinet-brand" href="/">Ryan Prendergast</a>
+    <p>by Ryan Prendergast</p>
+    <nav aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}<a href="/rss.xml">rss</a></nav>
+  </header>`;
+}
+
+function renderGamesCabinetPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="games-cabinet">${renderGamesCabinetNav(ctx)}${contentHtml}</section>`;
+}
+
+function renderGamesCabinetWavyText(text: string): string {
+  return text
+    .split("")
+    .map((char, index) => `<span style="--i:${index % 7}">${char === " " ? "&nbsp;" : escapeHtml(char)}</span>`)
+    .join("");
+}
+
+function renderGamesCabinetWork(href: string, title: string, meta: string, detail: string, image: string | null, index: number, detailIsHtml = false): string {
+  const thumbnail = image ? `<img src="${escapeHtml(image)}" alt="">` : `<span>${String(index + 1).padStart(2, "0")}</span>`;
+  const detailHtml = detailIsHtml ? detail : escapeHtml(detail);
+  return `<article class="games-cabinet-item">
+    <a class="games-cabinet-thumb" href="${href}" aria-label="${escapeHtml(title)}">${thumbnail}</a>
+    <div>
+      <h3><a href="${href}">${escapeHtml(title)}</a></h3>
+      ${detail ? `<div class="games-cabinet-detail">${detailHtml}</div>` : ""}
+      <ul>
+        <li><a href="${href}">Site</a></li>
+        <li>${escapeHtml(meta)}</li>
+      </ul>
+    </div>
+  </article>`;
+}
+
+function renderGamesCabinetGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderGamesCabinetPage(ctx, `<article class="games-cabinet-article"><header><h1>${escapeHtml(model.heading)}</h1></header><div class="games-cabinet-copy">${model.contentHtml}</div></article>`);
 }
 
 function guestbookModalScript(): string {
