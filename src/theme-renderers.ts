@@ -423,6 +423,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "fragment-journal") return renderFragmentGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "art-index") return renderArtIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "uncertainty") return renderUncertaintyGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "briefing") return renderBriefingGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -902,7 +903,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "briefing") {
-    return `<section class="briefing"><nav>Home Politics Business Technology Energy</nav>${homeHeader}<div class="brief-grid">${model.links.map((link) => `<article><span>THE NEWS</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+    return renderBriefingHome(model, ctx);
   }
   if (ctx.family === "bookmaker-card") {
     return `<section class="bookmaker-card">${homeHeader}<address><a href="/contact">contact</a> · <a href="/blog">writing</a> · <a href="/archives">archive</a></address></section>`;
@@ -1119,7 +1120,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "briefing") {
-    return `<section class="briefing"><h2>Briefings</h2><div class="brief-grid">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<article><span>${escapeHtml(group.year)}</span><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><p>${escapeHtml(post.date)}</p></article>`)).join("")}</div></section>`;
+    return renderBriefingIndex(model, ctx);
   }
   if (ctx.family === "bookmaker-card") {
     return `<section class="bookmaker-card"><h2>Writing</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> — ${escapeHtml(post.date)}</p>`)).join("")}</section>`;
@@ -1213,6 +1214,20 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       `<article class="blog-post-content uncertainty-copy">${model.contentHtml}</article>`,
     );
   }
+  if (ctx.family === "briefing") {
+    return renderBriefingPage(
+      ctx,
+      `<article class="briefing-article">
+        <a class="briefing-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a>
+        <header>
+          <span>${meta}</span>
+          <h1>${escapeHtml(model.title)}</h1>
+          ${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}
+        </header>
+        <div class="blog-post-content briefing-copy">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1262,6 +1277,14 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     }
     if (ctx.family === "garden-notebook") {
       return renderGardenPage(ctx, `<h1>Archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${model.months.map((month) => `<section class="garden-year"><h2>${escapeHtml(month.label)}</h2>${renderGardenPostList(month.posts)}</section>`).join("")}`);
+    }
+    if (ctx.family === "briefing") {
+      return renderBriefingPage(
+        ctx,
+        `<header class="briefing-section-head"><span>${model.totalPosts} entries</span><h1>Archives</h1></header><div class="briefing-topic-columns">${model.months
+          .map((month) => `<section><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderBriefingSmallCard(post.href, post.title, post.date, post.readTime || "Writing")).join("")}</section>`)
+          .join("")}</div>`,
+      );
     }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1674,6 +1697,74 @@ function renderUncertaintyLine(title: string, href: string, type: string, date =
 
 function renderUncertaintyGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderUncertaintyPage(ctx, model.heading, "", `<div class="uncertainty-copy">${model.contentHtml}</div>`);
+}
+
+function renderBriefingNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const topics = [
+    ["/", "Home"],
+    ["/blog", "Writing"],
+    ["/photos", "Photos"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<header class="briefing-header">
+    <div class="briefing-kicker"><a href="/contact">Contact</a><a href="/rss.xml">RSS</a></div>
+    <div class="briefing-brand-row"><a class="briefing-brand" href="/">Ryan Prendergast</a></div>
+    <nav class="briefing-topic-nav" aria-label="Core site areas">${topics.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>
+  </header>`;
+}
+
+function renderBriefingPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="briefing">${renderBriefingNav(ctx)}${contentHtml}</section>`;
+}
+
+function renderBriefingSmallCard(href: string, title: string, meta: string, detail = ""): string {
+  return `<article class="briefing-small-card"><a href="${href}">${escapeHtml(title)}</a><p>${escapeHtml([meta, detail].filter(Boolean).join(" / "))}</p></article>`;
+}
+
+function renderBriefingHome(model: HomeModel, ctx: RenderContext): string {
+  const lead = model.links[0];
+  const secondary = model.links.slice(1, 5);
+  const rail = model.recentPosts.slice(0, 6);
+  const moreLinks = model.links.slice(5, 17);
+  const leadHtml = lead
+    ? `<article class="briefing-lead">
+        <span>${escapeHtml(lead.domain)}</span>
+        <h1><a href="${lead.url}">${escapeHtml(lead.title)}</a></h1>
+        <p>${escapeHtml(stripHtml(lead.contentHtml))}</p>
+      </article>`
+    : "";
+  return renderBriefingPage(
+    ctx,
+    `<section class="briefing-hero">
+      <div class="briefing-dateline"><span>${model.links.length} links</span><span>${model.recentPosts.length} essays</span></div>
+      <div class="briefing-intro"><h1>Ryan Prendergast</h1><div>${model.introHtml}</div></div>
+    </section>
+    <section class="briefing-front">
+      ${leadHtml}
+      <div class="briefing-secondary">${secondary.map((link) => renderBriefingSmallCard(link.url, link.title, link.domain, link.date)).join("")}</div>
+      <aside class="briefing-rail"><h2>Writing</h2>${rail.map((post) => renderBriefingSmallCard(post.href, post.title, post.date, post.readTime || "")).join("")}</aside>
+    </section>
+    <section class="briefing-section-head"><span>Links</span><h2>Latest</h2></section>
+    <div class="briefing-grid">${moreLinks.map((link) => `<article><span>${escapeHtml(link.domain)}</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${escapeHtml(stripHtml(link.contentHtml))}</p></article>`).join("")}</div>`,
+  );
+}
+
+function renderBriefingIndex(model: BlogIndexModel, ctx: RenderContext): string {
+  const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
+  return renderBriefingPage(
+    ctx,
+    `<header class="briefing-section-head"><span>${model.totalPosts} entries</span><h1>Writing</h1><p>${escapeHtml(model.description)}</p></header>
+    <div class="briefing-grid">${posts.map((post) => `<article><span>${escapeHtml(post.year)}</span><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><p>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</p></article>`).join("")}</div>`,
+  );
+}
+
+function renderBriefingGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderBriefingPage(ctx, `<article class="briefing-article"><header><h1>${escapeHtml(model.heading)}</h1></header><div class="briefing-copy">${model.contentHtml}</div></article>`);
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
