@@ -414,6 +414,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "art-library") return renderArtLibraryGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "studio-index") return renderStudioIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cargo-cv") return renderCargoCvGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "artist-ledger") return renderArtistLedgerGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -699,7 +700,16 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "artist-ledger") {
-    return `<section class="artist-ledger"><p class="latest">Latest: ${model.recentPosts[0] ? `<a href="${model.recentPosts[0].href}">${escapeHtml(model.recentPosts[0].title)}</a>` : "Ryan's linklog"}</p>${homeHeader}<nav>ABOUT NEWS WORK</nav><div class="ledger-list">${model.links.map((link) => `<p><time>${escapeHtml(link.date)}</time> <a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</div></section>`;
+    const latest = model.recentPosts[0]
+      ? `<a href="${model.recentPosts[0].href}">${escapeHtml(model.recentPosts[0].title)}</a>`
+      : `<a href="/archives">Ryan's linklog</a>`;
+    const news = model.recentPosts
+      .map((post) => renderArtistLedgerRow(post.date, post.href, post.title, post.readTime || "Writing"))
+      .join("");
+    const work = model.links
+      .map((link) => renderArtistLedgerRow(link.date, link.url, link.title, link.domain, stripHtml(link.contentHtml)))
+      .join("");
+    return `<section class="artist-ledger"><div class="artist-ledger-latest"><span>Latest News</span>${latest}</div>${renderArtistLedgerHeader(ctx)}<section id="about" class="artist-ledger-about"><div>${model.introHtml}</div><div>${model.aboutHtml}</div></section><section id="news" class="artist-ledger-section"><h2>News</h2><div class="artist-ledger-list">${news}</div></section><section id="work" class="artist-ledger-section artist-ledger-work"><h2>Work</h2><div class="artist-ledger-list">${work}</div></section></section>`;
   }
 
   if (ctx.family === "garden-notebook") {
@@ -890,7 +900,10 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="${ctx.family}"><h2>writing</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
   }
   if (ctx.family === "research-tools" || ctx.family === "artist-ledger") {
-    return `<section class="${ctx.family}"><h2>${ctx.family === "artist-ledger" ? "NEWS" : "Publications"}</h2><div class="ledger-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><time>${escapeHtml(post.date)}</time> <a href="${post.href}">${escapeHtml(post.title)}</a></p>`)).join("")}</div></section>`;
+    if (ctx.family === "artist-ledger") {
+      return `<section class="artist-ledger">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>News</h2><div class="artist-ledger-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => renderArtistLedgerRow(post.date, post.href, post.title, group.year, post.readTime || ""))).join("")}</div></section></section>`;
+    }
+    return `<section class="${ctx.family}"><h2>Publications</h2><div class="ledger-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><time>${escapeHtml(post.date)}</time> <a href="${post.href}">${escapeHtml(post.title)}</a></p>`)).join("")}</div></section>`;
   }
   if (ctx.family === "art-library") {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Blog", model.description)}${renderArtLibraryCategories(model.postsByYear.map((group) => group.year))}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.postsByYear.flatMap((group) => group.posts.map((post) => [`<a href="${post.href}">${escapeHtml(post.title)}</a>`, "Ryan Prendergast", escapeHtml(post.date), escapeHtml(group.year)])))}</section>`;
@@ -974,6 +987,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "cargo-cv") {
     return renderCargoCvPage(ctx, "Writing", `<article class="cargo-cv-post"><a class="cargo-cv-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="entry-meta">${meta}</p><div class="blog-post-content">${model.contentHtml}</div></article>`);
   }
+  if (ctx.family === "artist-ledger") {
+    return `<article class="artist-ledger artist-ledger-page">${renderArtistLedgerHeader(ctx)}<a class="artist-ledger-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="artist-ledger-article-head"><time>${escapeHtml(model.date)}</time><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}</header><div class="blog-post-content artist-ledger-copy">${model.contentHtml}</div></article>`;
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1015,6 +1031,9 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="studio-index">${renderStudioIndexHeader(ctx, `${model.totalPosts} entries across ${model.months.length} months.`, "Index")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Months", "Posts", "Chronology"])}<div class="studio-index-content"><div class="studio-index-list">${months}</div>${records}</div></div></section>`;
   }
   if (["research-tools", "artist-ledger", "garden-notebook"].includes(ctx.family)) {
+    if (ctx.family === "artist-ledger") {
+      return `<section class="artist-ledger">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>Archive</h2>${model.months.map((month) => `<section class="artist-ledger-month"><h3>${escapeHtml(month.label)}</h3><div class="artist-ledger-list">${month.posts.map((post) => renderArtistLedgerRow(post.date || month.key, post.href, post.title, month.label)).join("")}</div></section>`).join("")}</section></section>`;
+    }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "art-library") {
@@ -1252,6 +1271,32 @@ function renderCargoCvList(items: string[]): string {
 
 function renderCargoCvGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderCargoCvPage(ctx, model.heading, `<h2>${escapeHtml(model.heading)}:</h2><div class="cargo-cv-profile">${model.contentHtml}</div>`);
+}
+
+function renderArtistLedgerHeader(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const primary = [
+    ["/contact", "About"],
+    ["/blog", "News"],
+    ["/", "Work"],
+    ["/archives", "Archive"],
+  ] as Array<[string, string]>;
+  const utility = [
+    ["/photos", "Photos"],
+    ["/guestbook", "Guestbook"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<header class="artist-ledger-header"><a class="artist-ledger-name" href="/">Ryan<br>Prendergast</a><nav class="artist-ledger-primary" aria-label="Primary">${primary.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}</nav><nav class="artist-ledger-utility" aria-label="Core site areas">${utility.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}</nav></header>`;
+}
+
+function renderArtistLedgerRow(date: string, href: string, title: string, type: string, detail = ""): string {
+  const detailText = detail ? `<p>${escapeHtml(detail)}</p>` : "";
+  return `<article class="artist-ledger-row"><time>${escapeHtml(date)}</time><div><a href="${href}">${escapeHtml(title)}</a>${detailText}</div><span>${escapeHtml(type)}</span></article>`;
+}
+
+function renderArtistLedgerGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="artist-ledger artist-ledger-page">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>${escapeHtml(model.heading)}</h2><div class="artist-ledger-copy">${model.contentHtml}</div></section></article>`;
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
