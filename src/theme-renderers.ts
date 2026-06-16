@@ -415,6 +415,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "studio-index") return renderStudioIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cargo-cv") return renderCargoCvGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "artist-ledger") return renderArtistLedgerGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "garden-notebook") return renderGardenGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -552,6 +553,30 @@ function renderMiniThemePicker(theme: SiteTheme): string {
 
 function renderCanonicalHomeHeader(model: HomeModel): string {
   return `<header class="canonical-home-header"><nav class="canonical-site-nav"><a href="/">Linkblog</a><a href="/blog">Blog</a><a href="/photos">Photos</a><a href="/archives">Archives</a><a href="/guestbook">Guestbook</a><a href="/contact">Contact</a><a href="/rss.xml">RSS</a></nav><h2>Ryan Prendergast</h2>${model.introHtml}</header>`;
+}
+
+function renderGardenNav(ctx: RenderContext): string {
+  return `<nav class="garden-nav" aria-label="Core site areas">${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join(" ")} <a class="${ctx.currentPage === "/themes" ? "is-active" : ""}" href="/themes">Themes</a></nav>`;
+}
+
+function renderGardenLead(caption: string, image = "/site.png"): string {
+  return `<figure class="garden-lead"><img src="${image}" alt="" loading="lazy"><figcaption>${escapeHtml(caption)}</figcaption></figure>`;
+}
+
+function renderGardenPage(ctx: RenderContext, contentHtml: string): string {
+  return `<article class="garden-notebook">${renderGardenNav(ctx)}${contentHtml}</article>`;
+}
+
+function renderGardenPostList(posts: PostSummaryModel[]): string {
+  return `<ul class="garden-list">${posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}</li>`).join("")}</ul>`;
+}
+
+function renderGardenLinkList(links: LinkEntryModel[]): string {
+  return `<ul class="garden-list garden-link-list">${links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a>${link.domain ? ` <small>${escapeHtml(link.domain)}</small>` : ""}${link.contentHtml ? `<div class="garden-note">${link.contentHtml}</div>` : ""}</li>`).join("")}</ul>`;
+}
+
+function renderGardenGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderGardenPage(ctx, `<h1>${escapeHtml(model.heading)}</h1><div class="garden-copy">${model.contentHtml}</div>`);
 }
 
 function renderManualHeader(ctx: RenderContext, title: string, description: string, rows: Array<[string, string]> = []): string {
@@ -713,7 +738,10 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "garden-notebook") {
-    return `<section class="garden-notebook">${homeHeader}<div class="garden-beds">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+    return renderGardenPage(
+      ctx,
+      `${renderGardenLead(model.links[0]?.title || "Ryan Prendergast")}<h1>Ryan Prendergast</h1><div class="garden-intro">${model.introHtml}</div><p>You can find some of my writing below:</p>${renderGardenPostList(model.recentPosts)}<h2>Linklog</h2>${renderGardenLinkList(model.links)}`,
+    );
   }
 
   if (ctx.family === "fragment-journal") {
@@ -897,7 +925,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     if (ctx.family === "builder-notes") {
       return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>writing</h1>${model.postsByYear.map((group) => `<section class="builder-notes-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
     }
-    return `<section class="${ctx.family}"><h2>writing</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
+    return renderGardenPage(ctx, `<h1>Writing</h1><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section class="garden-year"><h2>${escapeHtml(group.year)}</h2>${renderGardenPostList(group.posts)}</section>`).join("")}`);
   }
   if (ctx.family === "research-tools" || ctx.family === "artist-ledger") {
     if (ctx.family === "artist-ledger") {
@@ -990,6 +1018,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "artist-ledger") {
     return `<article class="artist-ledger artist-ledger-page">${renderArtistLedgerHeader(ctx)}<a class="artist-ledger-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="artist-ledger-article-head"><time>${escapeHtml(model.date)}</time><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}</header><div class="blog-post-content artist-ledger-copy">${model.contentHtml}</div></article>`;
   }
+  if (ctx.family === "garden-notebook") {
+    return renderGardenPage(ctx, `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="garden-meta">${meta}</p><div class="blog-post-content garden-copy">${model.contentHtml}</div>`);
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1033,6 +1064,9 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   if (["research-tools", "artist-ledger", "garden-notebook"].includes(ctx.family)) {
     if (ctx.family === "artist-ledger") {
       return `<section class="artist-ledger">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>Archive</h2>${model.months.map((month) => `<section class="artist-ledger-month"><h3>${escapeHtml(month.label)}</h3><div class="artist-ledger-list">${month.posts.map((post) => renderArtistLedgerRow(post.date || month.key, post.href, post.title, month.label)).join("")}</div></section>`).join("")}</section></section>`;
+    }
+    if (ctx.family === "garden-notebook") {
+      return renderGardenPage(ctx, `<h1>Archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${model.months.map((month) => `<section class="garden-year"><h2>${escapeHtml(month.label)}</h2>${renderGardenPostList(month.posts)}</section>`).join("")}`);
     }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1088,6 +1122,9 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : [`<span>No entries yet. Be the first to sign the guestbook!</span>`];
     return `${renderCargoCvPage(ctx, "Guestbook", `<h2>Lifeworks:</h2>${renderCargoCvList(cargoEntries)}<section class="guestbook-header">${button}</section>`)}${guestbookModalScript()}`;
   }
+  if (ctx.family === "garden-notebook") {
+    return `${renderGardenPage(ctx, `<h1>Guestbook</h1><section class="guestbook-header">${button}</section><div class="garden-entries">${entries}</div>`)}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -1114,6 +1151,10 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
   if (ctx.family === "cargo-cv") {
     const items = model.themes.map((theme) => `<a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> <span>${escapeHtml(theme.status)}</span>`);
     return renderCargoCvPage(ctx, "Themes", `<h2>Lifeworks:</h2><div class="themes-console cargo-cv-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>${renderCargoCvList(items)}`);
+  }
+  if (ctx.family === "garden-notebook") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    return renderGardenPage(ctx, `<h1>Themes</h1><p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p><div class="themes-console garden-theme-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`);
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;

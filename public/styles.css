@@ -3649,31 +3649,221 @@ body {
 }
 
 .family-garden-notebook {
-  background: #fbfff4;
-  color: #172313;
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  --theme-bg: #fffef8;
+  --theme-text: #11110f;
+  background: #fffef8;
+  color: #11110f;
+  font: 18px/1.48 Georgia, "Times New Roman", Times, serif;
+}
+
+.family-garden-notebook .theme-shell-frame {
+  width: min(640px, calc(100vw - 32px));
+  margin: 30px auto 88px;
+}
+
+.family-garden-notebook .theme-shell-main {
+  width: 100%;
+}
+
+.family-garden-notebook .theme-shell-footer {
+  margin-top: 34px;
+  padding-top: 0;
+  border: 0;
+  color: #66645c;
+  font-size: 14px;
+}
+
+.family-garden-notebook .theme-utility-footer > div {
+  display: none;
+}
+
+.family-garden-notebook .theme-utility-footer .theme-shell-nav {
+  display: none;
 }
 
 .garden-notebook {
-  max-width: 1000px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
-.garden-notebook figure {
-  margin: 0 0 32px;
+.garden-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 9px;
+  margin: 0 0 20px;
+  color: #605f58;
+  font: 14px/1.4 Georgia, "Times New Roman", Times, serif;
 }
 
-.garden-image {
-  display: grid;
-  place-items: center;
-  min-height: 260px;
-  background: radial-gradient(circle at 30% 30%, #d7ff8f, #8fbf8f 40%, #254225);
-  color: #fff;
-  font-size: 42px;
+.garden-nav a,
+.family-garden-notebook a {
+  color: #0000ee;
+  text-decoration: underline;
+  text-underline-offset: 1px;
 }
 
-.garden-beds article {
-  background: rgba(255,255,255,.72);
+.garden-nav a.is-active {
+  color: #11110f;
+  text-decoration-thickness: 2px;
+}
+
+.garden-notebook h1 {
+  margin: 0 0 11px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.garden-notebook h2,
+.garden-notebook h3 {
+  margin: 25px 0 6px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.garden-notebook p,
+.garden-notebook ul,
+.garden-notebook ol,
+.garden-copy > * {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.garden-lead {
+  margin: 0 0 18px;
+}
+
+.garden-lead img {
+  display: block;
+  width: min(420px, 100%);
+  height: auto;
+  max-height: 310px;
+  object-fit: cover;
+}
+
+.garden-lead figcaption,
+.garden-meta,
+.garden-list small,
+.garden-note,
+.garden-entries time,
+.garden-entries strong {
+  color: #68665f;
+  font-size: 15px;
+}
+
+.garden-lead figcaption {
+  margin-top: 5px;
+}
+
+.garden-intro .homepage-intro {
+  margin: 0;
+}
+
+.garden-list {
+  padding-left: 24px;
+}
+
+.garden-list li {
+  margin: 2px 0;
+  padding-left: 2px;
+}
+
+.garden-link-list li {
+  margin-bottom: 13px;
+}
+
+.garden-note {
+  margin-top: 3px;
+}
+
+.garden-note p {
+  margin-bottom: 6px;
+}
+
+.garden-copy img {
+  max-width: 100%;
+  height: auto;
+}
+
+.garden-copy blockquote {
+  margin: 18px 0;
+  padding-left: 18px;
+  border-left: 1px solid #aaa89e;
+  color: #44423c;
+}
+
+.garden-copy pre {
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid #d8d4c8;
+  background: #fffaf0;
+  font-size: 14px;
+}
+
+.garden-entries .guestbook-entry {
+  margin: 0 0 18px;
+}
+
+.garden-entries .guestbook-entry p {
+  margin-bottom: 2px;
+}
+
+.garden-theme-console,
+.family-garden-notebook .themes-console {
+  margin: 18px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.family-garden-notebook .theme-filters {
+  gap: 6px;
+}
+
+.family-garden-notebook .theme-card,
+.family-garden-notebook .theme-section {
+  border-radius: 0;
+}
+
+.family-garden-notebook .mini-theme-picker {
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.family-garden-notebook .sticky-theme-picker {
+  background: rgba(255, 254, 248, .94);
+  border-top-color: #d8d4c8;
+  box-shadow: none;
+  backdrop-filter: blur(4px);
+}
+
+.family-garden-notebook .mini-theme-picker select,
+.family-garden-notebook .mini-theme-picker button,
+.family-garden-notebook .themes-console select,
+.family-garden-notebook .themes-console button,
+.family-garden-notebook .guestbook-header button {
+  min-height: 28px;
+  border: 1px solid #9b978d;
+  border-radius: 0;
+  background: #fffef8;
+  color: #11110f;
+  font: 14px/1.2 Georgia, "Times New Roman", Times, serif;
+}
+
+@media (max-width: 640px) {
+  .family-garden-notebook {
+    font-size: 17px;
+  }
+
+  .family-garden-notebook .theme-shell-frame {
+    width: min(100% - 24px, 640px);
+    margin-top: 18px;
+  }
+
+  .garden-nav {
+    margin-bottom: 16px;
+  }
 }
 
 @media (max-width: 720px) {
