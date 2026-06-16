@@ -445,6 +445,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "data-portfolio") return renderDataPortfolioGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cheap-manifesto") return renderCheapManifestoGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "performance-club") return renderPerformanceClubGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
   if (ctx.family === "feral-essay") return renderFeralPage(ctx, (model as GenericPageModel).heading, `<div class="feral-copy">${(model as GenericPageModel).contentHtml}</div>`, "Page");
   if (ctx.family === "no-css") {
@@ -781,6 +782,77 @@ function renderCheapManifestoPage(ctx: RenderContext, title: string, contentHtml
 
 function renderCheapManifestoGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderCheapManifestoPage(ctx, model.heading, `<div class="cheap-manifesto-copy">${model.contentHtml}</div>`);
+}
+
+function renderPerformanceClubNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "Home"],
+    ["/blog", "Blog"],
+    ["/photos", "Photos"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/themes", "Themes"],
+    ["/rss.xml", "RSS"],
+  ] as Array<[string, string]>;
+  return `<nav class="performance-club-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderPerformanceClubPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="performance-club">
+    <header class="performance-club-top">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+      ${renderPerformanceClubNav(ctx)}
+    </header>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderPerformanceClubBlock(title: string, contentHtml: string, className = ""): string {
+  return `<section class="performance-club-block ${className}">
+    <h2>${escapeHtml(title)}</h2>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderPerformanceClubRow(cells: string[]): string {
+  return `<tr>${cells.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
+}
+
+function renderPerformanceClubLinkRow(link: LinkEntryModel, index: number): string {
+  const weight = Math.max(17, 250 - index * 3);
+  return renderPerformanceClubRow([
+    `<span class="performance-club-rank">${index + 1}.</span>`,
+    `<a href="${link.url}">${escapeHtml(link.domain)}</a>`,
+    `<a href="${link.url}">${escapeHtml(link.title)}</a><div class="performance-club-note">${link.contentHtml}</div>`,
+    `${escapeHtml(link.date)}`,
+    `${weight}kb`,
+  ]);
+}
+
+function renderPerformanceClubPostRow(post: PostSummaryModel, label: string, index: number): string {
+  const weight = Math.max(18, 125 - index * 2);
+  return renderPerformanceClubRow([
+    `<span class="performance-club-rank">${index + 1}.</span>`,
+    escapeHtml(label),
+    `<a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<div class="performance-club-note">${escapeHtml(post.excerpt)}</div>` : ""}`,
+    escapeHtml(post.date),
+    `${weight}kb`,
+  ]);
+}
+
+function renderPerformanceClubTable(headings: string[], rows: string, label: string): string {
+  return `<table class="performance-club-table" aria-label="${escapeHtml(label)}">
+    <thead><tr>${headings.map((heading) => `<th>${escapeHtml(heading)}</th>`).join("")}</tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function renderPerformanceClubGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderPerformanceClubPage(
+    ctx,
+    renderPerformanceClubBlock(model.heading, `<div class="performance-club-copy">${model.contentHtml}</div>`, "performance-club-page"),
+  );
 }
 
 function renderPoeticNav(ctx: RenderContext): string {
@@ -1856,7 +1928,18 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "performance-club") {
-    return `<section class="performance-club">${homeHeader}<table><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.domain)}</a></td><td>${escapeHtml(link.title)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
+    const linkRows = model.links.map(renderPerformanceClubLinkRow).join("");
+    const postRows = model.recentPosts.map((post, index) => renderPerformanceClubPostRow(post, "essay", index)).join("");
+    return renderPerformanceClubPage(
+      ctx,
+      `<section class="performance-club-hero">
+        <h2>Ryan Prendergast</h2>
+        <div class="performance-club-intro">${model.introHtml}</div>
+      </section>
+      ${renderPerformanceClubBlock("The site", `<div class="performance-club-copy">${model.aboutHtml}</div>`, "performance-club-manifesto")}
+      ${renderPerformanceClubBlock("Linkblog", renderPerformanceClubTable(["#", "site", "entry", "date", "weight"], linkRows, "Linkblog entries"))}
+      ${renderPerformanceClubBlock("Recent writing", renderPerformanceClubTable(["#", "type", "entry", "date", "weight"], postRows, "Recent writing"))}`,
+    );
   }
   if (ctx.family === "recurse-joy") {
     return `<section class="recurse-joy"><nav>Home About Subscribe Atom</nav>${homeHeader}${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</section>`;
@@ -2101,6 +2184,17 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .map((group) => `<section class="feral-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map(renderFeralPost).join("")}</section>`)
       .join("");
     return renderFeralPage(ctx, "Blog", `<p class="feral-lede">${escapeHtml(model.description)}</p>${groups}`, "Archive", `<p class="feral-byline">${model.totalPosts} posts</p>`);
+  }
+  if (ctx.family === "performance-club") {
+    let rowIndex = 0;
+    const rows = model.postsByYear
+      .flatMap((group) => group.posts.map((post) => renderPerformanceClubPostRow(post, group.year, rowIndex++)))
+      .join("");
+    return renderPerformanceClubPage(
+      ctx,
+      `${renderPerformanceClubBlock("Blog", `<p class="performance-club-lede">${escapeHtml(model.description)}</p><p class="performance-club-count">${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>`, "performance-club-manifesto")}
+      ${renderPerformanceClubBlock("Members", renderPerformanceClubTable(["#", "year", "entry", "date", "weight"], rows, "Blog posts"))}`,
+    );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
@@ -2348,6 +2442,13 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       <p>${meta}</p>
       ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
       <div class="blog-post-content cheap-manifesto-copy">${model.contentHtml}</div>`,
+    );
+  }
+  if (ctx.family === "performance-club") {
+    return renderPerformanceClubPage(
+      ctx,
+      `${renderPerformanceClubBlock(model.title, `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><p class="performance-club-count">${meta}</p>${model.subtitle ? `<p class="performance-club-lede">${escapeHtml(model.subtitle)}</p>` : ""}`, "performance-club-manifesto")}
+      <article class="blog-post-content performance-club-copy performance-club-article">${model.contentHtml}</article>`,
     );
   }
   if (ctx.family === "no-css") {
@@ -2689,6 +2790,17 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .map((month) => `<section class="feral-section"><h2>${escapeHtml(month.label)}</h2>${month.posts.map(renderFeralPost).join("")}</section>`)
       .join("");
     return renderFeralPage(ctx, "Archives", `<p class="feral-lede">${model.totalPosts} entries across ${model.months.length} months.</p>${months}`, "Archive");
+  }
+  if (ctx.family === "performance-club") {
+    let rowIndex = 0;
+    const rows = model.months
+      .flatMap((month) => month.posts.map((post) => renderPerformanceClubPostRow(post, month.label, rowIndex++)))
+      .join("");
+    return renderPerformanceClubPage(
+      ctx,
+      `${renderPerformanceClubBlock("Archives", `<p class="performance-club-lede">${model.totalPosts} entries across ${model.months.length} months.</p>`, "performance-club-manifesto")}
+      ${renderPerformanceClubBlock("Directory", renderPerformanceClubTable(["#", "month", "entry", "date", "weight"], rows, "Archive entries"))}`,
+    );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
