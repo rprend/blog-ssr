@@ -443,6 +443,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "html-bulletin") return renderHtmlBulletinGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "consumption-digest") return renderConsumptionDigestGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "data-portfolio") return renderDataPortfolioGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -715,6 +716,43 @@ function renderHtmlBulletinPage(ctx: RenderContext, title: string, contentHtml: 
 
 function renderHtmlBulletinGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderHtmlBulletinPage(ctx, model.heading, `<div class="html-bulletin-copy">${model.contentHtml}</div>`);
+}
+
+function renderVernacularNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "main"],
+    ["/blog", "texts"],
+    ["/photos", "images"],
+    ["/archives", "archive"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/rss.xml", "rss"],
+    ["/themes", "versions"],
+  ] as Array<[string, string]>;
+  return `<p class="vernacular-nav">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join(" / ")}</p>`;
+}
+
+function renderVernacularPage(ctx: RenderContext, title: string, contentHtml: string): string {
+  return `<article class="vernacular-essay">
+    <div class="vernacular-lang"><a href="/">english</a> <a href="/blog">texts</a> <a href="/photos">images</a> <a href="/themes">versions</a> <a href="javascript:print()">print</a></div>
+    ${renderVernacularNav(ctx)}
+    <center><img class="vernacular-figure" src="/favicon.ico" alt="" width="32" height="32"><h1>${escapeHtml(title)}</h1></center>
+    ${contentHtml}
+  </article>`;
+}
+
+function renderVernacularLink(link: LinkEntryModel, index: number): string {
+  const note = stripHtml(link.contentHtml);
+  return `<p><a name="observation-${index + 1}"></a><font size="2">[${index + 1}] ${escapeHtml(link.date)} / ${escapeHtml(link.domain)}</font><br><a href="${link.url}">${escapeHtml(link.title)}</a>${note ? `<br>${escapeHtml(note)}` : ""}</p>`;
+}
+
+function renderVernacularPost(post: PostSummaryModel, index: number): string {
+  const note = post.excerpt || post.readTime || "";
+  return `<p><a name="text-${index}"></a><font size="2">[${index}] ${escapeHtml(post.date)}</font><br><a href="${post.href}">${escapeHtml(post.title)}</a>${note ? `<br>${escapeHtml(note)}` : ""}</p>`;
+}
+
+function renderVernacularGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderVernacularPage(ctx, model.heading, `<hr><div class="vernacular-body">${model.contentHtml}</div>`);
 }
 
 function renderConsumptionDigestNav(ctx: RenderContext): string {
@@ -1561,7 +1599,25 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "vernacular-essay") {
-    return `<article class="vernacular-essay"><nav>english / print</nav>${homeHeader}<hr>${model.links.map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><br>${stripHtml(link.contentHtml)}</p>`).join("")}</article>`;
+    const contents = [
+      `<a href="#links">recent observations</a>`,
+      `<a href="#writing">texts</a>`,
+      `<a href="/archives">archive</a>`,
+      `<a href="/themes">versions</a>`,
+    ].join("<br>");
+    const links = model.links.map((link, index) => renderVernacularLink(link, index)).join("");
+    const posts = model.recentPosts.map((post, index) => renderVernacularPost(post, index + 1)).join("");
+    return renderVernacularPage(
+      ctx,
+      "Ryan Prendergast",
+      `<table class="vernacular-front" cellspacing="0" cellpadding="0"><tbody><tr><td class="vernacular-title-cell">${homeHeader}</td><td class="vernacular-contents">${contents}</td></tr></tbody></table>
+      <hr>
+      <div class="vernacular-about">${model.aboutHtml}</div>
+      <h2 id="links">recent observations</h2>
+      ${links}
+      <h2 id="writing">texts</h2>
+      ${posts}`,
+    );
   }
   if (ctx.family === "cheap-manifesto") {
     return `<section class="cheap-manifesto">${homeHeader}${links}</section>`;
@@ -1791,6 +1847,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderConsumptionDigestPage(ctx, days, `<p>${escapeHtml(model.description)}</p>`);
   }
+  if (ctx.family === "vernacular-essay") {
+    const rows = model.postsByYear
+      .map((group) => `<h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderVernacularPost(post, index + 1)).join("")}`)
+      .join("");
+    return renderVernacularPage(ctx, "Blog", `<p>${escapeHtml(model.description)}</p><hr>${rows}`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })));
@@ -1993,6 +2055,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
         </header>
         <div class="blog-post-content data-portfolio-copy">${model.contentHtml}</div>
       </article>`,
+    );
+  }
+  if (ctx.family === "vernacular-essay") {
+    return renderVernacularPage(
+      ctx,
+      model.title,
+      `<p class="vernacular-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+      <h1>${escapeHtml(model.title)}</h1>
+      <p class="vernacular-meta">${meta}</p>
+      ${model.subtitle ? `<p class="vernacular-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}
+      <hr>
+      <div class="blog-post-content vernacular-body">${model.contentHtml}</div>`,
     );
   }
   if (ctx.family === "no-css") {
@@ -2311,6 +2385,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .join("");
     return renderConsumptionDigestPage(ctx, days);
   }
+  if (ctx.family === "vernacular-essay") {
+    const months = model.months
+      .map((month) => `<h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderVernacularPost(post, index + 1)).join("")}`)
+      .join("");
+    return renderVernacularPage(ctx, "Archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p><hr>${months}`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -2453,10 +2533,29 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderConsumptionDigestPage(ctx, renderConsumptionDigestDay("guestbook", [{ label: "text", html: `<div class="consumption-digest-action">${button}</div>${guestbookEntries}` }]))}${guestbookModalScript()}`;
   }
+  if (ctx.family === "vernacular-essay") {
+    const guestbookEntries = model.entries.length
+      ? model.entries.map((entry, index) => `<p><a name="entry-${index + 1}"></a><b>${escapeHtml(entry.name)}</b><br><font size="2">${escapeHtml(entry.date)}</font><br>${escapeHtml(entry.message)}</p>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderVernacularPage(ctx, "Guestbook", `<p>${button}</p><hr>${guestbookEntries}`)}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
 function renderThemes(model: ThemesModel, ctx: RenderContext): string {
+  if (ctx.family === "vernacular-essay") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<tr><td><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a></td><td>${escapeHtml(theme.vibe)}</td><td>${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)}</td></tr>`)
+      .join("");
+    return renderVernacularPage(
+      ctx,
+      "Themes",
+      `<p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      <form class="themes-console vernacular-theme-form"><label for="theme-select">version:</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>previous</button> <button type="button" data-theme-random>random</button> <button type="button" data-theme-next>next</button></form>
+      <table class="vernacular-table" cellspacing="0" cellpadding="4"><tbody><tr><th>theme</th><th>vibe</th><th>status</th></tr>${rows}</tbody></table>`,
+    );
+  }
   if (ctx.family === "manual") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     return `<article class="manual-page">${renderManualHeader(ctx, "Themes", "", [["Themes", String(model.themes.length)], ["Built", String(builtCount)]])}${renderManualToc([["#select", "Current Theme"], ["#catalog", "Catalog"]])}${renderManualRule()}<section id="select" class="manual-form"><h2>Current Theme</h2><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></section><section id="catalog"><h2>Catalog</h2><table><thead><tr><th>Theme</th><th>Vibe</th><th>Status</th></tr></thead><tbody>${model.themes.map((theme) => `<tr><td><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a></td><td>${escapeHtml(theme.vibe)}</td><td>${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)}</td></tr>`).join("")}</tbody></table></section></article>`;

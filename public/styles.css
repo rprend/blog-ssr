@@ -10424,9 +10424,181 @@ body {
   }
 }
 
-.family-vernacular-essay .theme-shell-frame, .family-poetic-article .theme-shell-frame, .family-feral-essay .theme-shell-frame, .family-forecast-report .theme-shell-frame { max-width: 820px; background: #fff; }
-.vernacular-essay { font-family: Georgia, serif; line-height: 1.65; }
-.vernacular-essay nav { font-family: "Times New Roman", serif; font-size: 13px; }
+.family-vernacular-essay.theme-layout {
+  background: #fff;
+  color: #000;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+}
+
+.family-vernacular-essay .theme-shell-frame {
+  width: min(760px, calc(100vw - 22px));
+  max-width: 760px;
+  margin: 18px auto 86px;
+  padding: 0;
+  background: #fff;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-vernacular-essay .theme-shell-main {
+  padding: 0;
+}
+
+.family-vernacular-essay .theme-shell-footer {
+  display: none;
+}
+
+.family-vernacular-essay a,
+.vernacular-essay a {
+  color: #00e;
+  text-decoration: underline;
+}
+
+.family-vernacular-essay a:visited,
+.vernacular-essay a:visited {
+  color: #551a8b;
+}
+
+.vernacular-essay {
+  width: 100%;
+  line-height: 1.42;
+  color: #000;
+}
+
+.vernacular-essay .vernacular-lang {
+  text-align: right;
+  font-size: 13px;
+  margin-bottom: 22px;
+}
+
+.vernacular-nav {
+  margin: 0 0 26px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.vernacular-nav a.is-active {
+  color: #000;
+  text-decoration: none;
+}
+
+.vernacular-essay center {
+  margin: 8px 0 30px;
+}
+
+.vernacular-figure {
+  image-rendering: pixelated;
+  margin-bottom: 8px;
+}
+
+.vernacular-essay h1,
+.vernacular-essay .canonical-home-header h2 {
+  margin: 0 0 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 1.05;
+}
+
+.vernacular-essay h2 {
+  margin: 30px 0 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 21px;
+  font-weight: bold;
+  line-height: 1.1;
+}
+
+.vernacular-essay p,
+.vernacular-essay li {
+  margin: 0 0 17px;
+}
+
+.vernacular-essay hr {
+  height: 1px;
+  margin: 20px 0;
+  border: 0;
+  border-top: 1px solid #808080;
+}
+
+.vernacular-front {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.vernacular-title-cell {
+  width: 68%;
+  vertical-align: top;
+}
+
+.vernacular-contents {
+  width: 32%;
+  padding-left: 18px;
+  vertical-align: top;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.vernacular-about {
+  margin: 0 0 22px;
+}
+
+.vernacular-meta,
+.vernacular-subtitle,
+.vernacular-back {
+  font-size: 14px;
+}
+
+.vernacular-body {
+  max-width: 660px;
+}
+
+.vernacular-body img,
+.vernacular-essay img:not(.vernacular-figure) {
+  max-width: 100%;
+  height: auto;
+}
+
+.vernacular-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.vernacular-table th,
+.vernacular-table td {
+  border: 1px solid #999;
+  text-align: left;
+  vertical-align: top;
+}
+
+.vernacular-theme-form {
+  margin: 18px 0;
+  font-size: 14px;
+}
+
+.vernacular-theme-form select,
+.vernacular-theme-form button,
+.family-vernacular-essay .sticky-theme-picker select,
+.family-vernacular-essay .sticky-theme-picker button {
+  border: 1px solid #999;
+  border-radius: 0;
+  background: #eee;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.family-vernacular-essay .sticky-theme-picker {
+  background: #fff;
+  border-top: 1px solid #777;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  box-shadow: none;
+}
+
+.family-poetic-article .theme-shell-frame, .family-feral-essay .theme-shell-frame, .family-forecast-report .theme-shell-frame { max-width: 820px; background: #fff; }
 .cheap-manifesto { max-width: 680px; margin: 0 auto; text-align: center; font-family: "Courier New", monospace; }
 .cheap-manifesto h2 { font-size: 34px; }
 .poetic-article { border-top: 8px solid #111; padding-top: 24px; }
