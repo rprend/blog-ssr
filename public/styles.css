@@ -3890,11 +3890,25 @@ body {
 
 .family-grant-page .canonical-home-header {
   text-align: center;
+  max-width: 900px;
+  margin: 54px auto 32px;
 }
 
 .family-grant-page .canonical-home-header h2 {
-  font-size: clamp(58px, 13vw, 150px);
-  color: #1b4cff;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: clamp(54px, 12.5vw, 142px);
+  line-height: .86;
+  margin: 0 auto 24px;
+  color: #1653ff;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.family-grant-page .canonical-home-header p {
+  max-width: 720px;
+  margin: 0 auto 12px;
+  font-size: 20px;
+  line-height: 1.35;
 }
 
 .studio-index nav {
@@ -13458,13 +13472,181 @@ body {
   font: 13px Georgia, "Times New Roman", Times, serif;
 }
 
-.family-grant-page .theme-shell-frame { max-width: 980px; background: #f4f7ff; border-color: #1b4cff; }
-.grant-page { text-align: center; display: grid; gap: 20px; justify-items: center; }
-.grant-page h2 { font-size: clamp(56px, 12vw, 132px); color: #1b4cff; }
-.grant-amount { font-size: 28px; font-weight: 700; }
-.grant-cta { background: #1b4cff; color: #fff; padding: 12px 18px; text-decoration: none; }
-.grant-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; width: 100%; }
-.grant-grid article { background: #fff; border: 1px solid #1b4cff; padding: 12px; }
+.family-grant-page {
+  background: #fff;
+  color: #111;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.family-grant-page .theme-shell-frame {
+  max-width: none;
+  width: min(940px, calc(100vw - 40px));
+  margin: 0 auto 96px;
+  padding: 0;
+  background: #fff;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-grant-page .theme-shell-main,
+.family-grant-page .theme-shell-footer {
+  padding: 0;
+}
+
+.grant-page {
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 18px;
+  line-height: 1.42;
+}
+
+.grant-site-head {
+  padding: 32px 0 10px;
+  text-align: center;
+}
+
+.grant-site-head h1 {
+  margin: 0 0 14px;
+  font-size: 44px;
+  line-height: .95;
+  font-weight: 700;
+}
+
+.grant-page h1,
+.grant-page h2,
+.grant-page h3,
+.grant-page p,
+.grant-page ul {
+  margin-top: 0;
+}
+
+.grant-page h2 {
+  margin-bottom: 12px;
+  color: #1653ff;
+  font-size: 28px;
+  line-height: 1.05;
+  font-weight: 700;
+}
+
+.grant-page a,
+.family-grant-page .theme-shell-footer a {
+  color: #1653ff;
+  text-decoration: underline;
+}
+
+.grant-nav {
+  font-size: 16px;
+}
+
+.grant-nav a[aria-current="page"] {
+  font-weight: 700;
+}
+
+.grant-hero {
+  text-align: center;
+}
+
+.grant-hero-list,
+.grant-section ul,
+.grant-article ul {
+  padding-left: 28px;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.grant-hero-list {
+  display: inline-block;
+  max-width: 760px;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.grant-section,
+.grant-article {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.grant-section li,
+.grant-article li {
+  margin: 6px 0;
+}
+
+.grant-section li p,
+.grant-section li div,
+.grant-article li p,
+.grant-copy {
+  margin: 4px 0 0;
+  color: #222;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.grant-copy p,
+.grant-copy li {
+  margin-bottom: 12px;
+}
+
+.grant-rule {
+  max-width: 840px;
+  margin: 28px auto;
+  border: 0;
+  border-top: 1px solid #bbb;
+}
+
+.grant-console {
+  border: 1px solid #bbb;
+  padding: 12px;
+  margin: 18px 0;
+}
+
+.grant-console select,
+.grant-console button,
+.family-grant-page .mini-theme-picker select,
+.family-grant-page .mini-theme-picker button {
+  font: 14px Georgia, "Times New Roman", Times, serif;
+  border: 1px solid #888;
+  background: #fff;
+  color: #111;
+  border-radius: 0;
+  padding: 4px 7px;
+}
+
+.family-grant-page .theme-shell-footer {
+  display: none;
+}
+
+.family-grant-page .sticky-theme-picker {
+  background: #fff;
+  border-top: 1px solid #aaa;
+  box-shadow: none;
+  color: #111;
+  font: 14px Georgia, "Times New Roman", Times, serif;
+}
+
+@media (max-width: 640px) {
+  .family-grant-page .theme-shell-frame {
+    width: min(100% - 24px, 940px);
+  }
+
+  .grant-site-head h1 {
+    font-size: 34px;
+  }
+
+  .grant-nav {
+    line-height: 1.7;
+  }
+
+  .family-grant-page .canonical-home-header {
+    margin-top: 34px;
+  }
+
+  .family-grant-page .canonical-home-header p,
+  .grant-hero-list,
+  .grant-page {
+    font-size: 16px;
+  }
+}
 
 @media (max-width: 760px) {
   .room-wall, .forum-frontpage { grid-template-columns: 1fr; }

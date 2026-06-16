@@ -473,6 +473,10 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
     const generic = model as GenericPageModel;
     return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2>${escapeHtml(generic.heading)}</h2><div class="founder-index-copy">${generic.contentHtml}</div></article>`);
   }
+  if (ctx.family === "grant-page") {
+    const generic = model as GenericPageModel;
+    return renderGrantPage(ctx, `<article class="grant-article"><h2>${escapeHtml(generic.heading)}</h2><div class="grant-copy">${generic.contentHtml}</div></article>`);
+  }
   if (ctx.family === "now-directory") {
     const generic = model as GenericPageModel;
     return renderNowDirectoryPage(ctx, `<article><h2>${escapeHtml(generic.heading)}</h2>${generic.contentHtml}</article>`);
@@ -2214,7 +2218,27 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "grant-page") {
-    return `<section class="grant-page">${homeHeader}<a class="grant-cta" href="/contact">Contact</a><div class="grant-grid">${model.links.slice(0, 6).map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
+    return renderGrantPage(
+      ctx,
+      `<section class="grant-hero">
+        ${homeHeader}
+        <ul class="grant-hero-list">
+          <li><strong><a href="/contact">Contact Ryan Prendergast</a></strong></li>
+          <li><a href="/blog">Recent essays</a> and <a href="/archives">archives</a></li>
+          <li><a href="/themes">Theme index</a>, <a href="/photos">photos</a>, and <a href="/rss.xml">RSS</a></li>
+        </ul>
+      </section>
+      ${renderGrantRule()}
+      <section class="grant-section">
+        <h2>Recent Essays</h2>
+        <ul>${model.recentPosts.map((post) => renderGrantPostItem(post)).join("")}</ul>
+      </section>
+      ${renderGrantRule()}
+      <section class="grant-section">
+        <h2>Links</h2>
+        <ul>${model.links.map((link) => renderGrantLinkItem(link)).join("")}</ul>
+      </section>`,
+    );
   }
 
   if (ctx.family === "hn") {
@@ -2274,6 +2298,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .map((group) => `<section class="founder-index-year"><h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => renderFounderIndexPost(post)).join("")}</ul></section>`)
       .join("");
     return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/blog">Blog</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${groups}</article>`);
+  }
+  if (ctx.family === "grant-page") {
+    const groups = model.postsByYear
+      .map((group) => `<section class="grant-section"><h2>Essays — ${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => renderGrantPostItem(post)).join("")}</ul></section>`)
+      .join(renderGrantRule());
+    return renderGrantPage(ctx, `<article class="grant-article"><h2><a href="/blog">Blog</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p></article>${renderGrantRule()}${groups}`);
   }
   if (ctx.family === "no-css") {
     return `<section>
@@ -2972,6 +3002,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       </article>`,
     );
   }
+  if (ctx.family === "grant-page") {
+    return renderGrantPage(
+      ctx,
+      `<article class="grant-article">
+        <p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h2>${escapeHtml(model.title)}</h2>
+        ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
+        <p><small>${meta}</small></p>
+        <div class="blog-post-content grant-copy">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
   return `<article class="theme-post"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="entry-meta">${meta}</p><div class="blog-post-content">${model.contentHtml}</div></article>`;
 }
 
@@ -3005,6 +3047,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .map((month) => `<section class="founder-index-year" id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2><ul>${month.posts.map((post) => renderFounderIndexPost(post)).join("")}</ul></section>`)
       .join("");
     return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/archives">Archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}</article>`);
+  }
+  if (ctx.family === "grant-page") {
+    const months = model.months
+      .map((month) => `<section class="grant-section" id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2><ul>${month.posts.map((post) => renderGrantPostItem(post)).join("")}</ul></section>`)
+      .join(renderGrantRule());
+    return renderGrantPage(ctx, `<article class="grant-article"><h2><a href="/archives">Archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p></article>${renderGrantRule()}${months}`);
   }
   if (ctx.family === "archive-index") {
     const monthCounts = new Map(model.months.map((month) => [month.label, month.posts.length]));
@@ -3410,6 +3458,9 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
   if (ctx.family === "founder-index") {
     return `${renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/guestbook">Guestbook</a></h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></article>`)}${guestbookModalScript()}`;
   }
+  if (ctx.family === "grant-page") {
+    return `${renderGrantPage(ctx, `<article class="grant-article"><h2><a href="/guestbook">Guestbook</a></h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></article>`)}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -3425,6 +3476,21 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
         <h2><a href="/themes">Themes</a></h2>
         <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
         <form class="themes-console founder-index-console"><p><label for="theme-select">Theme</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>Previous</button> <button type="button" data-theme-random>Random</button> <button type="button" data-theme-next>Next</button></p></form>
+        <ul>${rows}</ul>
+      </article>`,
+    );
+  }
+  if (ctx.family === "grant-page") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<li><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> — ${theme.slug === ctx.theme.slug ? "active" : `${escapeHtml(theme.status)} / ${escapeHtml(theme.vibe)}`}</li>`)
+      .join("");
+    return renderGrantPage(
+      ctx,
+      `<article class="grant-article">
+        <h2><a href="/themes">Themes</a></h2>
+        <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+        <form class="themes-console grant-console"><p><label for="theme-select">Theme</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>Previous</button> <button type="button" data-theme-random>Random</button> <button type="button" data-theme-next>Next</button></p></form>
         <ul>${rows}</ul>
       </article>`,
     );
@@ -4131,6 +4197,44 @@ function renderFounderIndexPost(post: PostSummaryModel): string {
 
 function renderFounderIndexLink(link: LinkEntryModel): string {
   return `<li><a href="${link.url}">${escapeHtml(link.title)}</a>${link.domain ? ` <small>${escapeHtml(link.domain)}</small>` : ""}${link.contentHtml ? `<div>${link.contentHtml}</div>` : ""}</li>`;
+}
+
+function renderGrantNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? ` aria-current="page"` : "");
+  const items = [
+    ["/", "Home"],
+    ["/blog", "Essays"],
+    ["/archives", "Archives"],
+    ["/photos", "Photos"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="grant-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a${active(href)} href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
+}
+
+function renderGrantPage(ctx: RenderContext, contentHtml: string): string {
+  return `<main class="grant-page">
+    <header class="grant-site-head">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+      ${renderGrantNav(ctx)}
+    </header>
+    ${contentHtml}
+  </main>`;
+}
+
+function renderGrantRule(): string {
+  return `<hr class="grant-rule">`;
+}
+
+function renderGrantPostItem(post: PostSummaryModel): string {
+  const meta = [post.date, post.readTime].filter(Boolean).map((item) => escapeHtml(item || "")).join(" / ");
+  return `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${meta ? ` — ${meta}` : ""}${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`;
+}
+
+function renderGrantLinkItem(link: LinkEntryModel): string {
+  const meta = [link.domain, link.date].filter(Boolean).map((item) => escapeHtml(item || "")).join(" / ");
+  return `<li><a href="${link.url}">${escapeHtml(link.title)}</a>${meta ? ` — ${meta}` : ""}${link.contentHtml ? `<div>${link.contentHtml}</div>` : ""}</li>`;
 }
 
 function renderUncertaintyNav(ctx: RenderContext): string {
