@@ -446,6 +446,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cheap-manifesto") return renderCheapManifestoGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
+  if (ctx.family === "feral-essay") return renderFeralPage(ctx, (model as GenericPageModel).heading, `<div class="feral-copy">${(model as GenericPageModel).contentHtml}</div>`, "Page");
   if (ctx.family === "no-css") {
     const generic = model as GenericPageModel;
     return `<article><h2>${escapeHtml(generic.heading)}</h2>${generic.contentHtml}</article>`;
@@ -845,6 +846,61 @@ function renderPoeticPost(post: PostSummaryModel): string {
   return `<article class="poetic-entry poetic-post-row">
     <h2><a href="${post.href}">${escapeHtml(post.title)}</a></h2>
     <p class="poetic-meta">${escapeHtml(post.date)}${post.readTime ? ` ${escapeHtml(post.readTime)}` : ""}</p>
+    ${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}
+  </article>`;
+}
+
+function renderFeralNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "Home"],
+    ["/blog", "Blog"],
+    ["/photos", "Photos"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+  ] as Array<[string, string]>;
+  return `<nav class="feral-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderFeralPage(ctx: RenderContext, title: string, bodyHtml: string, section = "Essay", metaHtml = ""): string {
+  return `<section class="feral-essay">
+    <header class="feral-topbar">
+      <a class="feral-publication" href="/">Ryan Prendergast</a>
+      ${renderFeralNav(ctx)}
+      <div class="feral-actions"><a href="/themes">Subscribe</a><a href="/contact">Sign in</a></div>
+    </header>
+    <div class="feral-layout">
+      <aside class="feral-author-card" aria-label="Publication">
+        <a class="feral-avatar" href="/">RP</a>
+        <strong>Ryan Prendergast</strong>
+        <span>Personal website and blog</span>
+        <a class="feral-subscribe" href="/themes">Subscribe</a>
+      </aside>
+      <article class="feral-article">
+        <p class="feral-kicker">${escapeHtml(section)}</p>
+        <h1>${escapeHtml(title)}</h1>
+        ${metaHtml}
+        ${bodyHtml}
+      </article>
+    </div>
+  </section>`;
+}
+
+function renderFeralLink(link: LinkEntryModel): string {
+  const image = link.image ? `<figure><img src="${link.image}" alt="" loading="lazy"></figure>` : "";
+  return `<article class="feral-entry">
+    ${image}
+    <h2><a href="${link.url}">${escapeHtml(link.title)}</a></h2>
+    <p class="feral-meta">${escapeHtml(link.date)} · <a href="${link.url}">${escapeHtml(link.domain)}</a></p>
+    <div class="feral-copy">${link.contentHtml}</div>
+  </article>`;
+}
+
+function renderFeralPost(post: PostSummaryModel): string {
+  return `<article class="feral-entry feral-post-row">
+    <h2><a href="${post.href}">${escapeHtml(post.title)}</a></h2>
+    <p class="feral-meta">${escapeHtml(post.date)}${post.readTime ? ` · ${escapeHtml(post.readTime)}` : ""}</p>
     ${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}
   </article>`;
 }
@@ -1788,7 +1844,16 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "feral-essay") {
-    return `<article class="feral-essay">${homeHeader}${posts}</article>`;
+    return renderFeralPage(
+      ctx,
+      "Ryan Prendergast",
+      `<div class="feral-lede">${model.introHtml}</div>
+      <section class="feral-section"><h2>Recent writing</h2>${model.recentPosts.map(renderFeralPost).join("")}</section>
+      <section class="feral-section"><h2>Linkblog</h2>${model.links.map(renderFeralLink).join("")}</section>
+      <section class="feral-about">${model.aboutHtml}</section>`,
+      "Publication",
+      `<p class="feral-byline">By Ryan Prendergast</p>`,
+    );
   }
   if (ctx.family === "performance-club") {
     return `<section class="performance-club">${homeHeader}<table><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.domain)}</a></td><td>${escapeHtml(link.title)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
@@ -2031,6 +2096,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderPoeticArticlePage(ctx, "Blog", `<p class="poetic-lede">${escapeHtml(model.description)}</p>${groups}`, "blog", `<p class="poetic-meta">${model.totalPosts} essays</p>`);
   }
+  if (ctx.family === "feral-essay") {
+    const groups = model.postsByYear
+      .map((group) => `<section class="feral-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map(renderFeralPost).join("")}</section>`)
+      .join("");
+    return renderFeralPage(ctx, "Blog", `<p class="feral-lede">${escapeHtml(model.description)}</p>${groups}`, "Archive", `<p class="feral-byline">${model.totalPosts} posts</p>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })));
@@ -2157,6 +2228,17 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       <p class="poetic-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
       "blog",
       `<p class="poetic-meta">written by ${escapeHtml(model.author || "Ryan Prendergast")}</p><p class="poetic-meta">${escapeHtml(model.date)}</p>`,
+    );
+  }
+  if (ctx.family === "feral-essay") {
+    return renderFeralPage(
+      ctx,
+      model.title,
+      `${model.subtitle ? `<p class="feral-lede">${escapeHtml(model.subtitle)}</p>` : ""}
+      <div class="feral-copy blog-post-content">${model.contentHtml}</div>
+      <p class="feral-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
+      "Essay",
+      `<p class="feral-byline">By ${escapeHtml(model.author || "Ryan Prendergast")}</p><p class="feral-date">${escapeHtml(model.date)}</p>`,
     );
   }
   if (ctx.family === "artist-menu") {
@@ -2602,6 +2684,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .join("");
     return renderPoeticArticlePage(ctx, "Archives", `<p class="poetic-lede">${model.totalPosts} entries across ${model.months.length} months.</p>${months}`, "projects");
   }
+  if (ctx.family === "feral-essay") {
+    const months = model.months
+      .map((month) => `<section class="feral-section"><h2>${escapeHtml(month.label)}</h2>${month.posts.map(renderFeralPost).join("")}</section>`)
+      .join("");
+    return renderFeralPage(ctx, "Archives", `<p class="feral-lede">${model.totalPosts} entries across ${model.months.length} months.</p>${months}`, "Archive");
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -2762,6 +2850,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderPoeticArticlePage(ctx, "Guestbook", `<p>${button}</p><section class="poetic-section">${poeticEntries}</section>`, "donate!")}${guestbookModalScript()}`;
   }
+  if (ctx.family === "feral-essay") {
+    const feralEntries = model.entries.length
+      ? model.entries.map((entry) => `<article class="feral-entry"><h2>${escapeHtml(entry.name)}</h2><p class="feral-meta">${escapeHtml(entry.date)}</p><p>${escapeHtml(entry.message)}</p></article>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderFeralPage(ctx, "Guestbook", `<p class="feral-guestbook-action">${button}</p><section class="feral-section">${feralEntries}</section>`, "Community")}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -2806,6 +2900,21 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       <div class="theme-filters poetic-theme-filters">${model.categoryControlsHtml}</div>
       <section class="poetic-section">${rows}</section>`,
       "newsletter",
+    );
+  }
+  if (ctx.family === "feral-essay") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<article class="feral-entry"><h2><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a></h2><p class="feral-meta">${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)} · ${escapeHtml(theme.category)}</p><p>${escapeHtml(theme.description)}</p></article>`)
+      .join("");
+    return renderFeralPage(
+      ctx,
+      "Themes",
+      `<p class="feral-lede">${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      <form class="themes-console feral-theme-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></form>
+      <div class="theme-filters feral-theme-filters">${model.categoryControlsHtml}</div>
+      <section class="feral-section">${rows}</section>`,
+      "Platform",
     );
   }
   if (ctx.family === "manual") {
