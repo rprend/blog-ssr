@@ -442,6 +442,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "visual-index") return renderVisualIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "html-bulletin") return renderHtmlBulletinGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "consumption-digest") return renderConsumptionDigestGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "data-portfolio") return renderDataPortfolioGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1514,7 +1515,19 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return renderConsumptionDigestPage(ctx, `${days}${trailingPosts}`, model.introHtml);
   }
   if (ctx.family === "data-portfolio") {
-    return `<section class="data-portfolio"><header>${homeHeader}<nav>projects writing links</nav></header><div class="view-toggle">grid / list</div><div class="data-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+    const records = [
+      ...model.links.map((link, index) => renderDataPortfolioProject(link.url, link.title, link.domain, link.date, link.contentHtml, link.image, index)),
+      ...model.recentPosts.map((post, index) => renderDataPortfolioProject(post.href, post.title, "Ryan Prendergast", post.date, post.excerpt || post.readTime || "", null, model.links.length + index)),
+    ].join("");
+    return renderDataPortfolioPage(
+      ctx,
+      `<header class="data-portfolio-intro">
+        <div>${model.introHtml}</div>
+      </header>
+      ${renderDataPortfolioViewToggle()}
+      ${renderDataPortfolioTicker(model.links.slice(0, 8).map((link) => [link.title, link.url]))}
+      <section class="data-portfolio-grid" aria-label="Selected projects">${records}</section>`,
+    );
   }
   if (ctx.family === "internet-diagram") {
     return `<section class="internet-diagram"><nav>random labels info index</nav>${homeHeader}<div class="node-map">${model.links.slice(0, 12).map((link, index) => `<a style="--x:${(index * 17) % 83}%;--y:${(index * 29) % 76}%;" href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</div></section>`;
@@ -1786,6 +1799,17 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
         ${renderVisualIndexGroupedSection(ctx.currentPage === "/photos" ? "Photos" : "Writing", records)}`,
       );
     }
+    if (ctx.family === "data-portfolio") {
+      const records = model.postsByYear
+        .flatMap((group) => group.posts.map((post, index) => renderDataPortfolioProject(post.href, post.title, group.year, post.date, post.excerpt || post.readTime || "", null, index)))
+        .join("");
+      return renderDataPortfolioPage(
+        ctx,
+        `<header class="data-portfolio-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Writing"}</h1><p>${escapeHtml(model.description)}</p></header>
+        ${renderDataPortfolioViewToggle()}
+        <section class="data-portfolio-grid" aria-label="Writing">${records}</section>`,
+      );
+    }
     return `<section class="${ctx.family}"><h2>Index</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "terminal" || ctx.family === "editor") {
@@ -1927,6 +1951,20 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
           html: `<article class="consumption-digest-article"><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}<div class="blog-post-content consumption-digest-copy">${model.contentHtml}</div></article>`,
         },
       ]),
+    );
+  }
+  if (ctx.family === "data-portfolio") {
+    return renderDataPortfolioPage(
+      ctx,
+      `<article class="data-portfolio-article">
+        <p class="data-portfolio-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <header>
+          <p class="data-portfolio-meta">${meta}</p>
+          <h1>${escapeHtml(model.title)}</h1>
+          ${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}
+        </header>
+        <div class="blog-post-content data-portfolio-copy">${model.contentHtml}</div>
+      </article>`,
     );
   }
   if (ctx.family === "no-css") {
@@ -2280,6 +2318,16 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
         ${renderVisualIndexGroupedSection("Archive", records)}`,
       );
     }
+    if (ctx.family === "data-portfolio") {
+      const months = model.months
+        .map((month) => `<section class="data-portfolio-month"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderDataPortfolioListRow(post.href, post.title, post.date, post.readTime || "", index)).join("")}</section>`)
+        .join("");
+      return renderDataPortfolioPage(
+        ctx,
+        `<header class="data-portfolio-section-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header>
+        <section class="data-portfolio-list" aria-label="Archive">${months}</section>`,
+      );
+    }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "desktop") {
@@ -2563,6 +2611,23 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
         { label: "text", html: rows },
       ]),
       `<p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>`,
+    );
+  }
+  if (ctx.family === "data-portfolio") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme, index) => renderDataPortfolioProject(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, theme.description, null, index))
+      .join("");
+    return renderDataPortfolioPage(
+      ctx,
+      `<header class="data-portfolio-section-head">
+        <h1>Themes</h1>
+        <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      </header>
+      <div class="themes-console data-portfolio-theme-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>
+      <div class="theme-filters data-portfolio-filters">${model.categoryControlsHtml}</div>
+      ${renderDataPortfolioViewToggle()}
+      <section class="data-portfolio-grid" aria-label="Theme records">${rows}</section>`,
     );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
@@ -3386,6 +3451,68 @@ function renderDesignRepositoryGeneric(model: GenericPageModel, ctx: RenderConte
     `<article class="design-repository-article">
       <header><h1>${escapeHtml(model.heading)}</h1><p>${escapeHtml(ctx.currentPage || "/")} :: Ryan Prendergast</p></header>
       <div class="design-repository-copy">${model.contentHtml}</div>
+    </article>`,
+  );
+}
+
+function renderDataPortfolioNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const links = [
+    ["/", "projects"],
+    ["/blog", "writing"],
+    ["/archives", "archive"],
+    ["/photos", "photos"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/themes", "themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="data-portfolio-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}<a href="/rss.xml">rss</a></nav>`;
+}
+
+function renderDataPortfolioPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="data-portfolio">
+    <header class="data-portfolio-top">
+      <a class="data-portfolio-name" href="/">Ryan Prendergast</a>
+      ${renderDataPortfolioNav(ctx)}
+    </header>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderDataPortfolioViewToggle(): string {
+  return `<div class="data-portfolio-view" aria-label="View options"><span>VIEW</span> <a href="#selected-projects">1</a> <span>|</span> <a href="#project-list">2</a></div>`;
+}
+
+function renderDataPortfolioTicker(items: Array<[string, string]>): string {
+  const links = items.length ? items.map(([title, href]) => `<a href="${href}">${escapeHtml(title)} -></a>`).join("") : `<a href="/blog">Writing -></a>`;
+  return `<div class="data-portfolio-ticker" id="selected-projects"><span>CODING</span><span>REPORTING</span><span>VISUALS</span>${links}</div>`;
+}
+
+function renderDataPortfolioProject(href: string, title: string, source: string, date: string, detail: string, image: string | null, index: number): string {
+  const safeDetail = stripHtml(detail).trim();
+  const thumbnail = image
+    ? `<img src="${escapeHtml(image)}" alt="" loading="lazy">`
+    : `<span>${String(index + 1).padStart(2, "0")}</span>`;
+  return `<article class="data-portfolio-project" id="${index === 0 ? "project-list" : ""}">
+    <a class="data-portfolio-thumb" href="${href}" aria-label="${escapeHtml(title)}">${thumbnail}</a>
+    <div class="data-portfolio-tags"><span>CODING</span><span>VISUALS</span><span>REPORTING</span></div>
+    <h2><a href="${href}">${escapeHtml(title)}</a></h2>
+    <p class="data-portfolio-source">${escapeHtml(source || "Ryan Prendergast")}</p>
+    ${date ? `<p class="data-portfolio-date">${escapeHtml(date)}</p>` : ""}
+    ${safeDetail ? `<p>${escapeHtml(safeDetail)}</p>` : ""}
+  </article>`;
+}
+
+function renderDataPortfolioListRow(href: string, title: string, date: string, detail: string, index: number): string {
+  return `<a class="data-portfolio-row" href="${href}"><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(title)}</strong><em>${escapeHtml(detail || date)}</em><time>${escapeHtml(date)}</time></a>`;
+}
+
+function renderDataPortfolioGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderDataPortfolioPage(
+    ctx,
+    `<article class="data-portfolio-article">
+      <header><h1>${escapeHtml(model.heading)}</h1></header>
+      <div class="blog-post-content data-portfolio-copy">${model.contentHtml}</div>
     </article>`,
   );
 }

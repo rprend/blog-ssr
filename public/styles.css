@@ -9789,11 +9789,307 @@ body {
   backdrop-filter: none;
 }
 
-.family-data-portfolio .theme-shell-frame { max-width: 1120px; background: #f8faf9; }
-.data-portfolio header { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; }
-.data-portfolio nav, .view-toggle { font-size: 12px; text-transform: uppercase; letter-spacing: 0; }
-.data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 24px; }
-.data-grid article { border: 1px solid #222; padding: 14px; min-height: 150px; background: #fff; }
+.family-data-portfolio {
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.22;
+}
+
+.family-data-portfolio .theme-shell-frame {
+  max-width: none;
+  min-height: 100vh;
+  padding: 20px 28px 96px;
+  background: #fff;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-data-portfolio .theme-shell-main {
+  max-width: none;
+}
+
+.data-portfolio {
+  max-width: 1420px;
+  margin: 0 auto;
+}
+
+.data-portfolio a {
+  color: #111;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.data-portfolio-top {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) auto;
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 44px;
+}
+
+.data-portfolio-name {
+  font-weight: 400;
+}
+
+.data-portfolio-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px 13px;
+  font-size: 11px;
+  text-transform: lowercase;
+}
+
+.data-portfolio-nav a.is-active {
+  font-weight: 700;
+}
+
+.data-portfolio-intro {
+  max-width: 760px;
+  margin: 0 0 22px;
+  font-size: clamp(22px, 3.2vw, 46px);
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.data-portfolio-intro p {
+  margin: 0 0 .72em;
+}
+
+.data-portfolio-view {
+  margin: 20px 0 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.data-portfolio-ticker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 18px;
+  font-size: clamp(18px, 2.2vw, 34px);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.data-portfolio-ticker a,
+.data-portfolio-ticker span {
+  white-space: nowrap;
+}
+
+.data-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px 22px;
+  align-items: start;
+}
+
+.data-portfolio-project {
+  min-width: 0;
+}
+
+.data-portfolio-thumb {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1.2 / 1;
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: #f0f0f0;
+  text-decoration: none;
+}
+
+.data-portfolio-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1);
+}
+
+.data-portfolio-thumb span {
+  font-size: clamp(42px, 7vw, 92px);
+  font-weight: 700;
+  color: #d7d7d7;
+}
+
+.data-portfolio-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+  margin: 0 0 6px;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.data-portfolio-project h2 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.data-portfolio-project p {
+  margin: 0 0 5px;
+  font-size: 12px;
+}
+
+.data-portfolio-source {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.data-portfolio-date,
+.data-portfolio-meta {
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.data-portfolio-section-head {
+  max-width: 780px;
+  margin: 0 0 24px;
+}
+
+.data-portfolio-section-head h1,
+.data-portfolio-article h1 {
+  margin: 0 0 10px;
+  font-size: clamp(36px, 7vw, 94px);
+  line-height: .96;
+  font-weight: 400;
+}
+
+.data-portfolio-section-head p {
+  margin: 0;
+  font-size: clamp(17px, 2vw, 28px);
+}
+
+.data-portfolio-list {
+  max-width: 980px;
+}
+
+.data-portfolio-month {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px 18px;
+  padding: 12px 0;
+  border-top: 1px solid #111;
+}
+
+.data-portfolio-month h2 {
+  margin: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.data-portfolio-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) minmax(100px, .6fr) 92px;
+  gap: 12px;
+  padding-bottom: 7px;
+  text-decoration: none;
+  border-bottom: 1px solid #ddd;
+}
+
+.data-portfolio-row strong {
+  font-weight: 400;
+  text-decoration: underline;
+}
+
+.data-portfolio-row em,
+.data-portfolio-row time,
+.data-portfolio-row span {
+  font-style: normal;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.data-portfolio-article {
+  max-width: 850px;
+}
+
+.data-portfolio-back {
+  margin: 0 0 26px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.data-portfolio-article header {
+  margin-bottom: 28px;
+}
+
+.data-portfolio-copy {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 19px;
+  line-height: 1.55;
+}
+
+.data-portfolio-copy img {
+  max-width: 100%;
+  height: auto;
+}
+
+.data-portfolio-theme-console,
+.data-portfolio-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 14px 0;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.data-portfolio-theme-console select,
+.data-portfolio-theme-console button {
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #fff;
+  color: #111;
+  font: inherit;
+  padding: 4px 7px;
+}
+
+.family-data-portfolio .sticky-theme-picker {
+  border-top: 1px solid #111;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: none;
+  backdrop-filter: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 980px) {
+  .data-portfolio-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .family-data-portfolio .theme-shell-frame {
+    padding: 15px 14px 112px;
+  }
+
+  .data-portfolio-top,
+  .data-portfolio-month,
+  .data-portfolio-row {
+    grid-template-columns: 1fr;
+  }
+
+  .data-portfolio-nav {
+    justify-content: flex-start;
+  }
+
+  .data-portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .data-portfolio-row {
+    gap: 3px;
+  }
+}
 
 .family-internet-diagram .theme-shell-frame { max-width: none; background: #e8f1ff; }
 .internet-diagram nav { display: flex; gap: 10px; flex-wrap: wrap; font-family: monospace; }
