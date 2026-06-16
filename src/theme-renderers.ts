@@ -436,6 +436,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "design-repository") return renderDesignRepositoryGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "weblog-facets") return renderWeblogFacetsPage(ctx, renderWeblogFacetsGeneric(model as GenericPageModel, ctx));
   if (ctx.family === "research-lab") return renderResearchLabGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "research-sidenotes") return renderResearchSidenoteGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "room-wall") return renderRoomWallGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "book-microsite") return renderBookMicrositeGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "download-index") return renderDownloadIndexGeneric(model as GenericPageModel, ctx);
@@ -1581,7 +1582,28 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "research-sidenotes") {
-    return `<article class="research-page">${homeHeader}<h3>Links</h3>${model.links.map((link, index) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><label for="sn-${index}" class="sidenote-number"></label><span class="sidenote">${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</span></p>`).join("")}<h3>Recent Essays</h3>${posts}</article>`;
+    const newest = model.recentPosts.map((post) => renderResearchSidenoteListItem(post.href, post.title, post.date, post.readTime || "")).join("");
+    const links = model.links.map((link) => renderResearchSidenoteListItem(link.url, link.title, link.domain, link.date, stripHtml(link.contentHtml))).join("");
+    const topics = [
+      ["#newest", "Newest"],
+      ["#links", "Links"],
+      ["/blog", "Essays"],
+      ["/archives", "Archive"],
+      ["/photos", "Photos"],
+      ["/guestbook", "Guestbook"],
+      ["/contact", "Contact"],
+    ];
+    return renderResearchSidenotePage(
+      ctx,
+      "Ryan Prendergast",
+      `<section class="research-warning"><strong>Warning:</strong> ${escapeHtml(ctx.theme.description)}</section>
+      <nav class="research-topic-index" aria-label="Annotated site index">${topics.map(([href, label]) => `<a href="${href}">${label}</a>`).join("")}</nav>
+      <section class="research-abstract">${model.introHtml}</section>
+      <section id="newest" class="research-section"><h2><a href="/blog">Newest</a></h2><ul>${newest}</ul></section>
+      <section id="links" class="research-section"><h2><a href="/">Links</a></h2><ul>${links}</ul></section>
+      <section class="research-section research-note-block"><h2>Notes</h2>${model.aboutHtml}</section>`,
+      `<p><strong>${model.links.length}</strong> annotated links</p><p><strong>${model.recentPosts.length}</strong> recent essays</p>`,
+    );
   }
 
   if (ctx.family === "wordmark-studio") {
@@ -2202,7 +2224,14 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>selected text</h2><div class="art-index-chronology">${model.postsByYear.map((group) => `<div class="art-index-year">${escapeHtml(group.year)}</div>${group.posts.map((post, index) => renderArtIndexRow(group.year, post.href, post.title, post.readTime || post.date, index < 2 ? "new" : "")).join("")}`).join("")}</div>${renderArtIndexFooter(`<p>${escapeHtml(model.description)}</p>`)}</section>`;
   }
   if (ctx.family === "research-sidenotes") {
-    return `<article class="research-page"><h2>Essays</h2><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(post.date)} · ${post.readTime || ""}</span></p>`).join("")}</section>`).join("")}</article>`;
+    return renderResearchSidenotePage(
+      ctx,
+      "Essays",
+      `<section class="research-abstract"><p>${escapeHtml(model.description)}</p></section>${model.postsByYear
+        .map((group) => `<section class="research-section"><h2 id="${slugify(group.year)}"><a href="#${slugify(group.year)}">${escapeHtml(group.year)}</a></h2><ul>${group.posts.map((post) => renderResearchSidenoteListItem(post.href, post.title, post.date, post.readTime || "")).join("")}</ul></section>`)
+        .join("")}`,
+      `<p>${model.totalPosts} essays</p>${model.yearRange ? `<p>${model.yearRange[0]}-${model.yearRange[1]}</p>` : ""}`,
+    );
   }
   if (ctx.family === "wordmark-studio" || ctx.family === "studio-index") {
     if (ctx.family === "wordmark-studio") {
@@ -2696,7 +2725,12 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
   }
   if (ctx.family === "research-sidenotes") {
-    return `<article class="research-page"><h2>${escapeHtml(model.title)}</h2><p>${meta}</p><aside>${model.subtitle ? escapeHtml(model.subtitle) : "Ryan Prendergast essay"}</aside>${model.contentHtml}</article>`;
+    return renderResearchSidenotePage(
+      ctx,
+      model.title,
+      `<article class="research-article"><p class="research-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><p class="research-meta">${meta}</p>${model.subtitle ? `<p class="research-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<div class="blog-post-content research-copy">${model.contentHtml}</div></article>`,
+      `<p>${model.subtitle ? escapeHtml(model.subtitle) : "Ryan Prendergast essay"}</p><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
+    );
   }
   if (ctx.family === "wordmark-studio") {
     return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="wordmark-page-header"><p>${meta}</p><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<span>${escapeHtml(model.subtitle)}</span>` : ""}</header><div class="blog-post-content">${model.contentHtml}</div></article>`;
@@ -2859,7 +2893,14 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>archive</h2><div class="art-index-chronology">${model.months.map((month) => `<div class="art-index-year">${escapeHtml(month.key)}</div>${renderArtIndexRow(month.key, `#${slugify(month.label)}`, month.label, `${month.posts.length} works`)}`).join("")}</div>${renderArtIndexFooter(`<p>${model.totalPosts} entries across ${model.months.length} months.</p>`)}</section>`;
   }
   if (ctx.family === "research-sidenotes") {
-    return `<article class="research-page"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(month.key)}</span></p>`).join("")}</section>`).join("")}</article>`;
+    return renderResearchSidenotePage(
+      ctx,
+      "Archive",
+      `<section class="research-abstract"><p>${model.totalPosts} entries across ${model.months.length} months.</p></section>${model.months
+        .map((month) => `<section class="research-section"><h2 id="${slugify(month.label)}"><a href="#${slugify(month.label)}">${escapeHtml(month.label)}</a></h2><ul>${month.posts.map((post) => renderResearchSidenoteListItem(post.href, post.title, month.key, post.date || "")).join("")}</ul></section>`)
+        .join("")}`,
+      `<p>${model.months.length} months</p><p>${model.totalPosts} entries</p>`,
+    );
   }
   if (ctx.family === "wordmark-studio") {
     return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Archive</p><h2>Chronology</h2><span>${model.totalPosts} entries across ${model.months.length} months</span></header><div class="wordmark-archive">${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</section>`).join("")}</div></section>`;
@@ -3574,6 +3615,49 @@ function renderArchiveIndexFilters(activeLabel: string): string {
 function renderArchiveIndexNames(counts: Map<string, number>, hrefFor: (label: string) => string = () => "/"): string {
   const entries = Array.from(counts.entries()).sort(([a], [b]) => a.localeCompare(b));
   return `<div class="archive-index-names">${entries.map(([label, count]) => `<a href="${hrefFor(label)}"><span>${escapeHtml(label)}</span><em>${count}</em></a>`).join("")}</div>`;
+}
+
+function renderResearchSidenoteNav(ctx: RenderContext): string {
+  const navigation = [...ctx.navItems, { href: "/themes", label: "Themes", active: ctx.currentPage === "/themes" }];
+  return `<header class="research-masthead">
+    <a class="research-wordmark" href="/">Ryan Prendergast</a>
+    <nav aria-label="Core site areas">${navigation.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}</nav>
+  </header>`;
+}
+
+function renderResearchSidenotePage(ctx: RenderContext, title: string, contentHtml: string, marginHtml = ""): string {
+  return `<article class="research-page">
+    ${renderResearchSidenoteNav(ctx)}
+    <div class="research-layout">
+      <main class="research-main">
+        <h1>${escapeHtml(title)}</h1>
+        ${contentHtml}
+      </main>
+      <aside class="research-margin" aria-label="Page notes">
+        <p><a href="${escapeHtml(ctx.theme.targetUrl || "https://gwern.net/")}">Canonical reference</a></p>
+        <p>${escapeHtml(ctx.theme.vibe)}</p>
+        ${marginHtml}
+      </aside>
+    </div>
+  </article>`;
+}
+
+function renderResearchSidenoteListItem(href: string, title: string, meta: string, note = "", detail = ""): string {
+  const annotation = [meta, note].filter(Boolean).join(" · ");
+  return `<li>
+    <a href="${href}">${escapeHtml(title)}</a>
+    ${annotation ? `<span class="sidenote">${escapeHtml(annotation)}</span>` : ""}
+    ${detail ? `<p>${escapeHtml(detail)}</p>` : ""}
+  </li>`;
+}
+
+function renderResearchSidenoteGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderResearchSidenotePage(
+    ctx,
+    model.heading,
+    `<section class="research-section research-note-block">${model.contentHtml}</section>`,
+    `<p>${escapeHtml(ctx.currentPage || "page")}</p>`,
+  );
 }
 
 function renderArchiveIndexRow(title: string, href: string, source: string, date: string, detail: string): string {
