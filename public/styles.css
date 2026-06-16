@@ -12532,9 +12532,215 @@ body {
   height: auto;
 }
 
-.family-essay-blogroll .theme-shell-frame { max-width: 1040px; background: #fff; }
-.essay-blogroll { display: grid; grid-template-columns: 1fr 260px; gap: 30px; font-family: Georgia, serif; }
-.essay-blogroll aside { border-left: 1px solid #ccc; padding-left: 18px; display: grid; align-content: start; gap: 8px; font-size: 14px; }
+.family-essay-blogroll {
+  background: #d9e5f3;
+  color: #222;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.family-essay-blogroll .theme-shell-frame {
+  width: min(100% - 28px, 960px);
+  max-width: 960px;
+  margin: 18px auto 92px;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #a8b5c2;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .7);
+}
+
+.family-essay-blogroll .theme-shell-main {
+  padding: 0;
+}
+
+.family-essay-blogroll .theme-shell-footer {
+  display: none;
+}
+
+.essay-blogroll {
+  font: 15px/1.55 Georgia, "Times New Roman", serif;
+  background: #fff;
+}
+
+.essay-blogroll a {
+  color: #1b5d93;
+  text-decoration: none;
+}
+
+.essay-blogroll a:hover,
+.essay-blogroll a.is-active {
+  color: #0b355c;
+  text-decoration: underline;
+}
+
+.essay-blogroll-header {
+  padding: 34px 34px 0;
+  border-bottom: 1px solid #c8d1dc;
+  background: linear-gradient(#f9fbfd, #eef4fa);
+}
+
+.essay-blogroll-header h1 {
+  margin: 0;
+  font: 400 42px/1.05 Georgia, "Times New Roman", serif;
+  letter-spacing: 0;
+}
+
+.essay-blogroll-header h1 a {
+  color: #222;
+}
+
+.essay-blogroll-header p {
+  margin: 4px 0 22px;
+  color: #6f6f6f;
+  font: 13px/1.4 Arial, Helvetica, sans-serif;
+}
+
+.essay-blogroll-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0 -34px;
+  padding-left: 24px;
+  border-top: 1px solid #d8e0e9;
+  background: #1f1f1f;
+  font: 12px/1.2 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+}
+
+.essay-blogroll-nav a {
+  display: block;
+  padding: 11px 13px 10px;
+  border-right: 1px solid #383838;
+  color: #eee;
+}
+
+.essay-blogroll-nav a:hover,
+.essay-blogroll-nav a.is-active {
+  background: #343434;
+  color: #fff;
+  text-decoration: none;
+}
+
+.essay-blogroll-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 620px) 250px;
+  gap: 34px;
+  padding: 30px 28px 42px 34px;
+}
+
+.essay-blogroll-main {
+  min-width: 0;
+}
+
+.essay-blogroll-entry {
+  margin: 0 0 34px;
+  padding: 0 0 27px;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.essay-blogroll-entry h2 {
+  margin: 0 0 5px;
+  font: 400 27px/1.18 Georgia, "Times New Roman", serif;
+  letter-spacing: 0;
+}
+
+.essay-blogroll-entry h2 a {
+  color: #222;
+}
+
+.essay-blogroll-entry h2 a:hover {
+  color: #1b5d93;
+}
+
+.essay-blogroll-entry p {
+  margin: 0 0 1em;
+}
+
+.essay-blogroll-meta,
+.essay-blogroll-comments,
+.essay-blogroll-back {
+  color: #777;
+  font: 12px/1.4 Arial, Helvetica, sans-serif;
+}
+
+.essay-blogroll-comments {
+  margin-top: 12px;
+}
+
+.essay-blogroll-section-title,
+.essay-blogroll-year h3 {
+  margin: 12px 0 18px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #d6d6d6;
+  color: #555;
+  font: 400 18px/1.25 Georgia, "Times New Roman", serif;
+}
+
+.essay-blogroll-copy h1,
+.essay-blogroll-copy h2,
+.essay-blogroll-copy h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.essay-blogroll-copy img {
+  max-width: 100%;
+  height: auto;
+}
+
+.essay-blogroll-article .essay-blogroll-copy {
+  font-size: 16px;
+  line-height: 1.62;
+}
+
+.essay-blogroll-sidebar {
+  color: #555;
+  font: 13px/1.45 Arial, Helvetica, sans-serif;
+}
+
+.essay-blogroll-sidebar section {
+  margin: 0 0 24px;
+}
+
+.essay-blogroll-sidebar h3 {
+  margin: 0 0 8px;
+  padding: 0 0 6px;
+  border-bottom: 1px solid #d9d9d9;
+  color: #222;
+  font: 700 12px/1.2 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+}
+
+.essay-blogroll-sidebar ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.essay-blogroll-sidebar li {
+  padding: 4px 0 5px;
+  border-bottom: 1px dotted #d6d6d6;
+}
+
+.family-essay-blogroll .sticky-theme-picker {
+  right: 14px;
+  bottom: 12px;
+  left: auto;
+  border: 1px solid #9baabc;
+  background: #f7fbff;
+  box-shadow: 0 1px 4px rgba(46, 64, 83, .2);
+  color: #222;
+  font: 12px Arial, Helvetica, sans-serif;
+}
+
+.family-essay-blogroll .mini-theme-picker select,
+.family-essay-blogroll .mini-theme-picker button {
+  border: 1px solid #9baabc;
+  border-radius: 0;
+  background: #fff;
+  color: #222;
+  font: 12px Arial, Helvetica, sans-serif;
+}
 
 .family-now-directory .theme-shell-frame, .family-conversational-minimal .theme-shell-frame, .family-founder-index .theme-shell-frame { max-width: 760px; background: #fff; border: 0; box-shadow: none; }
 .now-directory, .conversational-minimal { font-family: Arial, sans-serif; line-height: 1.55; }
@@ -12552,7 +12758,46 @@ body {
 .grant-grid article { background: #fff; border: 1px solid #1b4cff; padding: 12px; }
 
 @media (max-width: 760px) {
-  .room-wall, .forum-frontpage, .essay-blogroll, .founder-columns { grid-template-columns: 1fr; }
+  .room-wall, .forum-frontpage, .founder-columns { grid-template-columns: 1fr; }
+  .family-essay-blogroll .theme-shell-frame {
+    width: min(100% - 14px, 960px);
+    margin-top: 7px;
+  }
+
+  .essay-blogroll-header {
+    padding: 24px 20px 0;
+  }
+
+  .essay-blogroll-header h1 {
+    font-size: 34px;
+  }
+
+  .essay-blogroll-nav {
+    margin: 0 -20px;
+    padding-left: 8px;
+  }
+
+  .essay-blogroll-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 22px 20px 110px;
+  }
+
+  .essay-blogroll-entry h2 {
+    font-size: 24px;
+  }
+
+  .essay-blogroll-sidebar {
+    border-top: 1px solid #d9d9d9;
+    padding-top: 20px;
+  }
+
+  .family-essay-blogroll .sticky-theme-picker {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    justify-content: center;
+  }
   .forum-frontpage-topbar {
     position: static;
     grid-template-columns: 1fr;

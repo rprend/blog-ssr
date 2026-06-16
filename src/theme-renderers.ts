@@ -450,6 +450,13 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
     const generic = model as GenericPageModel;
     return renderForumFrontpageShell(ctx, `<article class="forum-frontpage-page"><h1>${escapeHtml(generic.heading)}</h1><div class="forum-frontpage-copy">${generic.contentHtml}</div></article>`, generic.heading);
   }
+  if (ctx.family === "essay-blogroll") {
+    const generic = model as GenericPageModel;
+    return renderEssayBlogrollPage(
+      ctx,
+      `<article class="essay-blogroll-entry essay-blogroll-article"><h2>${escapeHtml(generic.heading)}</h2><div class="essay-blogroll-copy">${generic.contentHtml}</div></article>`,
+    );
+  }
   if (ctx.family === "recurse-joy") {
     const generic = model as GenericPageModel;
     return renderRecurseJoyPage(ctx, `<article class="recurse-joy-page"><h2>${escapeHtml(generic.heading)}</h2><div class="recurse-joy-copy">${generic.contentHtml}</div></article>`, "Page");
@@ -2099,7 +2106,23 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return renderForumFrontpageHome(model, ctx);
   }
   if (ctx.family === "essay-blogroll") {
-    return `<section class="essay-blogroll"><main>${homeHeader}${posts}${links}</main><aside><h3>Posts</h3><a href="/blog">Archives</a><a href="/rss.xml">Feed</a><h3>Links</h3>${model.links.slice(0, 6).map((link) => `<a href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</aside></section>`;
+    const recentPosts = model.recentPosts.map((post) => renderEssayBlogrollEntry(post.href, post.title, post.date, post.excerpt || post.readTime || "")).join("");
+    const linkPosts = model.links.map((link) => renderEssayBlogrollEntry(link.url, link.title, `${link.date} - ${link.domain}`, stripHtml(link.contentHtml))).join("");
+    return renderEssayBlogrollPage(
+      ctx,
+      `<section class="essay-blogroll-posts">
+        <article class="essay-blogroll-entry essay-blogroll-home">
+          <h2><a href="/">Ryan Prendergast</a></h2>
+          <div class="essay-blogroll-copy">${model.introHtml}</div>
+          <div class="essay-blogroll-copy">${model.aboutHtml}</div>
+        </article>
+        <h3 class="essay-blogroll-section-title">Recent Essays</h3>
+        ${recentPosts}
+        <h3 class="essay-blogroll-section-title">Linkblog</h3>
+        ${linkPosts}
+      </section>`,
+      renderEssayBlogrollSidebar(ctx, model.links, model.recentPosts),
+    );
   }
   if (ctx.family === "now-directory") {
     return `<section class="now-directory">${homeHeader}${links}</section>`;
@@ -2144,6 +2167,15 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "manual") {
     return `<article class="manual-page">${renderManualHeader(ctx, "Blog Index", model.description, [["Entries", String(model.totalPosts)], ["Years", model.yearRange ? `${model.yearRange[0]}-${model.yearRange[1]}` : ""]])}${renderManualToc(model.postsByYear.map((group) => [`#year-${group.year}`, group.year]))}${renderManualRule()}<pre>find ./essays -type f</pre>${model.postsByYear.map((group) => `<section id="year-${group.year}" class="manual-year"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
+  }
+  if (ctx.family === "essay-blogroll") {
+    const posts = model.postsByYear
+      .map((group) => `<section class="essay-blogroll-year"><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => renderEssayBlogrollEntry(post.href, post.title, post.date, post.excerpt || post.readTime || "")).join("")}</section>`)
+      .join("");
+    return renderEssayBlogrollPage(
+      ctx,
+      `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry"><h2><a href="/blog">Blog</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p></article>${posts}</section>`,
+    );
   }
   if (ctx.family === "no-css") {
     return `<section>
@@ -2648,6 +2680,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       },
     );
   }
+  if (ctx.family === "essay-blogroll") {
+    return renderEssayBlogrollPage(
+      ctx,
+      `<article class="essay-blogroll-entry essay-blogroll-article">
+        <p class="essay-blogroll-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h2><a href="${model.backHref}">${escapeHtml(model.title)}</a></h2>
+        <p class="essay-blogroll-meta">${meta}</p>
+        ${model.subtitle ? `<p class="essay-blogroll-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}
+        <div class="blog-post-content essay-blogroll-copy">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
   if (ctx.family === "no-css") {
     return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
   }
@@ -3021,6 +3065,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
+    if (ctx.family === "essay-blogroll") {
+      const months = model.months
+        .map((month) => `<section class="essay-blogroll-year"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderEssayBlogrollEntry(post.href, post.title, post.date, post.readTime || "")).join("")}</section>`)
+        .join("");
+      return renderEssayBlogrollPage(ctx, `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry"><h2><a href="/archives">Archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p></article>${months}</section>`);
+    }
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
       const records = model.months
@@ -4181,6 +4231,61 @@ function renderBriefingIndex(model: BlogIndexModel, ctx: RenderContext): string 
 
 function renderBriefingGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderBriefingPage(ctx, `<article class="briefing-article"><header><h1>${escapeHtml(model.heading)}</h1></header><div class="briefing-copy">${model.contentHtml}</div></article>`);
+}
+
+function renderEssayBlogrollNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "Home"],
+    ["/blog", "Top Posts"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Comments"],
+    ["/contact", "About"],
+    ["/photos", "Photos"],
+    ["/rss.xml", "Feed"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="essay-blogroll-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderEssayBlogrollPage(ctx: RenderContext, contentHtml: string, sidebarHtml = ""): string {
+  return `<section class="essay-blogroll">
+    <header class="essay-blogroll-header">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+      <p>${escapeHtml(ctx.pageSubtitle || "Personal website and blog")}</p>
+      ${renderEssayBlogrollNav(ctx)}
+    </header>
+    <div class="essay-blogroll-layout">
+      <main class="essay-blogroll-main">${contentHtml}</main>
+      ${sidebarHtml || renderEssayBlogrollSidebar(ctx)}
+    </div>
+  </section>`;
+}
+
+function renderEssayBlogrollSidebar(ctx: RenderContext, links: LinkEntryModel[] = [], posts: PostSummaryModel[] = []): string {
+  const blogroll = links.length ? links.slice(0, 12).map((link) => `<li><a href="${link.url}">${escapeHtml(link.domain || link.title)}</a></li>`).join("") : "";
+  const recent = posts.length ? posts.slice(0, 8).map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a></li>`).join("") : "";
+  const archiveLinks = [
+    ["/blog", "Top Posts"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Comments"],
+    ["/rss.xml", "RSS Feed"],
+    ["/themes", "Theme Index"],
+  ] as Array<[string, string]>;
+  return `<aside class="essay-blogroll-sidebar" aria-label="Blog sidebar">
+    <section><h3>Posts</h3><ul>${archiveLinks.map(([href, label]) => `<li><a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ul></section>
+    ${recent ? `<section><h3>Recent Essays</h3><ul>${recent}</ul></section>` : ""}
+    ${blogroll ? `<section><h3>Blogroll</h3><ul>${blogroll}</ul></section>` : ""}
+    <section><h3>Meta</h3><ul><li><a href="/contact">About Ryan</a></li><li><a href="/">Linkblog</a></li></ul></section>
+  </aside>`;
+}
+
+function renderEssayBlogrollEntry(href: string, title: string, meta: string, body = ""): string {
+  return `<article class="essay-blogroll-entry">
+    <h2><a href="${href}">${escapeHtml(title)}</a></h2>
+    ${meta ? `<p class="essay-blogroll-meta">${escapeHtml(meta)}</p>` : ""}
+    ${body ? `<p>${escapeHtml(body)}</p>` : ""}
+    <p class="essay-blogroll-comments"><a href="${href}">Leave a comment</a></p>
+  </article>`;
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
