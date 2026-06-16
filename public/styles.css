@@ -410,43 +410,313 @@ body {
 }
 
 .family-spartan {
-  background: #fff;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 204, 51, .06) 0 1px, transparent 1px 18px),
+    #fff;
   color: #000;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 0 0 76px;
 }
 
-.family-spartan .theme-shell-frame {
-  width: min(760px, calc(100vw - 24px));
-  margin-top: 18px;
+.family-spartan a {
+  color: #000099;
+  text-decoration: underline;
 }
 
-.family-spartan .theme-shell-header,
-.family-spartan .theme-shell-nav,
-.family-spartan .theme-shell-footer,
-.family-spartan .mini-theme-picker {
-  font-size: 12px;
+.family-spartan a:visited {
+  color: #464646;
 }
 
-.family-spartan .theme-shell-header h1 {
-  font-size: 22px;
+.family-spartan .pg-shell {
+  margin: 0;
+}
+
+.family-spartan .pg-sidebar {
+  width: 69px;
+  min-width: 69px;
+  background: #ffcc33;
+}
+
+.family-spartan .pg-sidebar-card {
+  width: 67px;
+  min-height: 399px;
+  border-right: 1px solid #d28b00;
+  border-bottom: 1px solid #d28b00;
+  background:
+    linear-gradient(#ffd96a, #ffcc33 45%, #ff9922);
+  font-size: 10px;
+  line-height: 1;
+  text-align: left;
+  text-transform: lowercase;
+}
+
+.family-spartan .pg-sidebar-card a {
+  display: block;
+  min-height: 20px;
+  padding: 5px 4px 0;
+  border-top: 1px solid rgba(255, 255, 255, .48);
+  border-bottom: 1px solid rgba(0, 0, 0, .12);
+  color: #000099;
+  text-decoration: none;
+}
+
+.family-spartan .pg-sidebar-card a.is-active {
+  background: rgba(255, 255, 255, .35);
+  text-decoration: underline;
+}
+
+.family-spartan .pg-sidebar-card .pg-sidebar-title {
+  min-height: 38px;
+  padding-top: 6px;
+  color: #000;
+  font-weight: bold;
+  text-transform: none;
+}
+
+.family-spartan .pg-gutter {
+  width: 26px;
+  min-width: 26px;
+}
+
+.family-spartan .pg-main-cell {
+  width: 435px;
+  padding: 0;
+}
+
+.family-spartan .theme-shell-main {
+  width: 435px;
+  padding: 0;
 }
 
 .family-spartan .pg-home {
-  width: 100%;
-  font-size: 14px;
+  width: 410px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.family-spartan .pg-title-block {
+  width: 410px;
+  min-height: 270px;
+  padding-top: 45px;
+  background:
+    linear-gradient(135deg, rgba(255, 204, 51, .85), rgba(255, 153, 34, .62) 38%, rgba(255, 255, 255, 0) 39%),
+    repeating-linear-gradient(0deg, #fff, #fff 19px, #fff8dc 20px);
+}
+
+.family-spartan .canonical-home-header {
+  width: 340px;
+  margin: 0 auto;
+  text-align: left;
 }
 
 .family-spartan .canonical-home-header h2 {
-  font: 22px Arial, Helvetica, sans-serif;
+  margin: 0 0 12px;
+  font: bold 22px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.family-spartan .canonical-home-header .homepage-intro {
+  max-width: none;
+  margin: 0;
+  font-size: 12px;
+}
+
+.family-spartan .canonical-home-header .homepage-intro p {
+  margin: 0 0 8px;
 }
 
 .family-spartan .canonical-site-nav {
-  gap: 8px;
+  display: block;
+  margin: 0 0 20px;
+  font-size: 11px;
 }
 
 .family-spartan .canonical-site-nav a {
-  color: #00e;
+  margin-right: 8px;
+  color: #000099;
   text-decoration: underline;
+}
+
+.family-spartan .pg-notice {
+  margin: 0 0 0;
+  font-size: 13px;
+}
+
+.family-spartan .pg-notice td {
+  padding: 15px 4px 5px;
+}
+
+.family-spartan .pg-new td {
+  background: #ffcc33;
+}
+
+.family-spartan .pg-apply td {
+  background: #ff9922;
+}
+
+.family-spartan .pg-link-table td {
+  padding: 7px 0 8px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.family-spartan h2 {
+  margin: 28px 0 14px;
+  font: bold 20px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.family-spartan h3 {
+  margin: 18px 0 7px;
+  font: bold 14px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.family-spartan p {
+  margin: 0 0 13px;
+}
+
+.family-spartan ul {
+  margin-top: 0;
+  padding-left: 20px;
+}
+
+.family-spartan .pg-essay-list p {
+  margin-bottom: 10px;
+}
+
+.family-spartan .pg-article {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.family-spartan .pg-article .blog-post-content,
+.family-spartan .pg-article {
+  font-size: 13px;
+}
+
+.family-spartan .pg-article img,
+.family-spartan .pg-home img {
+  max-width: 410px;
+  height: auto;
+}
+
+.family-spartan .theme-generic,
+.family-spartan .theme-index,
+.family-spartan .theme-archives,
+.family-spartan .theme-post,
+.family-spartan .guestbook-entry,
+.family-spartan .themes-hero,
+.family-spartan .theme-filters,
+.family-spartan .theme-section {
+  width: 410px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.family-spartan .theme-card-entry,
+.family-spartan .archive-section,
+.family-spartan .guestbook-entry {
+  border: 0;
+  border-bottom: 1px solid #eeeeee;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 7px 0;
+  background: transparent;
+}
+
+.family-spartan .pg-copyright {
+  width: 410px;
+  margin: 20px 0 26px;
+  color: #cccccc;
+  font-size: 10px;
+}
+
+.family-spartan .mini-theme-picker {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 7px 8px;
+  border-top: 1px solid #000;
+  background: #fff;
+  color: #000;
+  font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.family-spartan .mini-theme-picker select,
+.family-spartan .mini-theme-picker button {
+  border: 1px solid #777;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 560px) {
+  .family-spartan .pg-shell,
+  .family-spartan .pg-shell tbody,
+  .family-spartan .pg-shell tr,
+  .family-spartan .pg-shell td {
+    display: block;
+    width: auto;
+  }
+
+  .family-spartan .pg-sidebar {
+    width: auto;
+    background: #ffcc33;
+  }
+
+  .family-spartan .pg-sidebar-card {
+    display: flex;
+    flex-wrap: wrap;
+    width: auto;
+    min-height: 0;
+    border-right: 0;
+  }
+
+  .family-spartan .pg-sidebar-card a {
+    min-height: 0;
+    padding: 6px;
+  }
+
+  .family-spartan .pg-sidebar-card .pg-sidebar-title {
+    flex-basis: 100%;
+    min-height: 0;
+  }
+
+  .family-spartan .pg-gutter {
+    display: none;
+  }
+
+  .family-spartan .pg-main-cell,
+  .family-spartan .theme-shell-main,
+  .family-spartan .pg-home,
+  .family-spartan .pg-notice,
+  .family-spartan .theme-generic,
+  .family-spartan .theme-index,
+  .family-spartan .theme-archives,
+  .family-spartan .theme-post,
+  .family-spartan .themes-hero,
+  .family-spartan .theme-filters,
+  .family-spartan .theme-section,
+  .family-spartan .pg-copyright {
+    width: calc(100vw - 18px);
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .family-spartan .pg-title-block {
+    width: 100%;
+    min-height: 210px;
+  }
+
+  .family-spartan .canonical-home-header {
+    width: auto;
+    margin: 0 12px;
+  }
 }
 
 .family-manual {

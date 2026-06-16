@@ -397,6 +397,10 @@ export function renderThemedPage<T extends PageModel>(options: RenderPageOptions
     return renderNoCssShell(options, content, ctx);
   }
 
+  if (family === "spartan") {
+    return renderSpartanShell(options, content, ctx);
+  }
+
   return renderCustomShell(options, content, ctx);
 }
 
@@ -469,6 +473,49 @@ function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, co
   <hr>
   <footer><p><a href="/rss.xml">RSS</a></p></footer>
   <div style="position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #000;padding:8px;z-index:9999">${renderMiniThemePicker(options.theme)}</div>
+  <script src="/theme-system.js" defer></script>
+</body>
+</html>`;
+}
+
+function renderSpartanShell<T extends PageModel>(options: RenderPageOptions<T>, content: string, ctx: RenderContext): string {
+  const description = options.description || "Ryan Prendergast's personal website and blog";
+  const canonicalUrl = options.canonicalUrl || `https://ryan-prendergast.com${options.currentPage}`;
+  return `<!DOCTYPE html>
+<html lang="en" data-theme="${escapeHtml(options.theme.slug)}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(options.title)}</title>
+  <meta name="description" content="${escapeHtml(description)}">
+  <meta name="author" content="Ryan Prendergast">
+  <link rel="icon" href="/favicon.ico">
+  <link href="/styles.css" rel="stylesheet">
+  <meta property="og:title" content="${escapeHtml(options.title)}">
+  <meta property="og:description" content="${escapeHtml(description)}">
+  <meta property="og:type" content="${escapeHtml(options.ogType || "website")}">
+  <meta property="og:url" content="${escapeHtml(canonicalUrl)}">
+  <meta property="og:site_name" content="Ryan Prendergast">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+  <link rel="alternate" type="application/rss+xml" title="Ryan Prendergast's Blog RSS" href="/rss.xml">
+  <meta name="robots" content="index, follow">
+  ${options.structuredData || ""}
+</head>
+<body class="site-shell theme-layout theme-${escapeHtml(options.theme.slug)} family-${ctx.family} ${options.bodyClass || ""}" bgcolor="#ffffff" text="#000000" link="#000099" vlink="#464646">
+  <table class="pg-shell" border="0" cellspacing="0" cellpadding="0">
+    <tbody>
+      <tr valign="top">
+        <td class="pg-sidebar">${renderSpartanSidebar(ctx)}</td>
+        <td class="pg-gutter"><img src="/favicon.ico" alt="" width="1" height="1"></td>
+        <td class="pg-main-cell">
+          <main class="theme-shell-main">${content}</main>
+          <footer class="pg-copyright">&copy; mmxxvi Ryan Prendergast</footer>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  ${renderMiniThemePicker(options.theme)}
   <script src="/theme-system.js" defer></script>
 </body>
 </html>`;
@@ -550,6 +597,26 @@ function renderMiniThemePicker(theme: SiteTheme): string {
     .map((candidate) => `<option value="${candidate.slug}"${candidate.slug === theme.slug ? " selected" : ""}>${escapeHtml(candidate.name)}</option>`)
   ].join("");
   return `<div class="mini-theme-picker sticky-theme-picker"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${options}</select><button type="button" data-theme-random>Random</button><button type="button" data-theme-reset>Remove theme</button></div>`;
+}
+
+function renderSpartanSidebar(ctx: RenderContext): string {
+  const links = [
+    ["/", "home"],
+    ["/blog", "essays"],
+    ["/photos", "photos"],
+    ["/archives", "archive"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/rss.xml", "rss"],
+    ["/themes", "themes"],
+  ] as Array<[string, string]>;
+  return `<div class="pg-sidebar-card"><a class="pg-sidebar-title" href="/">Ryan<br>Prendergast</a>${links
+    .map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`)
+    .join("")}</div>`;
+}
+
+function renderSpartanNotice(label: string, html: string, className: string): string {
+  return `<table class="pg-notice ${className}" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><font size="2"><b>${escapeHtml(label)}</b> ${html}</font></td></tr></tbody></table>`;
 }
 
 function renderCanonicalHomeHeader(model: HomeModel): string {
@@ -643,7 +710,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   const homeHeader = renderCanonicalHomeHeader(model);
 
   if (ctx.family === "spartan") {
-    return `<table class="pg-home"><tbody><tr><td>${homeHeader}<p><b>New:</b> ${model.recentPosts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" | ")}</p><hr><p>${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("<br>")}</p></td></tr></tbody></table>`;
+    return `<table class="pg-home" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><div class="pg-title-block">${homeHeader}</div>${renderSpartanNotice("New:", model.recentPosts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" | "), "pg-new")}${renderSpartanNotice("Browse:", `<a href="/blog">essays</a> | <a href="/archives">archive</a> | <a href="/photos">photos</a> | <a href="/themes">themes</a>`, "pg-apply")}<br><table class="pg-link-table" border="0" cellspacing="0" cellpadding="0" width="410"><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.title)}</a><br><font size="1" color="#666666">${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</font></td></tr>`).join("")}</tbody></table></td></tr></tbody></table>`;
   }
 
   if (ctx.family === "manual") {
@@ -889,7 +956,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     .map((group) => `<section class="theme-year-group"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderPostSummary(post, index, ctx)).join("")}</section>`)
     .join("");
   if (ctx.family === "spartan") {
-    return `<table class="pg-home"><tbody><tr><td><h2>Essays</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><br><font size="2">${escapeHtml(post.date)}</font></p>`)).join("")}</td></tr></tbody></table>`;
+    return `<table class="pg-home pg-essay-list" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><h2>Essays</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><br><font size="1" color="#666666">${escapeHtml(post.date)}</font></p>`)).join("")}</td></tr></tbody></table>`;
   }
   if (ctx.family === "manual") {
     return `<article class="manual-page">${renderManualHeader(ctx, "Blog Index", model.description, [["Entries", String(model.totalPosts)], ["Years", model.yearRange ? `${model.yearRange[0]}-${model.yearRange[1]}` : ""]])}${renderManualToc(model.postsByYear.map((group) => [`#year-${group.year}`, group.year]))}${renderManualRule()}<pre>find ./essays -type f</pre>${model.postsByYear.map((group) => `<section id="year-${group.year}" class="manual-year"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
@@ -987,7 +1054,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
 function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   const meta = `${escapeHtml(model.date)}${model.author ? ` - ${escapeHtml(model.author)}` : ""}`;
   if (ctx.family === "spartan") {
-    return `<table class="pg-home"><tbody><tr><td><h2>${escapeHtml(model.title)}</h2><font size="2">${meta}</font>${model.subtitle ? `<p><i>${escapeHtml(model.subtitle)}</i></p>` : ""}<br>${model.contentHtml}<p><a href="${model.backHref}">Back</a></p></td></tr></tbody></table>`;
+    return `<table class="pg-home pg-article" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><font size="1" color="#666666">${meta}</font>${model.subtitle ? `<p><i>${escapeHtml(model.subtitle)}</i></p>` : ""}<br>${model.contentHtml}</td></tr></tbody></table>`;
   }
   if (ctx.family === "manual") {
     return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.title, model.subtitle || "Ryan Prendergast essay", [["Date", meta], ["Path", escapeHtml(model.backHref)]])}${renderManualToc([["#document", "Document"]])}${renderManualRule()}<section id="document" class="manual-entry-body"><h2>Document</h2>${model.contentHtml}</section><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p></article>`;
@@ -1048,6 +1115,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
 
 function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   if (ctx.family === "spartan" || ctx.family === "no-css") {
+    if (ctx.family === "spartan") {
+      return `<table class="pg-home pg-archive" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><h2>Archives</h2>${model.months.map((month) => `<h3>${escapeHtml(month.label)}</h3><ul>${month.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a></li>`).join("")}</ul>`).join("")}</td></tr></tbody></table>`;
+    }
     return `<h2>Archives</h2>${model.months.map((month) => `<h3>${escapeHtml(month.label)}</h3><ul>${month.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a></li>`).join("")}</ul>`).join("")}`;
   }
   if (ctx.family === "manual") {
