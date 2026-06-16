@@ -439,6 +439,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "room-wall") return renderRoomWallGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "book-microsite") return renderBookMicrositeGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "download-index") return renderDownloadIndexGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "visual-index") return renderVisualIndexGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1392,7 +1393,15 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "visual-index") {
-    return `<section class="visual-index">${homeHeader}<div class="visual-rows">${model.links.map((link, index) => `<a href="${link.url}"><span>${2026 - (index % 6)}</span><strong>${escapeHtml(link.title)}</strong><em>${escapeHtml(link.domain)}</em></a>`).join("")}</div></section>`;
+    const records = [
+      ...model.links.map((link) => ({ href: link.url, title: link.title, date: link.rawDate || link.date, label: link.domain || "Link" })),
+      ...model.recentPosts.map((post) => ({ href: post.href, title: post.title, date: post.rawDate || post.date, label: post.readTime || "Writing" })),
+    ];
+    return renderVisualIndexPage(
+      ctx,
+      `<section class="visual-index-intro">${model.introHtml}</section>
+      ${renderVisualIndexGroupedSection("Projects", records)}`,
+    );
   }
   if (ctx.family === "html-bulletin") {
     return `<section class="html-bulletin">${homeHeader}<p>last updated: ${model.recentPosts[0]?.date || ""}</p><h3>bulletin</h3><ul>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> - ${escapeHtml(link.domain)}</li>`).join("")}</ul></section>`;
@@ -1653,6 +1662,14 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
         .join("");
       return renderDownloadIndexPage(ctx, "Blog", `<p>${escapeHtml(model.description)}</p>`, `<section class="download-index-table" aria-label="Writing records">${rows}</section>`, `${model.totalPosts} records`);
     }
+    if (ctx.family === "visual-index") {
+      const records = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, title: post.title, date: post.rawDate || post.date, label: post.readTime || group.year })));
+      return renderVisualIndexPage(
+        ctx,
+        `<section class="visual-index-intro"><p>${escapeHtml(model.description)}</p></section>
+        ${renderVisualIndexGroupedSection(ctx.currentPage === "/photos" ? "Photos" : "Writing", records)}`,
+      );
+    }
     return `<section class="${ctx.family}"><h2>Index</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "terminal" || ctx.family === "editor") {
@@ -1706,6 +1723,20 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
         <p class="games-cabinet-meta">${meta}</p>
         ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
         <div class="games-cabinet-copy">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
+  if (ctx.family === "visual-index") {
+    return renderVisualIndexPage(
+      ctx,
+      `<article class="visual-index-article">
+        <p class="visual-index-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <header>
+          <h2>${escapeHtml(model.title)}</h2>
+          <p>${meta}</p>
+          ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
+        </header>
+        <div class="visual-index-copy">${model.contentHtml}</div>
       </article>`,
     );
   }
@@ -2092,6 +2123,14 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
         .join("");
       return renderDownloadIndexPage(ctx, "Archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`, `<section class="download-index-table" aria-label="Archive records">${rows}</section>`, `${model.totalPosts} records`);
     }
+    if (ctx.family === "visual-index") {
+      const records = model.months.flatMap((month) => month.posts.map((post) => ({ href: post.href, title: post.title, date: post.rawDate || post.date, label: month.label })));
+      return renderVisualIndexPage(
+        ctx,
+        `<section class="visual-index-intro"><p>${model.totalPosts} entries across ${model.months.length} months.</p></section>
+        ${renderVisualIndexGroupedSection("Archive", records)}`,
+      );
+    }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "desktop") {
@@ -2167,6 +2206,15 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       ? model.entries.map((entry, index) => renderPortalTile("/guestbook", entry.name, entry.date, "guestbook", entry.message, index)).join("")
       : renderPortalTile("/guestbook", "No entries yet. Be the first to sign the guestbook!", "guestbook", "", "", 0);
     return `${renderPortalPage(ctx, `<header class="portal-section-head"><h1>Curate Together</h1><p>${model.entries.length} entries.</p>${button}</header><section class="portal-gallery-wall">${portalEntries}</section>`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "visual-index") {
+    const records = model.entries.length
+      ? model.entries.map((entry) => ({ href: "/guestbook", title: entry.name, date: entry.rawDate || entry.date, label: entry.message }))
+      : [{ href: "/guestbook", title: "No entries yet. Be the first to sign the guestbook!", date: "", label: "Guestbook" }];
+    return `${renderVisualIndexPage(
+      ctx,
+      `<section class="visual-index-intro"><p>${model.entries.length} entries.</p>${button}</section>${renderVisualIndexGroupedSection("Guestbook", records)}`,
+    )}${guestbookModalScript()}`;
   }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
@@ -2306,6 +2354,24 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       <div class="themes-console download-index-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>`,
       `<div class="theme-filters download-index-filters">${model.categoryControlsHtml}</div><section class="download-index-table" aria-label="Theme records">${rows}</section>`,
       `${model.themes.length} records`,
+    );
+  }
+  if (ctx.family === "visual-index") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const records = model.themes.map((theme) => ({
+      href: `?theme=${theme.slug}`,
+      title: theme.name,
+      date: theme.slug === ctx.theme.slug ? "2026-06-16" : "",
+      label: theme.slug === ctx.theme.slug ? "active" : theme.status,
+    }));
+    return renderVisualIndexPage(
+      ctx,
+      `<section class="visual-index-intro">
+        <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+        <div class="themes-console visual-index-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>
+      </section>
+      <div class="theme-filters visual-index-filters">${model.categoryControlsHtml}</div>
+      ${renderVisualIndexGroupedSection("Themes", records)}`,
     );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
@@ -2726,6 +2792,92 @@ function renderDownloadIndexRow(index: number, title: string, href: string, sour
 
 function renderDownloadIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderDownloadIndexPage(ctx, model.heading, `<p>${escapeHtml(ctx.currentPage)}</p>`, `<article class="download-index-article">${model.contentHtml}</article>`, "page record");
+}
+
+interface VisualIndexRecord {
+  href: string;
+  title: string;
+  date: string;
+  label: string;
+}
+
+function visualIndexDateParts(date: string): { year: string; month: string; display: string } {
+  const parsed = new Date(date);
+  if (!Number.isNaN(parsed.getTime())) {
+    return {
+      year: String(parsed.getUTCFullYear()),
+      month: parsed.toLocaleString("en-US", { month: "short", timeZone: "UTC" }),
+      display: parsed.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric", timeZone: "UTC" }),
+    };
+  }
+  const year = (date.match(/\b(20\d{2}|19\d{2})\b/) || [])[0] || "Undated";
+  return { year, month: date || "Now", display: date || "Undated" };
+}
+
+function renderVisualIndexNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const items = [
+    ["/", "Projects"],
+    ["/blog", "Writing"],
+    ["/photos", "Photos"],
+    ["/archives", "Archive"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="visual-index-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderVisualIndexPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="visual-index">
+    <header class="visual-index-header">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+      <p>Non-Fiction Visual Communication</p>
+      ${renderVisualIndexNav(ctx)}
+    </header>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderVisualIndexGroupedSection(title: string, records: VisualIndexRecord[]): string {
+  const groups = new Map<string, Map<string, VisualIndexRecord[]>>();
+  for (const record of records) {
+    const parts = visualIndexDateParts(record.date);
+    if (!groups.has(parts.year)) groups.set(parts.year, new Map());
+    const yearGroup = groups.get(parts.year);
+    if (!yearGroup?.has(parts.month)) yearGroup?.set(parts.month, []);
+    yearGroup?.get(parts.month)?.push(record);
+  }
+
+  const years = Array.from(groups.entries()).sort(([a], [b]) => Number(b) - Number(a));
+  return `<section class="visual-index-section">
+    <h2>${escapeHtml(title)}</h2>
+    ${years
+      .map(
+        ([year, months]) => `<section class="visual-index-year">
+          <h3>${escapeHtml(year)}</h3>
+          ${Array.from(months.entries())
+            .map(
+              ([month, monthRecords]) => `<section class="visual-index-month">
+                <h4>${escapeHtml(month)}</h4>
+                <ol>${monthRecords.map((record) => renderVisualIndexRow(record)).join("")}</ol>
+              </section>`,
+            )
+            .join("")}
+        </section>`,
+      )
+      .join("")}
+  </section>`;
+}
+
+function renderVisualIndexRow(record: VisualIndexRecord): string {
+  const date = visualIndexDateParts(record.date).display;
+  return `<li><a href="${record.href}"><span>${escapeHtml(record.title)}</span><em>${escapeHtml(record.label)}</em><time>${escapeHtml(date)}</time></a></li>`;
+}
+
+function renderVisualIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderVisualIndexPage(ctx, `<article class="visual-index-article"><header><h2>${escapeHtml(model.heading)}</h2></header><div class="visual-index-copy">${model.contentHtml}</div></article>`);
 }
 
 function renderWeblogFacetsSidebar(links: LinkEntryModel[], posts: PostSummaryModel[]): string {
