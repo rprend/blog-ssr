@@ -431,6 +431,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "artist-menu") return renderArtistMenuGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "friendly-hub") return renderFriendlyHubGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "games-cabinet") return renderGamesCabinetGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "portal-gallery") return renderPortalGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1083,7 +1084,17 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "portal-gallery") {
-    return `<section class="portal-gallery"><nav>gallery index links</nav>${homeHeader}<div class="portal-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
+    const links = model.links.map((link, index) => renderPortalTile(link.url, link.title, link.domain, link.date, stripHtml(link.contentHtml), index)).join("");
+    const posts = model.recentPosts.map((post, index) => renderPortalTile(post.href, post.title, "Ryan Prendergast", post.date, post.excerpt || post.readTime || "", index + model.links.length)).join("");
+    return renderPortalPage(
+      ctx,
+      `<header class="portal-landing">
+        <h1>Ryan Prendergast</h1>
+        <div class="portal-intro">${model.introHtml}</div>
+      </header>
+      <section class="portal-gallery-wall" aria-label="Gallery">${links}${posts}</section>
+      <section class="portal-about">${model.aboutHtml}</section>`,
+    );
   }
   if (ctx.family === "design-repository") {
     return `<section class="design-repository">${homeHeader}<nav>links · writing · archive</nav>${links}</section>`;
@@ -1307,6 +1318,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const entries = model.postsByYear.flatMap((group, groupIndex) => group.posts.map((post, postIndex) => renderGamesCabinetWork(post.href, post.title, `${group.year} - ${post.date}`, post.excerpt || post.readTime || "", null, groupIndex + postIndex))).join("");
     return renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p></section><div class="games-cabinet-list">${entries}</div>`);
   }
+  if (ctx.family === "portal-gallery") {
+    const entries = model.postsByYear
+      .flatMap((group, groupIndex) => group.posts.map((post, postIndex) => renderPortalTile(post.href, post.title, group.year, post.date, post.excerpt || post.readTime || "", groupIndex + postIndex)))
+      .join("");
+    return renderPortalPage(ctx, `<header class="portal-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Gallery"}</h1><p>${escapeHtml(model.description)}</p></header><section class="portal-gallery-wall">${entries}</section>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>${ctx.family === "research-lab" ? "Research" : "Index"}</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1465,6 +1482,16 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "writer-ledger") {
     return `<article class="writer-ledger writer-ledger-article">${renderWriterLedgerRecent(`<a href="${model.backHref}">${escapeHtml(model.backLabel)}</a>`)}${renderWriterLedgerHeader(ctx)}<header class="writer-ledger-article-head"><p>( <a href="${model.backHref}">${escapeHtml(model.backLabel)}</a> )</p><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<time>${meta}</time></header><div class="blog-post-content writer-ledger-copy">${model.contentHtml}</div></article>`;
   }
+  if (ctx.family === "portal-gallery") {
+    return renderPortalPage(
+      ctx,
+      `<article class="portal-article">
+        <a class="portal-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a>
+        <header><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<time>${meta}</time></header>
+        <div class="blog-post-content portal-copy">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1597,6 +1624,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     const entries = model.months.flatMap((month, monthIndex) => month.posts.map((post, postIndex) => renderGamesCabinetWork(post.href, post.title, month.label, post.readTime || post.date, null, monthIndex + postIndex))).join("");
     return renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></section><div class="games-cabinet-list">${entries}</div>`);
   }
+  if (ctx.family === "portal-gallery") {
+    const entries = model.months
+      .flatMap((month, monthIndex) => month.posts.map((post, postIndex) => renderPortalTile(post.href, post.title, month.label, post.date, post.readTime || "", monthIndex + postIndex)))
+      .join("");
+    return renderPortalPage(ctx, `<header class="portal-section-head"><h1>Uncovered</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header><section class="portal-gallery-wall">${entries}</section>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1667,6 +1700,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       ? model.entries.map((entry) => renderArtistMenuWork("#guestbook", entry.name, entry.date)).join("")
       : renderArtistMenuWork("#guestbook", "No entries yet. Be the first to sign the guestbook!");
     return `${renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Guestbook</h1><div class="artist-menu-action">${button}</div><div class="works-list">${artistEntries}</div></section>`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "portal-gallery") {
+    const portalEntries = model.entries.length
+      ? model.entries.map((entry, index) => renderPortalTile("/guestbook", entry.name, entry.date, "guestbook", entry.message, index)).join("")
+      : renderPortalTile("/guestbook", "No entries yet. Be the first to sign the guestbook!", "guestbook", "", "", 0);
+    return `${renderPortalPage(ctx, `<header class="portal-section-head"><h1>Curate Together</h1><p>${model.entries.length} entries.</p>${button}</header><section class="portal-gallery-wall">${portalEntries}</section>`)}${guestbookModalScript()}`;
   }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
@@ -1757,6 +1796,22 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
         <div class="themes-console games-cabinet-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>
       </section>
       <div class="games-cabinet-list">${rows}</div>`,
+    );
+  }
+  if (ctx.family === "portal-gallery") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme, index) => renderPortalTile(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, theme.description, index))
+      .join("");
+    return renderPortalPage(
+      ctx,
+      `<header class="portal-section-head">
+        <h1>Themes</h1>
+        <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+        <div class="themes-console portal-theme-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>
+      </header>
+      <div class="theme-filters portal-theme-filters">${model.categoryControlsHtml}</div>
+      <section class="portal-gallery-wall">${rows}</section>`,
     );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
@@ -2263,6 +2318,34 @@ function renderGamesCabinetWork(href: string, title: string, meta: string, detai
 
 function renderGamesCabinetGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderGamesCabinetPage(ctx, `<article class="games-cabinet-article"><header><h1>${escapeHtml(model.heading)}</h1></header><div class="games-cabinet-copy">${model.contentHtml}</div></article>`);
+}
+
+function renderPortalNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const links = [
+    ["/", "gallery"],
+    ["/archives", "uncovered"],
+    ["/guestbook", "curate together"],
+    ["/blog", "writing"],
+    ["/photos", "photos"],
+    ["/contact", "about"],
+    ["/themes", "themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="portal-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}<a href="/rss.xml">rss</a></nav>`;
+}
+
+function renderPortalPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="portal-gallery">${renderPortalNav(ctx)}${contentHtml}<footer class="portal-footer"><a href="/contact">Contact</a><span>·</span><a href="/rss.xml">RSS</a></footer></section>`;
+}
+
+function renderPortalTile(href: string, title: string, meta: string, date: string, detail: string, index: number): string {
+  const tone = ["sage", "rose", "sky", "paper", "moss", "clay"][index % 6];
+  const safeDetail = detail ? `<p>${escapeHtml(detail)}</p>` : "";
+  return `<article class="portal-tile portal-tone-${tone}"><a href="${href}"><span>${escapeHtml(meta)}</span><strong>${escapeHtml(title)}</strong><em>${escapeHtml(date)}</em>${safeDetail}</a></article>`;
+}
+
+function renderPortalGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderPortalPage(ctx, `<article class="portal-article"><header><h1>${escapeHtml(model.heading)}</h1></header><div class="portal-copy">${model.contentHtml}</div></article>`);
 }
 
 function guestbookModalScript(): string {
