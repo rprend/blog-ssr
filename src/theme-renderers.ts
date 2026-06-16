@@ -469,6 +469,10 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
     const generic = model as GenericPageModel;
     return renderConversationalMinimalPage(ctx, `<article><h2>${escapeHtml(generic.heading)}</h2><div class="conversational-minimal-copy">${generic.contentHtml}</div></article>`);
   }
+  if (ctx.family === "founder-index") {
+    const generic = model as GenericPageModel;
+    return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2>${escapeHtml(generic.heading)}</h2><div class="founder-index-copy">${generic.contentHtml}</div></article>`);
+  }
   if (ctx.family === "now-directory") {
     const generic = model as GenericPageModel;
     return renderNowDirectoryPage(ctx, `<article><h2>${escapeHtml(generic.heading)}</h2>${generic.contentHtml}</article>`);
@@ -2188,7 +2192,26 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "founder-index") {
-    return `<section class="founder-index">${homeHeader}<nav>advice blog bookshelf culture labs progress questions</nav><div class="founder-columns">${["Writing", "Links", "Projects"].map((heading) => `<section><h3>${heading}</h3>${links}</section>`).join("")}</div></section>`;
+    return renderFounderIndexPage(
+      ctx,
+      `<section class="founder-index-home">
+        <div class="founder-index-intro">${model.introHtml}</div>
+        <div class="founder-index-columns">
+          <section>
+            <h2><a href="/blog">Blog</a></h2>
+            <ul>${model.recentPosts.map((post) => renderFounderIndexPost(post)).join("")}</ul>
+          </section>
+          <section>
+            <h2><a href="/">Links</a></h2>
+            <ul>${model.links.map((link) => renderFounderIndexLink(link)).join("")}</ul>
+          </section>
+          <section>
+            <h2><a href="/contact">About</a></h2>
+            <div class="founder-index-copy">${model.aboutHtml}</div>
+          </section>
+        </div>
+      </section>`,
+    );
   }
   if (ctx.family === "grant-page") {
     return `<section class="grant-page">${homeHeader}<a class="grant-cta" href="/contact">Contact</a><div class="grant-grid">${model.links.slice(0, 6).map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a></article>`).join("")}</div></section>`;
@@ -2245,6 +2268,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .map((group) => `<section><h2>${escapeHtml(group.year)}</h2><ul class="conversational-minimal-list">${group.posts.map((post) => `<li>${post.date ? `<time>${escapeHtml(post.date)}</time> ` : ""}<a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul></section>`)
       .join("");
     return renderConversationalMinimalPage(ctx, `<h2><a href="/blog">articles</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${groups}`);
+  }
+  if (ctx.family === "founder-index") {
+    const groups = model.postsByYear
+      .map((group) => `<section class="founder-index-year"><h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => renderFounderIndexPost(post)).join("")}</ul></section>`)
+      .join("");
+    return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/blog">Blog</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${groups}</article>`);
   }
   if (ctx.family === "no-css") {
     return `<section>
@@ -2931,6 +2960,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       </article>`,
     );
   }
+  if (ctx.family === "founder-index") {
+    return renderFounderIndexPage(
+      ctx,
+      `<article class="founder-index-article">
+        <p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h2>${escapeHtml(model.title)}</h2>
+        ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
+        <p><small>${meta}</small></p>
+        <div class="blog-post-content founder-index-copy">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
   return `<article class="theme-post"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="entry-meta">${meta}</p><div class="blog-post-content">${model.contentHtml}</div></article>`;
 }
 
@@ -2958,6 +2999,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .map((month) => `<section id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2><ul class="conversational-minimal-list">${month.posts.map((post) => `<li>${post.date ? `<time>${escapeHtml(post.date)}</time> ` : ""}<a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` <small>${escapeHtml(post.readTime)}</small>` : ""}</li>`).join("")}</ul></section>`)
       .join("");
     return renderConversationalMinimalPage(ctx, `<h2><a href="/archives">archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
+  }
+  if (ctx.family === "founder-index") {
+    const months = model.months
+      .map((month) => `<section class="founder-index-year" id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2><ul>${month.posts.map((post) => renderFounderIndexPost(post)).join("")}</ul></section>`)
+      .join("");
+    return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/archives">Archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}</article>`);
   }
   if (ctx.family === "archive-index") {
     const monthCounts = new Map(model.months.map((month) => [month.label, month.posts.length]));
@@ -3360,10 +3407,28 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderForecastReportPage(ctx, "Discuss", `<section class="forecast-report-summary"><p>${model.entries.length} entries.</p>${button}</section><section class="forecast-report-panel">${reportEntries}</section>`, { kicker: "Public Comment", meta: "Guestbook" })}${guestbookModalScript()}`;
   }
+  if (ctx.family === "founder-index") {
+    return `${renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/guestbook">Guestbook</a></h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></article>`)}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
 function renderThemes(model: ThemesModel, ctx: RenderContext): string {
+  if (ctx.family === "founder-index") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<li><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> <small>${theme.slug === ctx.theme.slug ? "active" : `${escapeHtml(theme.status)} / ${escapeHtml(theme.vibe)}`}</small></li>`)
+      .join("");
+    return renderFounderIndexPage(
+      ctx,
+      `<article class="founder-index-article">
+        <h2><a href="/themes">Themes</a></h2>
+        <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+        <form class="themes-console founder-index-console"><p><label for="theme-select">Theme</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>Previous</button> <button type="button" data-theme-random>Random</button> <button type="button" data-theme-next>Next</button></p></form>
+        <ul>${rows}</ul>
+      </article>`,
+    );
+  }
   if (ctx.family === "conversational-minimal") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     const rows = model.themes
@@ -4033,6 +4098,39 @@ function renderConversationalMinimalPage(ctx: RenderContext, contentHtml: string
     </header>
     ${contentHtml}
   </main>`;
+}
+
+function renderFounderIndexNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? ` aria-current="page"` : "");
+  const items = [
+    ["/", "home"],
+    ["/blog", "blog"],
+    ["/photos", "photos"],
+    ["/archives", "archives"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/themes", "themes"],
+    ["/rss.xml", "rss"],
+  ] as Array<[string, string]>;
+  return `<nav class="founder-index-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a${active(href)} href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
+}
+
+function renderFounderIndexPage(ctx: RenderContext, contentHtml: string): string {
+  return `<main class="founder-index">
+    <header class="founder-index-site-head">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+      ${renderFounderIndexNav(ctx)}
+    </header>
+    ${contentHtml}
+  </main>`;
+}
+
+function renderFounderIndexPost(post: PostSummaryModel): string {
+  return `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`;
+}
+
+function renderFounderIndexLink(link: LinkEntryModel): string {
+  return `<li><a href="${link.url}">${escapeHtml(link.title)}</a>${link.domain ? ` <small>${escapeHtml(link.domain)}</small>` : ""}${link.contentHtml ? `<div>${link.contentHtml}</div>` : ""}</li>`;
 }
 
 function renderUncertaintyNav(ctx: RenderContext): string {
