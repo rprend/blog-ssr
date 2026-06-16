@@ -421,6 +421,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "artist-ledger") return renderArtistLedgerGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "garden-notebook") return renderGardenGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "fragment-journal") return renderFragmentGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "art-index") return renderArtIndexGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -746,7 +747,13 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "art-index") {
-    return `<section class="art-index"><p>LAT: 40.7128 LNG: -74.0060</p>${homeHeader}${model.links.map((link, index) => `<div class="art-row"><span>${2026 - (index % 8)}</span><a href="${link.url}">𓁹 ${escapeHtml(link.title)}</a><em>${escapeHtml(link.domain)}</em></div>`).join("")}</section>`;
+    const workRows = model.links
+      .map((link, index) => renderArtIndexRow(String(2026 - (index % 9)), link.url, link.title, link.domain, index < 6 ? "new" : ""))
+      .join("");
+    const writingRows = model.recentPosts
+      .map((post, index) => renderArtIndexRow(getArtIndexYearLabel(post.rawDate || post.date), post.href, post.title, post.readTime || "text", index < 3 ? "new" : ""))
+      .join("");
+    return `<section class="art-index">${renderArtIndexHeader(ctx, model.introHtml)}<h2>selected work</h2><div class="art-index-chronology">${workRows}</div><h2>selected text</h2><div class="art-index-chronology">${writingRows}</div>${renderArtIndexFooter(model.aboutHtml)}</section>`;
   }
 
   if (ctx.family === "research-sidenotes") {
@@ -976,7 +983,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "All Posts", `<p>${escapeHtml(model.description)}</p>`, `${model.totalPosts} posts`)}${renderArchiveIndexFilters("Authors")}<section class="archive-index-directory"><div><h2>Years</h2>${renderArchiveIndexNames(yearCounts)}</div><div><h2>Titles</h2><div class="archive-index-list">${posts.map((post) => renderArchiveIndexRow(post.title, post.href, post.year, post.date, post.readTime || "")).join("")}</div></div></section></section>`;
   }
   if (ctx.family === "art-index") {
-    return `<section class="art-index"><h2>SELECTED TEXTS</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<div class="art-row"><span>${escapeHtml(group.year)}</span><a href="${post.href}">𓆓 ${escapeHtml(post.title)}</a></div>`).join("")}`).join("")}</section>`;
+    return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>selected text</h2><div class="art-index-chronology">${model.postsByYear.map((group) => `<div class="art-index-year">${escapeHtml(group.year)}</div>${group.posts.map((post, index) => renderArtIndexRow(group.year, post.href, post.title, post.readTime || post.date, index < 2 ? "new" : "")).join("")}`).join("")}</div>${renderArtIndexFooter(`<p>${escapeHtml(model.description)}</p>`)}</section>`;
   }
   if (ctx.family === "no-css") {
     return `<h2>Blog</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> (${escapeHtml(post.date)})</li>`).join("")}</ul>`).join("")}`;
@@ -1063,7 +1070,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Box Score", meta)}<h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="scoreboard-state">${escapeHtml(model.subtitle)}</p>` : ""}${renderScoreboardTable(["Field", "Value"], [["Title", escapeHtml(model.title)], ["Date", meta], ["Back", `<a href="${model.backHref}">${escapeHtml(model.backLabel)}</a>`]])}<article class="scoreboard-article">${model.contentHtml}</article></section>`;
   }
   if (ctx.family === "art-index") {
-    return `<article class="art-index"><p>LAT: 40.7128 LNG: -74.0060</p><h2>𓁹 ${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
+    return `<article class="art-index art-index-record">${renderArtIndexHeader(ctx)}<p class="art-index-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p class="art-index-meta">${meta}</p>${model.subtitle ? `<p class="art-index-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<div class="blog-post-content">${model.contentHtml}</div></article>`;
   }
   if (ctx.family === "archive-index") {
     return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.title, model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : `<p>${meta}</p>`, meta)}${renderArchiveIndexFilters("Authors")}<div class="archive-index-record-meta"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a><span>Ryan Prendergast</span><time>${escapeHtml(model.date)}</time></div><div class="blog-post-content archive-index-copy">${model.contentHtml}</div></article>`;
@@ -1131,7 +1138,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Archive", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`, `${model.totalPosts} records`)}${renderArchiveIndexFilters("All")}<section class="archive-index-directory"><div><h2>Months</h2>${renderArchiveIndexNames(monthCounts, (label) => `#${slugify(label)}`)}</div><div><h2>Records</h2>${model.months.map((month) => `<section id="${slugify(month.label)}" class="archive-index-month"><h3>${escapeHtml(month.label)}</h3><div class="archive-index-list">${month.posts.map((post) => renderArchiveIndexRow(post.title, post.href, month.label, post.date, post.readTime || "")).join("")}</div></section>`).join("")}</div></section></section>`;
   }
   if (ctx.family === "art-index") {
-    return `<section class="art-index"><h2>CHRONOLOGY</h2>${model.months.map((month) => `<div class="art-row"><span>${escapeHtml(month.key)}</span><strong>${escapeHtml(month.label)}</strong><em>${month.posts.length} works</em></div>`).join("")}</section>`;
+    return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>archive</h2><div class="art-index-chronology">${model.months.map((month) => `<div class="art-index-year">${escapeHtml(month.key)}</div>${renderArtIndexRow(month.key, `#${slugify(month.label)}`, month.label, `${month.posts.length} works`)}`).join("")}</div>${renderArtIndexFooter(`<p>${model.totalPosts} entries across ${model.months.length} months.</p>`)}</section>`;
   }
   if (ctx.family === "research-sidenotes") {
     return `<article class="research-page"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(month.key)}</span></p>`).join("")}</section>`).join("")}</article>`;
@@ -1205,6 +1212,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
   if (ctx.family === "art-library") {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Guestbook", "")}<section class="guestbook-header">${button}</section>${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.entries.map((entry) => [escapeHtml(entry.message), escapeHtml(entry.name), escapeHtml(entry.date), "Guestbook"]))}</section>${guestbookModalScript()}`;
   }
+  if (ctx.family === "art-index") {
+    const rows = model.entries.length
+      ? model.entries.map((entry) => renderArtIndexRow(entry.rawDate.slice(0, 4) || entry.date, "/guestbook", entry.name, entry.message)).join("")
+      : renderArtIndexRow("----", "/guestbook", "No entries yet. Be the first to sign the guestbook!", "");
+    return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>guestbook</h2><section class="guestbook-header art-index-action">${button}</section><div class="art-index-chronology">${rows}</div></section>${guestbookModalScript()}`;
+  }
   if (ctx.family === "studio-index") {
     return `<section class="studio-index">${renderStudioIndexHeader(ctx, `<p>${model.entries.length} entries</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Guestbook", "Messages"])}<div class="studio-index-content"><section class="guestbook-header">${button}</section><div class="studio-index-list">${entries}</div></div></div></section>${guestbookModalScript()}`;
   }
@@ -1234,6 +1247,10 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
   }
   if (ctx.family === "art-library") {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Themes", `<p>${model.themes.length} layouts from Ryan's reference list.</p>`)}<div class="themes-console art-library-search"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div></div>${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.themes.map((theme) => [`<a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a>`, escapeHtml(theme.vibe), theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status), escapeHtml(theme.category)]))}</section>`;
+  }
+  if (ctx.family === "art-index") {
+    const rows = model.themes.map((theme) => renderArtIndexRow(theme.status, `?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.vibe)).join("");
+    return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>themes</h2><div class="themes-console art-index-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div></div><div class="theme-filters">${model.categoryControlsHtml}</div><div class="art-index-chronology">${rows}</div></section>`;
   }
   if (ctx.family === "studio-index") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
@@ -1282,6 +1299,36 @@ function renderArchiveIndexRow(title: string, href: string, source: string, date
 
 function renderArchiveIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.heading, `<p>${escapeHtml(ctx.currentPage || "/")}</p>`, "page record")}${renderArchiveIndexFilters("All")}<div class="archive-index-copy">${model.contentHtml}</div></article>`;
+}
+
+function renderArtIndexHeader(ctx: RenderContext, introHtml = ""): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = [
+    ["/archives", "archive"],
+    ["/contact", "bio"],
+    ["/guestbook", "guestbook"],
+    ["/blog", "texts"],
+    ["/photos", "photos"],
+    ["/themes", "themes"],
+    ["/rss.xml", "rss"],
+  ] as Array<[string, string]>;
+  return `<header class="art-index-header"><a class="art-index-coordinates" href="https://www.google.com/maps?q=40.7128,-74.0060">LAT: 40.7128 LNG: -74.0060</a><h1><a href="/">Ryan Prendergast</a></h1><a class="art-index-rep" href="/contact">Rep'd by /contact</a>${introHtml ? `<div class="art-index-intro">${introHtml}</div>` : ""}<nav class="art-index-nav" aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav></header>`;
+}
+
+function renderArtIndexRow(year: string, href: string, title: string, detail = "", badge = ""): string {
+  return `<a class="art-row" href="${href}"><span>${escapeHtml(year)}</span><strong>${escapeHtml(title)}</strong>${detail ? `<em>${escapeHtml(detail)}</em>` : "<em></em>"}${badge ? `<small>${escapeHtml(badge)}</small>` : ""}</a>`;
+}
+
+function renderArtIndexFooter(detailHtml = ""): string {
+  return `<footer class="art-index-footer">${detailHtml ? `<div>${detailHtml}</div>` : ""}<p>Est. 2001 - visitor 847392037</p><p>Last updated: June 16, 2026</p><p>Captain Cook, Hawaii | Deadhorse, Alaska | Zzyzx, California | Truth or Consequences, NM | Inaccessible Island | Timbuktu, Mali</p></footer>`;
+}
+
+function renderArtIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="art-index art-index-record">${renderArtIndexHeader(ctx)}<h2>${escapeHtml(model.heading)}</h2><div class="blog-post-content">${model.contentHtml}</div></article>`;
+}
+
+function getArtIndexYearLabel(value: string): string {
+  return value.match(/\b(20\d{2}|19\d{2})\b/)?.[1] || "ongoing";
 }
 
 function countBy(values: string[]): Map<string, number> {

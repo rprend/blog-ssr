@@ -1654,42 +1654,223 @@ body {
 }
 
 .family-art-index {
+  --theme-bg: #050505;
+  --theme-text: #f3f1e8;
   background: #050505;
   color: #f3f1e8;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-size: 18px;
+  line-height: 1.08;
+  padding-bottom: 112px;
 }
 
 .family-art-index a {
   color: #f3f1e8;
 }
 
-.art-index h2 {
-  font-size: clamp(42px, 10vw, 130px);
-  line-height: .85;
+.family-art-index .theme-shell-frame {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 18px 18px 28px;
+}
+
+.family-art-index .theme-shell-main {
+  max-width: 860px;
+}
+
+.family-art-index .theme-shell-footer {
+  display: none;
+}
+
+.art-index {
+  min-height: 100vh;
+}
+
+.art-index-header {
+  display: grid;
+  grid-template-columns: minmax(220px, .6fr) minmax(260px, 1fr);
+  gap: 10px 26px;
+  align-items: start;
+  margin-bottom: 26px;
+}
+
+.art-index-coordinates {
+  font-size: 18px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.art-index-header h1 {
+  grid-column: 1 / -1;
+  margin: 0;
+  font: 700 clamp(52px, 15vw, 172px)/.78 "Times New Roman", Times, Georgia, serif;
+  text-transform: uppercase;
   letter-spacing: 0;
 }
 
-.family-art-index .canonical-home-header {
-  border-top: 1px solid rgba(255,255,255,.45);
-  border-bottom: 1px solid rgba(255,255,255,.45);
-  padding: 20px 0;
+.art-index-header h1 a {
+  text-decoration: none;
 }
 
-.family-art-index .canonical-home-header h2 {
-  font-size: clamp(46px, 12vw, 150px);
-  text-transform: uppercase;
+.art-index-rep {
+  font-size: 18px;
+  text-decoration: underline;
 }
 
-.family-art-index .canonical-site-nav {
-  justify-content: flex-end;
+.art-index-intro {
+  max-width: 560px;
+  font-size: 17px;
+}
+
+.art-index-intro p {
+  margin: 0 0 8px;
+}
+
+.art-index-nav {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 14px;
+  margin-top: 4px;
+}
+
+.art-index-nav a {
+  text-decoration: none;
+}
+
+.art-index-nav a::before {
+  content: "[ ";
+}
+
+.art-index-nav a::after {
+  content: " ]";
+}
+
+.art-index-nav a.is-active {
+  text-decoration: underline;
+}
+
+.art-index h2 {
+  margin: 22px 0 13px;
+  font: 400 19px/1 "Times New Roman", Times, Georgia, serif;
+  text-transform: lowercase;
+  letter-spacing: 0;
+}
+
+.art-index-chronology {
+  display: grid;
+  gap: 0;
+}
+
+.art-index-year {
+  margin: 18px 0 8px;
+  font-size: 19px;
 }
 
 .art-row {
   display: grid;
-  grid-template-columns: 80px 1fr minmax(120px, .4fr);
-  gap: 14px;
-  border-top: 1px solid rgba(255,255,255,.35);
-  padding: 8px 0;
+  grid-template-columns: 76px minmax(0, 1fr) minmax(130px, .45fr) 42px;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 1px 0 8px;
+  text-decoration: none;
+}
+
+.art-row strong {
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.art-row em,
+.art-row small,
+.art-index-meta,
+.art-index-subtitle,
+.art-index-footer {
+  font-style: normal;
+  color: rgba(243, 241, 232, .82);
+}
+
+.art-row small {
+  color: #f3f1e8;
+}
+
+.art-index-record {
+  max-width: 900px;
+}
+
+.art-index-record .blog-post-content {
+  max-width: 720px;
+  margin-top: 22px;
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+.art-index-record .blog-post-content a {
+  text-decoration: underline;
+}
+
+.art-index-back {
+  margin: 18px 0 0;
+}
+
+.art-index-meta {
+  margin: 7px 0 0;
+}
+
+.art-index-subtitle {
+  margin: 8px 0 0;
+  max-width: 640px;
+}
+
+.art-index-footer {
+  max-width: 760px;
+  margin-top: 30px;
+  font-size: 16px;
+}
+
+.art-index-footer p {
+  margin: 0 0 7px;
+}
+
+.art-index-console,
+.art-index-action,
+.family-art-index .theme-filters {
+  margin: 12px 0 18px;
+}
+
+.art-index-console select,
+.art-index-console button,
+.art-index-action button,
+.family-art-index .sticky-theme-picker select,
+.family-art-index .sticky-theme-picker button {
+  border: 1px solid #f3f1e8;
+  border-radius: 0;
+  background: #050505;
+  color: #f3f1e8;
+  font: inherit;
+}
+
+.family-art-index .sticky-theme-picker {
+  justify-content: flex-start;
+  background: #050505;
+  border-top: 1px solid rgba(243, 241, 232, .74);
+  box-shadow: none;
+  backdrop-filter: none;
+  font-family: "Times New Roman", Times, Georgia, serif;
+}
+
+.family-art-index .sticky-theme-picker label {
+  font-size: 16px;
+}
+
+.family-art-index .theme-filters button {
+  border: 0;
+  background: transparent;
+  color: #f3f1e8;
+  text-decoration: underline;
 }
 
 .family-research-sidenotes {
@@ -1747,6 +1928,17 @@ body {
 
   .art-row {
     grid-template-columns: 1fr;
+    gap: 2px;
+    width: auto;
+    margin-bottom: 10px;
+  }
+
+  .art-index-header {
+    display: block;
+  }
+
+  .art-index-header h1 {
+    margin: 10px 0;
   }
 }
 
