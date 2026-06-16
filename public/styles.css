@@ -6650,29 +6650,249 @@ body {
 
 .family-artist-menu {
   background: #fff;
-  color: #111;
-  font-family: Arial, Helvetica, sans-serif;
+  color: #000;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.2;
 }
 
-.artist-menu button {
-  float: right;
+.family-artist-menu .theme-shell-frame {
+  max-width: none;
+  min-height: 100vh;
+  padding: 12px 14px 96px;
 }
 
-.artist-menu h2 {
-  font-size: clamp(34px, 8vw, 110px);
-  margin: 0 0 20px;
+.family-artist-menu .theme-shell-main {
+  max-width: none;
 }
 
-.artist-menu nav,
+.family-artist-menu .theme-shell-footer {
+  display: none;
+}
+
+.family-artist-menu a {
+  color: #000;
+  text-decoration: none;
+}
+
+.family-artist-menu a:hover,
+.family-artist-menu a.is-active {
+  text-decoration: underline;
+}
+
+.artist-menu {
+  min-height: calc(100vh - 108px);
+  position: relative;
+}
+
+.artist-menu-toggle {
+  position: fixed;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.artist-menu-open,
+.artist-menu-overlay label {
+  cursor: pointer;
+}
+
+.artist-menu-open {
+  position: fixed;
+  top: 12px;
+  right: 14px;
+  z-index: 50;
+}
+
+.artist-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: 12px;
+  background: #fff;
+  color: #000;
+  padding: 12px 14px 92px;
+  overflow: auto;
+}
+
+.artist-menu-toggle:checked ~ .artist-menu-overlay {
+  display: grid;
+}
+
+.artist-menu-overlay-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.artist-menu-nav,
+.artist-menu-work-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  column-gap: 8px;
+  row-gap: 4px;
+  max-width: 620px;
+}
+
+.artist-menu-nav a:not(:last-child)::after {
+  content: "";
+}
+
+.artist-menu-overlay h2 {
+  margin: 18px 0 0;
+  font: inherit;
+}
+
+.artist-menu-work-nav {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.artist-menu-legal {
+  display: flex;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.artist-menu-home {
+  min-height: 42vh;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+
+.artist-menu-home h1,
+.artist-menu-works h1,
+.artist-menu-post h1 {
+  max-width: 760px;
+  margin: 0;
+  font: inherit;
+}
+
+.artist-menu-intro,
+.artist-menu-statement,
+.artist-menu-post,
+.artist-menu-index {
+  max-width: 760px;
+}
+
+.artist-menu-intro p,
+.artist-menu-statement p,
+.artist-menu-post p,
+.artist-menu-index p {
+  margin: 0 0 1em;
+}
+
+.artist-menu-statement {
+  margin: 0 0 56px;
+}
+
+.artist-menu-works h2 {
+  margin: 0 0 12px;
+  font: inherit;
+}
+
 .works-list {
   display: grid;
-  gap: 8px;
+  grid-template-columns: 1fr;
+  max-width: 760px;
 }
 
 .works-list a {
-  border-top: 1px solid #111;
-  padding: 10px 0;
-  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 2px 0;
+}
+
+.works-list small,
+.artist-menu-meta,
+.artist-menu-subtitle,
+.artist-menu-back {
+  color: #555;
+  font: inherit;
+}
+
+.artist-menu-post {
+  padding-top: 74px;
+}
+
+.artist-menu-post .blog-post-content {
+  margin-top: 28px;
+}
+
+.artist-menu-post .blog-post-content h2,
+.artist-menu-post .blog-post-content h3 {
+  font: inherit;
+  margin: 2em 0 1em;
+}
+
+.artist-menu-post .blog-post-content a {
+  text-decoration: underline;
+}
+
+.artist-menu-action {
+  margin: 12px 0 24px;
+}
+
+.artist-menu-action button,
+.artist-menu-theme-console button,
+.artist-menu-theme-console select,
+.family-artist-menu .sticky-theme-picker select,
+.family-artist-menu .sticky-theme-picker button {
+  appearance: none;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font: inherit;
+  padding: 2px 5px;
+}
+
+.artist-menu-theme-console {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 14px 0 26px;
+}
+
+.family-artist-menu .sticky-theme-picker {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid #000;
+  background: #fff;
+  color: #000;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 700px) {
+  .family-artist-menu .theme-shell-frame {
+    padding: 10px 10px 104px;
+  }
+
+  .artist-menu-open {
+    top: 10px;
+    right: 10px;
+  }
+
+  .artist-menu-overlay {
+    padding: 10px 10px 104px;
+  }
+
+  .works-list a {
+    display: block;
+    padding: 4px 0;
+  }
+
+  .works-list small {
+    display: block;
+  }
 }
 
 .family-friendly-hub {

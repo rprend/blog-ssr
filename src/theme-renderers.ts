@@ -428,6 +428,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "experimental-loop") return renderExperimentalLoopPage(ctx, `<article class="experimental-loop-article"><header><span>page</span><h1>${escapeHtml((model as GenericPageModel).heading)}</h1></header><div class="experimental-loop-copy">${(model as GenericPageModel).contentHtml}</div></article>`);
   if (ctx.family === "taste-directory") return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead((model as GenericPageModel).heading, "", "page")}<article class="taste-card taste-page-card"><div class="taste-card-body">${(model as GenericPageModel).contentHtml}</div></article>`, "Browse");
   if (ctx.family === "writer-ledger") return renderWriterLedgerGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "artist-menu") return renderArtistMenuGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1025,7 +1026,22 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "artist-menu") {
-    return `<section class="artist-menu"><button>Menu</button>${homeHeader}<nav>Projects & Collaborations Publications About Contact</nav><div class="works-list">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
+    const works = [
+      ...model.links.map((link) => renderArtistMenuWork(link.url, link.title)),
+      ...model.recentPosts.map((post) => renderArtistMenuWork(post.href, post.title)),
+    ].join("");
+    return renderArtistMenuPage(
+      ctx,
+      `<header class="artist-menu-home">
+        <h1><a href="/">Ryan Prendergast</a></h1>
+        <div class="artist-menu-intro">${model.introHtml}</div>
+      </header>
+      <section class="artist-menu-statement">${model.aboutHtml}</section>
+      <section class="artist-menu-works" aria-labelledby="artist-menu-works-title">
+        <h2 id="artist-menu-works-title">Works</h2>
+        <div class="works-list">${works}</div>
+      </section>`,
+    );
   }
   if (ctx.family === "friendly-hub") {
     return `<section class="friendly-hub">${homeHeader}<nav>Hi · writing · links · contact</nav>${links}</section>`;
@@ -1242,6 +1258,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const posts = model.postsByYear.flatMap((group) => group.posts.map((post, index) => renderTastePostCard(post, index, group.year))).join("");
     return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Browse Writing", model.description, `${model.totalPosts} posts`)}${renderTasteFeedToolbar("Newest", "Recs", model.totalPosts)}<div class="taste-feed">${posts}</div>`, "Browse");
   }
+  if (ctx.family === "artist-menu") {
+    const works = model.postsByYear
+      .flatMap((group) => group.posts.map((post) => renderArtistMenuWork(post.href, post.title, group.year)))
+      .join("");
+    return renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Works</h1><p>${escapeHtml(model.description)}</p><div class="works-list">${works}</div></section>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>${ctx.family === "research-lab" ? "Research" : "Index"}</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1262,6 +1284,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   const meta = `${escapeHtml(model.date)}${model.author ? ` - ${escapeHtml(model.author)}` : ""}`;
   if (ctx.family === "spartan") {
     return `<table class="pg-home pg-article" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><font size="1" color="#666666">${meta}</font>${model.subtitle ? `<p><i>${escapeHtml(model.subtitle)}</i></p>` : ""}<br>${model.contentHtml}</td></tr></tbody></table>`;
+  }
+  if (ctx.family === "artist-menu") {
+    return renderArtistMenuPage(
+      ctx,
+      `<article class="artist-menu-post">
+        <p class="artist-menu-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h1>${escapeHtml(model.title)}</h1>
+        <p class="artist-menu-meta">${meta}</p>
+        ${model.subtitle ? `<p class="artist-menu-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}
+        <div class="blog-post-content">${model.contentHtml}</div>
+      </article>`,
+    );
   }
   if (ctx.family === "manual") {
     return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.title, model.subtitle || "Ryan Prendergast essay", [["Date", meta], ["Path", escapeHtml(model.backHref)]])}${renderManualToc([["#document", "Document"]])}${renderManualRule()}<section id="document" class="manual-entry-body"><h2>Document</h2>${model.contentHtml}</section><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p></article>`;
@@ -1480,6 +1514,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       renderUcozStats(`${model.totalPosts} files`, `${model.months.length} folders`),
     );
   }
+  if (ctx.family === "artist-menu") {
+    const works = model.months
+      .flatMap((month) => month.posts.map((post) => renderArtistMenuWork(post.href, post.title, month.label)))
+      .join("");
+    return renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p><div class="works-list">${works}</div></section>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1539,6 +1579,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<article class="taste-card"><div class="taste-card-body"><p>No entries yet. Be the first to sign the guestbook!</p></div></article>`;
     return `${renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Guestbook", `${model.entries.length} entries.`, "All Asks")}<section class="guestbook-header taste-signup">${button}</section><div class="taste-feed">${tasteEntries}</div>`, "Browse")}${guestbookModalScript()}`;
   }
+  if (ctx.family === "artist-menu") {
+    const artistEntries = model.entries.length
+      ? model.entries.map((entry) => renderArtistMenuWork("#guestbook", entry.name, entry.date)).join("")
+      : renderArtistMenuWork("#guestbook", "No entries yet. Be the first to sign the guestbook!");
+    return `${renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Guestbook</h1><div class="artist-menu-action">${button}</div><div class="works-list">${artistEntries}</div></section>`)}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -1565,6 +1611,23 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     const rows = model.themes.map((theme, index) => renderStudioIndexTextRow(theme.name, `?theme=${theme.slug}`, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, index)).join("");
     return `<section class="studio-index">${renderStudioIndexHeader(ctx, `<p>${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Built", "Planned", "Reference"])}<div class="studio-index-content"><div class="themes-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="studio-index-list">${rows}</div></div></div></section>`;
+  }
+  if (ctx.family === "artist-menu") {
+    const rows = model.themes.map((theme) => renderArtistMenuWork(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status)).join("");
+    return renderArtistMenuPage(
+      ctx,
+      `<section class="artist-menu-works artist-menu-index">
+        <h1>Themes</h1>
+        <div class="themes-console artist-menu-theme-console">
+          <label for="theme-select">Theme</label>
+          <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select>
+          <button type="button" data-theme-prev>Previous</button>
+          <button type="button" data-theme-random>Random</button>
+          <button type="button" data-theme-next>Next</button>
+        </div>
+        <div class="works-list">${rows}</div>
+      </section>`,
+    );
   }
   if (ctx.family === "cargo-cv") {
     const items = model.themes.map((theme) => `<a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> <span>${escapeHtml(theme.status)}</span>`);
@@ -1984,6 +2047,45 @@ function renderPostSummary(post: PostSummaryModel, index: number, ctx: RenderCon
   if (ctx.family === "catalog") return `<a class="catalog-row" href="${post.href}"><span>${index + 1}</span><strong>${escapeHtml(post.title)}</strong><time>${escapeHtml(post.date)}</time></a>`;
   if (ctx.family === "cards" || ctx.family === "grid" || ctx.family === "maximal") return `<article class="theme-card-entry"><a href="${post.href}"><h3>${escapeHtml(post.title)}</h3></a><p>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</p>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</article>`;
   return `<div class="blog-post-item"><a href="${post.href}" class="blog-title">${escapeHtml(post.title)}</a><div class="blog-date">${escapeHtml(post.date)}</div></div>`;
+}
+
+function renderArtistMenuNav(ctx: RenderContext, className = "artist-menu-nav"): string {
+  const item = (href: string, label: string) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`;
+  return `<nav class="${className}" aria-label="Core site areas">
+    ${item("/", "Projects & Collaborations")}
+    ${item("/blog", "Publications")}
+    ${item("/archives", "Works")}
+    ${item("/photos", "Photos")}
+    ${item("/guestbook", "Guestbook")}
+    ${item("/contact", "About")}
+    ${item("/themes", "Themes")}
+  </nav>`;
+}
+
+function renderArtistMenuPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="artist-menu">
+    <input class="artist-menu-toggle" id="artist-menu-toggle" type="checkbox" aria-hidden="true">
+    <label class="artist-menu-open" for="artist-menu-toggle">Menu</label>
+    <aside class="artist-menu-overlay" aria-label="Menu">
+      <div class="artist-menu-overlay-head">
+        <a href="/">Ryan Prendergast</a>
+        <label for="artist-menu-toggle">Close</label>
+      </div>
+      ${renderArtistMenuNav(ctx)}
+      <h2>Works</h2>
+      ${renderArtistMenuNav(ctx, "artist-menu-work-nav")}
+      <div class="artist-menu-legal"><a href="/rss.xml">RSS</a><a href="/contact">Contact</a></div>
+    </aside>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderArtistMenuWork(href: string, title: string, meta = ""): string {
+  return `<a href="${href}"><span>${escapeHtml(title)}</span>${meta ? `<small>${escapeHtml(meta)}</small>` : ""}</a>`;
+}
+
+function renderArtistMenuGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderArtistMenuPage(ctx, `<article class="artist-menu-post"><h1>${escapeHtml(model.heading)}</h1><div class="blog-post-content">${model.contentHtml}</div></article>`);
 }
 
 function guestbookModalScript(): string {
