@@ -3453,19 +3453,21 @@ body {
 }
 
 .family-ucoz-archive .canonical-home-header {
-  background: #f3f3f3;
-  border: 1px solid #999;
-  padding: 8px;
+  background: #f7f9ff;
+  border: 1px solid #8f9fbd;
+  padding: 6px;
 }
 
 .family-ucoz-archive .canonical-home-header h2 {
-  font: bold 20px Tahoma, Arial, sans-serif;
+  color: #1b376b;
+  font: bold 18px Tahoma, Arial, sans-serif;
+  margin: 4px 0;
 }
 
 .family-ucoz-archive .canonical-site-nav {
-  background: #d7e5f5;
-  border: 1px solid #8aa4c0;
-  padding: 4px;
+  background: #dbe6f7;
+  border: 1px solid #9aaed1;
+  padding: 3px 5px;
 }
 
 .family-uncertainty .canonical-home-header {
@@ -4609,30 +4611,282 @@ body {
 }
 
 .family-ucoz-archive {
-  background: #e9edf8;
-  color: #102060;
+  background: #cfd9ee;
+  color: #243754;
   font: 12px Verdana, Arial, sans-serif;
 }
 
-.ucoz-archive {
-  border: 1px solid #8a95bd;
-  background: #fff;
-  padding: 8px;
+.family-ucoz-archive .theme-shell-frame {
+  max-width: none;
+  padding: 10px 0 96px;
 }
 
-.ucoz-top,
-.ucoz-archive nav {
-  background: #d7ddf1;
-  border: 1px solid #9ba6cb;
-  padding: 5px;
+.family-ucoz-archive .theme-shell-main {
+  max-width: none;
+}
+
+.family-ucoz-archive .theme-shell-footer {
+  width: 900px;
+  max-width: calc(100vw - 16px);
+  margin: 8px auto 0;
+  background: #eef3fb;
+  border: 1px solid #8f9fbd;
+  color: #52627d;
+  font-size: 10px;
+  padding: 4px 6px;
+}
+
+.family-ucoz-archive a {
+  color: #26528c;
+  text-decoration: underline;
+}
+
+.family-ucoz-archive a:visited {
+  color: #4b4f86;
+}
+
+.ucoz-archive {
+  width: 900px;
+  max-width: calc(100vw - 16px);
+  margin: 0 auto;
+  background: #f4f7fd;
+  border: 1px solid #7589ad;
+  box-shadow: 0 0 0 1px #ffffff inset;
+}
+
+.ucoz-layout {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ucoz-cap {
+  height: 18px;
+  background: linear-gradient(#617aa5, #49648e);
+  border-bottom: 1px solid #263f67;
+  color: #eef4ff;
+  font: 10px Tahoma, Arial, sans-serif;
+  padding: 2px 8px;
+  text-align: right;
+}
+
+.ucoz-banner {
+  height: 86px;
+  background: linear-gradient(90deg, #e9effa, #b9c8e4 45%, #eef3fb);
+  border-bottom: 1px solid #8398bd;
+  padding: 12px 18px;
+}
+
+.ucoz-banner a {
+  color: #1b376b;
+  display: block;
+  font: bold 28px Tahoma, Arial, sans-serif;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+
+.ucoz-banner span {
+  color: #52627d;
+  display: block;
+  font-size: 11px;
+  margin-top: 5px;
+  text-transform: lowercase;
+}
+
+.ucoz-menu {
+  background: #d7e1f3;
+  border-bottom: 1px solid #8f9fbd;
+  color: #465a7d;
+  font-size: 11px;
+  padding: 5px 8px;
+}
+
+.ucoz-menu a.is-active,
+.ucoz-module a.is-active {
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.ucoz-left {
+  width: 190px;
+  background: #e4ebf7;
+  border-right: 1px solid #8f9fbd;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.ucoz-main {
+  background: #fff;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.ucoz-module {
+  background: #f8fbff;
+  border: 1px solid #9baed0;
   margin-bottom: 8px;
+  padding-bottom: 5px;
+}
+
+.ucoz-module b {
+  background: linear-gradient(#6f89b5, #536f9d);
+  border-bottom: 1px solid #344d76;
+  color: #fff;
+  display: block;
+  font-size: 11px;
+  padding: 4px 6px;
+}
+
+.ucoz-module a,
+.ucoz-module span {
+  border-top: 1px solid #eef3fb;
+  display: block;
+  font-size: 11px;
+  padding: 4px 6px;
+}
+
+.ucoz-breadcrumb {
+  background: #edf2fb;
+  border: 1px solid #b8c6de;
+  color: #62718b;
+  font-size: 11px;
+  margin-bottom: 8px;
+  padding: 5px 7px;
+}
+
+.ucoz-welcome {
+  background: #f7f9ff;
+  border: 1px solid #c5d0e2;
+  margin-bottom: 8px;
+  padding: 6px;
+}
+
+.ucoz-section-title,
+.ucoz-category-head,
+.ucoz-file-head {
+  background: linear-gradient(#e1e9f7, #c7d5eb);
+  border: 1px solid #9baed0;
+  color: #233b66;
+  font-weight: bold;
+  margin: 8px 0 0;
+  padding: 5px 7px;
 }
 
 .ucoz-file {
-  border: 1px solid #c5cbe0;
-  background: #f7f8ff;
-  margin: 8px 0;
+  background: #fbfdff;
+  border: 1px solid #c5d0e2;
+  border-top: 0;
+  margin: 0 0 8px;
+  padding: 7px;
+}
+
+.ucoz-file-title {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  font-weight: bold;
+}
+
+.ucoz-file-meta,
+.ucoz-file-actions {
+  color: #6d7890;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.ucoz-file-desc {
+  color: #29384e;
+  font-size: 11px;
+  line-height: 1.45;
+  margin-top: 6px;
+}
+
+.ucoz-category {
+  margin-bottom: 10px;
+}
+
+.ucoz-category-head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ucoz-file-page {
+  border: 1px solid #9baed0;
+  background: #fbfdff;
+}
+
+.ucoz-file-head {
+  border-width: 0 0 1px;
+  margin: 0;
+}
+
+.ucoz-file-head h2 {
+  font: bold 16px Tahoma, Arial, sans-serif;
+  margin: 0 0 3px;
+}
+
+.ucoz-file-head span,
+.ucoz-subtitle,
+.ucoz-download-box {
+  color: #5c6980;
+  font-size: 11px;
+}
+
+.ucoz-subtitle,
+.ucoz-download-box,
+.ucoz-copy {
   padding: 8px;
+}
+
+.ucoz-download-box {
+  background: #eef3fb;
+  border-bottom: 1px solid #c5d0e2;
+  border-top: 1px solid #c5d0e2;
+}
+
+.ucoz-copy {
+  color: #1f2f46;
+  font: 12px Verdana, Arial, sans-serif;
+  line-height: 1.55;
+}
+
+.family-ucoz-archive .sticky-theme-picker {
+  background: #edf2fb;
+  border-top: 1px solid #7589ad;
+  color: #243754;
+  font: 11px Tahoma, Arial, sans-serif;
+}
+
+.family-ucoz-archive .mini-theme-picker select,
+.family-ucoz-archive .mini-theme-picker button {
+  background: #fff;
+  border: 1px solid #8f9fbd;
+  color: #243754;
+  font: 11px Tahoma, Arial, sans-serif;
+}
+
+@media (max-width: 720px) {
+  .ucoz-layout,
+  .ucoz-layout tbody,
+  .ucoz-layout tr,
+  .ucoz-layout td {
+    display: block;
+    width: auto;
+  }
+
+  .ucoz-left {
+    border-right: 0;
+    border-bottom: 1px solid #8f9fbd;
+  }
+
+  .ucoz-banner {
+    height: auto;
+  }
+
+  .ucoz-banner a {
+    font-size: 22px;
+  }
 }
 
 .family-uncertainty {

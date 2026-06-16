@@ -593,6 +593,50 @@ function renderShellChrome(ctx: RenderContext): { before: string; after: string 
   return { before: "", after: "" };
 }
 
+function renderUcozPage(ctx: RenderContext, title: string, contentHtml: string, crumbs: Array<[string, string]>, sidebarHtml = ""): string {
+  const active = (href: string) => (ctx.currentPage === href ? " class=\"is-active\"" : "");
+  const nav = [
+    ["/", "Главная"],
+    ["/blog", "Блог"],
+    ["/photos", "Фото"],
+    ["/archives", "Каталог файлов"],
+    ["/guestbook", "Гостевая"],
+    ["/contact", "Обратная связь"],
+    ["/themes", "Темы"],
+  ] as const;
+  const breadcrumb = crumbs.map(([label, href]) => `<a href="${href}">${escapeHtml(label)}</a>`).join(" » ");
+  const sidebar = sidebarHtml || renderUcozStats("Ryan Prendergast", ctx.theme.name);
+
+  return `<section class="ucoz-archive" aria-label="${escapeHtml(title)}">
+    <table class="ucoz-layout" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr><td colspan="2" class="ucoz-cap">narod.ru&nbsp;&nbsp; ucoz.ru&nbsp;&nbsp; blogspot.ru</td></tr>
+        <tr><td colspan="2" class="ucoz-banner"><a href="/">Ryan Prendergast</a><span>old portal file archive</span></td></tr>
+        <tr><td colspan="2" class="ucoz-menu">${nav.map(([href, label]) => `<a${active(href)} href="${href}">${label}</a>`).join(" | ")} <a href="/rss.xml">RSS</a></td></tr>
+        <tr>
+          <td class="ucoz-left">
+            <div class="ucoz-module"><b>Меню сайта</b>${nav.map(([href, label]) => `<a${active(href)} href="${href}">${label}</a>`).join("")}<a href="/rss.xml">RSS</a></div>
+            <div class="ucoz-module"><b>Мини-профиль</b><span>Ryan Prendergast</span><span>${escapeHtml(ctx.theme.name)}</span></div>
+            ${sidebar}
+          </td>
+          <td class="ucoz-main">
+            <div class="ucoz-breadcrumb">${breadcrumb}</div>
+            ${contentHtml}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>`;
+}
+
+function renderUcozStats(first: string, second: string): string {
+  return `<div class="ucoz-module"><b>Статистика</b><span>${escapeHtml(first)}</span><span>${escapeHtml(second)}</span><span>online: 1</span></div>`;
+}
+
+function renderUcozFileEntry(title: string, href: string, source: string, date: string, detail: string, index: number): string {
+  return `<div class="ucoz-file"><div class="ucoz-file-title"><img src="/favicon.ico" alt="" width="16" height="16"><a href="${href}">${escapeHtml(title)}</a></div><div class="ucoz-file-meta">Добавил: Ryan | Категория: ${escapeHtml(source)} | Дата: ${escapeHtml(date)} | Просмотров: ${100 + index * 7}</div>${detail ? `<div class="ucoz-file-desc">${escapeHtml(detail)}</div>` : ""}<div class="ucoz-file-actions"><a href="${href}">Подробнее</a> <span>|</span> <a href="${href}">Скачать</a> <span>|</span> <a href="/guestbook">Комментарии (0)</a></div></div>`;
+}
+
 function renderMiniThemePicker(theme: SiteTheme): string {
   const options = [`<option value="original"${theme.slug === "original" ? " selected" : ""}>Original</option>`, ...siteThemes
     .map((candidate) => `<option value="${candidate.slug}"${candidate.slug === theme.slug ? " selected" : ""}>${escapeHtml(candidate.name)}</option>`)
@@ -826,7 +870,19 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "ucoz-archive") {
-    return `<section class="ucoz-archive"><div class="ucoz-top">narod.ru ucoz.ru blogspot.ru</div><nav>Главная | Каталог файлов | Регистрация | Вход</nav>${homeHeader}<h3>Каталог файлов</h3>${links}</section>`;
+    const linkFiles = model.links
+      .map((link, index) => renderUcozFileEntry(link.title, link.url, link.domain, link.date, stripHtml(link.contentHtml), index + 1))
+      .join("");
+    const postFiles = model.recentPosts
+      .map((post, index) => renderUcozFileEntry(post.title, post.href, "Ryan Prendergast", post.date, post.excerpt || post.readTime || "Essay", index + 1))
+      .join("");
+    return renderUcozPage(
+      ctx,
+      "Каталог файлов",
+      `<div class="ucoz-welcome">${homeHeader}</div><div class="ucoz-section-title">Каталог файлов</div>${linkFiles}<div class="ucoz-section-title">Новые материалы</div>${postFiles}`,
+      [["Главная", "/"], ["Каталог файлов", "/archives"]],
+      renderUcozStats(`${model.links.length} links`, `${model.recentPosts.length} essays`),
+    );
   }
   if (ctx.family === "uncertainty") {
     return `<section class="uncertainty"><div class="uncertain-content">${homeHeader}${links}</div></section>`;
@@ -1028,7 +1084,15 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="${ctx.family}"><h2>${ctx.family === "writer-ledger" ? "recently..." : "journal"}</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
   }
   if (ctx.family === "ucoz-archive") {
-    return `<section class="ucoz-archive"><nav>Главная | Каталог файлов | Блог</nav><h2>Материалы сайта</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<div class="ucoz-file"><a href="${post.href}">${escapeHtml(post.title)}</a><br><small>${escapeHtml(post.date)} / ${escapeHtml(group.year)}</small></div>`)).join("")}</section>`;
+    return renderUcozPage(
+      ctx,
+      "Материалы сайта",
+      `<div class="ucoz-section-title">Материалы сайта</div>${model.postsByYear
+        .flatMap((group) => group.posts.map((post, index) => renderUcozFileEntry(post.title, post.href, group.year, post.date, post.readTime || "Essay", index + 1)))
+        .join("")}`,
+      [["Главная", "/"], ["Каталог файлов", "/archives"], ["Блог", "/blog"]],
+      renderUcozStats(`${model.totalPosts} posts`, `${model.postsByYear.length} years`),
+    );
   }
   if (ctx.family === "uncertainty") {
     return `<section class="uncertainty"><h2>Index</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`)).join("")}</section>`;
@@ -1111,6 +1175,15 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       `<article class="fragment-article"><a class="fragment-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="fragment-page-head"><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<time>${meta}</time></header><div class="blog-post-content fragment-copy">${model.contentHtml}</div></article>`,
     );
   }
+  if (ctx.family === "ucoz-archive") {
+    return renderUcozPage(
+      ctx,
+      model.title,
+      `<article class="ucoz-file-page"><div class="ucoz-file-head"><h2>${escapeHtml(model.title)}</h2><span>${meta}</span></div>${model.subtitle ? `<p class="ucoz-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<div class="ucoz-download-box"><span>Материал:</span> <a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></div><div class="blog-post-content ucoz-copy">${model.contentHtml}</div></article>`,
+      [["Главная", "/"], ["Каталог файлов", "/archives"], [model.backLabel, model.backHref]],
+      renderUcozStats(model.date, model.author || "Ryan Prendergast"),
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1181,7 +1254,15 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "ucoz-archive") {
-    return `<section class="ucoz-archive"><h2>Архив файлов</h2>${model.months.map((month) => `<div class="ucoz-file"><b>${escapeHtml(month.label)}</b><br>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("<br>")}</div>`).join("")}</section>`;
+    return renderUcozPage(
+      ctx,
+      "Архив файлов",
+      `<div class="ucoz-section-title">Архив файлов</div>${model.months
+        .map((month) => `<div class="ucoz-category"><div class="ucoz-category-head"><a id="${slugify(month.label)}" href="#${slugify(month.label)}">${escapeHtml(month.label)}</a><span>${month.posts.length}</span></div>${month.posts.map((post, index) => renderUcozFileEntry(post.title, post.href, month.label, post.date, post.readTime || "Post", index + 1)).join("")}</div>`)
+        .join("")}`,
+      [["Главная", "/"], ["Каталог файлов", "/archives"]],
+      renderUcozStats(`${model.totalPosts} files`, `${model.months.length} folders`),
+    );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
