@@ -438,6 +438,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "research-lab") return renderResearchLabGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "room-wall") return renderRoomWallGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "book-microsite") return renderBookMicrositeGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "download-index") return renderDownloadIndexGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1378,7 +1379,17 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "download-index") {
-    return `<section class="download-index">${homeHeader}<table><tbody>${model.links.map((link, index) => `<tr><td>${String(index + 1).padStart(4, "0")}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
+    const rows = [
+      ...model.links.map((link, index) => renderDownloadIndexRow(index + 1, link.title, link.url, link.domain, link.date, link.contentHtml)),
+      ...model.recentPosts.map((post, index) => renderDownloadIndexRow(model.links.length + index + 1, post.title, post.href, post.readTime || "writing", post.date, post.excerpt || "")),
+    ].join("");
+    return renderDownloadIndexPage(
+      ctx,
+      "Ryan Prendergast",
+      `<div class="download-index-intro">${model.introHtml}</div>`,
+      `<section class="download-index-table" aria-label="Index records">${rows}</section>`,
+      `${model.links.length + model.recentPosts.length} records`,
+    );
   }
   if (ctx.family === "visual-index") {
     return `<section class="visual-index">${homeHeader}<div class="visual-rows">${model.links.map((link, index) => `<a href="${link.url}"><span>${2026 - (index % 6)}</span><strong>${escapeHtml(link.title)}</strong><em>${escapeHtml(link.domain)}</em></a>`).join("")}</div></section>`;
@@ -1636,6 +1647,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
         </section>`,
       );
     }
+    if (ctx.family === "download-index") {
+      const rows = model.postsByYear
+        .flatMap((group) => group.posts.map((post, index) => renderDownloadIndexRow(index + 1, post.title, post.href, group.year, post.date, post.excerpt || post.readTime || "")))
+        .join("");
+      return renderDownloadIndexPage(ctx, "Blog", `<p>${escapeHtml(model.description)}</p>`, `<section class="download-index-table" aria-label="Writing records">${rows}</section>`, `${model.totalPosts} records`);
+    }
     return `<section class="${ctx.family}"><h2>Index</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "terminal" || ctx.family === "editor") {
@@ -1872,6 +1889,15 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       model.backHref,
     );
   }
+  if (ctx.family === "download-index") {
+    return renderDownloadIndexPage(
+      ctx,
+      model.title,
+      `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<p>${meta}</p>`,
+      `<article class="blog-post-content download-index-article">${model.contentHtml}</article>`,
+      "text record",
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -2059,6 +2085,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
           <div class="weblog-facets-months">${model.months.map((month) => `<section><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderWeblogFacetsPost(post)).join("")}</section>`).join("")}</div>
         </section>`,
       );
+    }
+    if (ctx.family === "download-index") {
+      const rows = model.months
+        .flatMap((month) => month.posts.map((post, index) => renderDownloadIndexRow(index + 1, post.title, post.href, month.label, post.date, post.readTime || "")))
+        .join("");
+      return renderDownloadIndexPage(ctx, "Archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`, `<section class="download-index-table" aria-label="Archive records">${rows}</section>`, `${model.totalPosts} records`);
     }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -2260,6 +2292,20 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       <div class="theme-filters visual-culture-filters">${model.categoryControlsHtml}</div>
       <div class="visual-culture-contact">${rows}</div>`,
       "visual-culture-themes",
+    );
+  }
+  if (ctx.family === "download-index") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme, index) => renderDownloadIndexRow(index + 1, theme.name, `?theme=${theme.slug}`, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, theme.vibe))
+      .join("");
+    return renderDownloadIndexPage(
+      ctx,
+      "Themes",
+      `<p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      <div class="themes-console download-index-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>`,
+      `<div class="theme-filters download-index-filters">${model.categoryControlsHtml}</div><section class="download-index-table" aria-label="Theme records">${rows}</section>`,
+      `${model.themes.length} records`,
     );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
@@ -2638,6 +2684,48 @@ function renderWeblogFacetsPage(ctx: RenderContext, contentHtml: string): string
     </header>
     ${contentHtml}
   </section>`;
+}
+
+function renderDownloadIndexNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const items = [
+    ["/", "Index"],
+    ["/blog", "Writing"],
+    ["/photos", "Photos"],
+    ["/archives", "Archive"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="download-index-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderDownloadIndexPage(ctx: RenderContext, title: string, detailHtml: string, contentHtml: string, countLabel = ""): string {
+  return `<section class="download-index">
+    <header class="download-index-header">
+      <div class="download-index-top"><a href="/">Ryan Prendergast</a><span>${escapeHtml(countLabel || ctx.theme.name)}</span></div>
+      ${renderDownloadIndexNav(ctx)}
+      <div class="download-index-title"><h1>${escapeHtml(title)}</h1><div>${detailHtml}</div></div>
+    </header>
+    <div class="download-index-tools"><span>All</span><span>Entries</span><span>Downloads</span><span>Traces</span><span>Updated</span></div>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderDownloadIndexRow(index: number, title: string, href: string, source: string, date: string, detail = ""): string {
+  const compact = detail ? stripHtml(detail).slice(0, 140) : "";
+  return `<a class="download-index-row" href="${href}">
+    <span>${String(index).padStart(4, "0")}</span>
+    <strong>${escapeHtml(title)}</strong>
+    <em>${escapeHtml(source)}</em>
+    <time>${escapeHtml(date)}</time>
+    <small>${escapeHtml(compact)}</small>
+  </a>`;
+}
+
+function renderDownloadIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderDownloadIndexPage(ctx, model.heading, `<p>${escapeHtml(ctx.currentPage)}</p>`, `<article class="download-index-article">${model.contentHtml}</article>`, "page record");
 }
 
 function renderWeblogFacetsSidebar(links: LinkEntryModel[], posts: PostSummaryModel[]): string {
