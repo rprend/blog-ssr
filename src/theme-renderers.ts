@@ -434,6 +434,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "portal-gallery") return renderPortalGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "design-repository") return renderDesignRepositoryGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "weblog-facets") return renderWeblogFacetsPage(ctx, renderWeblogFacetsGeneric(model as GenericPageModel, ctx));
+  if (ctx.family === "research-lab") return renderResearchLabGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -678,6 +679,116 @@ function renderSpartanNotice(label: string, html: string, className: string): st
 
 function renderCanonicalHomeHeader(model: HomeModel): string {
   return `<header class="canonical-home-header"><nav class="canonical-site-nav"><a href="/">Linkblog</a><a href="/blog">Blog</a><a href="/photos">Photos</a><a href="/archives">Archives</a><a href="/guestbook">Guestbook</a><a href="/contact">Contact</a><a href="/rss.xml">RSS</a></nav><h2>Ryan Prendergast</h2>${model.introHtml}</header>`;
+}
+
+function renderResearchLabNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const primary = [
+    ["/", "Research"],
+    ["/blog", "Learn"],
+    ["/archives", "News"],
+    ["/contact", "Policy"],
+  ] as Array<[string, string]>;
+  const secondary = [
+    ["/photos", "Photos"],
+    ["/guestbook", "Guestbook"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<header class="research-lab-top">
+    <a class="research-lab-brand" href="/">Ryan Prendergast</a>
+    <nav class="research-lab-primary" aria-label="Core site areas">${primary.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>
+    <nav class="research-lab-secondary" aria-label="Secondary site areas">${secondary.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>
+  </header>`;
+}
+
+function renderResearchLabPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="research-lab">${renderResearchLabNav(ctx)}${contentHtml}</section>`;
+}
+
+function renderResearchLabTeam(title: string, detail: string, href: string): string {
+  return `<article class="research-lab-team"><h3><a href="${href}">${escapeHtml(title)}</a></h3>${detail ? `<p>${escapeHtml(detail)}</p>` : ""}</article>`;
+}
+
+function renderResearchLabCard(href: string, title: string, category: string, date: string, detail: string, featured = false): string {
+  return `<article class="research-lab-card ${featured ? "is-featured" : ""}">
+    <a href="${href}"><span>${escapeHtml(category)}</span>${date ? `<time>${escapeHtml(date)}</time>` : ""}<h3>${escapeHtml(title)}</h3>${detail ? `<p>${escapeHtml(detail)}</p>` : ""}</a>
+  </article>`;
+}
+
+function renderResearchLabPublicationRow(href: string, date: string, category: string, title: string): string {
+  return `<a class="research-lab-publication" href="${href}"><span>${escapeHtml(date)}</span><span>${escapeHtml(category)}</span><strong>${escapeHtml(title)}</strong></a>`;
+}
+
+function renderResearchLabHome(model: HomeModel, ctx: RenderContext): string {
+  const leadLink = model.links[0];
+  const linkCards = model.links
+    .map((link, index) => renderResearchLabCard(link.url, link.title, link.domain || "Link", link.date, stripHtml(link.contentHtml), index === 0))
+    .join("");
+  const publicationRows = [
+    ...model.recentPosts.map((post) => renderResearchLabPublicationRow(post.href, post.date, "Essay", post.title)),
+    ...model.links.slice(0, 8).map((link) => renderResearchLabPublicationRow(link.url, link.date, link.domain || "Link", link.title)),
+  ].join("");
+  return renderResearchLabPage(
+    ctx,
+    `<section class="research-lab-hero">
+      <h1>Research</h1>
+      <div class="research-lab-intro">${model.introHtml}</div>
+    </section>
+    <section class="research-lab-teams" aria-label="Research teams">
+      <p>Research teams:</p>
+      <div>
+        ${renderResearchLabTeam("Linkblog", "", "/")}
+        ${renderResearchLabTeam("Blog", "", "/blog")}
+        ${renderResearchLabTeam("Photos", "", "/photos")}
+        ${renderResearchLabTeam("Archive", "", "/archives")}
+      </div>
+    </section>
+    <section class="research-lab-feature-grid" aria-label="Reports and articles">${linkCards}</section>
+    <section class="research-lab-publications">
+      <h2>Publications</h2>
+      <div class="research-lab-search">Search</div>
+      <div class="research-lab-publication-head"><span>Date</span><span>Category</span><span>Title</span></div>
+      <div class="research-lab-publication-list">${publicationRows}</div>
+    </section>
+    <section class="research-lab-join">
+      <div>${leadLink ? `<h2>${escapeHtml(leadLink.title)}</h2><p>${escapeHtml(stripHtml(leadLink.contentHtml))}</p>` : `<h2>Ryan Prendergast</h2>${model.aboutHtml}`}</div>
+      <a href="/contact">Contact</a>
+    </section>`,
+  );
+}
+
+function renderResearchLabIndex(model: BlogIndexModel, ctx: RenderContext): string {
+  const rows = model.postsByYear
+    .flatMap((group) => group.posts.map((post) => renderResearchLabPublicationRow(post.href, post.date, group.year, post.title)))
+    .join("");
+  const cards = model.postsByYear
+    .flatMap((group) => group.posts.slice(0, 2).map((post, index) => renderResearchLabCard(post.href, post.title, group.year, post.date, post.excerpt || post.readTime || "", index === 0 && group === model.postsByYear[0])))
+    .join("");
+  return renderResearchLabPage(ctx, `<section class="research-lab-section-title"><h1>Research</h1><p>${escapeHtml(model.description)}</p></section><section class="research-lab-feature-grid">${cards}</section><section class="research-lab-publications"><h2>Publications</h2><div class="research-lab-publication-head"><span>Date</span><span>Category</span><span>Title</span></div><div class="research-lab-publication-list">${rows}</div></section>`);
+}
+
+function renderResearchLabArticle(model: BlogPostModel, ctx: RenderContext): string {
+  const meta = `${escapeHtml(model.date)}${model.author ? ` - ${escapeHtml(model.author)}` : ""}`;
+  return renderResearchLabPage(
+    ctx,
+    `<article class="research-lab-article">
+      <a class="research-lab-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a>
+      <header><p>${meta}</p><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<div>${escapeHtml(model.subtitle)}</div>` : ""}</header>
+      <div class="blog-post-content research-lab-copy">${model.contentHtml}</div>
+    </article>`,
+  );
+}
+
+function renderResearchLabArchives(model: ArchiveModel, ctx: RenderContext): string {
+  const rows = model.months
+    .flatMap((month) => month.posts.map((post) => renderResearchLabPublicationRow(post.href, post.date || month.label, month.label, post.title)))
+    .join("");
+  return renderResearchLabPage(ctx, `<section class="research-lab-section-title"><h1>News</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></section><section class="research-lab-publications"><h2>Publications</h2><div class="research-lab-publication-head"><span>Date</span><span>Category</span><span>Title</span></div><div class="research-lab-publication-list">${rows}</div></section>`);
+}
+
+function renderResearchLabGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderResearchLabPage(ctx, `<article class="research-lab-article research-lab-generic"><header><h1>${escapeHtml(model.heading)}</h1></header><div class="research-lab-copy">${model.contentHtml}</div></article>`);
 }
 
 function renderGardenNav(ctx: RenderContext): string {
@@ -1133,7 +1244,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "research-lab") {
-    return `<section class="research-lab"><nav>Research Learn News</nav>${homeHeader}<div class="research-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
+    return renderResearchLabHome(model, ctx);
   }
   if (ctx.family === "visual-culture") {
     return `<section class="visual-culture">${homeHeader}${links}</section>`;
@@ -1362,6 +1473,9 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderPortalPage(ctx, `<header class="portal-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Gallery"}</h1><p>${escapeHtml(model.description)}</p></header><section class="portal-gallery-wall">${entries}</section>`);
   }
+  if (ctx.family === "research-lab") {
+    return renderResearchLabIndex(model, ctx);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "weblog-facets") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
@@ -1376,7 +1490,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
         </section>`,
       );
     }
-    return `<section class="${ctx.family}"><h2>${ctx.family === "research-lab" ? "Research" : "Index"}</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
+    return `<section class="${ctx.family}"><h2>Index</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<section class="terminal-output"><p class="prompt">$ find ./blog -type f</p>${model.postsByYear
@@ -1455,6 +1569,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
         <div class="blog-post-content weblog-facets-copy">${model.contentHtml}</div>
       </article>`,
     );
+  }
+  if (ctx.family === "research-lab") {
+    return renderResearchLabArticle(model, ctx);
   }
   if (ctx.family === "no-css") {
     return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
@@ -1715,6 +1832,9 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       ctx,
       `<header class="design-repository-section-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header>${renderDesignRepositoryCategoryMenu(model.months.slice(0, 10).map((month) => month.label))}<ol class="design-repository-records">${records}</ol>`,
     );
+  }
+  if (ctx.family === "research-lab") {
+    return renderResearchLabArchives(model, ctx);
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "weblog-facets") {
