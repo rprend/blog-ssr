@@ -416,6 +416,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "cargo-cv") return renderCargoCvGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "artist-ledger") return renderArtistLedgerGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "garden-notebook") return renderGardenGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "fragment-journal") return renderFragmentGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -745,7 +746,10 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "fragment-journal") {
-    return `<section class="fragment-journal">${homeHeader}<nav>about playlists journal notes library poetry archive</nav><div class="latest-columns"><section><h3>latest posts</h3>${posts}</section><section><h3>latest notes</h3>${links}</section></div></section>`;
+    return renderFragmentPage(
+      ctx,
+      `<header class="fragment-hero"><h1><a href="/">Ryan Prendergast</a></h1><div class="fragment-intro">${model.introHtml}</div></header><section class="fragment-latest" aria-label="Latest posts and notes"><div><h2>latest posts</h2>${renderFragmentPostList(model.recentPosts)}</div><div><h2>latest notes</h2>${renderFragmentLinkList(model.links)}</div></section>`,
+    );
   }
   if (ctx.family === "ucoz-archive") {
     return `<section class="ucoz-archive"><div class="ucoz-top">narod.ru ucoz.ru blogspot.ru</div><nav>Главная | Каталог файлов | Регистрация | Вход</nav>${homeHeader}<h3>Каталог файлов</h3>${links}</section>`;
@@ -941,6 +945,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return renderCargoCvPage(ctx, "Writing", `<h2>Lifeworks:</h2>${renderCargoCvList(items)}<p class="cargo-cv-note">${escapeHtml(model.description)}</p>`);
   }
   if (["fragment-journal", "writer-ledger", "experimental-loop"].includes(ctx.family)) {
+    if (ctx.family === "fragment-journal") {
+      return renderFragmentPage(
+        ctx,
+        `<header class="fragment-page-head"><h1>journal</h1><p>${escapeHtml(model.description)}</p></header>${model.postsByYear.map((group) => `<section class="fragment-year"><h2>${escapeHtml(group.year)}</h2>${renderFragmentPostList(group.posts)}</section>`).join("")}`,
+      );
+    }
     return `<section class="${ctx.family}"><h2>${ctx.family === "writer-ledger" ? "recently..." : "journal"}</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
   }
   if (ctx.family === "ucoz-archive") {
@@ -1021,6 +1031,12 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "garden-notebook") {
     return renderGardenPage(ctx, `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="garden-meta">${meta}</p><div class="blog-post-content garden-copy">${model.contentHtml}</div>`);
   }
+  if (ctx.family === "fragment-journal") {
+    return renderFragmentPage(
+      ctx,
+      `<article class="fragment-article"><a class="fragment-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="fragment-page-head"><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<time>${meta}</time></header><div class="blog-post-content fragment-copy">${model.contentHtml}</div></article>`,
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1079,6 +1095,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return renderCargoCvPage(ctx, "Archive", `<h2>Lifeworks:</h2>${renderCargoCvList(items)}<div class="cargo-cv-small-list">${months}</div>`);
   }
   if (["fragment-journal", "writer-ledger", "experimental-loop", "briefing", "taste-directory", "bookmaker-card", "uncertainty"].includes(ctx.family)) {
+    if (ctx.family === "fragment-journal") {
+      return renderFragmentPage(
+        ctx,
+        `<header class="fragment-page-head"><h1>archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header>${model.months.map((month) => `<section class="fragment-year"><h2>${escapeHtml(month.label)}</h2>${renderFragmentPostList(month.posts)}</section>`).join("")}`,
+      );
+    }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "ucoz-archive") {
@@ -1338,6 +1360,38 @@ function renderArtistLedgerRow(date: string, href: string, title: string, type: 
 
 function renderArtistLedgerGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return `<article class="artist-ledger artist-ledger-page">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>${escapeHtml(model.heading)}</h2><div class="artist-ledger-copy">${model.contentHtml}</div></section></article>`;
+}
+
+function renderFragmentNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const items = [
+    ["/contact", "about"],
+    ["/photos", "playlists"],
+    ["/blog", "journal"],
+    ["/", "notes"],
+    ["/archives", "library"],
+    ["/guestbook", "poetry"],
+    ["/archives", "archive"],
+    ["/rss.xml", "rss"],
+    ["/themes", "themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="fragment-menu" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}</nav>`;
+}
+
+function renderFragmentPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="fragment-journal">${renderFragmentNav(ctx)}${contentHtml}</section>`;
+}
+
+function renderFragmentPostList(posts: PostSummaryModel[]): string {
+  return `<ol class="fragment-list">${posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <time>${escapeHtml(post.date)}</time>` : ""}</li>`).join("")}</ol>`;
+}
+
+function renderFragmentLinkList(links: LinkEntryModel[]): string {
+  return `<ol class="fragment-list fragment-notes">${links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a>${link.domain ? ` <span>${escapeHtml(link.domain)}</span>` : ""}${link.contentHtml ? `<div>${link.contentHtml}</div>` : ""}</li>`).join("")}</ol>`;
+}
+
+function renderFragmentGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderFragmentPage(ctx, `<article class="fragment-article"><header class="fragment-page-head"><h1>${escapeHtml(model.heading)}</h1></header><div class="fragment-copy">${model.contentHtml}</div></article>`);
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {

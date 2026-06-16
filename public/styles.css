@@ -3894,23 +3894,256 @@ body {
 }
 
 .family-fragment-journal {
-  background: #fbfaf7;
-  color: #222;
-  font-family: Georgia, "Times New Roman", serif;
+  --theme-bg: #fbfaf4;
+  --theme-text: #27231f;
+  background: #fbfaf4;
+  color: #27231f;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 17px;
+  line-height: 1.42;
 }
 
-.fragment-journal nav {
+.family-fragment-journal .theme-shell-frame {
+  width: min(860px, calc(100vw - 34px));
+  margin: 22px auto 92px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-fragment-journal .theme-shell-main {
+  padding: 0;
+}
+
+.family-fragment-journal .theme-shell-footer {
+  display: none;
+}
+
+.family-fragment-journal .sticky-theme-picker {
+  background: rgba(251, 250, 244, .94);
+  border-top: 1px solid #d8d1c6;
+  box-shadow: none;
+  color: #4c4740;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.family-fragment-journal .mini-theme-picker select,
+.family-fragment-journal .mini-theme-picker button {
+  min-height: 28px;
+  border: 1px solid #bdb4a7;
+  border-radius: 0;
+  background: #fffdf8;
+  color: #27231f;
+  font: 13px/1.2 Georgia, "Times New Roman", Times, serif;
+}
+
+.fragment-journal {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2px 0 28px;
+}
+
+.fragment-journal a {
+  color: #594e46;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.fragment-journal a:hover,
+.fragment-journal a.is-active {
+  color: #111;
+}
+
+.fragment-menu {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 12px;
+  gap: 0 13px;
+  margin: 0 0 clamp(42px, 9vw, 86px);
+  color: #7b7368;
+  font-size: 15px;
+  line-height: 1.45;
+  text-transform: lowercase;
 }
 
-.latest-columns {
+.fragment-menu a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fragment-menu a:hover,
+.fragment-menu a.is-active {
+  color: #27231f;
+  text-decoration: underline;
+}
+
+.fragment-hero {
+  max-width: 610px;
+  margin-bottom: clamp(42px, 8vw, 76px);
+}
+
+.fragment-hero h1,
+.fragment-page-head h1 {
+  margin: 0 0 14px;
+  color: #211d19;
+  font: 400 clamp(34px, 7vw, 68px)/.96 Georgia, "Times New Roman", Times, serif;
+  letter-spacing: 0;
+  text-transform: lowercase;
+}
+
+.fragment-hero h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fragment-intro,
+.fragment-page-head p {
+  max-width: 560px;
+  color: #4c4740;
+}
+
+.fragment-intro p,
+.fragment-page-head p,
+.fragment-copy p,
+.fragment-copy li {
+  margin: 0 0 1em;
+}
+
+.fragment-latest {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+  gap: clamp(30px, 7vw, 78px);
+  align-items: start;
+}
+
+.fragment-latest h2,
+.fragment-year h2 {
+  margin: 0 0 12px;
+  color: #7d756a;
+  font: 400 15px/1.2 Georgia, "Times New Roman", Times, serif;
+  text-transform: lowercase;
+}
+
+.fragment-list {
+  margin: 0 0 32px;
+  padding: 0;
+  list-style: none;
+}
+
+.fragment-list li {
+  position: relative;
+  margin: 0 0 11px;
+  padding-left: 18px;
+}
+
+.fragment-list li::before {
+  content: "§";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #b9aea0;
+  font-size: 13px;
+}
+
+.fragment-list time,
+.fragment-list span {
+  color: #8a8277;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.fragment-notes li {
+  margin-bottom: 19px;
+}
+
+.fragment-notes div {
+  max-width: 420px;
+  margin-top: 4px;
+  color: #5d574f;
+  font-size: 15px;
+  line-height: 1.38;
+}
+
+.fragment-notes div p {
+  margin: 0 0 .55em;
+}
+
+.fragment-page-head {
+  margin-bottom: 32px;
+}
+
+.fragment-page-head time,
+.fragment-back {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: #81796f;
+  font-size: 14px;
+}
+
+.fragment-year {
+  margin: 0 0 28px;
+}
+
+.fragment-article {
+  max-width: 660px;
+}
+
+.fragment-copy {
+  color: #292520;
+  font-size: 18px;
+  line-height: 1.58;
+}
+
+.fragment-copy h2,
+.fragment-copy h3 {
+  margin: 1.65em 0 .45em;
+  font: 400 24px/1.15 Georgia, "Times New Roman", Times, serif;
+  text-transform: lowercase;
+}
+
+.fragment-copy blockquote {
+  margin: 1.35em 0;
+  padding-left: 18px;
+  border-left: 1px solid #cfc6ba;
+  color: #5b554d;
+}
+
+.fragment-copy img {
+  max-width: 100%;
+  height: auto;
+}
+
+.fragment-copy pre {
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid #d9d1c5;
+  background: #fffdf8;
+  font-size: 14px;
+}
+
+@media (max-width: 680px) {
+  .family-fragment-journal {
+    font-size: 16px;
+  }
+
+  .family-fragment-journal .theme-shell-frame {
+    width: min(100% - 24px, 760px);
+    margin-top: 16px;
+  }
+
+  .fragment-menu {
+    margin-bottom: 38px;
+    gap: 0 10px;
+  }
+
+  .fragment-latest {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .fragment-copy {
+    font-size: 17px;
+  }
 }
 
 .family-ucoz-archive {
