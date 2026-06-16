@@ -445,6 +445,10 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "data-portfolio") return renderDataPortfolioGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cheap-manifesto") return renderCheapManifestoGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "no-css") {
+    const generic = model as GenericPageModel;
+    return `<article><h2>${escapeHtml(generic.heading)}</h2>${generic.contentHtml}</article>`;
+  }
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -477,6 +481,7 @@ function renderAquaShell<T extends PageModel>(options: RenderPageOptions<T>, con
 
 function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, content: string, ctx: RenderContext): string {
   const description = options.description || "Ryan Prendergast's personal website and blog";
+  const navigation = [...ctx.navItems, { href: "/themes", label: "Themes", active: ctx.currentPage === "/themes" }];
   return `<!DOCTYPE html>
 <html lang="en" data-theme="${escapeHtml(options.theme.slug)}">
 <head>
@@ -490,12 +495,18 @@ function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, co
 <body class="theme-layout theme-${escapeHtml(options.theme.slug)} family-${ctx.family} ${options.bodyClass || ""}">
   <header>
     <h1><a href="/">Ryan Prendergast</a></h1>
-    <nav>${ctx.navItems.map((item) => `<a href="${item.href}">${escapeHtml(item.label)}</a>`).join(" | ")}</nav>
+    <nav aria-label="Core site areas">
+      <ul>
+        ${navigation.map((item) => `<li><a${item.active ? ` aria-current="page"` : ""} href="${item.href}">${escapeHtml(item.label)}</a></li>`).join("")}
+      </ul>
+    </nav>
     <hr>
   </header>
   <main>${content}</main>
   <hr>
-  <footer><p><a href="/rss.xml">RSS</a></p></footer>
+  <footer>
+    <p><a href="/rss.xml">RSS</a></p>
+  </footer>
   <div style="position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #000;padding:8px;z-index:9999">${renderMiniThemePicker(options.theme)}</div>
   <script src="/theme-system.js" defer></script>
 </body>
@@ -1216,6 +1227,17 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Monday, June 15", `${model.links.length} link entries · ${model.recentPosts.length} recent essays`)}<section class="scoreboard-identity"><h2>Ryan Prendergast</h2><div>${model.introHtml}</div></section><h3>Linkblog</h3><nav class="scoreboard-subnav"><a href="/">Schedule</a><a href="/archives">Standings</a><a href="/blog">Teams</a></nav><div class="scoreboard-box-grid">${boxes}</div><h3>Entries</h3>${renderScoreboardTable(["#", "Date", "Entry", "Source"], rows)}<h3>Recent Essays</h3>${renderScoreboardTable(["Date", "Essay", "Status"], model.recentPosts.map((post) => [escapeHtml(post.date), `<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(post.readTime || "Final")]))}</section>`;
   }
 
+  if (ctx.family === "no-css") {
+    return `<article>
+      <h2>Ryan Prendergast</h2>
+      ${model.introHtml}
+      <h2>Links</h2>
+      <ul>${model.links.map((link) => `<li><p><a href="${link.url}">${escapeHtml(link.title)}</a></p><p><small>${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</small></p>${link.contentHtml}</li>`).join("")}</ul>
+      <h2>Recent Essays</h2>
+      <ul>${model.recentPosts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>
+    </article>`;
+  }
+
   if (ctx.family === "archive-index") {
     const sourceCounts = countBy(model.links.map((link) => link.domain));
     const linkRows = model.links.map((link) => renderArchiveIndexRow(link.title, link.url, link.domain, link.date, stripHtml(link.contentHtml))).join("");
@@ -1750,6 +1772,13 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   if (ctx.family === "manual") {
     return `<article class="manual-page">${renderManualHeader(ctx, "Blog Index", model.description, [["Entries", String(model.totalPosts)], ["Years", model.yearRange ? `${model.yearRange[0]}-${model.yearRange[1]}` : ""]])}${renderManualToc(model.postsByYear.map((group) => [`#year-${group.year}`, group.year]))}${renderManualRule()}<pre>find ./essays -type f</pre>${model.postsByYear.map((group) => `<section id="year-${group.year}" class="manual-year"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
   }
+  if (ctx.family === "no-css") {
+    return `<section>
+      <h2>Blog</h2>
+      <p>${escapeHtml(model.description)}</p>
+      ${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>`).join("")}
+    </section>`;
+  }
   if (ctx.family === "scoreboard") {
     const yearTables = model.postsByYear
       .map((group) => {
@@ -1766,9 +1795,6 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "art-index") {
     return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>selected text</h2><div class="art-index-chronology">${model.postsByYear.map((group) => `<div class="art-index-year">${escapeHtml(group.year)}</div>${group.posts.map((post, index) => renderArtIndexRow(group.year, post.href, post.title, post.readTime || post.date, index < 2 ? "new" : "")).join("")}`).join("")}</div>${renderArtIndexFooter(`<p>${escapeHtml(model.description)}</p>`)}</section>`;
-  }
-  if (ctx.family === "no-css") {
-    return `<h2>Blog</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> (${escapeHtml(post.date)})</li>`).join("")}</ul>`).join("")}`;
   }
   if (ctx.family === "research-sidenotes") {
     return `<article class="research-page"><h2>Essays</h2><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><span class="sidenote">${escapeHtml(post.date)} · ${post.readTime || ""}</span></p>`).join("")}</section>`).join("")}</article>`;
@@ -2814,6 +2840,18 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       <div class="theme-filters visual-index-filters">${model.categoryControlsHtml}</div>
       ${renderVisualIndexGroupedSection("Themes", records)}`,
     );
+  }
+  if (ctx.family === "no-css") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<li><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> <small>${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)} / ${escapeHtml(theme.vibe)}</small></li>`)
+      .join("");
+    return `<section>
+      <h2>Themes</h2>
+      <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      <form class="themes-console"><p><label for="theme-select">Theme</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>Previous</button> <button type="button" data-theme-random>Random</button> <button type="button" data-theme-next>Next</button></p></form>
+      <ul>${rows}</ul>
+    </section>`;
   }
   if (ctx.family === "html-bulletin") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
