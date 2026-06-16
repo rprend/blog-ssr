@@ -465,6 +465,10 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "forecast-report") return renderForecastReportGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
   if (ctx.family === "feral-essay") return renderFeralPage(ctx, (model as GenericPageModel).heading, `<div class="feral-copy">${(model as GenericPageModel).contentHtml}</div>`, "Page");
+  if (ctx.family === "conversational-minimal") {
+    const generic = model as GenericPageModel;
+    return renderConversationalMinimalPage(ctx, `<article><h2>${escapeHtml(generic.heading)}</h2><div class="conversational-minimal-copy">${generic.contentHtml}</div></article>`);
+  }
   if (ctx.family === "now-directory") {
     const generic = model as GenericPageModel;
     return renderNowDirectoryPage(ctx, `<article><h2>${escapeHtml(generic.heading)}</h2>${generic.contentHtml}</article>`);
@@ -2163,7 +2167,25 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "conversational-minimal") {
-    return `<section class="conversational-minimal">${homeHeader}<nav>essays books projects now contact</nav>${posts}${links}</section>`;
+    return renderConversationalMinimalPage(
+      ctx,
+      `<header class="conversational-minimal-home">
+        ${homeHeader}
+      </header>
+      <section>
+        <h2>me in 10 seconds</h2>
+        <div class="conversational-minimal-copy">${model.introHtml}${model.aboutHtml}</div>
+      </section>
+      <section>
+        <h2><a href="/blog">newest articles</a></h2>
+        <ul class="conversational-minimal-list">${model.recentPosts.map((post) => `<li>${post.date ? `<time>${escapeHtml(post.date)}</time> ` : ""}<a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>
+        <p>... and <a href="/blog">more here</a>.</p>
+      </section>
+      <section>
+        <h2>projects</h2>
+        <dl class="conversational-minimal-projects">${model.links.map((link) => `<dt><a href="${link.url}">${escapeHtml(link.title)}</a></dt><dd><span>${escapeHtml(link.domain)}</span>${link.contentHtml}</dd>`).join("")}</dl>
+      </section>`,
+    );
   }
   if (ctx.family === "founder-index") {
     return `<section class="founder-index">${homeHeader}<nav>advice blog bookshelf culture labs progress questions</nav><div class="founder-columns">${["Writing", "Links", "Projects"].map((heading) => `<section><h3>${heading}</h3>${links}</section>`).join("")}</div></section>`;
@@ -2217,6 +2239,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .map((group) => `<h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => `<li><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>`)
       .join("");
     return renderNowDirectoryPage(ctx, `<article><h2>Blog</h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${entries}</article>`);
+  }
+  if (ctx.family === "conversational-minimal") {
+    const groups = model.postsByYear
+      .map((group) => `<section><h2>${escapeHtml(group.year)}</h2><ul class="conversational-minimal-list">${group.posts.map((post) => `<li>${post.date ? `<time>${escapeHtml(post.date)}</time> ` : ""}<a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul></section>`)
+      .join("");
+    return renderConversationalMinimalPage(ctx, `<h2><a href="/blog">articles</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${groups}`);
   }
   if (ctx.family === "no-css") {
     return `<section>
@@ -2891,6 +2919,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "now-directory") {
     return renderNowDirectoryPage(ctx, `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<small>${meta}</small><div class="blog-post-content">${model.contentHtml}</div></article>`);
   }
+  if (ctx.family === "conversational-minimal") {
+    return renderConversationalMinimalPage(
+      ctx,
+      `<article class="conversational-minimal-article">
+        <p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h2>${escapeHtml(model.title)}</h2>
+        ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
+        <p><small>${meta}</small></p>
+        <div class="blog-post-content">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
   return `<article class="theme-post"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="entry-meta">${meta}</p><div class="blog-post-content">${model.contentHtml}</div></article>`;
 }
 
@@ -2912,6 +2952,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .map((month) => `<h2>${escapeHtml(month.label)}</h2><ul>${month.posts.map((post) => `<li><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small></li>`).join("")}</ul>`)
       .join("");
     return renderNowDirectoryPage(ctx, `<article><h2>Archives</h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}</article>`);
+  }
+  if (ctx.family === "conversational-minimal") {
+    const months = model.months
+      .map((month) => `<section id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2><ul class="conversational-minimal-list">${month.posts.map((post) => `<li>${post.date ? `<time>${escapeHtml(post.date)}</time> ` : ""}<a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` <small>${escapeHtml(post.readTime)}</small>` : ""}</li>`).join("")}</ul></section>`)
+      .join("");
+    return renderConversationalMinimalPage(ctx, `<h2><a href="/archives">archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
   if (ctx.family === "archive-index") {
     const monthCounts = new Map(model.months.map((month) => [month.label, month.posts.length]));
@@ -3318,6 +3364,19 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
 }
 
 function renderThemes(model: ThemesModel, ctx: RenderContext): string {
+  if (ctx.family === "conversational-minimal") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<li><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> <small>${theme.slug === ctx.theme.slug ? "active" : `${escapeHtml(theme.status)} / ${escapeHtml(theme.vibe)}`}</small></li>`)
+      .join("");
+    return renderConversationalMinimalPage(
+      ctx,
+      `<h2><a href="/themes">themes</a></h2>
+      <p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      <form class="themes-console conversational-minimal-console"><p><label for="theme-select">Theme</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>Previous</button> <button type="button" data-theme-random>Random</button> <button type="button" data-theme-next>Next</button></p></form>
+      <ul class="conversational-minimal-list">${rows}</ul>`,
+    );
+  }
   if (ctx.family === "cheap-manifesto") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     const rows = model.themes
@@ -3950,6 +4009,30 @@ function renderNowDirectoryNav(ctx: RenderContext): string {
 
 function renderNowDirectoryPage(ctx: RenderContext, contentHtml: string): string {
   return `<section class="now-directory"><header><h1><a href="/">Ryan Prendergast</a></h1>${renderNowDirectoryNav(ctx)}</header>${contentHtml}</section>`;
+}
+
+function renderConversationalMinimalNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? ` aria-current="page"` : "");
+  const items = [
+    ["/", "me"],
+    ["/blog", "articles"],
+    ["/photos", "photos"],
+    ["/archives", "archives"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/themes", "themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="conversational-minimal-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a${active(href)} href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
+}
+
+function renderConversationalMinimalPage(ctx: RenderContext, contentHtml: string): string {
+  return `<main class="conversational-minimal">
+    <header class="conversational-minimal-site-head">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+      ${renderConversationalMinimalNav(ctx)}
+    </header>
+    ${contentHtml}
+  </main>`;
 }
 
 function renderUncertaintyNav(ctx: RenderContext): string {

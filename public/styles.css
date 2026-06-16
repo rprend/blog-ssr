@@ -12971,9 +12971,179 @@ body {
   box-shadow: none;
 }
 
-.family-conversational-minimal .theme-shell-frame, .family-founder-index .theme-shell-frame { max-width: 760px; background: #fff; border: 0; box-shadow: none; }
-.conversational-minimal { font-family: Arial, sans-serif; line-height: 1.55; }
-.conversational-minimal h2 { font-size: 40px; font-weight: 400; }
+.family-conversational-minimal {
+  --theme-bg: #fff;
+  --theme-text: #111;
+  background: #fff;
+  color: #111;
+  padding: 0 0 72px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+  line-height: 1.48;
+}
+
+.family-conversational-minimal .theme-shell-frame {
+  width: auto;
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 16px 20px 36px;
+  background: #fff;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-founder-index .theme-shell-frame { max-width: 760px; background: #fff; border: 0; box-shadow: none; }
+
+.conversational-minimal {
+  color: #111;
+}
+
+.conversational-minimal-site-head {
+  margin: 0 0 1.2em;
+}
+
+.conversational-minimal-site-head h1,
+.conversational-minimal h2,
+.conversational-minimal h3 {
+  margin: 0 0 .55em;
+  color: #111;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.18;
+}
+
+.conversational-minimal-site-head h1 {
+  font-size: 2em;
+}
+
+.conversational-minimal h2 {
+  margin-top: 1.45em;
+  font-size: 1.42em;
+}
+
+.conversational-minimal h3 {
+  margin-top: 1.2em;
+  font-size: 1.08em;
+}
+
+.conversational-minimal a,
+.family-conversational-minimal .theme-shell-footer a {
+  color: #00e;
+  text-decoration: underline;
+}
+
+.conversational-minimal a:visited,
+.family-conversational-minimal .theme-shell-footer a:visited {
+  color: #551a8b;
+}
+
+.conversational-minimal a[aria-current="page"] {
+  color: #111;
+  font-weight: 700;
+  text-decoration-thickness: 2px;
+}
+
+.conversational-minimal-nav {
+  display: block;
+  margin: .4em 0 1.2em;
+  font-size: .95em;
+  line-height: 1.8;
+}
+
+.conversational-minimal-nav a {
+  margin-right: .45em;
+}
+
+.conversational-minimal p,
+.conversational-minimal blockquote,
+.conversational-minimal li,
+.conversational-minimal dd {
+  margin: 0 0 .72em;
+}
+
+.conversational-minimal-copy > :first-child,
+.conversational-minimal-article .blog-post-content > :first-child {
+  margin-top: 0;
+}
+
+.conversational-minimal-list {
+  margin: 0 0 1.2em;
+  padding-left: 1.35em;
+}
+
+.conversational-minimal-list li {
+  padding-left: .05em;
+}
+
+.conversational-minimal-list time,
+.conversational-minimal small,
+.conversational-minimal-projects span {
+  color: #555;
+  font-size: .88em;
+}
+
+.conversational-minimal-list p {
+  margin: .15em 0 .8em;
+}
+
+.conversational-minimal-projects {
+  margin: 0;
+}
+
+.conversational-minimal-projects dt {
+  margin: .65em 0 .1em;
+}
+
+.conversational-minimal-projects dd {
+  margin-left: 1.4em;
+}
+
+.conversational-minimal-projects dd p {
+  display: inline;
+}
+
+.conversational-minimal img {
+  max-width: 100%;
+  height: auto;
+}
+
+.conversational-minimal-console {
+  margin: 1em 0;
+}
+
+.conversational-minimal-console select,
+.conversational-minimal-console button,
+.family-conversational-minimal .mini-theme-picker select,
+.family-conversational-minimal .mini-theme-picker button {
+  border: 1px solid #888;
+  border-radius: 0;
+  background: #fff;
+  color: #111;
+  font: 14px Georgia, "Times New Roman", Times, serif;
+}
+
+.family-conversational-minimal .theme-shell-footer {
+  max-width: 40em;
+  margin: 1.6em auto 0;
+  padding: 0 20px 24px;
+  border-top: 0;
+  color: #555;
+  font: 14px Georgia, "Times New Roman", Times, serif;
+}
+
+.family-conversational-minimal .theme-utility-footer > div,
+.family-conversational-minimal .theme-shell-footer .theme-shell-nav {
+  display: none;
+}
+
+.family-conversational-minimal .sticky-theme-picker {
+  background: #fff;
+  border-top: 1px solid #ccc;
+  box-shadow: none;
+  color: #111;
+  font: 14px Georgia, "Times New Roman", Times, serif;
+}
 .now-directory {
   color: #111;
 }
@@ -13104,7 +13274,7 @@ body {
   color: #111;
   font: 14px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-.conversational-minimal nav, .founder-index nav { display: flex; gap: 12px; flex-wrap: wrap; margin: 18px 0; }
+.founder-index nav { display: flex; gap: 12px; flex-wrap: wrap; margin: 18px 0; }
 .founder-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .founder-columns section { border-top: 1px solid #111; padding-top: 10px; }
 
