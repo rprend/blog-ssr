@@ -446,6 +446,10 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cheap-manifesto") return renderCheapManifestoGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "performance-club") return renderPerformanceClubGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "forum-frontpage") {
+    const generic = model as GenericPageModel;
+    return renderForumFrontpageShell(ctx, `<article class="forum-frontpage-page"><h1>${escapeHtml(generic.heading)}</h1><div class="forum-frontpage-copy">${generic.contentHtml}</div></article>`, generic.heading);
+  }
   if (ctx.family === "recurse-joy") {
     const generic = model as GenericPageModel;
     return renderRecurseJoyPage(ctx, `<article class="recurse-joy-page"><h2>${escapeHtml(generic.heading)}</h2><div class="recurse-joy-copy">${generic.contentHtml}</div></article>`, "Page");
@@ -2092,7 +2096,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "forum-frontpage") {
-    return `<section class="forum-frontpage"><aside>Recent Recommended Concepts Library</aside><main>${homeHeader}${model.links.map((link, index) => `<article><span>${index + 1}</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${escapeHtml(link.domain)} · ${escapeHtml(link.date)}</p></article>`).join("")}</main></section>`;
+    return renderForumFrontpageHome(model, ctx);
   }
   if (ctx.family === "essay-blogroll") {
     return `<section class="essay-blogroll"><main>${homeHeader}${posts}${links}</main><aside><h3>Posts</h3><a href="/blog">Archives</a><a href="/rss.xml">Feed</a><h3>Links</h3>${model.links.slice(0, 6).map((link) => `<a href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</aside></section>`;
@@ -3849,6 +3853,82 @@ function renderBriefingHome(model: HomeModel, ctx: RenderContext): string {
     </section>
     <section class="briefing-section-head"><span>Links</span><h2>Latest</h2></section>
     <div class="briefing-grid">${moreLinks.map((link) => `<article><span>${escapeHtml(link.domain)}</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${escapeHtml(stripHtml(link.contentHtml))}</p></article>`).join("")}</div>`,
+  );
+}
+
+function renderForumFrontpageNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const items = [
+    ["/", "Frontpage"],
+    ["/blog", "Recent"],
+    ["/archives", "Archive"],
+    ["/photos", "Photos"],
+    ["/guestbook", "Community"],
+    ["/contact", "About"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="forum-frontpage-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderForumFrontpageShell(ctx: RenderContext, contentHtml: string, section = "Frontpage", railHtml = ""): string {
+  const rail =
+    railHtml ||
+    `<section><h2>Navigation</h2><a href="/blog">Recent essays</a><a href="/archives">Archives</a><a href="/photos">Photos</a><a href="/contact">Contact</a></section>
+    <section><h2>Library</h2><a href="/themes">Themes</a><a href="/rss.xml">RSS feed</a><a href="/guestbook">Guestbook</a></section>`;
+  return `<section class="forum-frontpage">
+    <header class="forum-frontpage-topbar">
+      <a class="forum-frontpage-logo" href="/">Ryan Prendergast</a>
+      ${renderForumFrontpageNav(ctx)}
+      <a class="forum-frontpage-login" href="/contact">Contact</a>
+    </header>
+    <div class="forum-frontpage-layout">
+      <aside class="forum-frontpage-sidebar" aria-label="Forum sections">
+        <a class="${ctx.currentPage === "/" ? "is-active" : ""}" href="/">Featured</a>
+        <a class="${ctx.currentPage === "/blog" ? "is-active" : ""}" href="/blog">Recent</a>
+        <a class="${ctx.currentPage === "/archives" ? "is-active" : ""}" href="/archives">All Posts</a>
+        <a class="${ctx.currentPage === "/photos" ? "is-active" : ""}" href="/photos">Photos</a>
+        <a class="${ctx.currentPage === "/themes" ? "is-active" : ""}" href="/themes">Concepts</a>
+        <a class="${ctx.currentPage === "/guestbook" ? "is-active" : ""}" href="/guestbook">Open Thread</a>
+      </aside>
+      <main class="forum-frontpage-main" aria-label="${escapeHtml(section)}">${contentHtml}</main>
+      <aside class="forum-frontpage-rail" aria-label="Secondary navigation">${rail}</aside>
+    </div>
+  </section>`;
+}
+
+function renderForumFrontpagePost(href: string, title: string, meta: string, excerpt: string, index: number): string {
+  const score = 42 - (index % 8) * 3;
+  return `<article class="forum-frontpage-post">
+    <div class="forum-frontpage-score"><strong>${score}</strong><span>${index + 1}</span></div>
+    <div>
+      <h3><a href="${href}">${escapeHtml(title)}</a></h3>
+      <p class="forum-frontpage-meta">${escapeHtml(meta)}</p>
+      ${excerpt ? `<p class="forum-frontpage-excerpt">${escapeHtml(stripHtml(excerpt))}</p>` : ""}
+    </div>
+  </article>`;
+}
+
+function renderForumFrontpageHome(model: HomeModel, ctx: RenderContext): string {
+  const featured = model.recentPosts.slice(0, 4).map((post, index) => renderForumFrontpagePost(post.href, post.title, `${post.date} · ${post.readTime || "Writing"}`, post.excerpt || "", index)).join("");
+  const links = model.links.map((link, index) => renderForumFrontpagePost(link.url, link.title, `${link.domain} · ${link.date}`, link.contentHtml, index + model.recentPosts.length)).join("");
+  const rail = `<section><h2>Quick takes</h2>${model.links.slice(0, 5).map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</section>
+    <section><h2>Recommended</h2>${model.recentPosts.slice(0, 5).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</section>
+    <section><h2>Concepts</h2><a href="/blog">Writing</a><a href="/archives">Archives</a><a href="/themes">Theme library</a></section>`;
+  return renderForumFrontpageShell(
+    ctx,
+    `<section class="forum-frontpage-hero">
+      <div>
+        <p>Frontpage</p>
+        <h1>Ryan Prendergast</h1>
+        <div>${model.introHtml}</div>
+      </div>
+      <div class="forum-frontpage-about">${model.aboutHtml}</div>
+    </section>
+    <nav class="forum-frontpage-tabs" aria-label="Feed tabs"><a class="is-active" href="/">Recommended</a><a href="/blog">Recent</a><a href="/archives">Archive</a><a href="/themes">Library</a></nav>
+    <section class="forum-frontpage-feed">${featured}${links}</section>`,
+    "Frontpage",
+    rail,
   );
 }
 
