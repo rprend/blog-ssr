@@ -8875,11 +8875,250 @@ body {
   font: 13px Arial, sans-serif;
 }
 
-.family-book-microsite .theme-shell-frame { max-width: 920px; background: #f3eee5; border: 0; }
-.book-microsite { min-height: 70vh; display: grid; gap: 22px; place-items: center; text-align: center; }
-.book-microsite h2 { font-size: clamp(48px, 11vw, 128px); line-height: .85; text-transform: uppercase; }
-.book-microsite .next { justify-self: end; border: 1px solid currentColor; padding: 8px 14px; }
-.credit-grid { display: grid; grid-template-columns: auto auto; gap: 6px 18px; text-align: left; font-size: 13px; }
+.family-book-microsite {
+  background: #fbf3e7;
+  color: #d11919;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.family-book-microsite a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.family-book-microsite .theme-shell-frame {
+  max-width: none;
+  min-height: 100vh;
+  padding: 0 26px 88px;
+  background: #fbf3e7;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-book-microsite .theme-shell-main {
+  margin: 0;
+}
+
+.family-book-microsite .theme-utility-footer {
+  display: none;
+}
+
+.book-microsite {
+  min-height: calc(100vh - 88px);
+  display: block;
+  color: #d11919;
+  font-size: clamp(18px, 2vw, 30px);
+  line-height: 1.08;
+}
+
+.book-microsite-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: start;
+  min-height: 82px;
+  padding-top: 14px;
+  text-transform: uppercase;
+}
+
+.book-microsite-core {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 14px;
+  max-width: 56vw;
+  font-size: clamp(14px, 1.55vw, 22px);
+}
+
+.book-microsite-core a,
+.book-microsite-next {
+  text-decoration: none;
+}
+
+.book-microsite-core a.is-active,
+.book-microsite-core a:hover,
+.book-microsite-next:hover {
+  text-decoration: underline;
+}
+
+.book-microsite-next {
+  justify-self: end;
+  font-size: clamp(21px, 2.5vw, 38px);
+}
+
+.book-microsite-title-stack {
+  position: relative;
+  min-height: 72vh;
+  margin-top: -8px;
+}
+
+.book-microsite-title-card {
+  width: min(860px, 72vw);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.book-microsite-title-card.is-odd {
+  position: absolute;
+  inset: 0 auto auto 50%;
+  transform: translateX(-48%) translateY(18px);
+  opacity: .92;
+}
+
+.book-microsite-title-card h1 {
+  margin: 0 0 .82em;
+  font-size: clamp(72px, 13.6vw, 228px);
+  font-weight: 400;
+  line-height: .78;
+  letter-spacing: 0;
+}
+
+.book-microsite-author {
+  margin: 0 0 .7em;
+  font-size: clamp(25px, 4vw, 68px);
+}
+
+.book-microsite-intro,
+.book-microsite-credits {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.book-microsite-intro p,
+.book-microsite-credits p {
+  margin: 0 0 .45em;
+}
+
+.book-microsite-credits {
+  margin-top: 1.25em;
+  font-size: clamp(17px, 1.7vw, 27px);
+}
+
+.book-microsite-index {
+  margin: 36px 0 0;
+}
+
+.book-microsite-contents {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2 360px;
+  column-gap: 44px;
+  font-size: clamp(17px, 1.65vw, 28px);
+  line-height: 1.12;
+}
+
+.book-microsite-contents li {
+  break-inside: avoid;
+  margin: 0 0 .2em;
+}
+
+.book-microsite-contents a {
+  text-decoration: none;
+}
+
+.book-microsite-contents a:hover {
+  text-decoration: underline;
+}
+
+.book-microsite-contents span {
+  display: inline-block;
+  min-width: 2.2em;
+}
+
+.book-microsite-contents em {
+  font-style: normal;
+  font-size: .72em;
+}
+
+.book-microsite-entry,
+.book-microsite-section {
+  width: min(920px, 82vw);
+  margin: 18vh auto 0;
+}
+
+.book-microsite-entry header p {
+  margin: 0 0 1.1em;
+  text-transform: uppercase;
+}
+
+.book-microsite-entry h1,
+.book-microsite-section h2 {
+  margin: 0 0 .7em;
+  font-size: clamp(54px, 8.2vw, 142px);
+  font-weight: 400;
+  line-height: .82;
+  letter-spacing: 0;
+}
+
+.book-microsite-entry .blog-post-content {
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 1.16;
+}
+
+.book-microsite-back {
+  display: inline-block;
+  margin-bottom: 2em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.family-book-microsite .sticky-theme-picker {
+  background: #fbf3e7;
+  border-top: 1px solid #d11919;
+  box-shadow: none;
+  backdrop-filter: none;
+  color: #d11919;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.family-book-microsite .mini-theme-picker select,
+.family-book-microsite .mini-theme-picker button {
+  border: 1px solid #d11919;
+  border-radius: 0;
+  background: #fbf3e7;
+  color: #d11919;
+  font: inherit;
+}
+
+@media (max-width: 720px) {
+  .family-book-microsite .theme-shell-frame {
+    padding: 0 14px 92px;
+  }
+
+  .book-microsite-top {
+    min-height: 72px;
+    gap: 12px;
+  }
+
+  .book-microsite-core {
+    max-width: none;
+    gap: 4px 10px;
+    font-size: 13px;
+  }
+
+  .book-microsite-title-stack {
+    min-height: 68vh;
+  }
+
+  .book-microsite-title-card {
+    width: 92vw;
+  }
+
+  .book-microsite-title-card.is-odd {
+    transform: translateX(-49%) translateY(14px);
+  }
+
+  .book-microsite-contents {
+    columns: 1;
+  }
+
+  .book-microsite-entry,
+  .book-microsite-section {
+    width: 100%;
+    margin-top: 10vh;
+  }
+}
 
 .family-download-index .theme-shell-frame { max-width: none; background: #f7f7f0; }
 .download-index h2 { font-size: clamp(34px, 8vw, 92px); margin-bottom: 12px; }

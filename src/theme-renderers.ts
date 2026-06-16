@@ -437,6 +437,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "weblog-facets") return renderWeblogFacetsPage(ctx, renderWeblogFacetsGeneric(model as GenericPageModel, ctx));
   if (ctx.family === "research-lab") return renderResearchLabGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "room-wall") return renderRoomWallGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "book-microsite") return renderBookMicrositeGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1359,7 +1360,22 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "book-microsite") {
-    return `<section class="book-microsite"><p class="next">NEXT</p>${homeHeader}<div class="credit-grid"><span>entries</span><b>${model.links.length}</b></div>${links}</section>`;
+    const publication = renderBookMicrositeTitlePage(
+      ctx,
+      model.introHtml,
+      `<p>Edited by ${escapeHtml(model.recentPosts[0]?.title || "Ryan Prendergast")}.</p>
+      <p>Designed by ${escapeHtml(ctx.theme.name)}.</p>
+      <p>Originally published as part of Ryan Prendergast's personal website and blog.</p>`,
+    );
+    const contents = [
+      ...model.recentPosts.map((post) => ({ href: post.href, label: post.date, title: post.title })),
+      ...model.links.map((link) => ({ href: link.url, label: link.date, title: link.title })),
+    ];
+    return renderBookMicrositePage(
+      ctx,
+      `${publication}${renderBookMicrositeContents(contents)}`,
+      model.recentPosts[0]?.href || "/blog",
+    );
   }
   if (ctx.family === "download-index") {
     return `<section class="download-index">${homeHeader}<table><tbody>${model.links.map((link, index) => `<tr><td>${String(index + 1).padStart(4, "0")}</td><td><a href="${link.url}">${escapeHtml(link.title)}</a></td><td>${escapeHtml(link.domain)}</td><td>${escapeHtml(link.date)}</td></tr>`).join("")}</tbody></table></section>`;
@@ -1599,6 +1615,14 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return renderRoomWallPage(ctx, `<h1>Blog</h1><p>${escapeHtml(model.description)}</p><section class="room-wall-works">${posts}</section>`);
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
+    if (ctx.family === "book-microsite") {
+      const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })));
+      return renderBookMicrositePage(
+        ctx,
+        `${renderBookMicrositeTitlePage(ctx, `<p>${escapeHtml(model.description)}</p>`, `<p>${model.totalPosts} entries.</p><p>${model.yearRange ? `${model.yearRange[0]}-${model.yearRange[1]}` : "Writing index"}.</p>`, "Blog")}${renderBookMicrositeContents(posts)}`,
+        posts[0]?.href || "/archives",
+      );
+    }
     if (ctx.family === "weblog-facets") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
       return renderWeblogFacetsPage(
@@ -1833,6 +1857,21 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       </article>`,
     );
   }
+  if (ctx.family === "book-microsite") {
+    return renderBookMicrositePage(
+      ctx,
+      `<article class="book-microsite-entry">
+        <a class="book-microsite-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a>
+        <header>
+          <p>${meta}</p>
+          <h1>${escapeHtml(model.title)}</h1>
+          ${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}
+        </header>
+        <div class="blog-post-content">${model.contentHtml}</div>
+      </article>`,
+      model.backHref,
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -2001,6 +2040,17 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return renderRoomWallPage(ctx, `<h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
+    if (ctx.family === "book-microsite") {
+      const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
+      const records = model.months
+        .map((month) => `<section id="${slugify(month.label)}" class="book-microsite-section"><h2>${escapeHtml(month.label)}</h2>${renderBookMicrositeContents(month.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })), false)}</section>`)
+        .join("");
+      return renderBookMicrositePage(
+        ctx,
+        `${renderBookMicrositeTitlePage(ctx, `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`, `<p>Archive navigation.</p>`, "Archives")}${renderBookMicrositeContents(months)}${records}`,
+        months[0]?.href || "/blog",
+      );
+    }
     if (ctx.family === "weblog-facets") {
       return renderWeblogFacetsPage(
         ctx,
@@ -2631,6 +2681,53 @@ function renderWeblogFacetsGeneric(model: GenericPageModel, ctx: RenderContext):
     <p class="weblog-facets-date">${escapeHtml(ctx.currentPage || "/")}</p>
     <div class="blog-post-content weblog-facets-copy">${model.contentHtml}</div>
   </article>`;
+}
+
+function renderBookMicrositePage(ctx: RenderContext, contentHtml: string, nextHref = "/blog"): string {
+  return `<section class="book-microsite">
+    <header class="book-microsite-top">
+      <nav class="book-microsite-core" aria-label="Core site areas">
+        ${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}
+        <a class="${ctx.currentPage === "/themes" ? "is-active" : ""}" href="/themes">Themes</a>
+      </nav>
+      <a class="book-microsite-next" href="${nextHref}">NEXT</a>
+    </header>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderBookMicrositeTitlePage(ctx: RenderContext, introHtml: string, creditHtml: string, title = "Ryan Prendergast"): string {
+  const titleHtml = `<h1>${escapeHtml(title)}</h1>${title === "Ryan Prendergast" ? "" : `<p class="book-microsite-author">Ryan Prendergast</p>`}`;
+  return `<div class="book-microsite-title-stack">
+    <section class="book-microsite-title-card is-even">
+      ${titleHtml}
+      <div class="book-microsite-intro">${introHtml}</div>
+      <div class="book-microsite-credits">${creditHtml}</div>
+    </section>
+    <section class="book-microsite-title-card is-odd" aria-hidden="true">
+      ${titleHtml}
+      <div class="book-microsite-intro">${introHtml}</div>
+      <div class="book-microsite-credits">${creditHtml}</div>
+    </section>
+  </div>`;
+}
+
+function renderBookMicrositeContents(items: Array<{ href: string; label: string; title: string }>, withWrap = true): string {
+  const list = `<ol class="book-microsite-contents">
+    ${items.map((item, index) => `<li><a href="${item.href}"><span>${index + 1}:</span> ${escapeHtml(item.label || item.title)}${item.label ? ` <em>${escapeHtml(item.title)}</em>` : ""}</a></li>`).join("")}
+  </ol>`;
+  return withWrap ? `<nav class="book-microsite-index" aria-label="Publication contents">${list}</nav>` : list;
+}
+
+function renderBookMicrositeGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderBookMicrositePage(
+    ctx,
+    `<article class="book-microsite-entry">
+      <header><p>${escapeHtml(ctx.currentPage || "/")}</p><h1>${escapeHtml(model.heading)}</h1></header>
+      <div class="blog-post-content">${model.contentHtml}</div>
+    </article>`,
+    "/blog",
+  );
 }
 
 function renderBriefingIndex(model: BlogIndexModel, ctx: RenderContext): string {
