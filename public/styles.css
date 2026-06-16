@@ -12953,9 +12953,157 @@ body {
   font: 12px Arial, Helvetica, sans-serif;
 }
 
-.family-now-directory .theme-shell-frame, .family-conversational-minimal .theme-shell-frame, .family-founder-index .theme-shell-frame { max-width: 760px; background: #fff; border: 0; box-shadow: none; }
-.now-directory, .conversational-minimal { font-family: Arial, sans-serif; line-height: 1.55; }
-.now-directory h2, .conversational-minimal h2 { font-size: 40px; font-weight: 400; }
+.family-now-directory {
+  --theme-bg: #fff;
+  --theme-text: #111;
+  background: #fff;
+  padding: 0 5px 72px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+}
+
+.family-now-directory .theme-shell-frame {
+  width: auto;
+  max-width: none;
+  margin: 0 auto 2em;
+  background: #fff;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-conversational-minimal .theme-shell-frame, .family-founder-index .theme-shell-frame { max-width: 760px; background: #fff; border: 0; box-shadow: none; }
+.conversational-minimal { font-family: Arial, sans-serif; line-height: 1.55; }
+.conversational-minimal h2 { font-size: 40px; font-weight: 400; }
+.now-directory {
+  color: #111;
+}
+
+.now-directory *,
+.now-directory *::before,
+.now-directory *::after {
+  box-sizing: border-box;
+}
+
+.now-directory header,
+.now-directory article {
+  max-width: 40em;
+  margin: 0 auto 2em;
+}
+
+.now-directory .canonical-site-nav {
+  display: none;
+}
+
+.now-directory h1,
+.now-directory h2,
+.now-directory h3 {
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+.now-directory h1 {
+  margin: 0 0 .25em;
+  padding-top: .25em;
+  font-size: 2em;
+  line-height: 1.2;
+}
+
+.now-directory h2,
+.now-directory h3 {
+  margin-top: 2em;
+  margin-bottom: 1em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.now-directory h2,
+.now-directory h3,
+.now-directory h1 a,
+.now-directory h2 a,
+.now-directory h3 a,
+.now-directory-nav a {
+  color: #900;
+}
+
+.now-directory article p,
+.now-directory blockquote,
+.now-directory li > div {
+  margin: 0 0 1em;
+  font-family: Georgia, serif;
+  font-size: 1.1em;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.now-directory ul,
+.now-directory ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.now-directory li {
+  margin-bottom: 2em;
+}
+
+.now-directory li h3 {
+  margin: .25em 0;
+}
+
+.now-directory small {
+  display: block;
+  font-size: 16px;
+  line-height: 2;
+}
+
+.now-directory a,
+.family-now-directory .theme-shell-footer a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.now-directory-nav {
+  display: block;
+  margin: 0 0 2em;
+  font-size: .95em;
+  line-height: 1.8;
+}
+
+.now-directory-nav a[aria-current="page"] {
+  font-weight: 700;
+}
+
+.family-now-directory .theme-shell-footer {
+  max-width: 40em;
+  margin: 2em auto 0;
+  padding: 1em 0 0;
+  border-top: 0;
+  font-size: 14px;
+}
+
+.family-now-directory .theme-utility-footer > div {
+  display: none;
+}
+
+.family-now-directory .theme-shell-footer .theme-shell-nav {
+  display: none;
+}
+
+.family-now-directory .sticky-theme-picker {
+  background: #fff;
+  border-top: 1px solid #900;
+  box-shadow: none;
+  color: #111;
+}
+
+.family-now-directory .mini-theme-picker select,
+.family-now-directory .mini-theme-picker button {
+  border: 1px solid #999;
+  border-radius: 4px;
+  background: #fff;
+  color: #111;
+  font: 14px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 .conversational-minimal nav, .founder-index nav { display: flex; gap: 12px; flex-wrap: wrap; margin: 18px 0; }
 .founder-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .founder-columns section { border-top: 1px solid #111; padding-top: 10px; }

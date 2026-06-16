@@ -465,6 +465,10 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "forecast-report") return renderForecastReportGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
   if (ctx.family === "feral-essay") return renderFeralPage(ctx, (model as GenericPageModel).heading, `<div class="feral-copy">${(model as GenericPageModel).contentHtml}</div>`, "Page");
+  if (ctx.family === "now-directory") {
+    const generic = model as GenericPageModel;
+    return renderNowDirectoryPage(ctx, `<article><h2>${escapeHtml(generic.heading)}</h2>${generic.contentHtml}</article>`);
+  }
   if (ctx.family === "no-css") {
     const generic = model as GenericPageModel;
     return `<article><h2>${escapeHtml(generic.heading)}</h2>${generic.contentHtml}</article>`;
@@ -2147,7 +2151,16 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "now-directory") {
-    return `<section class="now-directory">${homeHeader}${links}</section>`;
+    return renderNowDirectoryPage(
+      ctx,
+      `<article>
+        ${homeHeader}
+        <h2>Links</h2>
+        <ul>${model.links.map((link) => `<li><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><small>${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</small><div>${link.contentHtml}</div></li>`).join("")}</ul>
+        <h2>Recent Essays</h2>
+        <ul>${model.recentPosts.map((post) => `<li><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>
+      </article>`,
+    );
   }
   if (ctx.family === "conversational-minimal") {
     return `<section class="conversational-minimal">${homeHeader}<nav>essays books projects now contact</nav>${posts}${links}</section>`;
@@ -2198,6 +2211,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       ctx,
       `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry"><h2><a href="/blog">Blog</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p></article>${posts}</section>`,
     );
+  }
+  if (ctx.family === "now-directory") {
+    const entries = model.postsByYear
+      .map((group) => `<h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => `<li><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>`)
+      .join("");
+    return renderNowDirectoryPage(ctx, `<article><h2>Blog</h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${entries}</article>`);
   }
   if (ctx.family === "no-css") {
     return `<section>
@@ -2869,6 +2888,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "wiki") {
     return `<article class="wiki-article"><h2>${escapeHtml(model.title)}</h2><p class="wiki-meta">${meta}</p><aside class="wiki-infobox">${model.subtitle ? escapeHtml(model.subtitle) : "Personal essay"}</aside><div class="article-body">${model.contentHtml}</div></article>`;
   }
+  if (ctx.family === "now-directory") {
+    return renderNowDirectoryPage(ctx, `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<small>${meta}</small><div class="blog-post-content">${model.contentHtml}</div></article>`);
+  }
   return `<article class="theme-post"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="entry-meta">${meta}</p><div class="blog-post-content">${model.contentHtml}</div></article>`;
 }
 
@@ -2884,6 +2906,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   }
   if (ctx.family === "scoreboard") {
     return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Archives", `${model.totalPosts} archived posts`)}<h2>Archive Standings</h2><nav class="scoreboard-subnav"><a href="/archives">Schedule</a><a href="/blog">Standings</a><a href="/rss.xml">Teams</a></nav>${renderScoreboardTable(["Month", "Posts", "Entries"], model.months.map((month) => [escapeHtml(month.label), String(month.posts.length), month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" ")]))}</section>`;
+  }
+  if (ctx.family === "now-directory") {
+    const months = model.months
+      .map((month) => `<h2>${escapeHtml(month.label)}</h2><ul>${month.posts.map((post) => `<li><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small></li>`).join("")}</ul>`)
+      .join("");
+    return renderNowDirectoryPage(ctx, `<article><h2>Archives</h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}</article>`);
   }
   if (ctx.family === "archive-index") {
     const monthCounts = new Map(model.months.map((month) => [month.label, month.posts.length]));
@@ -3904,6 +3932,24 @@ function renderFragmentLinkList(links: LinkEntryModel[]): string {
 
 function renderFragmentGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderFragmentPage(ctx, `<article class="fragment-article"><header class="fragment-page-head"><h1>${escapeHtml(model.heading)}</h1></header><div class="fragment-copy">${model.contentHtml}</div></article>`);
+}
+
+function renderNowDirectoryNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? ` aria-current="page"` : "");
+  const items = [
+    ["/", "home"],
+    ["/blog", "blog"],
+    ["/photos", "photos"],
+    ["/archives", "archives"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/themes", "themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="now-directory-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a${active(href)} href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
+}
+
+function renderNowDirectoryPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="now-directory"><header><h1><a href="/">Ryan Prendergast</a></h1>${renderNowDirectoryNav(ctx)}</header>${contentHtml}</section>`;
 }
 
 function renderUncertaintyNav(ctx: RenderContext): string {
