@@ -1530,7 +1530,35 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "internet-diagram") {
-    return `<section class="internet-diagram"><nav>random labels info index</nav>${homeHeader}<div class="node-map">${model.links.slice(0, 12).map((link, index) => `<a style="--x:${(index * 17) % 83}%;--y:${(index * 29) % 76}%;" href="${link.url}">${escapeHtml(link.domain)}</a>`).join("")}</div></section>`;
+    const nodes = [
+      ...model.links.map((link) => renderInternetDiagramNode(link.url, link.domain, link.title)),
+      ...model.recentPosts.map((post) => renderInternetDiagramNode(post.href, "Ryan Prendergast", post.title)),
+    ];
+    const indexRows = [
+      ...model.links.slice(0, 18).map((link) => renderInternetDiagramIndexRow(link.url, link.title, link.domain)),
+      ...model.recentPosts.slice(0, 6).map((post) => renderInternetDiagramIndexRow(post.href, post.title, post.date)),
+    ].join("");
+    return renderInternetDiagramPage(
+      ctx,
+      `<section class="internet-diagram-home">
+        <div class="internet-diagram-title">${homeHeader}</div>
+        ${renderInternetDiagramMap(nodes)}
+        <aside class="internet-diagram-modal internet-diagram-info">
+          <button type="button" aria-label="Close"></button>
+          <div class="internet-diagram-postcard" aria-hidden="true"><span>you are here</span></div>
+          <h3>Ryan Prendergast</h3>
+          <div>${model.introHtml}</div>
+        </aside>
+        <aside class="internet-diagram-modal internet-diagram-submit">
+          <button type="button" aria-label="Close"></button>
+          <p>${model.aboutHtml}</p>
+        </aside>
+        <aside class="internet-diagram-index" aria-label="Index">
+          <h3>index</h3>
+          <div>${indexRows}</div>
+        </aside>
+      </section>`,
+    );
   }
   if (ctx.family === "vernacular-essay") {
     return `<article class="vernacular-essay"><nav>english / print</nav>${homeHeader}<hr>${model.links.map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a><br>${stripHtml(link.contentHtml)}</p>`).join("")}</article>`;
@@ -3515,6 +3543,51 @@ function renderDataPortfolioGeneric(model: GenericPageModel, ctx: RenderContext)
       <div class="blog-post-content data-portfolio-copy">${model.contentHtml}</div>
     </article>`,
   );
+}
+
+function renderInternetDiagramPage(ctx: RenderContext, contentHtml: string): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = [
+    ["/", "home"],
+    ["/blog", "writing"],
+    ["/archives", "archive"],
+    ["/photos", "photos"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/themes", "themes"],
+  ] as Array<[string, string]>;
+  return `<section class="internet-diagram">
+    <header class="internet-diagram-key">
+      <button type="button">random</button>
+      <button type="button">mode</button>
+      <label><input type="checkbox" checked disabled> labels</label>
+      <a href="#diagram-info">info</a>
+      <a href="/guestbook">submit</a>
+      <a href="#diagram-index">view index</a>
+      <a href="/archives">roadmap</a>
+    </header>
+    <nav class="internet-diagram-core" aria-label="Core site areas">
+      ${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}
+    </nav>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderInternetDiagramMap(nodes: string[]): string {
+  return `<div class="internet-diagram-map" aria-label="Internet map">${nodes.slice(0, 28).map((node, index) => {
+    const x = 6 + ((index * 23) % 84);
+    const y = 8 + ((index * 37) % 78);
+    const scale = 0.86 + ((index % 5) * 0.08);
+    return `<div class="internet-diagram-node" style="--x:${x}%;--y:${y}%;--s:${scale.toFixed(2)}">${node}</div>`;
+  }).join("")}</div>`;
+}
+
+function renderInternetDiagramNode(href: string, label: string, title: string): string {
+  return `<a href="${href}" title="${escapeHtml(title)}">${escapeHtml(label)}</a>`;
+}
+
+function renderInternetDiagramIndexRow(href: string, title: string, detail: string): string {
+  return `<a class="internet-diagram-index-row" href="${href}"><span>${escapeHtml(title)}</span><em>${escapeHtml(detail)}</em></a>`;
 }
 
 function guestbookModalScript(): string {
