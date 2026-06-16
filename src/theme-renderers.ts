@@ -429,6 +429,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "taste-directory") return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead((model as GenericPageModel).heading, "", "page")}<article class="taste-card taste-page-card"><div class="taste-card-body">${(model as GenericPageModel).contentHtml}</div></article>`, "Browse");
   if (ctx.family === "writer-ledger") return renderWriterLedgerGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "artist-menu") return renderArtistMenuGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "friendly-hub") return renderFriendlyHubGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1044,7 +1045,26 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "friendly-hub") {
-    return `<section class="friendly-hub">${homeHeader}<nav>Hi · writing · links · contact</nav>${links}</section>`;
+    const writing = model.recentPosts
+      .map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, post.excerpt || post.readTime || ""))
+      .join("");
+    const linklog = model.links
+      .map((link) => renderFriendlyHubEntry(link.url, link.title, `${link.domain} - ${link.date}`, stripHtml(link.contentHtml)))
+      .join("");
+    return renderFriendlyHubPage(
+      ctx,
+      `<article class="friendly-hub-intro">
+        <h1>Ryan Prendergast ▲*▣</h1>
+        <div class="friendly-hub-portrait" aria-hidden="true">RP</div>
+        <div class="friendly-hub-copy">${model.introHtml}</div>
+        <h3>About</h3>
+        <div class="friendly-hub-copy">${model.aboutHtml}</div>
+        <h3>Blog</h3>
+        <div class="friendly-hub-list">${writing}</div>
+        <h3>Links</h3>
+        <div class="friendly-hub-list">${linklog}</div>
+      </article>`,
+    );
   }
   if (ctx.family === "games-cabinet") {
     return `<section class="games-cabinet">${homeHeader}<nav>blog all work about</nav><div class="game-grid">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
@@ -1264,6 +1284,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Works</h1><p>${escapeHtml(model.description)}</p><div class="works-list">${works}</div></section>`);
   }
+  if (ctx.family === "friendly-hub") {
+    const groups = model.postsByYear
+      .map((group) => `<section class="friendly-hub-year"><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, post.excerpt || post.readTime || "")).join("")}</section>`)
+      .join("");
+    return renderFriendlyHubPage(ctx, `<article><h1>Blog</h1><p>${escapeHtml(model.description)}</p>${groups}</article>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>${ctx.family === "research-lab" ? "Research" : "Index"}</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
@@ -1284,6 +1310,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   const meta = `${escapeHtml(model.date)}${model.author ? ` - ${escapeHtml(model.author)}` : ""}`;
   if (ctx.family === "spartan") {
     return `<table class="pg-home pg-article" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><font size="1" color="#666666">${meta}</font>${model.subtitle ? `<p><i>${escapeHtml(model.subtitle)}</i></p>` : ""}<br>${model.contentHtml}</td></tr></tbody></table>`;
+  }
+  if (ctx.family === "friendly-hub") {
+    return renderFriendlyHubPage(
+      ctx,
+      `<article class="friendly-hub-post">
+        <p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h1>${escapeHtml(model.title)}</h1>
+        <p class="friendly-hub-updated">${meta}</p>
+        ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
+        <div class="friendly-hub-copy">${model.contentHtml}</div>
+      </article>`,
+    );
   }
   if (ctx.family === "artist-menu") {
     return renderArtistMenuPage(
@@ -1519,6 +1557,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .flatMap((month) => month.posts.map((post) => renderArtistMenuWork(post.href, post.title, month.label)))
       .join("");
     return renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p><div class="works-list">${works}</div></section>`);
+  }
+  if (ctx.family === "friendly-hub") {
+    return renderFriendlyHubPage(
+      ctx,
+      `<article><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${model.months.map((month) => `<section class="friendly-hub-year"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, post.readTime || "")).join("")}</section>`).join("")}</article>`,
+    );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
@@ -2086,6 +2130,38 @@ function renderArtistMenuWork(href: string, title: string, meta = ""): string {
 
 function renderArtistMenuGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderArtistMenuPage(ctx, `<article class="artist-menu-post"><h1>${escapeHtml(model.heading)}</h1><div class="blog-post-content">${model.contentHtml}</div></article>`);
+}
+
+function renderFriendlyHubNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "Home ▲*▣"],
+    ["/blog", "Blog"],
+    ["/photos", "Photos"],
+    ["/archives", "archives"],
+    ["/contact", "Contact"],
+    ["/guestbook", "Guestbook"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="friendly-hub-menu" aria-label="Core site areas"><span>Menu</span><ul>${links.map(([href, label]) => `<li><a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a></li>`).join("")}<li><a href="/rss.xml">RSS</a></li></ul></nav>`;
+}
+
+function renderFriendlyHubPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="friendly-hub">
+    <header class="friendly-hub-site-head">
+      <h2><a href="/">Ryan Prendergast</a></h2>
+      <p>${escapeHtml(ctx.theme.name)}</p>
+    </header>
+    ${renderFriendlyHubNav(ctx)}
+    ${contentHtml}
+  </section>`;
+}
+
+function renderFriendlyHubEntry(href: string, title: string, meta: string, detail = ""): string {
+  return `<p class="friendly-hub-entry"><a href="${href}">${escapeHtml(title)}</a>${meta ? ` <span>${escapeHtml(meta)}</span>` : ""}${detail ? ` - ${escapeHtml(detail)}` : ""}</p>`;
+}
+
+function renderFriendlyHubGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderFriendlyHubPage(ctx, `<article class="friendly-hub-post"><h1>${escapeHtml(model.heading)}</h1><div class="friendly-hub-copy">${model.contentHtml}</div></article>`);
 }
 
 function guestbookModalScript(): string {
