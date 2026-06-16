@@ -424,6 +424,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "art-index") return renderArtIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "uncertainty") return renderUncertaintyGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "briefing") return renderBriefingGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "bookmaker-card") return renderBookmakerPage(ctx, `<section class="bookmaker-info"><h1>${escapeHtml((model as GenericPageModel).heading)}</h1><div class="bookmaker-copy">${(model as GenericPageModel).contentHtml}</div></section>`);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -682,6 +683,39 @@ function renderGardenPage(ctx: RenderContext, contentHtml: string): string {
   return `<article class="garden-notebook">${renderGardenNav(ctx)}${contentHtml}</article>`;
 }
 
+function renderBookmakerNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "Linkblog"],
+    ["/blog", "Blog"],
+    ["/photos", "Photos"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="bookmaker-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderBookmakerIntro(ctx: RenderContext, introHtml = "", detail = ""): string {
+  return `<header class="bookmaker-head">
+    <div class="bookmaker-title">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+    </div>
+    <address><a href="/contact">Get in touch</a></address>
+    ${renderBookmakerNav(ctx)}
+    ${introHtml ? `<section class="bookmaker-more"><h2>More info?</h2><div>${introHtml}</div>${detail ? `<div>${detail}</div>` : ""}</section>` : ""}
+  </header>`;
+}
+
+function renderBookmakerPage(ctx: RenderContext, contentHtml: string, introHtml = "", detail = ""): string {
+  return `<section class="bookmaker-card">${renderBookmakerIntro(ctx, introHtml, detail)}${contentHtml}<a class="bookmaker-top" href="#">Top page</a></section>`;
+}
+
+function renderBookmakerWorkRow(href: string, title: string, kind: string, date: string, detail = ""): string {
+  return `<article class="bookmaker-work"><h3><a href="${href}">. ${escapeHtml(title)}</a></h3><p>${escapeHtml(kind)}${date ? ` [${escapeHtml(date)}]` : ""}</p>${detail ? `<div>${detail}</div>` : ""}</article>`;
+}
+
 function renderGardenPostList(posts: PostSummaryModel[]): string {
   return `<ul class="garden-list">${posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}</li>`).join("")}</ul>`;
 }
@@ -906,7 +940,18 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return renderBriefingHome(model, ctx);
   }
   if (ctx.family === "bookmaker-card") {
-    return `<section class="bookmaker-card">${homeHeader}<address><a href="/contact">contact</a> · <a href="/blog">writing</a> · <a href="/archives">archive</a></address></section>`;
+    const selectedLinks = model.links
+      .map((link) => renderBookmakerWorkRow(link.url, link.title, link.domain, link.date, link.contentHtml))
+      .join("");
+    const selectedPosts = model.recentPosts
+      .map((post) => renderBookmakerWorkRow(post.href, post.title, post.readTime || "writing", post.date, post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""))
+      .join("");
+    return renderBookmakerPage(
+      ctx,
+      `<section class="bookmaker-selected"><h2>Selected links:</h2>${selectedLinks}</section><section class="bookmaker-selected"><h2>Selected writing:</h2>${selectedPosts}</section>`,
+      model.introHtml,
+      model.aboutHtml,
+    );
   }
   if (ctx.family === "experimental-loop") {
     return `<section class="experimental-loop">${homeHeader}${links}</section>`;
@@ -1123,7 +1168,10 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return renderBriefingIndex(model, ctx);
   }
   if (ctx.family === "bookmaker-card") {
-    return `<section class="bookmaker-card"><h2>Writing</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> — ${escapeHtml(post.date)}</p>`)).join("")}</section>`;
+    const rows = model.postsByYear
+      .flatMap((group) => group.posts.map((post) => renderBookmakerWorkRow(post.href, post.title, group.year, post.date, post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : "")))
+      .join("");
+    return renderBookmakerPage(ctx, `<section class="bookmaker-selected"><h1>Writing</h1>${rows}</section>`, "", `<p>${model.totalPosts} posts.</p>`);
   }
   if (ctx.family === "taste-directory") {
     return `<section class="taste-directory"><h2>Browse Writing</h2><div class="taste-cats">Essays · Reviews · Notes · Archives</div>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<article><a href="${post.href}">${escapeHtml(post.title)}</a><p>${escapeHtml(group.year)}</p></article>`)).join("")}</section>`;
@@ -1228,6 +1276,12 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       </article>`,
     );
   }
+  if (ctx.family === "bookmaker-card") {
+    return renderBookmakerPage(
+      ctx,
+      `<article class="bookmaker-article"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="bookmaker-meta">${meta}</p><div class="blog-post-content bookmaker-copy">${model.contentHtml}</div></article>`,
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1284,6 +1338,14 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
         `<header class="briefing-section-head"><span>${model.totalPosts} entries</span><h1>Archives</h1></header><div class="briefing-topic-columns">${model.months
           .map((month) => `<section><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderBriefingSmallCard(post.href, post.title, post.date, post.readTime || "Writing")).join("")}</section>`)
           .join("")}</div>`,
+      );
+    }
+    if (ctx.family === "bookmaker-card") {
+      return renderBookmakerPage(
+        ctx,
+        `<section class="bookmaker-selected"><h1>Archive</h1>${model.months.map((month) => `<section class="bookmaker-month"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderBookmakerWorkRow(post.href, post.title, month.key, post.date || "", post.readTime ? `<p>${escapeHtml(post.readTime)}</p>` : "")).join("")}</section>`).join("")}</section>`,
+        "",
+        `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`,
       );
     }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;

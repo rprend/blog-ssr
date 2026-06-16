@@ -5479,21 +5479,247 @@ body {
 }
 
 .family-bookmaker-card {
-  background: #f5f5f5;
+  --theme-bg: #ffffff;
+  --theme-text: #070707;
+  background: #fff;
   color: #111;
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.family-bookmaker-card .theme-shell-frame {
+  width: min(1120px, calc(100vw - 36px));
+  margin: 18px 0 72px 18px;
+}
+
+.family-bookmaker-card .theme-shell-footer {
+  max-width: 760px;
+  margin-top: 44px;
+  padding-top: 10px;
+  border-top: 2px solid #111;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.family-bookmaker-card .theme-shell-footer .theme-shell-nav {
+  gap: 7px 12px;
+}
+
+.family-bookmaker-card .sticky-theme-picker {
+  background: #fff;
+  border-top: 2px solid #111;
+  box-shadow: none;
+  font-size: 12px;
+}
+
+.family-bookmaker-card .sticky-theme-picker select,
+.family-bookmaker-card .sticky-theme-picker button {
+  min-height: 26px;
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #fff;
+  color: #111;
+  font: inherit;
 }
 
 .bookmaker-card {
-  max-width: 540px;
-  margin: 12vh auto;
-  border: 1px solid #111;
-  padding: 18px;
+  max-width: 980px;
+  margin: 0;
+  padding: 0 0 40px;
+  color: #070707;
 }
 
-.bookmaker-card h2 {
-  font-size: 22px;
-  margin-top: 0;
+.bookmaker-card a {
+  color: #070707;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.bookmaker-head {
+  max-width: 760px;
+  margin-bottom: 34px;
+}
+
+.bookmaker-title,
+.bookmaker-more {
+  margin-bottom: 18px;
+}
+
+.bookmaker-title h1,
+.bookmaker-more h2,
+.bookmaker-selected > h1,
+.bookmaker-selected > h2,
+.bookmaker-info h1,
+.bookmaker-article h1 {
+  margin: 0;
+  font: 700 34px/1 Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+}
+
+.bookmaker-title h1 a {
+  text-decoration: none;
+}
+
+.bookmaker-head address {
+  margin: 18px 0 22px;
+  font-style: normal;
+  font-size: 20px;
+}
+
+.bookmaker-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  max-width: 640px;
+  margin: 0 0 28px;
+  font-size: 16px;
+}
+
+.bookmaker-nav a {
+  text-decoration: none;
+}
+
+.bookmaker-nav a::before {
+  content: ". ";
+}
+
+.bookmaker-nav a.is-active {
+  font-weight: 700;
+}
+
+.bookmaker-more {
+  max-width: 740px;
+}
+
+.bookmaker-more h2,
+.bookmaker-selected > h1,
+.bookmaker-selected > h2,
+.bookmaker-info h1 {
+  margin-bottom: 16px;
+}
+
+.bookmaker-more p,
+.bookmaker-copy p,
+.bookmaker-work p,
+.bookmaker-work div,
+.bookmaker-info p {
+  margin: 0 0 10px;
+  max-width: 760px;
+}
+
+.bookmaker-selected {
+  max-width: 860px;
+  margin: 0 0 34px;
+}
+
+.bookmaker-work {
+  display: grid;
+  grid-template-columns: minmax(230px, 340px) minmax(220px, 1fr);
+  gap: 4px 18px;
+  margin: 0 0 12px;
+  break-inside: avoid;
+}
+
+.bookmaker-work h3,
+.bookmaker-work p {
+  margin: 0;
+  font: 400 18px/1.08 Arial, Helvetica, sans-serif;
+}
+
+.bookmaker-work h3 a {
+  text-decoration: none;
+}
+
+.bookmaker-work h3 a:hover,
+.bookmaker-work h3 a:focus {
+  text-decoration: underline;
+}
+
+.bookmaker-work div {
+  grid-column: 2;
+  font-size: 16px;
+}
+
+.bookmaker-month {
+  margin-bottom: 24px;
+}
+
+.bookmaker-month h2 {
+  margin: 0 0 10px;
+  font: 700 22px/1 Arial, Helvetica, sans-serif;
+}
+
+.bookmaker-article {
+  max-width: 760px;
+}
+
+.bookmaker-article .back-link,
+.bookmaker-meta,
+.bookmaker-article .subtitle {
+  display: block;
+  margin: 0 0 12px;
+}
+
+.bookmaker-meta {
+  font-size: 16px;
+}
+
+.bookmaker-copy {
+  line-height: 1.25;
+}
+
+.bookmaker-copy h2,
+.bookmaker-copy h3 {
+  margin: 28px 0 10px;
+  font: 700 24px/1 Arial, Helvetica, sans-serif;
+}
+
+.bookmaker-copy img {
+  max-width: 100%;
+  height: auto;
+}
+
+.bookmaker-top {
+  display: inline-block;
+  margin-top: 22px;
+  font-weight: 700;
+}
+
+@media (max-width: 680px) {
+  .family-bookmaker-card {
+    font-size: 16px;
+  }
+
+  .family-bookmaker-card .theme-shell-frame {
+    width: calc(100vw - 24px);
+    margin: 12px 0 72px 12px;
+  }
+
+  .bookmaker-title h1,
+  .bookmaker-more h2,
+  .bookmaker-selected > h1,
+  .bookmaker-selected > h2,
+  .bookmaker-info h1,
+  .bookmaker-article h1 {
+    font-size: 28px;
+  }
+
+  .bookmaker-work {
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .bookmaker-work h3,
+  .bookmaker-work p {
+    font-size: 16px;
+  }
+
+  .bookmaker-work div {
+    font-size: 15px;
+  }
 }
 
 .family-experimental-loop {
