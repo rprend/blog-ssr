@@ -432,6 +432,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "friendly-hub") return renderFriendlyHubGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "games-cabinet") return renderGamesCabinetGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "portal-gallery") return renderPortalGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "design-repository") return renderDesignRepositoryGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1097,7 +1098,22 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "design-repository") {
-    return `<section class="design-repository">${homeHeader}<nav>links · writing · archive</nav>${links}</section>`;
+    const records = [
+      ...model.links.map((link, index) => renderDesignRepositoryRecord(index + 1, link.title, link.url, link.domain, link.date, stripHtml(link.contentHtml), link.image, "Link")),
+      ...model.recentPosts.map((post, index) => renderDesignRepositoryRecord(model.links.length + index + 1, post.title, post.href, "Ryan Prendergast", post.date, post.excerpt || post.readTime || "", null, "Writing")),
+    ].join("");
+    return renderDesignRepositoryPage(
+      ctx,
+      `<header class="design-repository-intro">
+        <h1><a href="/">Ryan Prendergast</a></h1>
+        <div class="design-repository-description">${model.introHtml}</div>
+      </header>
+      ${renderDesignRepositoryAvailability(["always_available", "borrow_only", "stream_only"])}
+      <section class="design-repository-note">${model.aboutHtml}</section>
+      ${renderDesignRepositoryCategoryMenu(["Links", "Writing", "Photos", "Archives", "Guestbook", "Contact"])}
+      <ol class="design-repository-records">${records}</ol>
+      <nav class="design-repository-pages" aria-label="Pages"><span>1 of 1</span><a href="/archives">Next »</a></nav>`,
+    );
   }
   if (ctx.family === "weblog-facets") {
     const tags = ["ai", "security", "tools", "links", "books", "web"];
@@ -1302,6 +1318,15 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const posts = model.postsByYear.flatMap((group) => group.posts.map((post, index) => renderTastePostCard(post, index, group.year))).join("");
     return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Browse Writing", model.description, `${model.totalPosts} posts`)}${renderTasteFeedToolbar("Newest", "Recs", model.totalPosts)}<div class="taste-feed">${posts}</div>`, "Browse");
   }
+  if (ctx.family === "design-repository") {
+    const records = model.postsByYear
+      .flatMap((group) => group.posts.map((post, index) => renderDesignRepositoryRecord(index + 1, post.title, post.href, group.year, post.date, post.excerpt || post.readTime || "", null, "Writing")))
+      .join("");
+    return renderDesignRepositoryPage(
+      ctx,
+      `<header class="design-repository-section-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p><span>${model.totalPosts} records</span></header>${renderDesignRepositoryAvailability(model.postsByYear.map((group) => group.year))}<ol class="design-repository-records">${records}</ol>`,
+    );
+  }
   if (ctx.family === "artist-menu") {
     const works = model.postsByYear
       .flatMap((group) => group.posts.map((post) => renderArtistMenuWork(post.href, post.title, group.year)))
@@ -1479,6 +1504,20 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       "Browse",
     );
   }
+  if (ctx.family === "design-repository") {
+    return renderDesignRepositoryPage(
+      ctx,
+      `<article class="design-repository-article">
+        <p class="design-repository-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <header>
+          <h1>${escapeHtml(model.title)}</h1>
+          <p>${meta}</p>
+          ${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}
+        </header>
+        <div class="blog-post-content design-repository-copy">${model.contentHtml}</div>
+      </article>`,
+    );
+  }
   if (ctx.family === "writer-ledger") {
     return `<article class="writer-ledger writer-ledger-article">${renderWriterLedgerRecent(`<a href="${model.backHref}">${escapeHtml(model.backLabel)}</a>`)}${renderWriterLedgerHeader(ctx)}<header class="writer-ledger-article-head"><p>( <a href="${model.backHref}">${escapeHtml(model.backLabel)}</a> )</p><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<time>${meta}</time></header><div class="blog-post-content writer-ledger-copy">${model.contentHtml}</div></article>`;
   }
@@ -1629,6 +1668,15 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .flatMap((month, monthIndex) => month.posts.map((post, postIndex) => renderPortalTile(post.href, post.title, month.label, post.date, post.readTime || "", monthIndex + postIndex)))
       .join("");
     return renderPortalPage(ctx, `<header class="portal-section-head"><h1>Uncovered</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header><section class="portal-gallery-wall">${entries}</section>`);
+  }
+  if (ctx.family === "design-repository") {
+    const records = model.months
+      .flatMap((month) => month.posts.map((post, index) => renderDesignRepositoryRecord(index + 1, post.title, post.href, month.label, post.date || month.key, post.readTime || "", null, "Archive")))
+      .join("");
+    return renderDesignRepositoryPage(
+      ctx,
+      `<header class="design-repository-section-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header>${renderDesignRepositoryCategoryMenu(model.months.slice(0, 10).map((month) => month.label))}<ol class="design-repository-records">${records}</ol>`,
+    );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
@@ -2346,6 +2394,59 @@ function renderPortalTile(href: string, title: string, meta: string, date: strin
 
 function renderPortalGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderPortalPage(ctx, `<article class="portal-article"><header><h1>${escapeHtml(model.heading)}</h1></header><div class="portal-copy">${model.contentHtml}</div></article>`);
+}
+
+function renderDesignRepositoryNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const items = [
+    ["/", "Home"],
+    ["/blog", "Blog"],
+    ["/photos", "Photos"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/themes", "Themes"],
+    ["/rss.xml", "RSS"],
+  ] as Array<[string, string]>;
+  return `<nav class="design-repository-core" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderDesignRepositoryPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="design-repository">${renderDesignRepositoryNav(ctx)}${contentHtml}</section>`;
+}
+
+function renderDesignRepositoryAvailability(labels: string[]): string {
+  const safeLabels = labels.length ? labels : ["always_available", "borrow_only", "stream_only"];
+  return `<nav class="design-repository-availability" aria-label="Availability filters">${safeLabels.map((label, index) => `<a class="${index === 0 ? "is-active" : ""}" href="#">§${escapeHtml(slugify(label).replace(/-/g, "_"))}</a>`).join("")}</nav>`;
+}
+
+function renderDesignRepositoryCategoryMenu(labels: string[]): string {
+  const unique = Array.from(new Set(labels.filter(Boolean)));
+  return `<nav class="design-repository-categories" aria-label="Repository categories">${unique.map((label) => `<a href="#">${escapeHtml(label)}</a>`).join("<span>::</span>")}</nav>`;
+}
+
+function renderDesignRepositoryRecord(index: number, title: string, href: string, source: string, date: string, detail: string, image: string | null, kind: string): string {
+  const thumbnail = image ? `<img src="${image}" alt="" loading="lazy">` : `<span>${escapeHtml(title.slice(0, 1) || "R")}</span>`;
+  const description = detail ? `<p>${escapeHtml(detail)}</p>` : "";
+  return `<li class="design-repository-record">
+    <a class="design-repository-thumb" href="${href}">${thumbnail}</a>
+    <div>
+      <h2><a href="${href}">${escapeHtml(title)}</a></h2>
+      <p class="design-repository-meta">${escapeHtml(date)} :: ${escapeHtml(source)} :: ${escapeHtml(kind)}</p>
+      ${description}
+      <p class="design-repository-language">Language: English</p>
+    </div>
+  </li>`;
+}
+
+function renderDesignRepositoryGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderDesignRepositoryPage(
+    ctx,
+    `<article class="design-repository-article">
+      <header><h1>${escapeHtml(model.heading)}</h1><p>${escapeHtml(ctx.currentPage || "/")} :: Ryan Prendergast</p></header>
+      <div class="design-repository-copy">${model.contentHtml}</div>
+    </article>`,
+  );
 }
 
 function guestbookModalScript(): string {
