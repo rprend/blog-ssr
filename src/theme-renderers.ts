@@ -441,6 +441,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "download-index") return renderDownloadIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "visual-index") return renderVisualIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "html-bulletin") return renderHtmlBulletinGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "consumption-digest") return renderConsumptionDigestGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -713,6 +714,51 @@ function renderHtmlBulletinPage(ctx: RenderContext, title: string, contentHtml: 
 
 function renderHtmlBulletinGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderHtmlBulletinPage(ctx, model.heading, `<div class="html-bulletin-copy">${model.contentHtml}</div>`);
+}
+
+function renderConsumptionDigestNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "today"],
+    ["/blog", "text"],
+    ["/photos", "photos"],
+    ["/archives", "archive"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+    ["/themes", "themes"],
+    ["/rss.xml", "rss"],
+  ] as Array<[string, string]>;
+  return `<nav class="consumption-digest-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
+}
+
+function renderConsumptionDigestPage(ctx: RenderContext, contentHtml: string, introHtml = ""): string {
+  return `<section class="consumption-digest">
+    <header class="consumption-digest-mast">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+      ${introHtml ? `<div class="consumption-digest-about">${introHtml}</div>` : ""}
+      ${renderConsumptionDigestNav(ctx)}
+    </header>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderConsumptionDigestDay(label: string, groups: Array<{ label: string; html: string }>): string {
+  return `<section class="consumption-digest-day">
+    <h2>${escapeHtml(label)}</h2>
+    ${groups.filter((group) => group.html.trim()).map((group) => `<div class="consumption-digest-group"><span>${escapeHtml(group.label)}</span><div>${group.html}</div></div>`).join("")}
+  </section>`;
+}
+
+function renderConsumptionDigestLink(link: LinkEntryModel): string {
+  const note = stripHtml(link.contentHtml);
+  return `<p><a href="${link.url}">${escapeHtml(link.title)}</a>${link.domain ? ` - ${escapeHtml(link.domain)}` : ""}${note ? ` <small>${escapeHtml(note)}</small>` : ""}</p>`;
+}
+
+function renderConsumptionDigestPost(post: PostSummaryModel): string {
+  return `<p><a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` - ${escapeHtml(post.readTime)}` : ""}${post.excerpt ? ` <small>${escapeHtml(post.excerpt)}</small>` : ""}</p>`;
+}
+
+function renderConsumptionDigestGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderConsumptionDigestPage(ctx, renderConsumptionDigestDay(model.heading, [{ label: "page", html: `<div class="consumption-digest-copy">${model.contentHtml}</div>` }]));
 }
 
 function renderResearchLabNav(ctx: RenderContext): string {
@@ -1448,7 +1494,24 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     </section>`;
   }
   if (ctx.family === "consumption-digest") {
-    return `<section class="consumption-digest">${homeHeader}${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
+    const linkGroups = new Map<string, LinkEntryModel[]>();
+    for (const link of model.links) {
+      const key = link.date || "undated";
+      linkGroups.set(key, [...(linkGroups.get(key) || []), link]);
+    }
+    const days = Array.from(linkGroups.entries())
+      .map(([date, dayLinks], index) => {
+        const writing = index === 0 ? model.recentPosts.map(renderConsumptionDigestPost).join("") : "";
+        return renderConsumptionDigestDay(date, [
+          { label: "text", html: dayLinks.map(renderConsumptionDigestLink).join("") },
+          { label: "writing", html: writing },
+        ]);
+      })
+      .join("");
+    const trailingPosts = model.recentPosts.length && !days
+      ? renderConsumptionDigestDay("writing", [{ label: "text", html: model.recentPosts.map(renderConsumptionDigestPost).join("") }])
+      : "";
+    return renderConsumptionDigestPage(ctx, `${days}${trailingPosts}`, model.introHtml);
   }
   if (ctx.family === "data-portfolio") {
     return `<section class="data-portfolio"><header>${homeHeader}<nav>projects writing links</nav></header><div class="view-toggle">grid / list</div><div class="data-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
@@ -1681,6 +1744,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderHtmlBulletinPage(ctx, "posts?", `<p>${escapeHtml(model.description)}</p>${groups}`);
   }
+  if (ctx.family === "consumption-digest") {
+    const days = model.postsByYear
+      .map((group) => renderConsumptionDigestDay(group.year, [{ label: "text", html: group.posts.map(renderConsumptionDigestPost).join("") }]))
+      .join("");
+    return renderConsumptionDigestPage(ctx, days, `<p>${escapeHtml(model.description)}</p>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })));
@@ -1847,6 +1916,17 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       <p>${meta}</p>
       ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
       <div class="blog-post-content html-bulletin-copy">${model.contentHtml}</div>`,
+    );
+  }
+  if (ctx.family === "consumption-digest") {
+    return renderConsumptionDigestPage(
+      ctx,
+      renderConsumptionDigestDay(model.date, [
+        {
+          label: "text",
+          html: `<article class="consumption-digest-article"><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}<div class="blog-post-content consumption-digest-copy">${model.contentHtml}</div></article>`,
+        },
+      ]),
     );
   }
   if (ctx.family === "no-css") {
@@ -2159,6 +2239,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .join("");
     return renderHtmlBulletinPage(ctx, "archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
+  if (ctx.family === "consumption-digest") {
+    const days = model.months
+      .map((month) => renderConsumptionDigestDay(month.label, [{ label: "text", html: month.posts.map(renderConsumptionDigestPost).join("") }]))
+      .join("");
+    return renderConsumptionDigestPage(ctx, days);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -2284,6 +2370,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       ? model.entries.map((entry) => `<p><strong>${escapeHtml(entry.name)}</strong><br>${escapeHtml(entry.message)}<br><small>${escapeHtml(entry.date)}</small></p>`).join("")
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderHtmlBulletinPage(ctx, "guestbook", `<p>${button}</p>${bulletinEntries}`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "consumption-digest") {
+    const guestbookEntries = model.entries.length
+      ? model.entries.map((entry) => `<p><strong>${escapeHtml(entry.name)}</strong> - ${escapeHtml(entry.message)} <small>${escapeHtml(entry.date)}</small></p>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderConsumptionDigestPage(ctx, renderConsumptionDigestDay("guestbook", [{ label: "text", html: `<div class="consumption-digest-action">${button}</div>${guestbookEntries}` }]))}${guestbookModalScript()}`;
   }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
@@ -2454,6 +2546,23 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       `<p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
       <div class="themes-console html-bulletin-console"><label for="theme-select">Theme</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>Previous</button> <button type="button" data-theme-random>Random</button> <button type="button" data-theme-next>Next</button></div>
       ${rows}`,
+    );
+  }
+  if (ctx.family === "consumption-digest") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<p><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> - ${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)} <small>${escapeHtml(theme.vibe)}</small></p>`)
+      .join("");
+    return renderConsumptionDigestPage(
+      ctx,
+      renderConsumptionDigestDay("themes", [
+        {
+          label: "picker",
+          html: `<div class="themes-console consumption-digest-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div>`,
+        },
+        { label: "text", html: rows },
+      ]),
+      `<p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>`,
     );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
