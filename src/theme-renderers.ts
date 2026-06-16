@@ -422,6 +422,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "garden-notebook") return renderGardenGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "fragment-journal") return renderFragmentGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "art-index") return renderArtIndexGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "uncertainty") return renderUncertaintyGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -885,7 +886,20 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "uncertainty") {
-    return `<section class="uncertainty"><div class="uncertain-content">${homeHeader}${links}</div></section>`;
+    const works = model.links
+      .slice(0, 10)
+      .map((link) => renderUncertaintyLine(link.title, link.url, link.domain, link.date))
+      .join("");
+    const writing = model.recentPosts
+      .slice(0, 6)
+      .map((post) => renderUncertaintyLine(post.title, post.href, post.readTime || "Writing", post.date))
+      .join("");
+    return renderUncertaintyPage(
+      ctx,
+      "Ryan Prendergast",
+      `<div class="uncertainty-intro">${model.introHtml}</div>`,
+      `<section class="uncertainty-group" aria-label="Links">${works}</section><section class="uncertainty-group" aria-label="Writing">${writing}</section>`,
+    );
   }
   if (ctx.family === "briefing") {
     return `<section class="briefing"><nav>Home Politics Business Technology Energy</nav>${homeHeader}<div class="brief-grid">${model.links.map((link) => `<article><span>THE NEWS</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
@@ -1095,7 +1109,14 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "uncertainty") {
-    return `<section class="uncertainty"><h2>Index</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`)).join("")}</section>`;
+    return renderUncertaintyPage(
+      ctx,
+      "Index",
+      `<p>${escapeHtml(model.description)}</p>`,
+      model.postsByYear
+        .map((group) => `<section class="uncertainty-group"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post) => renderUncertaintyLine(post.title, post.href, post.readTime || "Text", post.date)).join("")}</section>`)
+        .join(""),
+    );
   }
   if (ctx.family === "briefing") {
     return `<section class="briefing"><h2>Briefings</h2><div class="brief-grid">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<article><span>${escapeHtml(group.year)}</span><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><p>${escapeHtml(post.date)}</p></article>`)).join("")}</div></section>`;
@@ -1184,6 +1205,14 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       renderUcozStats(model.date, model.author || "Ryan Prendergast"),
     );
   }
+  if (ctx.family === "uncertainty") {
+    return renderUncertaintyPage(
+      ctx,
+      model.title,
+      `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<p>${meta}</p>`,
+      `<article class="blog-post-content uncertainty-copy">${model.contentHtml}</article>`,
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1251,6 +1280,16 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
         `<header class="fragment-page-head"><h1>archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header>${model.months.map((month) => `<section class="fragment-year"><h2>${escapeHtml(month.label)}</h2>${renderFragmentPostList(month.posts)}</section>`).join("")}`,
       );
     }
+    if (ctx.family === "uncertainty") {
+      return renderUncertaintyPage(
+        ctx,
+        "Archive",
+        `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`,
+        model.months
+          .map((month) => `<section class="uncertainty-group"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderUncertaintyLine(post.title, post.href, post.readTime || "Entry", post.date)).join("")}</section>`)
+          .join(""),
+      );
+    }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "ucoz-archive") {
@@ -1311,6 +1350,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
   if (ctx.family === "garden-notebook") {
     return `${renderGardenPage(ctx, `<h1>Guestbook</h1><section class="guestbook-header">${button}</section><div class="garden-entries">${entries}</div>`)}${guestbookModalScript()}`;
   }
+  if (ctx.family === "uncertainty") {
+    const lines = model.entries.length
+      ? model.entries.map((entry) => `<article class="uncertainty-entry"><time>${escapeHtml(entry.date)}</time><p>${escapeHtml(entry.message)}</p><strong>${escapeHtml(entry.name)}</strong></article>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderUncertaintyPage(ctx, "Guestbook", `<p>${model.entries.length} entries.</p>${button}`, `<section class="uncertainty-group">${lines}</section>`)}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -1345,6 +1390,16 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
   if (ctx.family === "garden-notebook") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     return renderGardenPage(ctx, `<h1>Themes</h1><p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p><div class="themes-console garden-theme-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`);
+  }
+  if (ctx.family === "uncertainty") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes.map((theme) => renderUncertaintyLine(theme.name, `?theme=${theme.slug}`, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.vibe)).join("");
+    return renderUncertaintyPage(
+      ctx,
+      "Themes",
+      `<p>${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p><div class="themes-console uncertainty-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>`,
+      `<section class="uncertainty-group">${rows}</section>`,
+    );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
@@ -1590,6 +1645,35 @@ function renderFragmentLinkList(links: LinkEntryModel[]): string {
 
 function renderFragmentGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderFragmentPage(ctx, `<article class="fragment-article"><header class="fragment-page-head"><h1>${escapeHtml(model.heading)}</h1></header><div class="fragment-copy">${model.contentHtml}</div></article>`);
+}
+
+function renderUncertaintyNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const items = [
+    ["/", "Home"],
+    ["/blog", "Texts"],
+    ["/photos", "Images"],
+    ["/archives", "Archive"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "About"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="uncertainty-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderUncertaintyPage(ctx: RenderContext, title: string, introHtml = "", bodyHtml = ""): string {
+  const intro = introHtml ? `<div class="uncertainty-note">${introHtml}</div>` : "";
+  const body = bodyHtml ? `<div class="uncertainty-body">${bodyHtml}</div>` : "";
+  return `<section class="uncertainty">${renderUncertaintyNav(ctx)}<header class="uncertainty-title"><h1>${escapeHtml(title)}</h1>${intro}</header>${body}</section>`;
+}
+
+function renderUncertaintyLine(title: string, href: string, type: string, date = ""): string {
+  return `<a class="uncertainty-line" href="${href}"><span>${escapeHtml(title)}</span><small>${escapeHtml([type, date].filter(Boolean).join(" / "))}</small></a>`;
+}
+
+function renderUncertaintyGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderUncertaintyPage(ctx, model.heading, "", `<div class="uncertainty-copy">${model.contentHtml}</div>`);
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
