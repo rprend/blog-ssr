@@ -427,6 +427,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "bookmaker-card") return renderBookmakerPage(ctx, `<section class="bookmaker-info"><h1>${escapeHtml((model as GenericPageModel).heading)}</h1><div class="bookmaker-copy">${(model as GenericPageModel).contentHtml}</div></section>`);
   if (ctx.family === "experimental-loop") return renderExperimentalLoopPage(ctx, `<article class="experimental-loop-article"><header><span>page</span><h1>${escapeHtml((model as GenericPageModel).heading)}</h1></header><div class="experimental-loop-copy">${(model as GenericPageModel).contentHtml}</div></article>`);
   if (ctx.family === "taste-directory") return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead((model as GenericPageModel).heading, "", "page")}<article class="taste-card taste-page-card"><div class="taste-card-body">${(model as GenericPageModel).contentHtml}</div></article>`, "Browse");
+  if (ctx.family === "writer-ledger") return renderWriterLedgerGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1012,7 +1013,15 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "writer-ledger") {
-    return `<section class="writer-ledger">${homeHeader}<h3>recently...</h3>${model.recentPosts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}${model.links.slice(0, 8).map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</section>`;
+    const recent = [
+      ...model.recentPosts.slice(0, 3).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`),
+      ...model.links.slice(0, 3).map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`),
+    ].join(" ");
+    const rows = [
+      ...model.recentPosts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime || "Essay", post.date)),
+      ...model.links.map((link) => renderWriterLedgerRow(link.title, link.url, link.domain, link.date)),
+    ].join("");
+    return `<section class="writer-ledger">${renderWriterLedgerRecent(recent)}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info">${model.introHtml}${model.aboutHtml}</section><section class="writer-ledger-work"><h2>Title <span>Medium</span> <span>Year</span> <span>↓</span></h2><div class="writer-ledger-table">${rows}</div></section></section>`;
   }
 
   if (ctx.family === "artist-menu") {
@@ -1197,7 +1206,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       const entries = model.postsByYear.flatMap((group) => group.posts.map((post) => renderExperimentalLoopUnit(post.href, post.title, post.readTime || "text", group.year, post.date, post.excerpt || ""))).join("");
       return renderExperimentalLoopPage(ctx, `<header class="experimental-loop-section-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p></header><h2 class="experimental-loop-contents">Contents ↓</h2><div class="experimental-loop-units">${entries}</div>`);
     }
-    return `<section class="${ctx.family}"><h2>${ctx.family === "writer-ledger" ? "recently..." : "journal"}</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
+    return `<section class="writer-ledger">${renderWriterLedgerRecent(model.postsByYear.flatMap((group) => group.posts).slice(0, 3).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" "))}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><p>${escapeHtml(model.description)}</p></section><section class="writer-ledger-work"><h2>Title <span>Medium</span> <span>Year</span> <span>↓</span></h2><div class="writer-ledger-table">${model.postsByYear.flatMap((group) => group.posts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime || "Essay", group.year))).join("")}</div></section></section>`;
   }
   if (ctx.family === "ucoz-archive") {
     return renderUcozPage(
@@ -1352,6 +1361,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       "Browse",
     );
   }
+  if (ctx.family === "writer-ledger") {
+    return `<article class="writer-ledger writer-ledger-article">${renderWriterLedgerRecent(`<a href="${model.backHref}">${escapeHtml(model.backLabel)}</a>`)}${renderWriterLedgerHeader(ctx)}<header class="writer-ledger-article-head"><p>( <a href="${model.backHref}">${escapeHtml(model.backLabel)}</a> )</p><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<time>${meta}</time></header><div class="blog-post-content writer-ledger-copy">${model.contentHtml}</div></article>`;
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1455,7 +1467,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
         .join("");
       return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Archive", `${model.totalPosts} entries across ${model.months.length} months.`, "All Recs")}<div class="taste-archive">${cards}</div>`, "Browse");
     }
-    return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
+    return `<section class="writer-ledger">${renderWriterLedgerRecent(`${model.totalPosts} entries across ${model.months.length} months.`)}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-work"><h2>Title <span>Medium</span> <span>Year</span> <span>↓</span></h2><div class="writer-ledger-table">${model.months.flatMap((month) => month.posts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime || "Entry", month.label))).join("")}</div></section></section>`;
   }
   if (ctx.family === "ucoz-archive") {
     return renderUcozPage(
@@ -1582,6 +1594,11 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       `${renderTasteSectionHead("Themes", `${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.`, "Theme: Taste Directory")}<div class="themes-console taste-theme-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="theme-filters taste-theme-filters">${model.categoryControlsHtml}</div><div class="taste-feed">${rows}</div>`,
       "Browse",
     );
+  }
+  if (ctx.family === "writer-ledger") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes.map((theme) => renderWriterLedgerRow(theme.name, `?theme=${theme.slug}`, theme.status, theme.category)).join("");
+    return `<section class="writer-ledger">${renderWriterLedgerRecent(`${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.`)}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-theme-tools themes-console"><label for="theme-select">( theme )</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></section><section class="writer-ledger-work"><h2>Title <span>Status</span> <span>Category</span> <span>↓</span></h2><div class="writer-ledger-table">${rows}</div></section></section>`;
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
@@ -1795,6 +1812,34 @@ function renderArtistLedgerRow(date: string, href: string, title: string, type: 
 
 function renderArtistLedgerGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return `<article class="artist-ledger artist-ledger-page">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>${escapeHtml(model.heading)}</h2><div class="artist-ledger-copy">${model.contentHtml}</div></section></article>`;
+}
+
+function renderWriterLedgerRecent(contentHtml: string): string {
+  const line = contentHtml || `<a href="/blog">Ryan Prendergast</a>`;
+  return `<div class="writer-ledger-recent" aria-label="Recently"><p>recently... ${line}</p><p>recently... ${line}</p><p>recently... ${line}</p></div>`;
+}
+
+function renderWriterLedgerHeader(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = [
+    ["/", "home"],
+    ["/blog", "writing"],
+    ["/archives", "archive"],
+    ["/photos", "photos"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "info"],
+    ["/themes", "themes"],
+    ["/rss.xml", "rss"],
+  ] as Array<[string, string]>;
+  return `<header class="writer-ledger-header"><p><a href="/">Ryan Prendergast</a></p><nav aria-label="Core site areas">( ${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join(" ")} )</nav></header>`;
+}
+
+function renderWriterLedgerRow(title: string, href: string, medium: string, year: string): string {
+  return `<a class="writer-ledger-row" href="${href}"><span>${escapeHtml(title)}</span><span>${escapeHtml(medium)}</span><span>${escapeHtml(year)}</span></a>`;
+}
+
+function renderWriterLedgerGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="writer-ledger writer-ledger-page">${renderWriterLedgerRecent(`<a href="/">${escapeHtml(model.heading)}</a>`)}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><h1>${escapeHtml(model.heading)}</h1><div class="writer-ledger-copy">${model.contentHtml}</div></section></article>`;
 }
 
 function renderFragmentNav(ctx: RenderContext): string {

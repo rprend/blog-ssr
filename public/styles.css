@@ -6434,28 +6434,217 @@ body {
 }
 
 .family-writer-ledger {
-  background: #fff;
+  background: #fdfcf8;
+  color: #050505;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 14px;
+  line-height: 1.16;
+}
+
+.family-writer-ledger .theme-shell-frame {
+  width: 100%;
+  max-width: none;
+  padding: 0 12px 84px;
+}
+
+.family-writer-ledger .theme-shell-footer {
+  display: none;
+}
+
+.family-writer-ledger .sticky-theme-picker {
+  background: #fdfcf8;
+  border-top: 1px solid #111;
   color: #111;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 12px;
+}
+
+.family-writer-ledger .sticky-theme-picker select,
+.family-writer-ledger .sticky-theme-picker button {
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #fdfcf8;
+  color: #111;
+  font-family: inherit;
+  font-size: 12px;
 }
 
 .writer-ledger {
-  max-width: 680px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 22px;
+}
+
+.writer-ledger a {
+  color: #000;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 1px;
+}
+
+.writer-ledger a:hover,
+.writer-ledger a.is-active {
+  background: #000;
+  color: #fdfcf8;
+  text-decoration: none;
+}
+
+.writer-ledger-recent {
+  max-width: 1040px;
+  margin: 0 0 22px;
+  padding-top: 2px;
+}
+
+.writer-ledger-recent p {
+  margin: 0;
+}
+
+.writer-ledger-header {
+  display: grid;
+  grid-template-columns: minmax(260px, 540px) minmax(240px, 1fr);
+  gap: 16px;
+  max-width: 1120px;
+  margin: 0 0 28px;
+}
+
+.writer-ledger-header p,
+.writer-ledger-header nav,
+.writer-ledger-info p,
+.writer-ledger-copy p,
+.writer-ledger-copy li {
+  margin: 0 0 12px;
+}
+
+.writer-ledger-header p {
+  max-width: 520px;
+}
+
+.writer-ledger-header nav {
+  align-self: start;
+}
+
+.writer-ledger-info {
+  max-width: 930px;
+  margin: 0 0 30px;
+}
+
+.writer-ledger-info h1,
+.writer-ledger-work h2,
+.writer-ledger-article-head h1 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.16;
+  font-weight: 400;
 }
 
 .writer-ledger h2 {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 400;
 }
 
 .writer-ledger p {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+}
+
+.writer-ledger-work {
+  max-width: 1380px;
+  margin-top: 36px;
+}
+
+.writer-ledger-work h2 {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.5fr) minmax(120px, 0.55fr) minmax(120px, 0.55fr) 24px;
+  column-gap: 10px;
+  margin-bottom: 4px;
+}
+
+.writer-ledger-table {
+  display: grid;
+  gap: 0;
+}
+
+.writer-ledger-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.5fr) minmax(120px, 0.55fr) minmax(120px, 0.55fr);
+  column-gap: 10px;
+  padding: 1px 0;
+  color: #000;
+  text-decoration: none;
+}
+
+.writer-ledger-row span:first-child {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 1px;
+}
+
+.writer-ledger-article-head,
+.writer-ledger-page .writer-ledger-info {
+  max-width: 760px;
+  margin: 0 0 26px;
+}
+
+.writer-ledger-article-head time {
+  display: block;
+}
+
+.writer-ledger-copy {
+  max-width: 760px;
+}
+
+.writer-ledger-copy h2,
+.writer-ledger-copy h3,
+.writer-ledger-copy h4 {
+  margin: 24px 0 10px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.writer-ledger-theme-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  max-width: 760px;
+  margin: 0 0 28px;
+}
+
+.writer-ledger-theme-tools select,
+.writer-ledger-theme-tools button {
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #fdfcf8;
+  color: #111;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 2px 5px;
 }
 
 @media (max-width: 760px) {
   .latest-columns {
     grid-template-columns: 1fr;
+  }
+
+  .family-writer-ledger {
+    font-size: 13px;
+  }
+
+  .family-writer-ledger .theme-shell-frame {
+    padding-inline: 8px;
+  }
+
+  .writer-ledger-header,
+  .writer-ledger-work h2,
+  .writer-ledger-row {
+    grid-template-columns: 1fr;
+  }
+
+  .writer-ledger-row {
+    padding: 6px 0;
+  }
+
+  .writer-ledger-row span + span {
+    color: #4a4a4a;
   }
 }
 
