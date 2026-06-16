@@ -426,6 +426,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "briefing") return renderBriefingGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "bookmaker-card") return renderBookmakerPage(ctx, `<section class="bookmaker-info"><h1>${escapeHtml((model as GenericPageModel).heading)}</h1><div class="bookmaker-copy">${(model as GenericPageModel).contentHtml}</div></section>`);
   if (ctx.family === "experimental-loop") return renderExperimentalLoopPage(ctx, `<article class="experimental-loop-article"><header><span>page</span><h1>${escapeHtml((model as GenericPageModel).heading)}</h1></header><div class="experimental-loop-copy">${(model as GenericPageModel).contentHtml}</div></article>`);
+  if (ctx.family === "taste-directory") return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead((model as GenericPageModel).heading, "", "page")}<article class="taste-card taste-page-card"><div class="taste-card-body">${(model as GenericPageModel).contentHtml}</div></article>`, "Browse");
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1002,7 +1003,13 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return renderExperimentalLoopHome(model, ctx);
   }
   if (ctx.family === "taste-directory") {
-    return `<section class="taste-directory"><nav>Rising Browse</nav>${homeHeader}<div class="taste-cats">Links · Writing · Archives</div>${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
+    const posts = model.recentPosts.map((post, index) => renderTastePostCard(post, index, "answered")).join("");
+    const links = model.links.map((link, index) => renderTasteLinkCard(link, index)).join("");
+    return renderTasteDirectoryPage(
+      ctx,
+      `<section class="taste-hero">${renderCanonicalHomeHeader(model)}<div class="taste-promo"><p>The Internet We Were Promised...100% Slop Free.</p><a href="/guestbook">Sign up</a></div></section>${renderTasteFeedToolbar("Top of Day", "All", model.links.length + model.recentPosts.length)}<div class="taste-feed">${posts}${links}</div>`,
+      "Rising",
+    );
   }
   if (ctx.family === "writer-ledger") {
     return `<section class="writer-ledger">${homeHeader}<h3>recently...</h3>${model.recentPosts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}${model.links.slice(0, 8).map((link) => `<p><a href="${link.url}">${escapeHtml(link.title)}</a></p>`).join("")}</section>`;
@@ -1223,7 +1230,8 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return renderBookmakerPage(ctx, `<section class="bookmaker-selected"><h1>Writing</h1>${rows}</section>`, "", `<p>${model.totalPosts} posts.</p>`);
   }
   if (ctx.family === "taste-directory") {
-    return `<section class="taste-directory"><h2>Browse Writing</h2><div class="taste-cats">Essays · Reviews · Notes · Archives</div>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<article><a href="${post.href}">${escapeHtml(post.title)}</a><p>${escapeHtml(group.year)}</p></article>`)).join("")}</section>`;
+    const posts = model.postsByYear.flatMap((group) => group.posts.map((post, index) => renderTastePostCard(post, index, group.year))).join("");
+    return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Browse Writing", model.description, `${model.totalPosts} posts`)}${renderTasteFeedToolbar("Newest", "Recs", model.totalPosts)}<div class="taste-feed">${posts}</div>`, "Browse");
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     return `<section class="${ctx.family}"><h2>${ctx.family === "research-lab" ? "Research" : "Index"}</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
@@ -1337,6 +1345,13 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       `<article class="experimental-loop-article"><a class="experimental-loop-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header><span>${meta}</span><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}</header><div class="blog-post-content experimental-loop-copy">${model.contentHtml}</div></article>`,
     );
   }
+  if (ctx.family === "taste-directory") {
+    return renderTasteDirectoryPage(
+      ctx,
+      `<article class="taste-card taste-article-card"><div class="taste-author"><span class="taste-avatar">RP</span><div><a href="/">@ryanprendergast</a><time>${meta}</time></div><strong>rec'd</strong></div><header><a class="taste-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}</header><div class="blog-post-content taste-card-body">${model.contentHtml}</div><footer class="taste-actions"><span>${tasteScore(model.title, 0)} likes</span><span>${tasteScore(model.date, 2)} comments</span></footer></article>`,
+      "Browse",
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1434,6 +1449,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       const entries = model.months.flatMap((month) => month.posts.map((post) => renderExperimentalLoopUnit(post.href, post.title, post.readTime || "archive", month.label, post.date, ""))).join("");
       return renderExperimentalLoopPage(ctx, `<header class="experimental-loop-section-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header><h2 class="experimental-loop-contents">Contents ↓</h2><div class="experimental-loop-units">${entries}</div>`);
     }
+    if (ctx.family === "taste-directory") {
+      const cards = model.months
+        .map((month, index) => `<section class="taste-month"><h2>${escapeHtml(month.label)}</h2><div class="taste-feed">${month.posts.map((post, postIndex) => renderTastePostCard(post, index + postIndex, month.key)).join("")}</div></section>`)
+        .join("");
+      return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Archive", `${model.totalPosts} entries across ${model.months.length} months.`, "All Recs")}<div class="taste-archive">${cards}</div>`, "Browse");
+    }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "ucoz-archive") {
@@ -1500,6 +1521,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderUncertaintyPage(ctx, "Guestbook", `<p>${model.entries.length} entries.</p>${button}`, `<section class="uncertainty-group">${lines}</section>`)}${guestbookModalScript()}`;
   }
+  if (ctx.family === "taste-directory") {
+    const tasteEntries = model.entries.length
+      ? model.entries.map((entry, index) => `<article class="taste-card"><div class="taste-author"><span class="taste-avatar">${escapeHtml(entry.name.slice(0, 2).toUpperCase() || "RP")}</span><div><a href="/guestbook">@${escapeHtml(slugify(entry.name) || "guest")}</a><time>${escapeHtml(entry.date)}</time></div><strong>answered</strong></div><div class="taste-card-body"><h2>${escapeHtml(entry.name)}</h2><p>${escapeHtml(entry.message)}</p></div><footer class="taste-actions"><span>${tasteScore(entry.name, index)} likes</span><span>1 comment</span></footer></article>`).join("")
+      : `<article class="taste-card"><div class="taste-card-body"><p>No entries yet. Be the first to sign the guestbook!</p></div></article>`;
+    return `${renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Guestbook", `${model.entries.length} entries.`, "All Asks")}<section class="guestbook-header taste-signup">${button}</section><div class="taste-feed">${tasteEntries}</div>`, "Browse")}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -1543,6 +1570,17 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       "Themes",
       `<p>${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p><div class="themes-console uncertainty-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div>`,
       `<section class="uncertainty-group">${rows}</section>`,
+    );
+  }
+  if (ctx.family === "taste-directory") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme, index) => `<article class="taste-card"><div class="taste-author"><span class="taste-avatar">${String(index + 1).padStart(2, "0")}</span><div><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a><time>${escapeHtml(theme.category)}</time></div><strong>${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)}</strong></div><div class="taste-card-body"><h2><a href="?theme=${theme.slug}">${escapeHtml(theme.vibe)}</a></h2><p>${escapeHtml(theme.description)}</p></div></article>`)
+      .join("");
+    return renderTasteDirectoryPage(
+      ctx,
+      `${renderTasteSectionHead("Themes", `${model.themes.length} layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.`, "Theme: Taste Directory")}<div class="themes-console taste-theme-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div><div class="theme-filters taste-theme-filters">${model.categoryControlsHtml}</div><div class="taste-feed">${rows}</div>`,
+      "Browse",
     );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
@@ -1905,6 +1943,57 @@ function renderPostSummary(post: PostSummaryModel, index: number, ctx: RenderCon
 
 function guestbookModalScript(): string {
   return `<div id="guestbookModal" class="modal hidden"><div class="modal-content"><div class="modal-header"><h2>Sign Guestbook</h2><button onclick="hideGuestbookModal()" class="modal-close">&times;</button></div><form id="guestbookForm"><div class="form-group"><label for="name" class="form-label">Name *</label><input id="name" name="name" type="text" required maxlength="50" class="form-input"></div><div class="form-group"><label for="message" class="form-label">Message *</label><textarea id="message" name="message" required maxlength="500" rows="4" class="form-textarea"></textarea></div><div class="form-actions"><button type="button" onclick="hideGuestbookModal()">Cancel</button><button type="submit">Submit</button></div></form></div></div><script>function showGuestbookModal(){document.getElementById('guestbookModal').classList.remove('hidden')}function hideGuestbookModal(){document.getElementById('guestbookModal').classList.add('hidden')}document.addEventListener('keydown',function(e){if(e.key==='Escape')hideGuestbookModal()});document.getElementById('guestbookForm').addEventListener('submit',async(e)=>{e.preventDefault();const name=document.getElementById('name').value;const message=document.getElementById('message').value;try{const response=await fetch('/api/guestbook',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,message})});if(response.ok){window.location.reload()}else{alert('Failed to submit entry. Please try again.')}}catch(error){alert('Failed to submit entry. Please try again.')}});</script>`;
+}
+
+function renderTasteDirectoryPage(ctx: RenderContext, contentHtml: string, activeTab: "Rising" | "Browse"): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const tab = (label: "Rising" | "Browse", href: string) => `<a class="${activeTab === label ? "is-active" : ""}" href="${href}">${label}</a>`;
+  const nav = [
+    ["/", "HOME"],
+    ["/blog", "HOT"],
+    ["/archives", "ALL"],
+    ["/photos", "PHOTOS"],
+    ["/guestbook", "ASKS"],
+    ["/contact", "ABOUT"],
+    ["/themes", "THEMES"],
+  ] as Array<[string, string]>;
+  return `<section class="taste-directory"><header class="taste-top"><div class="taste-stars">* * * *</div><a href="/guestbook">Sign up / login</a><span>Theme: ${escapeHtml(ctx.theme.name)}</span></header><nav class="taste-tabs" aria-label="Taste directory tabs">${tab("Rising", "/")}${tab("Browse", "/blog")}</nav>${renderTasteCategories()}<nav class="taste-core-nav" aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}<a href="/rss.xml">RSS</a></nav>${contentHtml}</section>`;
+}
+
+function renderTasteCategories(): string {
+  const categories = [
+    ["Music", "Rock · Pop · Electronic · Hip Hop & Rap", "/archives"],
+    ["Film", "Drama · Comedy · Romance · Action & Adventure", "/blog"],
+    ["TV", "Drama · Comedy · Sci-Fi · Horror", "/photos"],
+    ["Reading", "Fiction · Non-Fiction · Sci-Fi · Fantasy", "/blog"],
+    ["Place", "New York · Los Angeles · London · Paris", "/contact"],
+    ["Food", "Italian · Japanese · Mexican · Chinese", "/archives"],
+  ] as Array<[string, string, string]>;
+  return `<section class="taste-browse" aria-label="Browse categories"><div class="taste-browse-head"><h2>Browse</h2><a href="/archives">Show all</a></div><div class="taste-cats">${categories.map(([title, detail, href]) => `<a href="${href}"><strong>${title}</strong><span>${detail}</span></a>`).join("")}</div><div class="taste-scenes"><h2>Scenes</h2><a href="/archives">View all -></a></div></section>`;
+}
+
+function renderTasteSectionHead(title: string, description: string, meta: string): string {
+  return `<header class="taste-section-head"><span>${escapeHtml(meta)}</span><h1>${escapeHtml(title)}</h1>${description ? `<p>${escapeHtml(description)}</p>` : ""}</header>`;
+}
+
+function renderTasteFeedToolbar(sortLabel: string, activeFilter: string, count: number): string {
+  return `<div class="taste-feed-toolbar"><span>Sort by ${escapeHtml(sortLabel)}</span><div><a class="${activeFilter === "All" ? "is-active" : ""}" href="/">All</a><a class="${activeFilter === "Recs" ? "is-active" : ""}" href="/blog">Recs</a><a class="${activeFilter === "Asks" ? "is-active" : ""}" href="/guestbook">Asks</a></div><span>${count} items</span></div>`;
+}
+
+function renderTastePostCard(post: PostSummaryModel, index: number, state: string): string {
+  const excerpt = post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : "";
+  return `<article class="taste-card"><div class="taste-author"><span class="taste-avatar">RP</span><div><a href="${post.href}">@ryanprendergast</a><time>${escapeHtml(post.date)}</time></div><strong>${escapeHtml(state)}</strong></div><div class="taste-card-body"><h2><a href="${post.href}">${escapeHtml(post.title)}</a></h2>${excerpt}<a class="taste-path" href="${post.href}">/writing/${escapeHtml(slugify(post.title))}</a></div><footer class="taste-actions"><span>${tasteScore(post.title, index)} likes</span><span>${tasteScore(post.date, index + 1)} comments</span></footer></article>`;
+}
+
+function renderTasteLinkCard(link: LinkEntryModel, index: number): string {
+  const excerpt = stripHtml(link.contentHtml);
+  const image = link.image ? `<a class="taste-thumb" href="${link.url}"><img src="${link.image}" alt=""></a>` : `<a class="taste-thumb taste-thumb-fallback" href="${link.url}">${escapeHtml(link.domain.slice(0, 2).toUpperCase())}</a>`;
+  return `<article class="taste-card taste-link-card"><div class="taste-author"><span class="taste-avatar">RP</span><div><a href="${link.url}">@${escapeHtml(slugify(link.domain) || "link")}</a><time>${escapeHtml(link.date)}</time></div><strong>rec'd</strong></div>${image}<div class="taste-card-body"><h2><a href="${link.url}">${escapeHtml(link.title)}</a></h2>${excerpt ? `<p>${escapeHtml(excerpt)}</p>` : ""}<a class="taste-path" href="${link.url}">/${escapeHtml(link.domain)}</a></div><footer class="taste-actions"><span>${tasteScore(link.title, index)} likes</span><span>${tasteScore(link.domain, index + 3)} comments</span></footer></article>`;
+}
+
+function tasteScore(value: string, salt: number): number {
+  const total = Array.from(value).reduce((sum, char) => sum + char.charCodeAt(0), salt * 17);
+  return (total % 68) + 1;
 }
 
 function escapeHtml(value: string): string {
