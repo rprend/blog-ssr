@@ -436,6 +436,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "design-repository") return renderDesignRepositoryGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "weblog-facets") return renderWeblogFacetsPage(ctx, renderWeblogFacetsGeneric(model as GenericPageModel, ctx));
   if (ctx.family === "research-lab") return renderResearchLabGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "room-wall") return renderRoomWallGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -746,6 +747,40 @@ function renderVisualCulturePage(ctx: RenderContext, subheading: string, content
 
 function renderVisualCultureWork(href: string, title: string, meta: string, detail = ""): string {
   return `<p class="visual-culture-work"><span style="font-weight:bolder"><a href="${href}">${escapeHtml(title)}</a></span>${meta ? ` (${escapeHtml(meta)})` : ""}${detail ? `<br>${escapeHtml(detail)}` : ""}</p>`;
+}
+
+function renderRoomWallNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const social = [
+    ["/", "work"],
+    ["/contact", "contact"],
+    ["/photos", "photos"],
+    ["/archives", "cv"],
+  ] as Array<[string, string]>;
+  const core = [
+    ["/blog", "blog"],
+    ["/guestbook", "guestbook"],
+    ["/themes", "themes"],
+    ["/rss.xml", "rss"],
+  ] as Array<[string, string]>;
+  return `<header class="room-wall-top">
+    <p><a href="/" class="${active("/")}">Ryan Prendergast</a></p>
+    <nav aria-label="Primary">${social.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>
+    <nav aria-label="Core site areas">${core.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>
+  </header>`;
+}
+
+function renderRoomWallPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="room-wall">${renderRoomWallNav(ctx)}<main>${contentHtml}</main></section>`;
+}
+
+function renderRoomWallWork(href: string, title: string, year: string, medium: string): string {
+  const prefix = [year, title].filter(Boolean).join(" ");
+  return `<p class="room-wall-work"><a href="${href}">${escapeHtml(prefix)}</a>${medium ? ` <span>${escapeHtml(medium)}</span>` : ""}</p>`;
+}
+
+function renderRoomWallGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderRoomWallPage(ctx, `<article class="room-wall-article"><h1>${escapeHtml(model.heading)}</h1><div class="room-wall-copy">${model.contentHtml}</div></article>`);
 }
 
 function renderVisualCultureGeneric(model: GenericPageModel, ctx: RenderContext): string {
@@ -1311,7 +1346,17 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "room-wall") {
-    return `<section class="room-wall"><nav>work contact instagram cv</nav>${homeHeader}<div class="wall-links">${model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</div></section>`;
+    const links = model.links.map((link) => renderRoomWallWork(link.url, link.title, link.date, link.domain)).join("");
+    const posts = model.recentPosts.map((post) => renderRoomWallWork(post.href, post.title, post.date, post.readTime || "writing")).join("");
+    return renderRoomWallPage(
+      ctx,
+      `<header class="room-wall-statement">
+        <h1>Ryan Prendergast</h1>
+        <div class="room-wall-intro">${model.introHtml}</div>
+      </header>
+      <section class="room-wall-works" aria-label="Links and writing">${links}${posts}</section>
+      <section class="room-wall-about">${model.aboutHtml}</section>`,
+    );
   }
   if (ctx.family === "book-microsite") {
     return `<section class="book-microsite"><p class="next">NEXT</p>${homeHeader}<div class="credit-grid"><span>entries</span><b>${model.links.length}</b></div>${links}</section>`;
@@ -1547,6 +1592,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       "visual-culture-index",
     );
   }
+  if (ctx.family === "room-wall") {
+    const posts = model.postsByYear
+      .flatMap((group) => group.posts.map((post) => renderRoomWallWork(post.href, post.title, group.year, post.date)))
+      .join("");
+    return renderRoomWallPage(ctx, `<h1>Blog</h1><p>${escapeHtml(model.description)}</p><section class="room-wall-works">${posts}</section>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "weblog-facets") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
@@ -1580,6 +1631,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   const meta = `${escapeHtml(model.date)}${model.author ? ` - ${escapeHtml(model.author)}` : ""}`;
   if (ctx.family === "spartan") {
     return `<table class="pg-home pg-article" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><font size="1" color="#666666">${meta}</font>${model.subtitle ? `<p><i>${escapeHtml(model.subtitle)}</i></p>` : ""}<br>${model.contentHtml}</td></tr></tbody></table>`;
+  }
+  if (ctx.family === "room-wall") {
+    return renderRoomWallPage(
+      ctx,
+      `<article class="room-wall-article">
+        <p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h1>${escapeHtml(model.title)}</h1>
+        <p class="room-wall-meta">${meta}</p>
+        ${model.subtitle ? `<p><i>${escapeHtml(model.subtitle)}</i></p>` : ""}
+        <div class="room-wall-copy">${model.contentHtml}</div>
+      </article>`,
+    );
   }
   if (ctx.family === "friendly-hub") {
     return renderFriendlyHubPage(
@@ -1930,6 +1993,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       `<div class="visual-culture-intro"><p>${model.totalPosts} entries across ${model.months.length} months.</p></div><div class="visual-culture-contact">${months}</div>`,
       "visual-culture-archive",
     );
+  }
+  if (ctx.family === "room-wall") {
+    const months = model.months
+      .map((month) => `<section class="room-wall-month"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderRoomWallWork(post.href, post.title, post.date, post.readTime || "")).join("")}</section>`)
+      .join("");
+    return renderRoomWallPage(ctx, `<h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "weblog-facets") {

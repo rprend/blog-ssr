@@ -8726,12 +8726,154 @@ body {
   }
 }
 
-.family-room-wall .theme-shell-frame { max-width: 760px; background: #fffaf2; }
-.room-wall { min-height: 62vh; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-content: center; }
-.room-wall nav { grid-column: 1 / -1; display: flex; gap: 14px; font-size: 12px; }
-.room-wall h2 { font-size: 34px; font-weight: 400; }
-.wall-note { font-family: Georgia, serif; line-height: 1.6; }
-.wall-links { display: grid; gap: 9px; align-content: start; }
+.family-room-wall {
+  --theme-bg: #fff;
+  --theme-text: #000;
+  background: #fff;
+  color: #000;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  line-height: 1.18;
+}
+
+.family-room-wall .theme-shell-frame {
+  width: auto;
+  max-width: 690px;
+  margin: 0;
+  padding: 8px 8px 96px;
+  background: #fff;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-room-wall .theme-shell-footer {
+  display: block;
+  margin: 34px 0 0;
+  padding: 0;
+  border: 0;
+  font-size: 16px;
+}
+
+.family-room-wall .theme-shell-footer > div {
+  display: none;
+}
+
+.family-room-wall .theme-shell-nav {
+  display: block;
+  margin: 0;
+}
+
+.family-room-wall .theme-shell-nav a {
+  display: inline;
+  padding: 0;
+  border: 0;
+  margin-right: 5px;
+  color: #00e;
+  text-decoration: underline;
+}
+
+.family-room-wall .theme-shell-nav a:visited,
+.family-room-wall a:visited {
+  color: #551a8b;
+}
+
+.family-room-wall .theme-shell-nav a.is-active {
+  color: #00e;
+  background: transparent;
+}
+
+.room-wall {
+  min-height: 62vh;
+  color: #000;
+}
+
+.room-wall a {
+  color: #00e;
+  text-decoration: underline;
+}
+
+.room-wall-top {
+  margin: 0 0 18px;
+}
+
+.room-wall-top p,
+.room-wall-top nav,
+.room-wall-statement p,
+.room-wall-about p,
+.room-wall-work,
+.room-wall-article p,
+.room-wall-copy p {
+  margin: 0 0 14px;
+}
+
+.room-wall-top nav {
+  display: block;
+}
+
+.room-wall-top a {
+  margin-right: 6px;
+}
+
+.room-wall h1,
+.room-wall h2,
+.room-wall h3 {
+  margin: 0 0 14px;
+  font: inherit;
+  font-weight: normal;
+}
+
+.room-wall-statement {
+  max-width: 430px;
+  margin: 0 0 24px;
+}
+
+.room-wall-intro,
+.room-wall-about,
+.room-wall-copy {
+  max-width: 500px;
+}
+
+.room-wall-works {
+  max-width: 640px;
+  margin: 22px 0 0;
+}
+
+.room-wall-work {
+  max-width: 620px;
+}
+
+.room-wall-work span,
+.room-wall-meta {
+  color: #000;
+}
+
+.room-wall-month {
+  margin: 22px 0;
+}
+
+.family-room-wall .sticky-theme-picker {
+  justify-content: flex-start;
+  padding: 7px 8px;
+  background: #fff;
+  border-top: 1px solid #000;
+  box-shadow: none;
+  backdrop-filter: none;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.family-room-wall .mini-theme-picker label {
+  font-size: 16px;
+}
+
+.family-room-wall .mini-theme-picker select,
+.family-room-wall .mini-theme-picker button {
+  min-height: 24px;
+  border: 1px solid #767676;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font: 13px Arial, sans-serif;
+}
 
 .family-book-microsite .theme-shell-frame { max-width: 920px; background: #f3eee5; border: 0; }
 .book-microsite { min-height: 70vh; display: grid; gap: 22px; place-items: center; text-align: center; }
