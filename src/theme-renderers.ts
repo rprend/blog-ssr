@@ -445,6 +445,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "data-portfolio") return renderDataPortfolioGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cheap-manifesto") return renderCheapManifestoGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
   if (ctx.family === "no-css") {
     const generic = model as GenericPageModel;
     return `<article><h2>${escapeHtml(generic.heading)}</h2>${generic.contentHtml}</article>`;
@@ -779,6 +780,73 @@ function renderCheapManifestoPage(ctx: RenderContext, title: string, contentHtml
 
 function renderCheapManifestoGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderCheapManifestoPage(ctx, model.heading, `<div class="cheap-manifesto-copy">${model.contentHtml}</div>`);
+}
+
+function renderPoeticNav(ctx: RenderContext): string {
+  const item = (href: string, label: string) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`;
+  return `<nav class="poetic-menu" aria-label="Core site areas">
+    <span>Menu</span>
+    <div>${item("/contact", "faq")}${item("/blog", "classes")}${item("/archives", "projects")}</div>
+    <div>${item("/", "blog")}${item("/photos", "store")}${item("/guestbook", "donate!")}</div>
+    <div>${item("/contact", "about")}${item("/themes", "newsletter")}${item("/rss.xml", "rss")}</div>
+  </nav>`;
+}
+
+function renderPoeticWordmark(): string {
+  return `<a class="poetic-wordmark" href="/" aria-label="Ryan Prendergast">
+    <span>Ryan</span>
+    <span>Prendergast</span>
+    <span>Personal</span>
+    <span>Site</span>
+  </a>`;
+}
+
+function renderPoeticPageChrome(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="poetic-site">
+    ${renderPoeticNav(ctx)}
+    <aside class="poetic-directory" aria-label="Site directory">
+      <a href="/contact">FAQ</a>
+      <a href="/blog">Classes</a>
+      <a href="/archives">Projects</a>
+      <a href="/">Blog</a>
+      <a href="/photos">Store</a>
+      <a href="/guestbook">Support Us</a>
+      <a href="/themes">Newsletter</a>
+      <a href="/rss.xml">RSS</a>
+    </aside>
+    ${renderPoeticWordmark()}
+    ${contentHtml}
+  </section>`;
+}
+
+function renderPoeticArticlePage(ctx: RenderContext, title: string, bodyHtml: string, section = "blog", metaHtml = ""): string {
+  return renderPoeticPageChrome(
+    ctx,
+    `<article class="poetic-article">
+      <a class="poetic-kicker" href="${ctx.currentPage === "/" ? "/blog" : "/"}">${escapeHtml(section)}</a>
+      <h1>${escapeHtml(title)}</h1>
+      ${metaHtml}
+      ${bodyHtml}
+    </article>`,
+  );
+}
+
+function renderPoeticLink(link: LinkEntryModel): string {
+  const image = link.image ? `<figure><img src="${link.image}" alt="" loading="lazy"></figure>` : "";
+  return `<article class="poetic-entry">
+    ${image}
+    <h2><a href="${link.url}">${escapeHtml(link.title)}</a></h2>
+    <p class="poetic-meta">${escapeHtml(link.date)} <a href="${link.url}">${escapeHtml(link.domain)}</a></p>
+    <div class="poetic-copy">${link.contentHtml}</div>
+  </article>`;
+}
+
+function renderPoeticPost(post: PostSummaryModel): string {
+  return `<article class="poetic-entry poetic-post-row">
+    <h2><a href="${post.href}">${escapeHtml(post.title)}</a></h2>
+    <p class="poetic-meta">${escapeHtml(post.date)}${post.readTime ? ` ${escapeHtml(post.readTime)}` : ""}</p>
+    ${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}
+  </article>`;
 }
 
 function renderVernacularNav(ctx: RenderContext): string {
@@ -1708,7 +1776,16 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "poetic-article") {
-    return `<article class="poetic-article"><nav>blog newsletter</nav>${homeHeader}<div class="article-links">${links}</div></article>`;
+    const recent = model.recentPosts.map(renderPoeticPost).join("");
+    return renderPoeticArticlePage(
+      ctx,
+      "Ryan Prendergast",
+      `<div class="poetic-intro">${model.introHtml}</div>
+      <section class="poetic-section"><h2>Linkblog</h2>${model.links.map(renderPoeticLink).join("")}</section>
+      <section class="poetic-section"><h2>Recent Essays</h2>${recent}</section>`,
+      "blog",
+      `<p class="poetic-meta">online school for practical fragments, links, and writing</p>`,
+    );
   }
   if (ctx.family === "feral-essay") {
     return `<article class="feral-essay">${homeHeader}${posts}</article>`;
@@ -1948,6 +2025,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderCheapManifestoPage(ctx, "Writing", `<p>${escapeHtml(model.description)}</p>${groups}`);
   }
+  if (ctx.family === "poetic-article") {
+    const groups = model.postsByYear
+      .map((group) => `<section class="poetic-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map(renderPoeticPost).join("")}</section>`)
+      .join("");
+    return renderPoeticArticlePage(ctx, "Blog", `<p class="poetic-lede">${escapeHtml(model.description)}</p>${groups}`, "blog", `<p class="poetic-meta">${model.totalPosts} essays</p>`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })));
@@ -2063,6 +2146,17 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
         </header>
         <div class="visual-index-copy">${model.contentHtml}</div>
       </article>`,
+    );
+  }
+  if (ctx.family === "poetic-article") {
+    return renderPoeticArticlePage(
+      ctx,
+      model.title,
+      `${model.subtitle ? `<p class="poetic-lede">${escapeHtml(model.subtitle)}</p>` : ""}
+      <div class="poetic-copy blog-post-content">${model.contentHtml}</div>
+      <p class="poetic-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
+      "blog",
+      `<p class="poetic-meta">written by ${escapeHtml(model.author || "Ryan Prendergast")}</p><p class="poetic-meta">${escapeHtml(model.date)}</p>`,
     );
   }
   if (ctx.family === "artist-menu") {
@@ -2502,6 +2596,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .join("");
     return renderCheapManifestoPage(ctx, "Archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
+  if (ctx.family === "poetic-article") {
+    const months = model.months
+      .map((month) => `<section class="poetic-section"><h2>${escapeHtml(month.label)}</h2>${month.posts.map(renderPoeticPost).join("")}</section>`)
+      .join("");
+    return renderPoeticArticlePage(ctx, "Archives", `<p class="poetic-lede">${model.totalPosts} entries across ${model.months.length} months.</p>${months}`, "projects");
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -2656,6 +2756,12 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderCheapManifestoPage(ctx, "Guestbook", `<p>${button}</p><h2>notes ≠ noise</h2>${cheapEntries}`)}${guestbookModalScript()}`;
   }
+  if (ctx.family === "poetic-article") {
+    const poeticEntries = model.entries.length
+      ? model.entries.map((entry) => `<article class="poetic-entry"><h2>${escapeHtml(entry.name)}</h2><p class="poetic-meta">${escapeHtml(entry.date)}</p><p>${escapeHtml(entry.message)}</p></article>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderPoeticArticlePage(ctx, "Guestbook", `<p>${button}</p><section class="poetic-section">${poeticEntries}</section>`, "donate!")}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -2685,6 +2791,21 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       `<p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
       <form class="themes-console vernacular-theme-form"><label for="theme-select">version:</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>previous</button> <button type="button" data-theme-random>random</button> <button type="button" data-theme-next>next</button></form>
       <table class="vernacular-table" cellspacing="0" cellpadding="4"><tbody><tr><th>theme</th><th>vibe</th><th>status</th></tr>${rows}</tbody></table>`,
+    );
+  }
+  if (ctx.family === "poetic-article") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<article class="poetic-entry"><h2><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a></h2><p class="poetic-meta">${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)} ${escapeHtml(theme.category)}</p><p>${escapeHtml(theme.description)}</p></article>`)
+      .join("");
+    return renderPoeticArticlePage(
+      ctx,
+      "Themes",
+      `<p class="poetic-lede">${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      <form class="themes-console poetic-theme-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></form>
+      <div class="theme-filters poetic-theme-filters">${model.categoryControlsHtml}</div>
+      <section class="poetic-section">${rows}</section>`,
+      "newsletter",
     );
   }
   if (ctx.family === "manual") {

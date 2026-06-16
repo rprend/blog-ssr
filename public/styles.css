@@ -10599,6 +10599,301 @@ body {
 }
 
 .family-poetic-article .theme-shell-frame, .family-feral-essay .theme-shell-frame, .family-forecast-report .theme-shell-frame { max-width: 820px; background: #fff; }
+.family-poetic-article {
+  background: #f6ead5;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.family-poetic-article .theme-shell-frame {
+  max-width: none;
+  width: 100%;
+  margin: 0 0 92px;
+  padding: 0;
+  background: #f6ead5;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-poetic-article .theme-shell-main {
+  padding: 0;
+}
+
+.family-poetic-article .theme-shell-footer {
+  display: none;
+}
+
+.family-poetic-article a {
+  color: #111;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.poetic-site {
+  min-height: calc(100vh - 82px);
+  display: grid;
+  grid-template-columns: minmax(132px, 18vw) minmax(0, 1fr) minmax(150px, 22vw);
+  grid-template-areas:
+    "menu article directory"
+    "wordmark article directory";
+  gap: 18px 34px;
+  align-items: start;
+  padding: 20px 28px 48px;
+}
+
+.poetic-menu {
+  grid-area: menu;
+  position: sticky;
+  top: 18px;
+  display: grid;
+  gap: 16px;
+  font-size: 19px;
+  line-height: 1.04;
+}
+
+.poetic-menu span {
+  font-size: 18px;
+}
+
+.poetic-menu div {
+  display: grid;
+  gap: 4px;
+}
+
+.poetic-menu a {
+  width: max-content;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+
+.poetic-menu a:hover,
+.poetic-menu a.is-active {
+  border-bottom-color: #111;
+}
+
+.poetic-directory {
+  grid-area: directory;
+  display: grid;
+  gap: 16px;
+  padding-top: 82px;
+}
+
+.poetic-directory a {
+  font-size: clamp(24px, 3vw, 42px);
+  line-height: .92;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.poetic-wordmark {
+  grid-area: wordmark;
+  position: sticky;
+  top: 224px;
+  display: grid;
+  gap: 2px;
+  margin-top: 58px;
+  font-size: clamp(30px, 4.6vw, 66px);
+  line-height: .86;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.poetic-article {
+  grid-area: article;
+  max-width: 720px;
+  margin: 178px auto 0;
+  font-size: 19px;
+  line-height: 1.42;
+}
+
+.poetic-kicker {
+  display: inline-block;
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.poetic-article h1 {
+  margin: 0 0 8px;
+  font-size: clamp(50px, 7vw, 104px);
+  line-height: .86;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.poetic-article > .poetic-meta {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.poetic-lede,
+.poetic-intro {
+  margin: 24px 0 34px;
+  font-size: clamp(22px, 2.8vw, 34px);
+  line-height: 1.12;
+  font-weight: 700;
+}
+
+.poetic-intro p {
+  margin: 0 0 12px;
+}
+
+.poetic-section {
+  margin: 40px 0 0;
+}
+
+.poetic-section > h2 {
+  margin: 0 0 18px;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 900;
+  text-transform: lowercase;
+}
+
+.poetic-entry {
+  margin: 0 0 34px;
+  padding: 0 0 30px;
+  border-bottom: 2px solid #111;
+}
+
+.poetic-entry figure {
+  margin: 0 0 14px;
+}
+
+.poetic-entry img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px solid #111;
+}
+
+.poetic-entry h2 {
+  margin: 0 0 6px;
+  font-size: clamp(28px, 3.7vw, 52px);
+  line-height: .94;
+  font-weight: 900;
+}
+
+.poetic-entry h2 a {
+  text-decoration: none;
+}
+
+.poetic-entry h2 a:hover {
+  text-decoration: underline;
+}
+
+.poetic-meta {
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.poetic-copy {
+  font-size: 19px;
+  line-height: 1.44;
+}
+
+.poetic-copy p,
+.poetic-entry p {
+  margin: 0 0 16px;
+}
+
+.poetic-copy ul,
+.poetic-copy ol {
+  margin: 0 0 18px 24px;
+  padding: 0;
+}
+
+.poetic-copy li {
+  margin: 0 0 8px;
+}
+
+.poetic-copy blockquote {
+  margin: 24px 0;
+  padding: 12px 0 12px 22px;
+  border-left: 4px solid #111;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.poetic-back {
+  margin-top: 30px;
+  font-weight: 800;
+}
+
+.poetic-theme-console,
+.family-poetic-article .themes-console {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 22px 0;
+}
+
+.poetic-theme-console select,
+.poetic-theme-console button,
+.family-poetic-article .themes-console select,
+.family-poetic-article .themes-console button,
+.family-poetic-article .sticky-theme-picker select,
+.family-poetic-article .sticky-theme-picker button {
+  border: 2px solid #111;
+  border-radius: 0;
+  background: #fef8eb;
+  color: #111;
+  font: 700 13px Arial, Helvetica, sans-serif;
+}
+
+.family-poetic-article .sticky-theme-picker {
+  background: #f6ead5;
+  border-top: 2px solid #111;
+  box-shadow: none;
+  color: #111;
+  font: 700 13px Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 860px) {
+  .poetic-site {
+    display: block;
+    padding: 16px 16px 44px;
+  }
+
+  .poetic-menu {
+    position: static;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+    font-size: 16px;
+  }
+
+  .poetic-menu span {
+    grid-column: 1 / -1;
+  }
+
+  .poetic-directory {
+    display: none;
+  }
+
+  .poetic-wordmark {
+    position: static;
+    width: min-content;
+    margin: 18px 0 36px;
+    font-size: clamp(38px, 13vw, 62px);
+  }
+
+  .poetic-article {
+    margin: 0;
+    max-width: none;
+    font-size: 17px;
+  }
+
+  .poetic-article h1 {
+    font-size: clamp(44px, 15vw, 78px);
+  }
+}
 .family-cheap-manifesto {
   background: #fff;
   color: #000;
@@ -10823,9 +11118,6 @@ body {
     font-size: 30px;
   }
 }
-.poetic-article { border-top: 8px solid #111; padding-top: 24px; }
-.poetic-article nav { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; }
-.poetic-article .school { text-transform: uppercase; font-size: 12px; }
 .feral-essay h2, .forecast-report h2 { font-size: clamp(38px, 8vw, 84px); line-height: .95; }
 .feral-essay .subscribe { border: 1px solid #111; display: inline-block; padding: 8px 12px; }
 
