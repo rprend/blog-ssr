@@ -446,6 +446,10 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cheap-manifesto") return renderCheapManifestoGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "performance-club") return renderPerformanceClubGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "recurse-joy") {
+    const generic = model as GenericPageModel;
+    return renderRecurseJoyPage(ctx, `<article class="recurse-joy-page"><h2>${escapeHtml(generic.heading)}</h2><div class="recurse-joy-copy">${generic.contentHtml}</div></article>`, "Page");
+  }
   if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
   if (ctx.family === "feral-essay") return renderFeralPage(ctx, (model as GenericPageModel).heading, `<div class="feral-copy">${(model as GenericPageModel).contentHtml}</div>`, "Page");
   if (ctx.family === "no-css") {
@@ -853,6 +857,44 @@ function renderPerformanceClubGeneric(model: GenericPageModel, ctx: RenderContex
     ctx,
     renderPerformanceClubBlock(model.heading, `<div class="performance-club-copy">${model.contentHtml}</div>`, "performance-club-page"),
   );
+}
+
+function renderRecurseJoyNav(ctx: RenderContext): string {
+  const items = [
+    ["/", "Home"],
+    ["/contact", "About"],
+    ["/rss.xml", "Subscribe"],
+    ["/photos", "RC"],
+    ["/blog", "Blog"],
+    ["/archives", "Archive"],
+    ["/guestbook", "Guestbook"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="recurse-joy-nav" aria-label="Primary">${items.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderRecurseJoyPage(ctx: RenderContext, bodyHtml: string, eyebrow = "Joy of Computing"): string {
+  return `<section class="recurse-joy">
+    <header class="recurse-joy-masthead">
+      <div>
+        <p class="recurse-joy-kicker">${escapeHtml(eyebrow)}</p>
+        <h1><a href="/">Ryan Prendergast</a></h1>
+      </div>
+      ${renderRecurseJoyNav(ctx)}
+    </header>
+    ${bodyHtml}
+  </section>`;
+}
+
+function renderRecurseJoyEntry(href: string, title: string, date: string, source: string, summary = ""): string {
+  return `<article class="recurse-joy-entry">
+    <time>${escapeHtml(date)}</time>
+    <div>
+      <h2><a href="${href}">${escapeHtml(title)}</a></h2>
+      <p class="recurse-joy-source">${escapeHtml(source)}</p>
+      ${summary ? `<p>${escapeHtml(summary)}</p>` : ""}
+    </div>
+  </article>`;
 }
 
 function renderPoeticNav(ctx: RenderContext): string {
@@ -1942,7 +1984,25 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "recurse-joy") {
-    return `<section class="recurse-joy"><nav>Home About Subscribe Atom</nav>${homeHeader}${model.links.map((link) => `<article><time>${escapeHtml(link.date)}</time><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</section>`;
+    const linkFeed = model.links
+      .map((link) => renderRecurseJoyEntry(link.url, link.title, link.date, link.domain, stripHtml(link.contentHtml)))
+      .join("");
+    const writing = model.recentPosts
+      .map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "Ryan Prendergast", post.excerpt || ""))
+      .join("");
+    return renderRecurseJoyPage(
+      ctx,
+      `<section class="recurse-joy-intro">${model.introHtml}<div class="recurse-joy-about">${model.aboutHtml}</div></section>
+      <div class="recurse-joy-feed-head">
+        <h2>Weekday links</h2>
+        <a href="/rss.xml">Atom feed</a>
+      </div>
+      <div class="recurse-joy-stream">${linkFeed}</div>
+      <section class="recurse-joy-writing">
+        <h2>Recent writing</h2>
+        <div class="recurse-joy-stream">${writing}</div>
+      </section>`,
+    );
   }
   if (ctx.family === "forecast-report") {
     return `<article class="forecast-report"><nav>summary research forecast</nav>${homeHeader}<ol>${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a></li>`).join("")}</ol></article>`;
@@ -2194,6 +2254,16 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       ctx,
       `${renderPerformanceClubBlock("Blog", `<p class="performance-club-lede">${escapeHtml(model.description)}</p><p class="performance-club-count">${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>`, "performance-club-manifesto")}
       ${renderPerformanceClubBlock("Members", renderPerformanceClubTable(["#", "year", "entry", "date", "weight"], rows, "Blog posts"))}`,
+    );
+  }
+  if (ctx.family === "recurse-joy") {
+    const entries = model.postsByYear
+      .map((group) => `<section class="recurse-joy-year"><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "Writing", post.excerpt || "")).join("")}</section>`)
+      .join("");
+    return renderRecurseJoyPage(
+      ctx,
+      `<header class="recurse-joy-page-head"><h2>Blog</h2><p>${escapeHtml(model.description)}</p><p><a href="/rss.xml">Atom feed</a> · ${model.totalPosts} posts${model.yearRange ? `, ${model.yearRange[0]}-${model.yearRange[1]}` : ""}</p></header>${entries}`,
+      "Writing",
     );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
@@ -2449,6 +2519,21 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       ctx,
       `${renderPerformanceClubBlock(model.title, `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><p class="performance-club-count">${meta}</p>${model.subtitle ? `<p class="performance-club-lede">${escapeHtml(model.subtitle)}</p>` : ""}`, "performance-club-manifesto")}
       <article class="blog-post-content performance-club-copy performance-club-article">${model.contentHtml}</article>`,
+    );
+  }
+  if (ctx.family === "recurse-joy") {
+    return renderRecurseJoyPage(
+      ctx,
+      `<article class="recurse-joy-post">
+        <p class="recurse-joy-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <header>
+          <time>${meta}</time>
+          <h2>${escapeHtml(model.title)}</h2>
+          ${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}
+        </header>
+        <div class="blog-post-content recurse-joy-copy">${model.contentHtml}</div>
+      </article>`,
+      "Writing",
     );
   }
   if (ctx.family === "no-css") {
@@ -2802,6 +2887,16 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       ${renderPerformanceClubBlock("Directory", renderPerformanceClubTable(["#", "month", "entry", "date", "weight"], rows, "Archive entries"))}`,
     );
   }
+  if (ctx.family === "recurse-joy") {
+    const months = model.months
+      .map((month) => `<section class="recurse-joy-month" id="${slugify(month.label)}"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "Archive")).join("")}</section>`)
+      .join("");
+    return renderRecurseJoyPage(
+      ctx,
+      `<header class="recurse-joy-page-head"><h2>Archive</h2><p>${model.totalPosts} entries across ${model.months.length} months. <a href="/rss.xml">Atom feed</a></p></header>${months}`,
+      "Archive",
+    );
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -2968,6 +3063,9 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderFeralPage(ctx, "Guestbook", `<p class="feral-guestbook-action">${button}</p><section class="feral-section">${feralEntries}</section>`, "Community")}${guestbookModalScript()}`;
   }
+  if (ctx.family === "recurse-joy") {
+    return `${renderRecurseJoyPage(ctx, `<header class="recurse-joy-page-head"><h2>Guestbook</h2><p>${model.entries.length} entries.</p>${button}</header><div class="recurse-joy-stream">${entries}</div>`, "Community")}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
@@ -3027,6 +3125,20 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       <div class="theme-filters feral-theme-filters">${model.categoryControlsHtml}</div>
       <section class="feral-section">${rows}</section>`,
       "Platform",
+    );
+  }
+  if (ctx.family === "recurse-joy") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => renderRecurseJoyEntry(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, theme.description))
+      .join("");
+    return renderRecurseJoyPage(
+      ctx,
+      `<header class="recurse-joy-page-head"><h2>Themes</h2><p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p></header>
+      <form class="themes-console recurse-joy-console"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></form>
+      <div class="theme-filters recurse-joy-filters">${model.categoryControlsHtml}</div>
+      <div class="recurse-joy-stream">${rows}</div>`,
+      "Themes",
     );
   }
   if (ctx.family === "manual") {

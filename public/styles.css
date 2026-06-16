@@ -11678,9 +11678,229 @@ body {
   }
 }
 
-.family-recurse-joy .theme-shell-frame { max-width: 820px; background: #fffdf4; }
-.recurse-joy nav { display: flex; gap: 12px; border-bottom: 2px solid #222; padding-bottom: 10px; }
-.recurse-joy article { border-bottom: 1px solid #ddd; padding: 14px 0; }
+.family-recurse-joy {
+  background: #fff7d6;
+  color: #1f1b13;
+}
+
+.family-recurse-joy .theme-shell-frame {
+  max-width: 900px;
+  background: #fff7d6;
+  border: 0;
+  box-shadow: none;
+  padding: 34px 28px 86px;
+}
+
+.family-recurse-joy a {
+  color: #0c55b8;
+  text-decoration-color: rgba(12, 85, 184, .45);
+  text-underline-offset: 2px;
+}
+
+.family-recurse-joy a:hover {
+  color: #c42020;
+  text-decoration-color: currentColor;
+}
+
+.recurse-joy {
+  max-width: 760px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.56;
+}
+
+.recurse-joy-masthead {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 22px;
+  padding-bottom: 18px;
+  border-bottom: 3px solid #1f1b13;
+  margin-bottom: 28px;
+}
+
+.recurse-joy-kicker {
+  margin: 0 0 3px;
+  color: #b22923;
+  font: 700 13px/1.2 Arial, sans-serif;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.recurse-joy h1 {
+  margin: 0;
+  font-size: clamp(35px, 7vw, 62px);
+  line-height: .95;
+  font-weight: 700;
+}
+
+.recurse-joy h1 a {
+  color: #1f1b13;
+  text-decoration: none;
+}
+
+.recurse-joy-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 12px;
+  max-width: 310px;
+  font: 700 15px/1.25 Arial, sans-serif;
+}
+
+.recurse-joy-nav a {
+  color: #1f1b13;
+}
+
+.recurse-joy-nav a.is-active {
+  color: #b22923;
+}
+
+.recurse-joy-intro {
+  max-width: 650px;
+  margin-bottom: 30px;
+  font-size: 20px;
+}
+
+.recurse-joy-about {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: #fffdf0;
+  border-left: 5px solid #b22923;
+  font-size: 16px;
+}
+
+.recurse-joy-feed-head,
+.recurse-joy-page-head {
+  border-top: 1px solid rgba(31, 27, 19, .28);
+  border-bottom: 1px solid rgba(31, 27, 19, .28);
+  padding: 10px 0;
+  margin: 26px 0 6px;
+}
+
+.recurse-joy-feed-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.recurse-joy h2,
+.recurse-joy h3 {
+  margin: 0;
+  line-height: 1.12;
+}
+
+.recurse-joy-feed-head h2,
+.recurse-joy-page-head h2 {
+  color: #b22923;
+  font-size: 28px;
+}
+
+.recurse-joy-page-head p {
+  margin: 8px 0 0;
+}
+
+.recurse-joy-stream {
+  display: grid;
+}
+
+.recurse-joy-entry {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(31, 27, 19, .18);
+}
+
+.recurse-joy-entry time,
+.recurse-joy-post time {
+  color: #6f6756;
+  font: 700 13px/1.35 Arial, sans-serif;
+}
+
+.recurse-joy-entry h2 {
+  font-size: 23px;
+}
+
+.recurse-joy-entry p {
+  margin: 8px 0 0;
+}
+
+.recurse-joy-source {
+  color: #6f6756;
+  font: 700 13px/1.35 Arial, sans-serif;
+}
+
+.recurse-joy-writing,
+.recurse-joy-year,
+.recurse-joy-month {
+  margin-top: 30px;
+}
+
+.recurse-joy-year > h3,
+.recurse-joy-month > h3 {
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(31, 27, 19, .28);
+  color: #b22923;
+  font-size: 22px;
+}
+
+.recurse-joy-post {
+  max-width: 690px;
+}
+
+.recurse-joy-back {
+  margin: 0 0 18px;
+  font: 700 14px Arial, sans-serif;
+}
+
+.recurse-joy-post header {
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(31, 27, 19, .28);
+  margin-bottom: 20px;
+}
+
+.recurse-joy-post header h2 {
+  margin-top: 8px;
+  color: #b22923;
+  font-size: clamp(34px, 7vw, 56px);
+}
+
+.recurse-joy-copy {
+  background: #fffdf0;
+  padding: 18px 20px;
+}
+
+.recurse-joy-copy img {
+  max-width: 100%;
+  height: auto;
+}
+
+.recurse-joy-console,
+.recurse-joy-filters {
+  margin: 16px 0;
+}
+
+@media (max-width: 700px) {
+  .family-recurse-joy .theme-shell-frame {
+    padding: 24px 18px 88px;
+  }
+
+  .recurse-joy-masthead,
+  .recurse-joy-entry {
+    grid-template-columns: 1fr;
+  }
+
+  .recurse-joy-nav {
+    justify-content: flex-start;
+    max-width: none;
+  }
+
+  .recurse-joy-entry {
+    gap: 6px;
+  }
+}
 
 .forecast-report nav { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; text-transform: uppercase; }
 .forecast-report .byline { font-family: Georgia, serif; font-size: 20px; }
