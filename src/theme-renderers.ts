@@ -425,6 +425,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "uncertainty") return renderUncertaintyGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "briefing") return renderBriefingGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "bookmaker-card") return renderBookmakerPage(ctx, `<section class="bookmaker-info"><h1>${escapeHtml((model as GenericPageModel).heading)}</h1><div class="bookmaker-copy">${(model as GenericPageModel).contentHtml}</div></section>`);
+  if (ctx.family === "experimental-loop") return renderExperimentalLoopPage(ctx, `<article class="experimental-loop-article"><header><span>page</span><h1>${escapeHtml((model as GenericPageModel).heading)}</h1></header><div class="experimental-loop-copy">${(model as GenericPageModel).contentHtml}</div></article>`);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -716,6 +717,50 @@ function renderBookmakerWorkRow(href: string, title: string, kind: string, date:
   return `<article class="bookmaker-work"><h3><a href="${href}">. ${escapeHtml(title)}</a></h3><p>${escapeHtml(kind)}${date ? ` [${escapeHtml(date)}]` : ""}</p>${detail ? `<div>${detail}</div>` : ""}</article>`;
 }
 
+function renderExperimentalLoopNav(ctx: RenderContext): string {
+  const links = [
+    ["/", "Home"],
+    ["/blog", "Blog"],
+    ["/photos", "Photos"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="experimental-loop-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderExperimentalLoopPage(ctx: RenderContext, contentHtml: string): string {
+  return `<section class="experimental-loop">${renderExperimentalLoopNav(ctx)}${contentHtml}</section>`;
+}
+
+function renderExperimentalLoopStatement(introHtml: string): string {
+  const statement = `<a href="/">Ryan Prendergast</a>${introHtml}`;
+  return `<header class="experimental-loop-statement"><div>${statement}</div><div aria-hidden="true">${statement}</div></header>`;
+}
+
+function renderExperimentalLoopUnit(href: string, title: string, medium: string, context: string, date = "", detail = ""): string {
+  const meta = [medium, context].filter(Boolean).join(", ");
+  return `<a class="experimental-loop-unit" href="${href}"><span>${escapeHtml(meta)}</span><strong>${escapeHtml(title)}</strong>${detail ? `<em>${escapeHtml(detail)}</em>` : ""}<time>${escapeHtml(date)}</time></a>`;
+}
+
+function renderExperimentalLoopHome(model: HomeModel, ctx: RenderContext): string {
+  const linkUnits = model.links.map((link, index) => renderExperimentalLoopUnit(link.url, link.title, index % 4 === 2 ? "website" : index % 4 === 1 ? "link, note" : "text", link.domain, link.date, stripHtml(link.contentHtml))).join("");
+  const postUnits = model.recentPosts.map((post, index) => renderExperimentalLoopUnit(post.href, post.title, index % 3 === 1 ? "essay" : "text", "Ryan Prendergast", post.date, post.excerpt || post.readTime || "")).join("");
+  return renderExperimentalLoopPage(
+    ctx,
+    `${renderExperimentalLoopStatement(model.introHtml)}
+    <section class="experimental-loop-volume">
+      <div>${model.aboutHtml}</div>
+      <figure aria-hidden="true"></figure>
+    </section>
+    <section class="experimental-loop-version"><h1>v1.02 Ryan Prendergast linklog and writing can be read <a href="/blog">here</a>.</h1><h1>v1.01 Ryan Prendergast also has an <a href="/archives">archive</a>.</h1></section>
+    <h2 class="experimental-loop-contents">Contents ↓</h2>
+    <div class="experimental-loop-units">${linkUnits}${postUnits}</div>`,
+  );
+}
+
 function renderGardenPostList(posts: PostSummaryModel[]): string {
   return `<ul class="garden-list">${posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}</li>`).join("")}</ul>`;
 }
@@ -954,7 +999,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "experimental-loop") {
-    return `<section class="experimental-loop">${homeHeader}${links}</section>`;
+    return renderExperimentalLoopHome(model, ctx);
   }
   if (ctx.family === "taste-directory") {
     return `<section class="taste-directory"><nav>Rising Browse</nav>${homeHeader}<div class="taste-cats">Links · Writing · Archives</div>${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${escapeHtml(link.domain)}</p></article>`).join("")}</section>`;
@@ -1141,6 +1186,10 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
         `<header class="fragment-page-head"><h1>journal</h1><p>${escapeHtml(model.description)}</p></header>${model.postsByYear.map((group) => `<section class="fragment-year"><h2>${escapeHtml(group.year)}</h2>${renderFragmentPostList(group.posts)}</section>`).join("")}`,
       );
     }
+    if (ctx.family === "experimental-loop") {
+      const entries = model.postsByYear.flatMap((group) => group.posts.map((post) => renderExperimentalLoopUnit(post.href, post.title, post.readTime || "text", group.year, post.date, post.excerpt || ""))).join("");
+      return renderExperimentalLoopPage(ctx, `<header class="experimental-loop-section-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p></header><h2 class="experimental-loop-contents">Contents ↓</h2><div class="experimental-loop-units">${entries}</div>`);
+    }
     return `<section class="${ctx.family}"><h2>${ctx.family === "writer-ledger" ? "recently..." : "journal"}</h2>${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}`).join("")}</section>`;
   }
   if (ctx.family === "ucoz-archive") {
@@ -1282,6 +1331,12 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       `<article class="bookmaker-article"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="bookmaker-meta">${meta}</p><div class="blog-post-content bookmaker-copy">${model.contentHtml}</div></article>`,
     );
   }
+  if (ctx.family === "experimental-loop") {
+    return renderExperimentalLoopPage(
+      ctx,
+      `<article class="experimental-loop-article"><a class="experimental-loop-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header><span>${meta}</span><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}</header><div class="blog-post-content experimental-loop-copy">${model.contentHtml}</div></article>`,
+    );
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return `<article class="terminal-output"><p class="prompt">$ man ${escapeHtml(slugify(model.title))}</p><h2>${escapeHtml(model.title)}</h2><p class="terminal-comment"># ${meta}</p><div class="article-body">${model.contentHtml}</div><a class="terminal-line" href="${model.backHref}">cd ..</a></article>`;
   }
@@ -1374,6 +1429,10 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
           .map((month) => `<section class="uncertainty-group"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderUncertaintyLine(post.title, post.href, post.readTime || "Entry", post.date)).join("")}</section>`)
           .join(""),
       );
+    }
+    if (ctx.family === "experimental-loop") {
+      const entries = model.months.flatMap((month) => month.posts.map((post) => renderExperimentalLoopUnit(post.href, post.title, post.readTime || "archive", month.label, post.date, ""))).join("");
+      return renderExperimentalLoopPage(ctx, `<header class="experimental-loop-section-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header><h2 class="experimental-loop-contents">Contents ↓</h2><div class="experimental-loop-units">${entries}</div>`);
     }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
