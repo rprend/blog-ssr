@@ -8529,20 +8529,201 @@ body {
 }
 
 .family-visual-culture {
-  background: #fff;
-  color: #111;
-  font-family: Helvetica, Arial, sans-serif;
+  --theme-bg: #eae8e7;
+  --theme-text: blue;
+  background: #eae8e7;
+  color: blue;
+  font-family: "Monument Grotesk", "Arial Black", Arial, Helvetica, sans-serif;
+  font-size: 23px;
+  line-height: 1.15;
 }
 
-.visual-culture h2 {
-  font-size: clamp(60px, 16vw, 210px);
-  margin: 0;
+.family-visual-culture .theme-shell-frame {
+  width: min(850px, calc(100vw - 40px));
+  margin: 10px 0 80px 50px;
+  padding: 20px;
 }
 
-.visual-culture > p {
-  max-width: 720px;
-  font-size: clamp(20px, 4vw, 44px);
+.family-visual-culture .theme-shell-main {
+  width: 100%;
+}
+
+.family-visual-culture .theme-shell-footer {
+  display: none;
+}
+
+.family-visual-culture a {
+  color: blue;
+  text-decoration: none;
+}
+
+.family-visual-culture a:hover,
+.family-visual-culture a.is-active {
+  text-decoration: underline;
+}
+
+.visual-culture {
+  color: blue;
+}
+
+.visual-culture h1 {
+  margin: 0 0 30px;
+  color: blue;
+  font-size: 50px;
+  font-weight: 900;
+  line-height: 1.08;
+}
+
+.visual-culture h1 a {
+  color: blue;
+}
+
+.visual-culture-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  margin: 0 0 30px;
+  font-size: 23px;
+  font-weight: 350;
+}
+
+.visual-culture-nav a {
+  color: blue;
+}
+
+.visual-culture-intro,
+.visual-culture-contact,
+.visual-culture-article,
+.visual-culture-theme-console,
+.visual-culture-filters {
+  max-width: 850px;
+  color: blue;
+  font-size: 23px;
+  font-weight: 350;
+  line-height: 1.15;
+}
+
+.visual-culture-intro {
+  margin: 0 0 24px;
+}
+
+.visual-culture-intro p,
+.visual-culture-contact p,
+.visual-culture-article p {
+  margin: 0 0 24px;
+}
+
+.visual-culture-work {
+  margin: 0 0 24px;
+}
+
+.visual-culture-month {
+  margin: 0 0 34px;
+}
+
+.visual-culture-article .blog-post-content {
+  margin-top: 34px;
+}
+
+.visual-culture-article .blog-post-content,
+.visual-culture-article .blog-post-content p,
+.visual-culture-article .blog-post-content li,
+.visual-culture-article .blog-post-content blockquote {
+  color: blue;
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+.visual-culture-article .blog-post-content h1,
+.visual-culture-article .blog-post-content h2,
+.visual-culture-article .blog-post-content h3 {
+  color: blue;
+  font-size: 32px;
   line-height: 1.1;
+  margin: 34px 0 14px;
+}
+
+.visual-culture-theme-console {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 24px;
+}
+
+.visual-culture-theme-console select,
+.visual-culture-theme-console button,
+.family-visual-culture .mini-theme-picker select,
+.family-visual-culture .mini-theme-picker button {
+  color: blue;
+  background: #eae8e7;
+  border: 1px solid blue;
+  border-radius: 0;
+  font: inherit;
+  font-size: 18px;
+}
+
+.visual-culture-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 28px;
+}
+
+.visual-culture-filters button {
+  color: blue;
+  background: transparent;
+  border: 1px solid blue;
+  border-radius: 0;
+  font: inherit;
+  font-size: 18px;
+}
+
+.family-visual-culture .sticky-theme-picker {
+  color: blue;
+  background: #eae8e7;
+  border-top: 1px solid blue;
+  box-shadow: none;
+}
+
+.family-visual-culture .mini-theme-picker label {
+  color: blue;
+  font-size: 18px;
+}
+
+.family-visual-culture .canonical-home-header h2 {
+  font-size: 50px;
+  margin: 0;
+  color: blue;
+}
+
+@media (max-width: 760px) {
+  .family-visual-culture {
+    font-size: 21px;
+  }
+
+  .family-visual-culture .theme-shell-frame {
+    width: auto;
+    margin: 0;
+    padding: 24px 18px 96px;
+  }
+
+  .visual-culture h1 {
+    font-size: 42px;
+  }
+
+  .visual-culture-nav,
+  .visual-culture-intro,
+  .visual-culture-contact,
+  .visual-culture-article,
+  .visual-culture-theme-console,
+  .visual-culture-filters,
+  .visual-culture-article .blog-post-content,
+  .visual-culture-article .blog-post-content p,
+  .visual-culture-article .blog-post-content li,
+  .visual-culture-article .blog-post-content blockquote {
+    font-size: 21px;
+  }
 }
 
 .family-room-wall .theme-shell-frame { max-width: 760px; background: #fffaf2; }

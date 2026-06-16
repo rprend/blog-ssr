@@ -428,6 +428,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "experimental-loop") return renderExperimentalLoopPage(ctx, `<article class="experimental-loop-article"><header><span>page</span><h1>${escapeHtml((model as GenericPageModel).heading)}</h1></header><div class="experimental-loop-copy">${(model as GenericPageModel).contentHtml}</div></article>`);
   if (ctx.family === "taste-directory") return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead((model as GenericPageModel).heading, "", "page")}<article class="taste-card taste-page-card"><div class="taste-card-body">${(model as GenericPageModel).contentHtml}</div></article>`, "Browse");
   if (ctx.family === "writer-ledger") return renderWriterLedgerGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "visual-culture") return renderVisualCultureGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "artist-menu") return renderArtistMenuGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "friendly-hub") return renderFriendlyHubGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "games-cabinet") return renderGamesCabinetGeneric(model as GenericPageModel, ctx);
@@ -718,6 +719,42 @@ function renderResearchLabCard(href: string, title: string, category: string, da
 
 function renderResearchLabPublicationRow(href: string, date: string, category: string, title: string): string {
   return `<a class="research-lab-publication" href="${href}"><span>${escapeHtml(date)}</span><span>${escapeHtml(category)}</span><strong>${escapeHtml(title)}</strong></a>`;
+}
+
+function renderVisualCultureNav(ctx: RenderContext): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = [
+    ["/", "Linkblog"],
+    ["/blog", "Blog"],
+    ["/photos", "Photos"],
+    ["/archives", "Archives"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+    ["/rss.xml", "RSS"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<nav class="visual-culture-nav" aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+}
+
+function renderVisualCulturePage(ctx: RenderContext, subheading: string, contentHtml: string, sectionClass = ""): string {
+  return `<section class="visual-culture ${sectionClass}">
+    <h1><a href="/">Ryan Prendergast</a><br>${escapeHtml(subheading)}</h1>
+    ${renderVisualCultureNav(ctx)}
+    <main>${contentHtml}</main>
+  </section>`;
+}
+
+function renderVisualCultureWork(href: string, title: string, meta: string, detail = ""): string {
+  return `<p class="visual-culture-work"><span style="font-weight:bolder"><a href="${href}">${escapeHtml(title)}</a></span>${meta ? ` (${escapeHtml(meta)})` : ""}${detail ? `<br>${escapeHtml(detail)}` : ""}</p>`;
+}
+
+function renderVisualCultureGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderVisualCulturePage(
+    ctx,
+    model.heading,
+    `<div class="visual-culture-intro">${model.contentHtml}</div>`,
+    "visual-culture-page",
+  );
 }
 
 function renderResearchLabHome(model: HomeModel, ctx: RenderContext): string {
@@ -1247,7 +1284,30 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return renderResearchLabHome(model, ctx);
   }
   if (ctx.family === "visual-culture") {
-    return `<section class="visual-culture">${homeHeader}${links}</section>`;
+    const featured = [
+      ...model.recentPosts.slice(0, 2).map((post) => renderVisualCultureWork(post.href, post.title, post.readTime || post.date, post.excerpt || "")),
+      ...model.links.slice(0, 2).map((link) => renderVisualCultureWork(link.url, link.title, link.domain, stripHtml(link.contentHtml))),
+    ].join("");
+    const archive = model.links.map((link) => renderVisualCultureWork(link.url, link.title, `${link.domain}, ${link.date}`, stripHtml(link.contentHtml))).join("");
+    const writing = model.recentPosts.map((post) => renderVisualCultureWork(post.href, post.title, post.date, post.readTime || post.excerpt || "")).join("");
+    return renderVisualCulturePage(
+      ctx,
+      "Practice for Visual Culture",
+      `<div class="visual-culture-intro">${model.introHtml}${model.aboutHtml}</div>
+      <div class="visual-culture-contact">
+        <p>Recent practice:</p>
+        ${featured}
+      </div>
+      <div class="visual-culture-contact">
+        <p>Archive of links and projects:</p>
+        ${archive}
+      </div>
+      <div class="visual-culture-contact">
+        <p>Writing:</p>
+        ${writing}
+      </div>`,
+      "visual-culture-home",
+    );
   }
 
   if (ctx.family === "room-wall") {
@@ -1476,6 +1536,17 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   if (ctx.family === "research-lab") {
     return renderResearchLabIndex(model, ctx);
   }
+  if (ctx.family === "visual-culture") {
+    const posts = model.postsByYear
+      .flatMap((group) => group.posts.map((post) => renderVisualCultureWork(post.href, post.title, `${group.year}, ${post.date}`, post.readTime || post.excerpt || "")))
+      .join("");
+    return renderVisualCulturePage(
+      ctx,
+      "Writing",
+      `<div class="visual-culture-intro"><p>${escapeHtml(model.description)}</p></div><div class="visual-culture-contact">${posts}</div>`,
+      "visual-culture-index",
+    );
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "weblog-facets") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
@@ -1572,6 +1643,19 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   }
   if (ctx.family === "research-lab") {
     return renderResearchLabArticle(model, ctx);
+  }
+  if (ctx.family === "visual-culture") {
+    return renderVisualCulturePage(
+      ctx,
+      model.title,
+      `<article class="visual-culture-article">
+        <p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <p>${meta}</p>
+        ${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}
+        <div class="blog-post-content">${model.contentHtml}</div>
+      </article>`,
+      "visual-culture-post",
+    );
   }
   if (ctx.family === "no-css") {
     return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
@@ -1836,6 +1920,17 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   if (ctx.family === "research-lab") {
     return renderResearchLabArchives(model, ctx);
   }
+  if (ctx.family === "visual-culture") {
+    const months = model.months
+      .map((month) => `<div class="visual-culture-month"><p><span style="font-weight:bolder">${escapeHtml(month.label)}</span></p>${month.posts.map((post) => renderVisualCultureWork(post.href, post.title, post.date, post.readTime || "")).join("")}</div>`)
+      .join("");
+    return renderVisualCulturePage(
+      ctx,
+      "Archive",
+      `<div class="visual-culture-intro"><p>${model.totalPosts} entries across ${model.months.length} months.</p></div><div class="visual-culture-contact">${months}</div>`,
+      "visual-culture-archive",
+    );
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "weblog-facets") {
       return renderWeblogFacetsPage(
@@ -2027,6 +2122,25 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
       </header>
       <div class="theme-filters portal-theme-filters">${model.categoryControlsHtml}</div>
       <section class="portal-gallery-wall">${rows}</section>`,
+    );
+  }
+  if (ctx.family === "visual-culture") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes.map((theme) => renderVisualCultureWork(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category)).join("");
+    return renderVisualCulturePage(
+      ctx,
+      "Themes",
+      `<div class="visual-culture-intro"><p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p></div>
+      <div class="themes-console visual-culture-theme-console">
+        <label for="theme-select">Theme</label>
+        <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select>
+        <button type="button" data-theme-prev>Previous</button>
+        <button type="button" data-theme-random>Random</button>
+        <button type="button" data-theme-next>Next</button>
+      </div>
+      <div class="theme-filters visual-culture-filters">${model.categoryControlsHtml}</div>
+      <div class="visual-culture-contact">${rows}</div>`,
+      "visual-culture-themes",
     );
   }
   const builtCount = model.themes.filter((theme) => theme.status === "built").length;
