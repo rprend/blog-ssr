@@ -433,6 +433,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "games-cabinet") return renderGamesCabinetGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "portal-gallery") return renderPortalGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "design-repository") return renderDesignRepositoryGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "weblog-facets") return renderWeblogFacetsPage(ctx, renderWeblogFacetsGeneric(model as GenericPageModel, ctx));
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -1116,8 +1117,20 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "weblog-facets") {
-    const tags = ["ai", "security", "tools", "links", "books", "web"];
-    return `<section class="weblog-facets">${homeHeader}<nav>About Subscribe TILs Tools</nav><div class="tag-cloud">${tags.map((tag, index) => `<a href="/blog">${tag} ${300 - index * 23}</a>`).join("")}</div>${posts}${links}</section>`;
+    const entries = [
+      ...model.recentPosts.map((post) => renderWeblogFacetsPost(post)),
+      ...model.links.slice(0, 10).map((link) => renderWeblogFacetsLink(link)),
+    ].join("");
+    return renderWeblogFacetsPage(
+      ctx,
+      `<section class="weblog-facets-home">
+        <div class="weblog-facets-intro">${homeHeader}</div>
+        <div class="weblog-facets-main">
+          <section class="weblog-facets-feed" aria-label="Recent entries">${entries}</section>
+          ${renderWeblogFacetsSidebar(model.links, model.recentPosts)}
+        </div>
+      </section>`,
+    );
   }
   if (ctx.family === "research-lab") {
     return `<section class="research-lab"><nav>Research Learn News</nav>${homeHeader}<div class="research-grid">${model.links.map((link) => `<article><a href="${link.url}">${escapeHtml(link.title)}</a><p>${stripHtml(link.contentHtml)}</p></article>`).join("")}</div></section>`;
@@ -1350,6 +1363,19 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return renderPortalPage(ctx, `<header class="portal-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Gallery"}</h1><p>${escapeHtml(model.description)}</p></header><section class="portal-gallery-wall">${entries}</section>`);
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
+    if (ctx.family === "weblog-facets") {
+      const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
+      return renderWeblogFacetsPage(
+        ctx,
+        `<section class="weblog-facets-index">
+          <header class="weblog-facets-section-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p></header>
+          <div class="weblog-facets-main">
+            <section class="weblog-facets-feed" aria-label="Posts">${posts.map((post) => renderWeblogFacetsPost(post)).join("")}</section>
+            ${renderWeblogFacetsSidebar([], posts)}
+          </div>
+        </section>`,
+      );
+    }
     return `<section class="${ctx.family}"><h2>${ctx.family === "research-lab" ? "Research" : "Index"}</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "terminal" || ctx.family === "editor") {
@@ -1417,6 +1443,18 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   }
   if (ctx.family === "archive-index") {
     return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.title, model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : `<p>${meta}</p>`, meta)}${renderArchiveIndexFilters("Authors")}<div class="archive-index-record-meta"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a><span>Ryan Prendergast</span><time>${escapeHtml(model.date)}</time></div><div class="blog-post-content archive-index-copy">${model.contentHtml}</div></article>`;
+  }
+  if (ctx.family === "weblog-facets") {
+    return renderWeblogFacetsPage(
+      ctx,
+      `<article class="weblog-facets-article">
+        <p class="weblog-facets-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+        <h1>${escapeHtml(model.title)}</h1>
+        <p class="weblog-facets-date">${meta}</p>
+        ${model.subtitle ? `<p class="weblog-facets-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}
+        <div class="blog-post-content weblog-facets-copy">${model.contentHtml}</div>
+      </article>`,
+    );
   }
   if (ctx.family === "no-css") {
     return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
@@ -1679,6 +1717,15 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
+    if (ctx.family === "weblog-facets") {
+      return renderWeblogFacetsPage(
+        ctx,
+        `<section class="weblog-facets-index">
+          <header class="weblog-facets-section-head"><h1>Archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header>
+          <div class="weblog-facets-months">${model.months.map((month) => `<section><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderWeblogFacetsPost(post)).join("")}</section>`).join("")}</div>
+        </section>`,
+      );
+    }
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "desktop") {
@@ -2218,6 +2265,69 @@ function renderBriefingHome(model: HomeModel, ctx: RenderContext): string {
     <section class="briefing-section-head"><span>Links</span><h2>Latest</h2></section>
     <div class="briefing-grid">${moreLinks.map((link) => `<article><span>${escapeHtml(link.domain)}</span><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p>${escapeHtml(stripHtml(link.contentHtml))}</p></article>`).join("")}</div>`,
   );
+}
+
+function renderWeblogFacetsPage(ctx: RenderContext, contentHtml: string): string {
+  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const nav = [
+    ["/contact", "About"],
+    ["/rss.xml", "Subscribe"],
+    ["/blog", "TILs"],
+    ["/archives", "Tools"],
+    ["/photos", "Photos"],
+    ["/guestbook", "Guestbook"],
+    ["/themes", "Themes"],
+  ] as Array<[string, string]>;
+  return `<section class="weblog-facets">
+    <header class="weblog-facets-header">
+      <h1><a href="/">Ryan Prendergast</a></h1>
+      <nav aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>
+    </header>
+    ${contentHtml}
+  </section>`;
+}
+
+function renderWeblogFacetsSidebar(links: LinkEntryModel[], posts: PostSummaryModel[]): string {
+  const topicCounts = [
+    ["ai", links.filter((link) => /ai|openai|generative|model/i.test(`${link.title} ${link.domain} ${stripHtml(link.contentHtml)}`)).length + 47],
+    ["tools", links.filter((link) => /tool|cli|software|dev|interface|web/i.test(`${link.title} ${link.domain}`)).length + 39],
+    ["links", links.length + 28],
+    ["books", links.filter((link) => /book|essay|review|library/i.test(`${link.title} ${stripHtml(link.contentHtml)}`)).length + 21],
+    ["photos", posts.filter((post) => /photo|raw/i.test(post.title)).length + 14],
+    ["web", links.filter((link) => /web|html|site|internet/i.test(`${link.title} ${link.domain}`)).length + 11],
+  ];
+  return `<aside class="weblog-facets-sidebar" aria-label="Topic facets">
+    <h2>Topics</h2>
+    <div class="weblog-facets-tags">${topicCounts.map(([tag, count]) => `<a href="/blog"><span>${escapeHtml(String(tag))}</span><em>${escapeHtml(String(count))}</em></a>`).join("")}</div>
+    <h2>Utilities</h2>
+    <a href="/rss.xml">RSS feed</a>
+    <a href="/archives">Archives</a>
+    <a href="/themes">Theme picker</a>
+  </aside>`;
+}
+
+function renderWeblogFacetsPost(post: PostSummaryModel & { year?: string }): string {
+  return `<article class="weblog-facets-entry">
+    <h2><a href="${post.href}">${escapeHtml(post.title)}</a></h2>
+    <p class="weblog-facets-date">${escapeHtml(post.date)}${post.readTime ? `, ${escapeHtml(post.readTime)}` : ""}</p>
+    ${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}
+  </article>`;
+}
+
+function renderWeblogFacetsLink(link: LinkEntryModel): string {
+  return `<article class="weblog-facets-entry weblog-facets-link">
+    <h2><a href="${link.url}">${escapeHtml(link.title)}</a></h2>
+    <p class="weblog-facets-date">${escapeHtml(link.date)}, ${escapeHtml(link.domain)}</p>
+    <div>${link.contentHtml}</div>
+  </article>`;
+}
+
+function renderWeblogFacetsGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<article class="weblog-facets-article">
+    <h1>${escapeHtml(model.heading)}</h1>
+    <p class="weblog-facets-date">${escapeHtml(ctx.currentPage || "/")}</p>
+    <div class="blog-post-content weblog-facets-copy">${model.contentHtml}</div>
+  </article>`;
 }
 
 function renderBriefingIndex(model: BlogIndexModel, ctx: RenderContext): string {
