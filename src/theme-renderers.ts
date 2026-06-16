@@ -444,6 +444,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "consumption-digest") return renderConsumptionDigestGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "data-portfolio") return renderDataPortfolioGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "cheap-manifesto") return renderCheapManifestoGeneric(model as GenericPageModel, ctx);
   return `<article class="theme-generic"><h2>${escapeHtml((model as GenericPageModel).heading)}</h2>${(model as GenericPageModel).contentHtml}</article>`;
 }
 
@@ -716,6 +717,57 @@ function renderHtmlBulletinPage(ctx: RenderContext, title: string, contentHtml: 
 
 function renderHtmlBulletinGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return renderHtmlBulletinPage(ctx, model.heading, `<div class="html-bulletin-copy">${model.contentHtml}</div>`);
+}
+
+function renderCheapManifestoNav(ctx: RenderContext): string {
+  const primary = [
+    ["/", "ryan = links"],
+    ["/blog", "writing ≠ feed"],
+    ["/photos", "photos ≠ polish"],
+    ["/archives", "archive ≠ gone"],
+    ["/guestbook", "guestbook = hello"],
+    ["/contact", "contact = email"],
+    ["/themes", "themes = skins"],
+  ] as Array<[string, string]>;
+  const explore = [
+    ["/rss.xml", "rss.xml"],
+    ["/blog", "essays"],
+    ["/archives", "months"],
+    ["/guestbook", "notes"],
+  ] as Array<[string, string]>;
+  const build = [
+    ["/", "linkblog"],
+    ["/photos", "images"],
+    ["/contact", "mail"],
+    ["/themes", "versions"],
+  ] as Array<[string, string]>;
+  const list = (items: Array<[string, string]>) => `<ul>${items.map(([href, label]) => `<li><a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ul>`;
+  return `<aside class="cheap-manifesto-sidebar" aria-label="Core site areas">
+    ${list(primary)}
+    <h3>✧ Explore</h3>
+    ${list(explore)}
+    <h3>✧ Build</h3>
+    ${list(build)}
+  </aside>`;
+}
+
+function renderCheapManifestoPage(ctx: RenderContext, title: string, contentHtml: string, introHtml = ""): string {
+  return `<section class="cheap-manifesto">
+    <div class="cheap-manifesto-hearts" aria-hidden="true">♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡</div>
+    <div class="cheap-manifesto-layout">
+      ${renderCheapManifestoNav(ctx)}
+      <main class="cheap-manifesto-main">
+        <p class="cheap-manifesto-home"><a href="/">ryan-prendergast.com</a> is home of the...</p>
+        <h1>☃︎ ${escapeHtml(title)}</h1>
+        ${introHtml ? `<div class="cheap-manifesto-intro">${introHtml}</div>` : ""}
+        ${contentHtml}
+      </main>
+    </div>
+  </section>`;
+}
+
+function renderCheapManifestoGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return renderCheapManifestoPage(ctx, model.heading, `<div class="cheap-manifesto-copy">${model.contentHtml}</div>`);
 }
 
 function renderVernacularNav(ctx: RenderContext): string {
@@ -1620,7 +1672,18 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "cheap-manifesto") {
-    return `<section class="cheap-manifesto">${homeHeader}${links}</section>`;
+    const recent = model.recentPosts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></li>`).join("");
+    return renderCheapManifestoPage(
+      ctx,
+      "Ryan Prendergast",
+      `<h2 id="links">links ≠ feed</h2>
+      <div class="cheap-manifesto-list">${links}</div>
+      <h2 id="writing">writing ≠ content</h2>
+      <ul>${recent}</ul>
+      <h2 id="about">about = about</h2>
+      <div class="cheap-manifesto-copy">${model.aboutHtml}</div>`,
+      model.introHtml,
+    );
   }
   if (ctx.family === "poetic-article") {
     return `<article class="poetic-article"><nav>blog newsletter</nav>${homeHeader}<div class="article-links">${links}</div></article>`;
@@ -1853,6 +1916,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderVernacularPage(ctx, "Blog", `<p>${escapeHtml(model.description)}</p><hr>${rows}`);
   }
+  if (ctx.family === "cheap-manifesto") {
+    const groups = model.postsByYear
+      .map((group) => `<h2>${escapeHtml(group.year)} ≠ stale</h2><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}${post.excerpt ? `<br><span>${escapeHtml(post.excerpt)}</span>` : ""}</li>`).join("")}</ul>`)
+      .join("");
+    return renderCheapManifestoPage(ctx, "Writing", `<p>${escapeHtml(model.description)}</p>${groups}`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })));
@@ -2067,6 +2136,16 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       ${model.subtitle ? `<p class="vernacular-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}
       <hr>
       <div class="blog-post-content vernacular-body">${model.contentHtml}</div>`,
+    );
+  }
+  if (ctx.family === "cheap-manifesto") {
+    return renderCheapManifestoPage(
+      ctx,
+      model.title,
+      `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+      <p>${meta}</p>
+      ${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}
+      <div class="blog-post-content cheap-manifesto-copy">${model.contentHtml}</div>`,
     );
   }
   if (ctx.family === "no-css") {
@@ -2391,6 +2470,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       .join("");
     return renderVernacularPage(ctx, "Archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p><hr>${months}`);
   }
+  if (ctx.family === "cheap-manifesto") {
+    const months = model.months
+      .map((month) => `<h2>${escapeHtml(month.label)} = saved</h2><ul>${month.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}</li>`).join("")}</ul>`)
+      .join("");
+    return renderCheapManifestoPage(ctx, "Archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
+  }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -2539,10 +2624,30 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderVernacularPage(ctx, "Guestbook", `<p>${button}</p><hr>${guestbookEntries}`)}${guestbookModalScript()}`;
   }
+  if (ctx.family === "cheap-manifesto") {
+    const cheapEntries = model.entries.length
+      ? model.entries.map((entry) => `<article class="cheap-manifesto-entry"><p>${escapeHtml(entry.message)}</p><p><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small></p></article>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderCheapManifestoPage(ctx, "Guestbook", `<p>${button}</p><h2>notes ≠ noise</h2>${cheapEntries}`)}${guestbookModalScript()}`;
+  }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
 
 function renderThemes(model: ThemesModel, ctx: RenderContext): string {
+  if (ctx.family === "cheap-manifesto") {
+    const builtCount = model.themes.filter((theme) => theme.status === "built").length;
+    const rows = model.themes
+      .map((theme) => `<li><a href="?theme=${theme.slug}">${escapeHtml(theme.name)}</a> <small>${theme.slug === ctx.theme.slug ? "active" : escapeHtml(theme.status)} / ${escapeHtml(theme.vibe)}</small></li>`)
+      .join("");
+    return renderCheapManifestoPage(
+      ctx,
+      "Themes",
+      `<p>${model.themes.length} direct layouts from Ryan's reference list. ${builtCount} themes are currently built with dedicated layout treatment.</p>
+      <form class="themes-console cheap-manifesto-console"><label for="theme-select">theme:</label> <select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select> <button type="button" data-theme-prev>previous</button> <button type="button" data-theme-random>random</button> <button type="button" data-theme-next>next</button></form>
+      <h2>themes ≠ costume</h2>
+      <ul>${rows}</ul>`,
+    );
+  }
   if (ctx.family === "vernacular-essay") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     const rows = model.themes
