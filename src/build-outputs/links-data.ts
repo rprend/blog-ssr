@@ -11,6 +11,78 @@ export interface LinkEntry {
 
 export const linkEntries: LinkEntry[] = [
   {
+    "slug": "repertoryNyc",
+    "title": "repertory.nyc",
+    "url": "https://www.repertory.nyc/",
+    "date": "10-24-2026",
+    "image": null,
+    "content": "<p>every movie at every theater in nyc</p>\n"
+  },
+  {
+    "slug": "pickleballIsAPsyOp",
+    "title": "Pickleball Is a Psy-Op",
+    "url": "https://www.gawkerarchives.com/culture/pickleball-is-a-psy-op",
+    "date": "10-04-2026",
+    "image": null,
+    "content": "<p>oh. pickleball is a psy op?</p>\n"
+  },
+  {
+    "slug": "radioheadInRainbowsFromTheBasement",
+    "title": "In Rainbows | Radiohead | From The Basement",
+    "url": "https://www.youtube.com/watch?v=sWqDIZxO-nU",
+    "date": "09-15-2026",
+    "image": null,
+    "content": "<p>Radiohead in rainbows</p>\n"
+  },
+  {
+    "slug": "simplifiedTechnicalEnglish",
+    "title": "Simplified Technical English",
+    "url": "https://en.wikipedia.org/wiki/Simplified_Technical_English",
+    "date": "07-27-2026",
+    "image": null,
+    "content": "<p>controlled natural languages</p>\n"
+  },
+  {
+    "slug": "newYorkEarthRoom",
+    "title": "The New York Earth Room",
+    "url": "https://en.wikipedia.org/wiki/The_New_York_Earth_Room",
+    "date": "07-15-2026",
+    "image": null,
+    "content": "<p>yea</p>\n"
+  },
+  {
+    "slug": "cellphonesInY2kMusicVideos",
+    "title": "Cellphones in late '90s & early '00s pop music videos",
+    "url": "https://www.are.na/terezie-stindlova/cellphones-in-late-90s-early-00s-pop-music-videos",
+    "date": "06-22-2026",
+    "image": null,
+    "content": "<p>Cellphones in y2k music videos</p>\n"
+  },
+  {
+    "slug": "diagramWebsite",
+    "title": "Diagram Website",
+    "url": "https://diagram.website/",
+    "date": "06-15-2026",
+    "image": null,
+    "content": "<p>Sites of sites</p>\n"
+  },
+  {
+    "slug": "bebeAndLouisBarron",
+    "title": "Bebe and Louis Barron",
+    "url": "https://en.wikipedia.org/wiki/Bebe_and_Louis_Barron",
+    "date": "06-04-2026",
+    "image": null,
+    "content": "<p>cybernetics and electronic music</p>\n"
+  },
+  {
+    "slug": "nyc1940s",
+    "title": "1940s NYC",
+    "url": "https://1940s.nyc/",
+    "date": "05-26-2026",
+    "image": null,
+    "content": "<p>i look at this regularly</p>\n"
+  },
+  {
     "slug": "mouldTreesChairs",
     "title": "We mould trees to grow into shape of chairs",
     "url": "https://www.bbc.com/news/articles/cvg0yy3gp71o",
@@ -219,12 +291,28 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>Finally a good &quot;draw your changes here&quot; editor. What GAUGan always promised to be.</p>\n"
   },
   {
+    "slug": "startupsRip",
+    "title": "Startups.RIP",
+    "url": "https://startups.rip/",
+    "date": "03-09-2026",
+    "image": null,
+    "content": "<p>failed startups</p>\n"
+  },
+  {
     "slug": "terminaluse",
     "title": "Terminal Use",
     "url": "https://www.terminaluse.com/",
     "date": "03-09-2026",
     "image": null,
     "content": "<p>Sometimes you see a company and wish you got there first. I had half of this infra (Vercel for agents) set up for myself. Why didn&#39;t I productize???</p>\n"
+  },
+  {
+    "slug": "searchableWholeEarth",
+    "title": "The (Searchable) Whole Earth",
+    "url": "https://searchwhole.earth/",
+    "date": "03-06-2026",
+    "image": null,
+    "content": "<p>somebody needs to do this for every magazine</p>\n"
   },
   {
     "slug": "citytracker",
