@@ -81,8 +81,8 @@ export const contact = (data: Record<string, string> = {}): string => {
 
 export const home = (data: Record<string, string> = {}): string => {
   let html = `<div class="homepage-intro">
-  <p>Ryan is a startup founder focused on quantitative humanities research at <a href="https://alpharesearch.nyc" target="_blank" rel="noopener noreferrer">Alpha Research</a>. Previously, he built <a href="https://zenobiapay.com" target="_blank" rel="noopener noreferrer">Zenobia Pay</a>, a bank transfer payment network for luxury goods, and <a href="https://dolphinmade.com" target="_blank" rel="noopener noreferrer">Dolphin Made</a>, a web app builder focused on one shotting entire startups.</p>
-  <p>He works to orchestrate AI for difficult or impossible workflows, and he is open to collaborate or network with people with unique and difficult problems they want to solve with AI.</p>
+  <p>Ryan is a startup founder building <a href="https://withmethod.ai" target="_blank" rel="noopener noreferrer">Method</a>, which turns work you figured out with a coding agent into a method you can run again and give to other people. Previously, he built <a href="https://alpharesearch.nyc" target="_blank" rel="noopener noreferrer">Alpha Research</a>, quantitative humanities research; <a href="https://zenobiapay.com" target="_blank" rel="noopener noreferrer">Zenobia Pay</a>, a bank transfer payment network for luxury goods; and <a href="https://dolphinmade.com" target="_blank" rel="noopener noreferrer">Dolphin Made</a>, a web app builder focused on one shotting entire startups.</p>
+  <p>He is open to collaborate or network with people who have a difficult workflow they got working once with AI and now need to run every time.</p>
 </div>
 
 {{linksHtml}}

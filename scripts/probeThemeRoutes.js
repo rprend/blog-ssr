@@ -17,7 +17,7 @@ const forbiddenPhrases = [
   "Come for a stroll",
   "Downloaded entries from Ryan",
 ];
-const canonicalHomeText = "Ryan is a startup founder focused on quantitative humanities research";
+const canonicalHomeText = "Ryan is a startup founder building";
 const requiredNavHrefs = ['href="/"', 'href="/blog"', 'href="/archives"', 'href="/contact"'];
 const failures = [];
 
