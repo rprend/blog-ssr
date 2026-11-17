@@ -2261,9 +2261,9 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return `<article class="wiki-article"><aside class="wiki-toc"><a href="#about">About</a><a href="#links">Links</a><a href="#posts">Recent posts</a></aside><section id="about">${homeHeader}</section><h2 id="links">External links</h2>${links}<h2 id="posts">Recent posts</h2>${posts}</article>`;
   }
 
-  // Default theme: links live on their own page, the home page is the bio and recent essays.
+  // Default theme: links live on their own page, the home page is the bio alone.
   if (ctx.currentPage === "/links") return `<section class="theme-link-list">${links}</section>`;
-  return `<section class="theme-home-intro">${model.introHtml}</section><section class="theme-recent-posts"><h2>Recent Essays</h2>${posts}</section>`;
+  return `<section class="theme-home-intro">${model.introHtml}</section>`;
 }
 
 function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
