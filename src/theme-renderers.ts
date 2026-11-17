@@ -447,6 +447,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "html-bulletin") return renderHtmlBulletinGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "consumption-digest") return renderConsumptionDigestGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "data-portfolio") return renderDataPortfolioGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "internet-diagram") return renderInternetDiagramWindow(ctx, (model as GenericPageModel).heading, `<div class="internet-diagram-copy">${(model as GenericPageModel).contentHtml}</div>`);
   if (ctx.family === "vernacular-essay") return renderVernacularGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cheap-manifesto") return renderCheapManifestoGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "performance-club") return renderPerformanceClubGeneric(model as GenericPageModel, ctx);
@@ -466,7 +467,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
     return renderRecurseJoyPage(ctx, `<article class="recurse-joy-page"><h2>${escapeHtml(generic.heading)}</h2><div class="recurse-joy-copy">${generic.contentHtml}</div></article>`, "Page");
   }
   if (ctx.family === "forecast-report") return renderForecastReportGeneric(model as GenericPageModel, ctx);
-  if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
+  if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`);
   if (ctx.family === "feral-essay") return renderFeralPage(ctx, (model as GenericPageModel).heading, `<div class="feral-copy">${(model as GenericPageModel).contentHtml}</div>`, "Page");
   if (ctx.family === "conversational-minimal") {
     const generic = model as GenericPageModel;
@@ -521,7 +522,14 @@ function renderAquaShell<T extends PageModel>(options: RenderPageOptions<T>, con
 
 function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, content: string, ctx: RenderContext): string {
   const description = options.description || "Ryan Prendergast's personal website and blog";
-  const navigation = [...ctx.navItems, { href: "/themes", label: "Themes", active: ctx.currentPage === "/themes" }];
+  const navigation = [
+    { href: "/", label: "Home" },
+    { href: "/links", label: "Links" },
+    { href: "/blog", label: "Essays" },
+    { href: "/photos", label: "Photos" },
+    { href: "/guestbook", label: "Guestbook" },
+    { href: "/contact", label: "Contact" },
+  ].map((item) => ({ ...item, active: item.href === ctx.currentPage }));
   return `<!DOCTYPE html>
 <html lang="en" data-theme="${escapeHtml(options.theme.slug)}">
 <head>
@@ -531,6 +539,7 @@ function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, co
   <meta name="description" content="${escapeHtml(description)}">
   <link rel="canonical" href="${escapeHtml(options.canonicalUrl || `https://ryan-prendergast.com${options.currentPage}`)}">
   ${options.structuredData || ""}
+  <style>img{max-width:100%;height:auto}body{padding-bottom:56px}</style>
 </head>
 <body class="theme-layout theme-${escapeHtml(options.theme.slug)} family-${ctx.family} ${options.bodyClass || ""}">
   <header>
@@ -772,43 +781,28 @@ function renderHtmlBulletinGeneric(model: GenericPageModel, ctx: RenderContext):
 
 function renderCheapManifestoNav(ctx: RenderContext): string {
   const primary = [
-    ["/", "ryan = links"],
-    ["/blog", "writing ≠ feed"],
+    ["/", "home = ryan"],
+    ["/links", "links ≠ feed"],
+    ["/blog", "essays ≠ content"],
     ["/photos", "photos ≠ polish"],
-    ["/archives", "archive ≠ gone"],
     ["/guestbook", "guestbook = hello"],
     ["/contact", "contact = email"],
-    ["/themes", "themes = skins"],
   ] as Array<[string, string]>;
-  const explore = [
-    ["/rss.xml", "rss.xml"],
-    ["/blog", "essays"],
-    ["/archives", "months"],
-    ["/guestbook", "notes"],
-  ] as Array<[string, string]>;
-  const build = [
-    ["/", "linkblog"],
-    ["/photos", "images"],
-    ["/contact", "mail"],
-    ["/themes", "versions"],
-  ] as Array<[string, string]>;
-  const list = (items: Array<[string, string]>) => `<ul>${items.map(([href, label]) => `<li><a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ul>`;
-  return `<aside class="cheap-manifesto-sidebar" aria-label="Core site areas">
-    ${list(primary)}
-    <h3>✧ Explore</h3>
-    ${list(explore)}
-    <h3>✧ Build</h3>
-    ${list(build)}
-  </aside>`;
+  return `<ul>${primary.map(([href, label]) => `<li><a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ul>`;
 }
 
-function renderCheapManifestoPage(ctx: RenderContext, title: string, contentHtml: string, introHtml = ""): string {
+// sidebarHtml: extra "✧" lists for the sidebar (the reference lists small-web sites there); only real links are passed in.
+function renderCheapManifestoPage(ctx: RenderContext, title: string, contentHtml: string, introHtml = "", sidebarHtml = ""): string {
+  const isHome = title === "Ryan Prendergast";
   return `<section class="cheap-manifesto">
     <div class="cheap-manifesto-hearts" aria-hidden="true">♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡</div>
     <div class="cheap-manifesto-layout">
-      ${renderCheapManifestoNav(ctx)}
+      <aside class="cheap-manifesto-sidebar" aria-label="Core site areas">
+        ${renderCheapManifestoNav(ctx)}
+        ${sidebarHtml ? `<div class="cheap-manifesto-extra">${sidebarHtml}</div>` : ""}
+      </aside>
       <main class="cheap-manifesto-main">
-        <p class="cheap-manifesto-home"><a href="/">ryan-prendergast.com</a> is home of the...</p>
+        ${isHome ? "" : `<p class="cheap-manifesto-home"><a href="/">Ryan Prendergast</a> is home of the...</p>`}
         <h1>☃︎ ${escapeHtml(title)}</h1>
         ${introHtml ? `<div class="cheap-manifesto-intro">${introHtml}</div>` : ""}
         ${contentHtml}
@@ -1000,10 +994,8 @@ function renderForecastReportGeneric(model: GenericPageModel, ctx: RenderContext
 function renderPoeticNav(ctx: RenderContext): string {
   const item = (href: string, label: string) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`;
   return `<nav class="poetic-menu" aria-label="Core site areas">
-    <span>Menu</span>
-    <div>${item("/contact", "faq")}${item("/blog", "classes")}${item("/archives", "projects")}</div>
-    <div>${item("/", "blog")}${item("/photos", "store")}${item("/guestbook", "donate!")}</div>
-    <div>${item("/contact", "about")}${item("/themes", "newsletter")}${item("/rss.xml", "rss")}</div>
+    <div>${item("/", "home")}${item("/links", "links")}${item("/blog", "essays")}</div>
+    <div>${item("/photos", "photos")}${item("/guestbook", "guestbook")}${item("/contact", "contact")}</div>
   </nav>`;
 }
 
@@ -1011,38 +1003,29 @@ function renderPoeticWordmark(): string {
   return `<a class="poetic-wordmark" href="/" aria-label="Ryan Prendergast">
     <span>Ryan</span>
     <span>Prendergast</span>
-    <span>Personal</span>
-    <span>Site</span>
   </a>`;
 }
 
-function renderPoeticPageChrome(ctx: RenderContext, contentHtml: string): string {
-  return `<section class="poetic-site">
+// One menu (top left, as on the reference) and the stacked wordmark; the home page carries the name as its title instead.
+function renderPoeticPageChrome(ctx: RenderContext, contentHtml: string, showWordmark = true): string {
+  return `<section class="poetic-site${showWordmark ? "" : " poetic-site-home"}">
     ${renderPoeticNav(ctx)}
-    <aside class="poetic-directory" aria-label="Site directory">
-      <a href="/contact">FAQ</a>
-      <a href="/blog">Classes</a>
-      <a href="/archives">Projects</a>
-      <a href="/">Blog</a>
-      <a href="/photos">Store</a>
-      <a href="/guestbook">Support Us</a>
-      <a href="/themes">Newsletter</a>
-      <a href="/rss.xml">RSS</a>
-    </aside>
-    ${renderPoeticWordmark()}
+    ${showWordmark ? renderPoeticWordmark() : ""}
     ${contentHtml}
   </section>`;
 }
 
-function renderPoeticArticlePage(ctx: RenderContext, title: string, bodyHtml: string, section = "blog", metaHtml = ""): string {
+function renderPoeticArticlePage(ctx: RenderContext, title: string, bodyHtml: string, section = "", metaHtml = ""): string {
+  const kickerHref = ctx.currentPage === "/photos" ? "/" : "/blog";
   return renderPoeticPageChrome(
     ctx,
     `<article class="poetic-article">
-      <a class="poetic-kicker" href="${ctx.currentPage === "/" ? "/blog" : "/"}">${escapeHtml(section)}</a>
+      ${section ? `<a class="poetic-kicker" href="${kickerHref}">${escapeHtml(section)}</a>` : ""}
       <h1>${escapeHtml(title)}</h1>
       ${metaHtml}
       ${bodyHtml}
     </article>`,
+    title !== "Ryan Prendergast",
   );
 }
 
@@ -1121,30 +1104,27 @@ function renderFeralPost(post: PostSummaryModel): string {
 
 function renderVernacularNav(ctx: RenderContext): string {
   const links = [
-    ["/", "main"],
-    ["/blog", "texts"],
-    ["/photos", "images"],
-    ["/archives", "archive"],
+    ["/", "home"],
+    ["/links", "links"],
+    ["/blog", "essays"],
+    ["/photos", "photos"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
-    ["/rss.xml", "rss"],
-    ["/themes", "versions"],
   ] as Array<[string, string]>;
   return `<p class="vernacular-nav">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join(" / ")}</p>`;
 }
 
 function renderVernacularPage(ctx: RenderContext, title: string, contentHtml: string): string {
   return `<article class="vernacular-essay">
-    <div class="vernacular-lang"><a href="/">english</a> <a href="/blog">texts</a> <a href="/photos">images</a> <a href="/themes">versions</a> <a href="javascript:print()">print</a></div>
     ${renderVernacularNav(ctx)}
-    <center><img class="vernacular-figure" src="/favicon.ico" alt="" width="32" height="32"><h1>${escapeHtml(title)}</h1></center>
+    <center><img class="vernacular-figure" src="/favicon.ico" alt="" width="32" height="32">${title === "Ryan Prendergast" ? "" : `<p class="vernacular-author"><a href="/">Ryan Prendergast</a></p>`}<h1>${escapeHtml(title)}</h1></center>
     ${contentHtml}
   </article>`;
 }
 
 function renderVernacularLink(link: LinkEntryModel, index: number): string {
   const note = stripHtml(link.contentHtml);
-  return `<p><a name="observation-${index + 1}"></a><font size="2">[${index + 1}] ${escapeHtml(link.date)} / ${escapeHtml(link.domain)}</font><br><a href="${link.url}">${escapeHtml(link.title)}</a>${note ? `<br>${escapeHtml(note)}` : ""}</p>`;
+  return `<p><a name="observation-${index + 1}"></a><font size="2">[${index + 1}] ${escapeHtml(link.date)} / ${escapeHtml(link.domain)}</font><br><a href="${link.url}">${escapeHtml(link.title)}</a>${note ? `<br>${note}` : ""}</p>`;
 }
 
 function renderVernacularPost(post: PostSummaryModel, index: number): string {
@@ -1158,14 +1138,12 @@ function renderVernacularGeneric(model: GenericPageModel, ctx: RenderContext): s
 
 function renderConsumptionDigestNav(ctx: RenderContext): string {
   const links = [
-    ["/", "today"],
-    ["/blog", "text"],
+    ["/", "home"],
+    ["/links", "links"],
+    ["/blog", "essays"],
     ["/photos", "photos"],
-    ["/archives", "archive"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
-    ["/themes", "themes"],
-    ["/rss.xml", "rss"],
   ] as Array<[string, string]>;
   return `<nav class="consumption-digest-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
 }
@@ -1184,21 +1162,23 @@ function renderConsumptionDigestPage(ctx: RenderContext, contentHtml: string, in
 function renderConsumptionDigestDay(label: string, groups: Array<{ label: string; html: string }>): string {
   return `<section class="consumption-digest-day">
     <h2>${escapeHtml(label)}</h2>
-    ${groups.filter((group) => group.html.trim()).map((group) => `<div class="consumption-digest-group"><span>${escapeHtml(group.label)}</span><div>${group.html}</div></div>`).join("")}
+    ${groups.filter((group) => group.html.trim()).map((group) => `<div class="consumption-digest-group">${group.label ? `<span>${escapeHtml(group.label)}</span>` : ""}<div>${group.html}</div></div>`).join("")}
   </section>`;
 }
 
 function renderConsumptionDigestLink(link: LinkEntryModel): string {
   const note = stripHtml(link.contentHtml);
-  return `<p><a href="${link.url}">${escapeHtml(link.title)}</a>${link.domain ? ` - ${escapeHtml(link.domain)}` : ""}${note ? ` <small>${escapeHtml(note)}</small>` : ""}</p>`;
+  const showDomain = link.domain && link.domain.toLowerCase() !== link.title.toLowerCase();
+  return `<p><a href="${link.url}">${escapeHtml(link.title)}</a>${showDomain ? ` - ${escapeHtml(link.domain)}` : ""}${note ? `<small>${note}</small>` : ""}</p>`;
 }
 
 function renderConsumptionDigestPost(post: PostSummaryModel): string {
-  return `<p><a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` - ${escapeHtml(post.readTime)}` : ""}${post.excerpt ? ` <small>${escapeHtml(post.excerpt)}</small>` : ""}</p>`;
+  const detail = [post.date, post.readTime].filter(Boolean).join(", ");
+  return `<p><a href="${post.href}">${escapeHtml(post.title)}</a>${detail ? ` - ${escapeHtml(detail)}` : ""}</p>`;
 }
 
 function renderConsumptionDigestGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return renderConsumptionDigestPage(ctx, renderConsumptionDigestDay(model.heading, [{ label: "page", html: `<div class="consumption-digest-copy">${model.contentHtml}</div>` }]));
+  return renderConsumptionDigestPage(ctx, renderConsumptionDigestDay(model.heading, [{ label: "", html: `<div class="consumption-digest-copy">${model.contentHtml}</div>` }]));
 }
 
 function renderResearchLabNav(ctx: RenderContext): string {
@@ -1566,11 +1546,18 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "no-css") {
+    const linkList = `<ul>${model.links.map((link) => `<li><p><a href="${link.url}">${escapeHtml(link.title)}</a></p><p><small>${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</small></p>${link.contentHtml}</li>`).join("")}</ul>`;
+    if (ctx.currentPage === "/links") {
+      return `<article>
+      <h2>Links</h2>
+      <p>${model.aboutHtml}</p>
+      ${linkList}
+    </article>`;
+    }
     return `<article>
-      <h2>Ryan Prendergast</h2>
       ${model.introHtml}
       <h2>Links</h2>
-      <ul>${model.links.map((link) => `<li><p><a href="${link.url}">${escapeHtml(link.title)}</a></p><p><small>${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</small></p>${link.contentHtml}</li>`).join("")}</ul>
+      ${linkList}
       <h2>Recent Essays</h2>
       <ul>${model.recentPosts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>
     </article>`;
@@ -1972,110 +1959,109 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
       linkGroups.set(key, [...(linkGroups.get(key) || []), link]);
     }
     const days = Array.from(linkGroups.entries())
-      .map(([date, dayLinks], index) => {
-        const writing = index === 0 ? model.recentPosts.map(renderConsumptionDigestPost).join("") : "";
-        return renderConsumptionDigestDay(date, [
-          { label: "text", html: dayLinks.map(renderConsumptionDigestLink).join("") },
-          { label: "writing", html: writing },
-        ]);
-      })
+      .map(([date, dayLinks]) => renderConsumptionDigestDay(date, [{ label: "links", html: dayLinks.map(renderConsumptionDigestLink).join("") }]))
       .join("");
-    const trailingPosts = model.recentPosts.length && !days
-      ? renderConsumptionDigestDay("writing", [{ label: "text", html: model.recentPosts.map(renderConsumptionDigestPost).join("") }])
+    if (ctx.currentPage === "/links") return renderConsumptionDigestPage(ctx, days);
+    const recentEssays = model.recentPosts.length
+      ? renderConsumptionDigestDay("recent essays", [{ label: "text", html: model.recentPosts.map(renderConsumptionDigestPost).join("") }])
       : "";
-    return renderConsumptionDigestPage(ctx, `${days}${trailingPosts}`, model.introHtml);
+    return renderConsumptionDigestPage(ctx, `${recentEssays}${days}`, model.introHtml);
   }
   if (ctx.family === "data-portfolio") {
-    const records = [
-      ...model.links.map((link, index) => renderDataPortfolioProject(link.url, link.title, link.domain, link.date, link.contentHtml, link.image, index)),
-      ...model.recentPosts.map((post, index) => renderDataPortfolioProject(post.href, post.title, "Ryan Prendergast", post.date, post.excerpt || post.readTime || "", null, model.links.length + index)),
-    ].join("");
+    const records = model.links.map((link, index) => renderDataPortfolioProject(link.url, link.title, link.domain, link.date, link.contentHtml, null, index)).join("");
+    if (ctx.currentPage === "/links") {
+      return renderDataPortfolioPage(
+        ctx,
+        `<header class="data-portfolio-section-head"><h1>Links</h1><p>${model.aboutHtml}</p></header>
+        <section class="data-portfolio-grid" aria-label="Links">${records}</section>`,
+      );
+    }
     return renderDataPortfolioPage(
       ctx,
       `<header class="data-portfolio-intro">
         <div>${model.introHtml}</div>
       </header>
       ${renderDataPortfolioViewToggle()}
-      ${renderDataPortfolioTicker(model.links.slice(0, 8).map((link) => [link.title, link.url]))}
-      <section class="data-portfolio-grid" aria-label="Selected projects">${records}</section>`,
+      ${renderDataPortfolioTicker(model.recentPosts.map((post) => [post.title, post.href]))}
+      <section class="data-portfolio-grid" aria-label="Links">${records}</section>`,
     );
   }
   if (ctx.family === "internet-diagram") {
-    const nodes = [
-      ...model.links.map((link) => renderInternetDiagramNode(link.url, link.domain, link.title)),
-      ...model.recentPosts.map((post) => renderInternetDiagramNode(post.href, "Ryan Prendergast", post.title)),
-    ];
-    const indexRows = [
-      ...model.links.slice(0, 18).map((link) => renderInternetDiagramIndexRow(link.url, link.title, link.domain)),
-      ...model.recentPosts.slice(0, 6).map((post) => renderInternetDiagramIndexRow(post.href, post.title, post.date)),
-    ].join("");
+    const nodes = model.links.map((link) => renderInternetDiagramNode(link.url, link.title, `${link.title} (${link.domain})`));
+    const isLinks = ctx.currentPage === "/links";
+    const indexRows = isLinks
+      ? model.links.map((link) => renderInternetDiagramIndexRow(link.url, link.title, `${link.domain} / ${link.date}`)).join("")
+      : model.recentPosts.map((post) => renderInternetDiagramIndexRow(post.href, post.title, post.date)).join("");
     return renderInternetDiagramPage(
       ctx,
       `<section class="internet-diagram-home">
-        <div class="internet-diagram-title">${homeHeader}</div>
+        <div class="internet-diagram-side">
+          ${isLinks ? "" : `<aside class="internet-diagram-modal internet-diagram-info">
+            <div class="internet-diagram-postcard" aria-hidden="true"><span>you are here</span></div>
+            <div>${model.introHtml}</div>
+          </aside>`}
+          <aside class="internet-diagram-index" aria-label="${isLinks ? "Link index" : "Recent essays"}">
+            <h3>${isLinks ? "index of links" : "recent essays"}</h3>
+            <div>${indexRows}</div>
+          </aside>
+        </div>
         ${renderInternetDiagramMap(nodes)}
-        <aside class="internet-diagram-modal internet-diagram-info">
-          <button type="button" aria-label="Close"></button>
-          <div class="internet-diagram-postcard" aria-hidden="true"><span>you are here</span></div>
-          <h3>Ryan Prendergast</h3>
-          <div>${model.introHtml}</div>
-        </aside>
-        <aside class="internet-diagram-modal internet-diagram-submit">
-          <button type="button" aria-label="Close"></button>
-          <p>${model.aboutHtml}</p>
-        </aside>
-        <aside class="internet-diagram-index" aria-label="Index">
-          <h3>index</h3>
-          <div>${indexRows}</div>
-        </aside>
       </section>`,
     );
   }
   if (ctx.family === "vernacular-essay") {
-    const contents = [
-      `<a href="#links">recent observations</a>`,
-      `<a href="#writing">texts</a>`,
-      `<a href="/archives">archive</a>`,
-      `<a href="/themes">versions</a>`,
-    ].join("<br>");
     const links = model.links.map((link, index) => renderVernacularLink(link, index)).join("");
+    if (ctx.currentPage === "/links") {
+      return renderVernacularPage(ctx, "Links", `<div class="vernacular-about">${model.aboutHtml}</div><hr>${links}`);
+    }
+    const contents = [`<a href="#links">recent observations</a>`, `<a href="#writing">texts</a>`].join("<br>");
     const posts = model.recentPosts.map((post, index) => renderVernacularPost(post, index + 1)).join("");
     return renderVernacularPage(
       ctx,
       "Ryan Prendergast",
-      `<table class="vernacular-front" cellspacing="0" cellpadding="0"><tbody><tr><td class="vernacular-title-cell">${homeHeader}</td><td class="vernacular-contents">${contents}</td></tr></tbody></table>
+      `<table class="vernacular-front" cellspacing="0" cellpadding="0"><tbody><tr><td class="vernacular-title-cell">${model.introHtml}</td><td class="vernacular-contents">${contents}</td></tr></tbody></table>
       <hr>
       <div class="vernacular-about">${model.aboutHtml}</div>
       <h2 id="links">recent observations</h2>
       ${links}
       <h2 id="writing">texts</h2>
-      ${posts}`,
+      ${posts}
+      <p><a href="/blog">all essays</a></p>`,
     );
   }
   if (ctx.family === "cheap-manifesto") {
     const recent = model.recentPosts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></li>`).join("");
+    const seenDomains = new Set<string>();
+    const explore = model.links
+      .filter((link) => link.domain && !seenDomains.has(link.domain) && Boolean(seenDomains.add(link.domain)))
+      .map((link) => `<li><a href="${link.url}">${escapeHtml(link.domain)}</a></li>`)
+      .join("");
+    const sidebar = `<h3>✧ Explore</h3><ul>${explore}</ul><h3>✧ Read</h3><ul>${model.recentPosts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title.toLowerCase())}</a></li>`).join("")}</ul>`;
+    if (ctx.currentPage === "/links") {
+      return renderCheapManifestoPage(ctx, "Links", `<div class="cheap-manifesto-list">${links}</div>`, `<p>${model.aboutHtml}</p>`, sidebar);
+    }
     return renderCheapManifestoPage(
       ctx,
       "Ryan Prendergast",
       `<h2 id="links">links ≠ feed</h2>
       <div class="cheap-manifesto-list">${links}</div>
-      <h2 id="writing">writing ≠ content</h2>
-      <ul>${recent}</ul>
-      <h2 id="about">about = about</h2>
-      <div class="cheap-manifesto-copy">${model.aboutHtml}</div>`,
+      <h2 id="writing">essays ≠ content</h2>
+      <ul>${recent}</ul>`,
       model.introHtml,
+      sidebar,
     );
   }
   if (ctx.family === "poetic-article") {
     const recent = model.recentPosts.map(renderPoeticPost).join("");
+    if (ctx.currentPage === "/links") {
+      return renderPoeticArticlePage(ctx, "Links", `<p class="poetic-lede">${model.aboutHtml}</p><section class="poetic-section">${model.links.map(renderPoeticLink).join("")}</section>`);
+    }
     return renderPoeticArticlePage(
       ctx,
       "Ryan Prendergast",
       `<div class="poetic-intro">${model.introHtml}</div>
-      <section class="poetic-section"><h2>Linkblog</h2>${model.links.map(renderPoeticLink).join("")}</section>
+      <section class="poetic-section"><h2>Links</h2>${model.links.map(renderPoeticLink).join("")}</section>
       <section class="poetic-section"><h2>Recent Essays</h2>${recent}</section>`,
-      "blog",
-      `<p class="poetic-meta">online school for practical fragments, links, and writing</p>`,
     );
   }
   if (ctx.family === "feral-essay") {
@@ -2313,7 +2299,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "no-css") {
     return `<section>
-      <h2>Blog</h2>
+      <h2>${ctx.currentPage === "/photos" ? "Photos" : "Essays"}</h2>
       <p>${escapeHtml(model.description)}</p>
       ${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>`).join("")}
     </section>`;
@@ -2486,19 +2472,19 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const rows = model.postsByYear
       .map((group) => `<h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderVernacularPost(post, index + 1)).join("")}`)
       .join("");
-    return renderVernacularPage(ctx, "Blog", `<p>${escapeHtml(model.description)}</p><hr>${rows}`);
+    return renderVernacularPage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Essays", `<p>${escapeHtml(model.description)}</p><hr>${rows}`);
   }
   if (ctx.family === "cheap-manifesto") {
     const groups = model.postsByYear
-      .map((group) => `<h2>${escapeHtml(group.year)} ≠ stale</h2><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}${post.excerpt ? `<br><span>${escapeHtml(post.excerpt)}</span>` : ""}</li>`).join("")}</ul>`)
+      .map((group) => `<h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}${post.excerpt ? `<br><span>${escapeHtml(post.excerpt)}</span>` : ""}</li>`).join("")}</ul>`)
       .join("");
-    return renderCheapManifestoPage(ctx, "Writing", `<p>${escapeHtml(model.description)}</p>${groups}`);
+    return renderCheapManifestoPage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Essays", `<p>${escapeHtml(model.description)}</p>${groups}`);
   }
   if (ctx.family === "poetic-article") {
     const groups = model.postsByYear
       .map((group) => `<section class="poetic-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map(renderPoeticPost).join("")}</section>`)
       .join("");
-    return renderPoeticArticlePage(ctx, "Blog", `<p class="poetic-lede">${escapeHtml(model.description)}</p>${groups}`, "blog", `<p class="poetic-meta">${model.totalPosts} essays</p>`);
+    return renderPoeticArticlePage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Essays", `<p class="poetic-lede">${escapeHtml(model.description)}</p>${groups}`);
   }
   if (ctx.family === "feral-essay") {
     const groups = model.postsByYear
@@ -2574,15 +2560,20 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
         ${renderVisualIndexGroupedSection(ctx.currentPage === "/photos" ? "Photos" : "Writing", records)}`,
       );
     }
+    if (ctx.family === "internet-diagram") {
+      const years = model.postsByYear
+        .map((group) => `<h2>${escapeHtml(group.year)}</h2>${group.posts.map((post) => renderInternetDiagramIndexRow(post.href, post.title, [post.date, post.readTime].filter(Boolean).join(" / "))).join("")}`)
+        .join("");
+      return renderInternetDiagramWindow(ctx, ctx.currentPage === "/photos" ? "Photos" : "Essays", `<p>${escapeHtml(model.description)}</p>${years}`);
+    }
     if (ctx.family === "data-portfolio") {
       const records = model.postsByYear
-        .flatMap((group) => group.posts.map((post, index) => renderDataPortfolioProject(post.href, post.title, group.year, post.date, post.excerpt || post.readTime || "", null, index)))
+        .flatMap((group) => group.posts.map((post, index) => renderDataPortfolioProject(post.href, post.title, post.readTime || "", post.date, escapeHtml(post.excerpt || ""), null, 1)))
         .join("");
       return renderDataPortfolioPage(
         ctx,
-        `<header class="data-portfolio-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Writing"}</h1><p>${escapeHtml(model.description)}</p></header>
-        ${renderDataPortfolioViewToggle()}
-        <section class="data-portfolio-grid" aria-label="Writing">${records}</section>`,
+        `<header class="data-portfolio-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Essays"}</h1><p>${escapeHtml(model.description)}</p></header>
+        <section class="data-portfolio-grid" aria-label="Essays">${records}</section>`,
       );
     }
     return `<section class="${ctx.family}"><h2>Index</h2>${model.postsByYear.map((group) => `<section><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}</small></p>`).join("")}</section>`).join("")}</section>`;
@@ -2662,7 +2653,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       `${model.subtitle ? `<p class="poetic-lede">${escapeHtml(model.subtitle)}</p>` : ""}
       <div class="poetic-copy blog-post-content">${model.contentHtml}</div>
       <p class="poetic-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
-      "blog",
+      ctx.currentPage === "/photos" ? "photos" : "essays",
       `<p class="poetic-meta">written by ${escapeHtml(model.author || "Ryan Prendergast")}</p><p class="poetic-meta">${escapeHtml(model.date)}</p>`,
     );
   }
@@ -2739,12 +2730,19 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       <div class="blog-post-content html-bulletin-copy">${model.contentHtml}</div>`,
     );
   }
+  if (ctx.family === "internet-diagram") {
+    return renderInternetDiagramWindow(
+      ctx,
+      model.title,
+      `<p class="internet-diagram-meta">${meta} / <a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}<div class="blog-post-content internet-diagram-copy">${model.contentHtml}</div>`,
+    );
+  }
   if (ctx.family === "consumption-digest") {
     return renderConsumptionDigestPage(
       ctx,
       renderConsumptionDigestDay(model.date, [
         {
-          label: "text",
+          label: "",
           html: `<article class="consumption-digest-article"><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.subtitle ? `<p><em>${escapeHtml(model.subtitle)}</em></p>` : ""}<div class="blog-post-content consumption-digest-copy">${model.contentHtml}</div></article>`,
         },
       ]),
@@ -2768,9 +2766,8 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     return renderVernacularPage(
       ctx,
       model.title,
-      `<p class="vernacular-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
-      <h1>${escapeHtml(model.title)}</h1>
-      <p class="vernacular-meta">${meta}</p>
+      `<p class="vernacular-meta">${meta}</p>
+      <p class="vernacular-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
       ${model.subtitle ? `<p class="vernacular-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}
       <hr>
       <div class="blog-post-content vernacular-body">${model.contentHtml}</div>`,
@@ -2834,7 +2831,9 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "no-css") {
-    return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${model.contentHtml}</article>`;
+    // The photo page's markup carries its own title and home link, which only make sense with its stylesheet.
+    const plainContent = model.contentHtml.replace(/<a class="raw-back"[^>]*>[\s\S]*?<\/a>/, "").replace(/<h2 class="raw-title"[^>]*>[\s\S]*?<\/h2>/, "");
+    return `<article><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p>${meta}</p>${plainContent}</article>`;
   }
   if (ctx.family === "research-sidenotes") {
     return renderResearchSidenotePage(
@@ -3232,7 +3231,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   }
   if (ctx.family === "cheap-manifesto") {
     const months = model.months
-      .map((month) => `<h2>${escapeHtml(month.label)} = saved</h2><ul>${month.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}</li>`).join("")}</ul>`)
+      .map((month) => `<h2>${escapeHtml(month.label)}</h2><ul>${month.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}</li>`).join("")}</ul>`)
       .join("");
     return renderCheapManifestoPage(ctx, "Archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
@@ -3240,7 +3239,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     const months = model.months
       .map((month) => `<section class="poetic-section"><h2>${escapeHtml(month.label)}</h2>${month.posts.map(renderPoeticPost).join("")}</section>`)
       .join("");
-    return renderPoeticArticlePage(ctx, "Archives", `<p class="poetic-lede">${model.totalPosts} entries across ${model.months.length} months.</p>${months}`, "projects");
+    return renderPoeticArticlePage(ctx, "Archives", `<p class="poetic-lede">${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
   if (ctx.family === "feral-essay") {
     const months = model.months
@@ -3320,6 +3319,12 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
         `<section class="visual-index-intro"><p>${model.totalPosts} entries across ${model.months.length} months.</p></section>
         ${renderVisualIndexGroupedSection("Archive", records)}`,
       );
+    }
+    if (ctx.family === "internet-diagram") {
+      const months = model.months
+        .map((month) => `<h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderInternetDiagramIndexRow(post.href, post.title, post.date)).join("")}`)
+        .join("");
+      return renderInternetDiagramWindow(ctx, "Archives", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
     }
     if (ctx.family === "data-portfolio") {
       const months = model.months
@@ -3422,11 +3427,37 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderHtmlBulletinPage(ctx, "guestbook", `<p>${button}</p>${bulletinEntries}`)}${guestbookModalScript()}`;
   }
+  if (ctx.family === "no-css") {
+    // No stylesheet here, so the shared modal (hidden by a CSS class) cannot be used: the form sits in a <details>.
+    const plainEntries = model.entries.length
+      ? `<ul>${model.entries.map((entry) => `<li><p>${escapeHtml(entry.message)}</p><p><b>${escapeHtml(entry.name)}</b> <small>${escapeHtml(entry.date)}</small></p></li>`).join("")}</ul>`
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    const form = model.canSign
+      ? `<details><summary>Sign the guestbook</summary><form id="guestbookForm"><p><label for="name">Name</label><br><input id="name" name="name" type="text" required maxlength="50"></p><p><label for="message">Message</label><br><textarea id="message" name="message" required maxlength="500" rows="4" cols="40"></textarea></p><p><button type="submit">Submit</button></p></form></details><script>document.getElementById('guestbookForm').addEventListener('submit',async function(e){e.preventDefault();try{var r=await fetch('/api/guestbook',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('name').value,message:document.getElementById('message').value})});if(r.ok){window.location.reload()}else{alert('Failed to submit entry. Please try again.')}}catch(err){alert('Failed to submit entry. Please try again.')}});</script>`
+      : "";
+    return `<section><h2>Guestbook</h2>${form}${plainEntries}</section>`;
+  }
+  if (ctx.family === "internet-diagram") {
+    const diagramEntries = model.entries.length
+      ? model.entries.map((entry) => `<div class="internet-diagram-index-row"><span>${escapeHtml(entry.message)}</span><em>${escapeHtml(entry.name)} / ${escapeHtml(entry.date)}</em></div>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderInternetDiagramWindow(ctx, "Guestbook", `${button ? `<p class="internet-diagram-action">${button}</p>` : ""}${diagramEntries}`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "data-portfolio") {
+    const portfolioEntries = model.entries.length
+      ? model.entries.map((entry) => `<article class="data-portfolio-project"><p class="data-portfolio-source">${escapeHtml(entry.name)}</p><p class="data-portfolio-date">${escapeHtml(entry.date)}</p><p class="data-portfolio-note">${escapeHtml(entry.message)}</p></article>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderDataPortfolioPage(
+      ctx,
+      `<header class="data-portfolio-section-head"><h1>Guestbook</h1>${button ? `<p class="data-portfolio-action">${button}</p>` : ""}</header>
+      <section class="data-portfolio-grid" aria-label="Guestbook entries">${portfolioEntries}</section>`,
+    )}${guestbookModalScript()}`;
+  }
   if (ctx.family === "consumption-digest") {
     const guestbookEntries = model.entries.length
       ? model.entries.map((entry) => `<p><strong>${escapeHtml(entry.name)}</strong> - ${escapeHtml(entry.message)} <small>${escapeHtml(entry.date)}</small></p>`).join("")
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
-    return `${renderConsumptionDigestPage(ctx, renderConsumptionDigestDay("guestbook", [{ label: "text", html: `<div class="consumption-digest-action">${button}</div>${guestbookEntries}` }]))}${guestbookModalScript()}`;
+    return `${renderConsumptionDigestPage(ctx, renderConsumptionDigestDay("guestbook", [{ label: "notes", html: `<div class="consumption-digest-action">${button}</div>${guestbookEntries}` }]))}${guestbookModalScript()}`;
   }
   if (ctx.family === "vernacular-essay") {
     const guestbookEntries = model.entries.length
@@ -3438,13 +3469,13 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
     const cheapEntries = model.entries.length
       ? model.entries.map((entry) => `<article class="cheap-manifesto-entry"><p>${escapeHtml(entry.message)}</p><p><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small></p></article>`).join("")
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
-    return `${renderCheapManifestoPage(ctx, "Guestbook", `<p>${button}</p><h2>notes ≠ noise</h2>${cheapEntries}`)}${guestbookModalScript()}`;
+    return `${renderCheapManifestoPage(ctx, "Guestbook", `${button ? `<p class="cheap-manifesto-action">${button}</p>` : ""}${cheapEntries}`)}${guestbookModalScript()}`;
   }
   if (ctx.family === "poetic-article") {
     const poeticEntries = model.entries.length
       ? model.entries.map((entry) => `<article class="poetic-entry"><h2>${escapeHtml(entry.name)}</h2><p class="poetic-meta">${escapeHtml(entry.date)}</p><p>${escapeHtml(entry.message)}</p></article>`).join("")
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
-    return `${renderPoeticArticlePage(ctx, "Guestbook", `<p>${button}</p><section class="poetic-section">${poeticEntries}</section>`, "donate!")}${guestbookModalScript()}`;
+    return `${renderPoeticArticlePage(ctx, "Guestbook", `${button ? `<p class="poetic-action">${button}</p>` : ""}<section class="poetic-section">${poeticEntries}</section>`)}${guestbookModalScript()}`;
   }
   if (ctx.family === "feral-essay") {
     const feralEntries = model.entries.length
@@ -3799,7 +3830,7 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
   if (ctx.family === "data-portfolio") {
     const builtCount = model.themes.filter((theme) => theme.status === "built").length;
     const rows = model.themes
-      .map((theme, index) => renderDataPortfolioProject(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, theme.description, null, index))
+      .map((theme, index) => renderDataPortfolioProject(`?theme=${theme.slug}`, theme.name, theme.slug === ctx.theme.slug ? "active" : theme.status, theme.category, escapeHtml(theme.description), null, index))
       .join("");
     return renderDataPortfolioPage(
       ctx,
@@ -4928,15 +4959,14 @@ function renderDesignRepositoryGeneric(model: GenericPageModel, ctx: RenderConte
 function renderDataPortfolioNav(ctx: RenderContext): string {
   const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
   const links = [
-    ["/", "projects"],
-    ["/blog", "writing"],
-    ["/archives", "archive"],
+    ["/", "home"],
+    ["/links", "links"],
+    ["/blog", "essays"],
     ["/photos", "photos"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
-    ["/themes", "themes"],
   ] as Array<[string, string]>;
-  return `<nav class="data-portfolio-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}<a href="/rss.xml">rss</a></nav>`;
+  return `<nav class="data-portfolio-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
 }
 
 function renderDataPortfolioPage(ctx: RenderContext, contentHtml: string): string {
@@ -4950,26 +4980,22 @@ function renderDataPortfolioPage(ctx: RenderContext, contentHtml: string): strin
 }
 
 function renderDataPortfolioViewToggle(): string {
-  return `<div class="data-portfolio-view" aria-label="View options"><span>VIEW</span> <a href="#selected-projects">1</a> <span>|</span> <a href="#project-list">2</a></div>`;
+  return `<div class="data-portfolio-view" aria-label="Jump to"><span>VIEW</span> <a href="#selected-projects">essays</a> <span>|</span> <a href="#project-list">links</a></div>`;
 }
 
 function renderDataPortfolioTicker(items: Array<[string, string]>): string {
   const links = items.length ? items.map(([title, href]) => `<a href="${href}">${escapeHtml(title)} -></a>`).join("") : `<a href="/blog">Writing -></a>`;
-  return `<div class="data-portfolio-ticker" id="selected-projects"><span>CODING</span><span>REPORTING</span><span>VISUALS</span>${links}</div>`;
+  return `<div class="data-portfolio-ticker" id="selected-projects">${links}</div>`;
 }
 
 function renderDataPortfolioProject(href: string, title: string, source: string, date: string, detail: string, image: string | null, index: number): string {
+  // detail is HTML (already escaped); this theme is text-only, so no thumbnail slot and no placeholder tags.
   const safeDetail = stripHtml(detail).trim();
-  const thumbnail = image
-    ? `<img src="${escapeHtml(image)}" alt="" loading="lazy">`
-    : `<span>${String(index + 1).padStart(2, "0")}</span>`;
-  return `<article class="data-portfolio-project" id="${index === 0 ? "project-list" : ""}">
-    <a class="data-portfolio-thumb" href="${href}" aria-label="${escapeHtml(title)}">${thumbnail}</a>
-    <div class="data-portfolio-tags"><span>CODING</span><span>VISUALS</span><span>REPORTING</span></div>
+  return `<article class="data-portfolio-project"${index === 0 ? ` id="project-list"` : ""}>
+    ${source ? `<p class="data-portfolio-source">${escapeHtml(source)}</p>` : ""}
     <h2><a href="${href}">${escapeHtml(title)}</a></h2>
-    <p class="data-portfolio-source">${escapeHtml(source || "Ryan Prendergast")}</p>
     ${date ? `<p class="data-portfolio-date">${escapeHtml(date)}</p>` : ""}
-    ${safeDetail ? `<p>${escapeHtml(safeDetail)}</p>` : ""}
+    ${safeDetail ? `<p>${safeDetail}</p>` : ""}
   </article>`;
 }
 
@@ -4991,36 +5017,40 @@ function renderInternetDiagramPage(ctx: RenderContext, contentHtml: string): str
   const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
   const nav = [
     ["/", "home"],
-    ["/blog", "writing"],
-    ["/archives", "archive"],
+    ["/links", "links"],
+    ["/blog", "essays"],
     ["/photos", "photos"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
-    ["/themes", "themes"],
   ] as Array<[string, string]>;
   return `<section class="internet-diagram">
     <header class="internet-diagram-key">
-      <button type="button">random</button>
-      <button type="button">mode</button>
-      <label><input type="checkbox" checked disabled> labels</label>
-      <a href="#diagram-info">info</a>
-      <a href="/guestbook">submit</a>
-      <a href="#diagram-index">view index</a>
-      <a href="/archives">roadmap</a>
+      <a class="internet-diagram-name" href="/">Ryan Prendergast</a>
+      <nav class="internet-diagram-core" aria-label="Core site areas">
+        ${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}
+      </nav>
     </header>
-    <nav class="internet-diagram-core" aria-label="Core site areas">
-      ${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}
-    </nav>
     ${contentHtml}
   </section>`;
 }
 
+// A sub-page is one "window" floating on the map background.
+function renderInternetDiagramWindow(ctx: RenderContext, title: string, bodyHtml: string): string {
+  return renderInternetDiagramPage(
+    ctx,
+    `<section class="internet-diagram-sheet"><article class="internet-diagram-window"><h1>${escapeHtml(title)}</h1>${bodyHtml}</article></section>`,
+  );
+}
+
 function renderInternetDiagramMap(nodes: string[]): string {
-  return `<div class="internet-diagram-map" aria-label="Internet map">${nodes.slice(0, 28).map((node, index) => {
-    const x = 6 + ((index * 23) % 84);
-    const y = 8 + ((index * 37) % 78);
-    const scale = 0.86 + ((index % 5) * 0.08);
-    return `<div class="internet-diagram-node" style="--x:${x}%;--y:${y}%;--s:${scale.toFixed(2)}">${node}</div>`;
+  const columns = 4;
+  const rows = Math.max(1, Math.ceil(nodes.length / columns));
+  return `<div class="internet-diagram-map" aria-label="Link map" style="--rows:${rows}">${nodes.map((node, index) => {
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const x = 2 + column * 24.5 + ((index * 7) % 5);
+    const y = ((row + 0.22 + ((index * 5) % 4) * 0.13) / rows) * 100;
+    return `<div class="internet-diagram-node" style="--x:${x.toFixed(1)}%;--y:${y.toFixed(1)}%">${node}</div>`;
   }).join("")}</div>`;
 }
 
