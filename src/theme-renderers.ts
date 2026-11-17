@@ -652,6 +652,21 @@ function renderShellChrome(ctx: RenderContext): { before: string; after: string 
       after: `<div class="theme-taskbar"><span>Start</span><span>${escapeHtml(ctx.theme.name)}</span><time>RyanOS</time></div>`,
     };
   }
+  if (ctx.family === "scrapbook") {
+    const items = [
+      ["/", "\u{1F3E0} home"],
+      ["/links", "\u{1F517} links"],
+      ["/blog", "\u{1F4DD} essays"],
+      ["/photos", "\u{1F4F7} photos"],
+      ["/guestbook", "\u{1F4D6} guestbook"],
+      ["/contact", "\u{2709}\u{FE0F} contact"],
+    ] as Array<[string, string]>;
+    const current = ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage;
+    return {
+      before: `<header class="scrapbook-top"><h1><a href="/">Ryan Prendergast</a> \u{1F44B}</h1><nav aria-label="Primary">${items.map(([href, label]) => `<a class="${href === current ? "is-active" : ""}" href="${href}">${label}</a>`).join(" ")}</nav></header>`,
+      after: "",
+    };
+  }
   if (ctx.family === "terminal" || ctx.family === "editor") {
     return {
       before: `<div class="terminal-status">ryan@site:~$ open ${escapeHtml(ctx.currentPage || "/")}</div>`,
@@ -721,16 +736,16 @@ function renderMiniThemePicker(theme: SiteTheme): string {
 function renderSpartanSidebar(ctx: RenderContext): string {
   const links = [
     ["/", "home"],
+    ["/links", "links"],
     ["/blog", "essays"],
     ["/photos", "photos"],
-    ["/archives", "archive"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
-    ["/rss.xml", "rss"],
-    ["/themes", "themes"],
   ] as Array<[string, string]>;
-  return `<div class="pg-sidebar-card"><a class="pg-sidebar-title" href="/">Ryan<br>Prendergast</a>${links
-    .map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`)
+  const current = ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage;
+  const title = ctx.currentPage === "/" || ctx.currentPage === "/links" ? "" : `<a class="pg-sidebar-title" href="/">Ryan<br>Prendergast</a>`;
+  return `<div class="pg-sidebar-card">${title}${links
+    .map(([href, label]) => `<a class="${current === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`)
     .join("")}</div>`;
 }
 
@@ -1382,11 +1397,16 @@ function renderResearchLabGeneric(model: GenericPageModel, ctx: RenderContext): 
 }
 
 function renderGardenNav(ctx: RenderContext): string {
-  return `<nav class="garden-nav" aria-label="Core site areas">${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join(" ")} <a class="${ctx.currentPage === "/themes" ? "is-active" : ""}" href="/themes">Themes</a></nav>`;
-}
-
-function renderGardenLead(caption: string, image = "/site.png"): string {
-  return `<figure class="garden-lead"><img src="${image}" alt="" loading="lazy"><figcaption>${escapeHtml(caption)}</figcaption></figure>`;
+  const items = [
+    ["/", "home"],
+    ["/links", "links"],
+    ["/blog", "essays"],
+    ["/photos", "photos"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
+  ] as Array<[string, string]>;
+  const current = ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage;
+  return `<header class="garden-head"><a class="garden-name" href="/">Ryan Prendergast</a><nav class="garden-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${href === current ? "is-active" : ""}" href="${href}">${label}</a>`).join(" ")}</nav></header>`;
 }
 
 function renderGardenPage(ctx: RenderContext, contentHtml: string): string {
@@ -1545,7 +1565,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   const homeHeader = renderCanonicalHomeHeader(model);
 
   if (ctx.family === "spartan") {
-    return `<table class="pg-home" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><div class="pg-title-block">${homeHeader}</div>${renderSpartanNotice("New:", model.recentPosts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" | "), "pg-new")}${renderSpartanNotice("Browse:", `<a href="/blog">essays</a> | <a href="/archives">archive</a> | <a href="/photos">photos</a> | <a href="/themes">themes</a>`, "pg-apply")}<br><table class="pg-link-table" border="0" cellspacing="0" cellpadding="0" width="410"><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.title)}</a><br><font size="1" color="#666666">${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</font></td></tr>`).join("")}</tbody></table></td></tr></tbody></table>`;
+    return `<table class="pg-home" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><div class="pg-title-block">${homeHeader}</div>${renderSpartanNotice("New:", model.recentPosts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" | "), "pg-new")}<br><table class="pg-link-table" border="0" cellspacing="0" cellpadding="0" width="410"><tbody>${model.links.map((link) => `<tr><td><a href="${link.url}">${escapeHtml(link.title)}</a><br><font size="1" color="#666666">${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</font></td></tr>`).join("")}</tbody></table></td></tr></tbody></table>`;
   }
 
   if (ctx.family === "manual") {
@@ -1584,11 +1604,9 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "scrapbook") {
-    const climbWords = stripHtml(model.introHtml).split(/\s+/).filter(Boolean).slice(0, 18);
-    const wordField = climbWords.map((word, index) => `<span style="--step:${index % 7}">${escapeHtml(word)}</span>`).join("");
-    const linkItems = model.links.map((link, index) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a>${index % 3 === 1 ? ` <span>${escapeHtml(link.domain)}</span>` : ""}<div>${link.contentHtml}</div></li>`).join("");
-    const postItems = model.recentPosts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` <span>${escapeHtml(post.readTime)}</span>` : ""}</li>`).join("");
-    return `<section class="scrapbook"><div class="scrapbook-word-field" aria-hidden="true">${wordField}</div>${homeHeader}<section class="scrapbook-section"><h3>Linkblog</h3><ol>${linkItems}</ol></section><section class="scrapbook-section"><h3>Blog</h3><ol>${postItems}</ol></section></section>`;
+    const linkItems = model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> <span>${escapeHtml(link.domain)}, ${escapeHtml(link.date)}</span><div>${link.contentHtml}</div></li>`).join("");
+    const postItems = model.recentPosts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> <span>${escapeHtml(post.date)}</span></li>`).join("");
+    return `<section class="scrapbook"><div class="scrapbook-intro">${model.introHtml}</div><section class="scrapbook-section"><h3>\u{1F517} Links</h3><ol>${linkItems}</ol></section><section class="scrapbook-section"><h3>\u{1F4DD} Essays</h3><ol>${postItems}</ol></section></section>`;
   }
 
   if (ctx.family === "art-index") {
@@ -1649,7 +1667,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "studio-index") {
-    const projects = model.links.map((link, index) => renderStudioIndexProject(link.title, link.url, link.domain, link.date, link.image, index)).join("");
+    const projects = model.links.map((link) => renderStudioIndexProject(link)).join("");
     const recent = model.recentPosts
       .map((post, index) => renderStudioIndexTextRow(post.title, post.href, post.date, post.readTime || "Essay", index))
       .join("");
@@ -1658,37 +1676,36 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
 
   if (ctx.family === "cargo-cv") {
     const lifeworks = [
-      `<span class="cargo-cv-info">${model.introHtml}</span>`,
-      ...model.recentPosts.slice(0, 3).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a> <span>${escapeHtml(post.readTime || post.date)}</span>`),
-      ...model.links.slice(0, 5).map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a> <span>${escapeHtml(link.domain)}</span>`),
+      ...model.recentPosts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a> <span>${escapeHtml(post.date)}</span>`),
+      ...model.links.map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a> <span>${escapeHtml(link.domain)}</span>`),
     ];
-    return renderCargoCvPage(ctx, "Info", `<h2>Lifeworks:</h2>${renderCargoCvList(lifeworks)}<section class="cargo-cv-profile">${model.aboutHtml}</section>`);
+    return renderCargoCvPage(ctx, "Info", `<section class="cargo-cv-profile cargo-cv-lead">${model.introHtml}</section><h2>Lifeworks:</h2>${renderCargoCvList(lifeworks)}`);
   }
 
   if (ctx.family === "artist-ledger") {
     const latest = model.recentPosts[0]
       ? `<a href="${model.recentPosts[0].href}">${escapeHtml(model.recentPosts[0].title)}</a>`
-      : `<a href="/archives">Ryan's linklog</a>`;
+      : "";
     const news = model.recentPosts
       .map((post) => renderArtistLedgerRow(post.date, post.href, post.title, post.readTime || "Writing"))
       .join("");
     const work = model.links
-      .map((link) => renderArtistLedgerRow(link.date, link.url, link.title, link.domain, stripHtml(link.contentHtml)))
+      .map((link) => renderArtistLedgerRow(link.date, link.url, link.title, link.domain, "", link.contentHtml))
       .join("");
-    return `<section class="artist-ledger"><div class="artist-ledger-latest"><span>Latest News</span>${latest}</div>${renderArtistLedgerHeader(ctx)}<section id="about" class="artist-ledger-about"><div>${model.introHtml}</div><div>${model.aboutHtml}</div></section><section id="news" class="artist-ledger-section"><h2>News</h2><div class="artist-ledger-list">${news}</div></section><section id="work" class="artist-ledger-section artist-ledger-work"><h2>Work</h2><div class="artist-ledger-list">${work}</div></section></section>`;
+    return `<section class="artist-ledger"><div class="artist-ledger-latest"><span>Latest essay</span>${latest}</div>${renderArtistLedgerHeader(ctx)}<section id="about" class="artist-ledger-about"><div>${model.introHtml}</div><div>${model.aboutHtml}</div></section><section id="news" class="artist-ledger-section"><h2>Essays</h2><div class="artist-ledger-list">${news}</div></section><section id="work" class="artist-ledger-section artist-ledger-work"><h2>Links</h2><div class="artist-ledger-list">${work}</div></section></section>`;
   }
 
   if (ctx.family === "garden-notebook") {
     return renderGardenPage(
       ctx,
-      `${renderGardenLead(model.links[0]?.title || "Ryan Prendergast")}<h1>Ryan Prendergast</h1><div class="garden-intro">${model.introHtml}</div><p>You can find some of my writing below:</p>${renderGardenPostList(model.recentPosts)}<h2>Linklog</h2>${renderGardenLinkList(model.links)}`,
+      `<div class="garden-intro">${model.introHtml}</div><h2>Essays</h2>${renderGardenPostList(model.recentPosts)}<h2>Links</h2>${renderGardenLinkList(model.links)}`,
     );
   }
 
   if (ctx.family === "fragment-journal") {
     return renderFragmentPage(
       ctx,
-      `<header class="fragment-hero"><h1><a href="/">Ryan Prendergast</a></h1><div class="fragment-intro">${model.introHtml}</div></header><section class="fragment-latest" aria-label="Latest posts and notes"><div><h2>latest posts</h2>${renderFragmentPostList(model.recentPosts)}</div><div><h2>latest notes</h2>${renderFragmentLinkList(model.links)}</div></section>`,
+      `<header class="fragment-hero"><h1><a href="/">Ryan Prendergast</a></h1><div class="fragment-intro">${model.introHtml}</div></header><section class="fragment-latest" aria-label="Latest posts and notes"><div><h2>latest essays</h2>${renderFragmentPostList(model.recentPosts)}</div><div><h2>latest links</h2>${renderFragmentLinkList(model.links)}</div></section>`,
     );
   }
   if (ctx.family === "ucoz-archive") {
@@ -2365,11 +2382,11 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     if (ctx.family === "builder-notes") {
       return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>writing</h1>${model.postsByYear.map((group) => `<section class="builder-notes-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
     }
-    return renderGardenPage(ctx, `<h1>Writing</h1><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section class="garden-year"><h2>${escapeHtml(group.year)}</h2>${renderGardenPostList(group.posts)}</section>`).join("")}`);
+    return renderGardenPage(ctx, `<h1>Essays</h1><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section class="garden-year"><h2>${escapeHtml(group.year)}</h2>${renderGardenPostList(group.posts)}</section>`).join("")}`);
   }
   if (ctx.family === "research-tools" || ctx.family === "artist-ledger") {
     if (ctx.family === "artist-ledger") {
-      return `<section class="artist-ledger">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>News</h2><div class="artist-ledger-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => renderArtistLedgerRow(post.date, post.href, post.title, group.year, post.readTime || ""))).join("")}</div></section></section>`;
+      return `<section class="artist-ledger">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>Essays</h2><div class="artist-ledger-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => renderArtistLedgerRow(post.date, post.href, post.title, group.year, post.readTime || ""))).join("")}</div></section></section>`;
     }
     return `<section class="${ctx.family}"><h2>Publications</h2><div class="ledger-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><time>${escapeHtml(post.date)}</time> <a href="${post.href}">${escapeHtml(post.title)}</a></p>`)).join("")}</div></section>`;
   }
@@ -2377,14 +2394,14 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Blog", model.description)}${renderArtLibraryCategories(model.postsByYear.map((group) => group.year))}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.postsByYear.flatMap((group) => group.posts.map((post) => [`<a href="${post.href}">${escapeHtml(post.title)}</a>`, "Ryan Prendergast", escapeHtml(post.date), escapeHtml(group.year)])))}</section>`;
   }
   if (ctx.family === "cargo-cv") {
-    const items = model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a> <span>${escapeHtml(group.year)} ${escapeHtml(post.date)}</span>`));
-    return renderCargoCvPage(ctx, "Writing", `<h2>Lifeworks:</h2>${renderCargoCvList(items)}<p class="cargo-cv-note">${escapeHtml(model.description)}</p>`);
+    const items = model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a> <span>${escapeHtml(post.date)}</span>`));
+    return renderCargoCvPage(ctx, "Writing", `<h2>Essays:</h2>${renderCargoCvList(items)}<p class="cargo-cv-note">${escapeHtml(model.description)}</p>`);
   }
   if (["fragment-journal", "writer-ledger", "experimental-loop"].includes(ctx.family)) {
     if (ctx.family === "fragment-journal") {
       return renderFragmentPage(
         ctx,
-        `<header class="fragment-page-head"><h1>journal</h1><p>${escapeHtml(model.description)}</p></header>${model.postsByYear.map((group) => `<section class="fragment-year"><h2>${escapeHtml(group.year)}</h2>${renderFragmentPostList(group.posts)}</section>`).join("")}`,
+        `<header class="fragment-page-head"><h1>essays</h1><p>${escapeHtml(model.description)}</p></header>${model.postsByYear.map((group) => `<section class="fragment-year"><h2>${escapeHtml(group.year)}</h2>${renderFragmentPostList(group.posts)}</section>`).join("")}`,
       );
     }
     if (ctx.family === "experimental-loop") {
@@ -2856,7 +2873,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="wordmark-page-header"><p>${meta}</p><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<span>${escapeHtml(model.subtitle)}</span>` : ""}</header><div class="blog-post-content">${model.contentHtml}</div></article>`;
   }
   if (ctx.family === "studio-index") {
-    return `<article class="studio-index studio-index-article">${renderStudioIndexHeader(ctx, model.subtitle ? escapeHtml(model.subtitle) : meta, "Studies")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Essays", "Notes", "Archive"])}<div class="studio-index-content"><a class="studio-index-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="studio-index-article-head"><h2>${escapeHtml(model.title)}</h2><p>${meta}</p></header><div class="blog-post-content studio-index-copy">${model.contentHtml}</div></div></div></article>`;
+    return `<article class="studio-index studio-index-article">${renderStudioIndexHeader(ctx, "", "Studies")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Essays", "Notes", "Archive"])}<div class="studio-index-content"><a class="studio-index-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="studio-index-article-head"><h2>${escapeHtml(model.title)}</h2><p>${meta}</p></header><div class="blog-post-content studio-index-copy">${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}${model.contentHtml}</div></div></div></article>`;
   }
   if (ctx.family === "builder-notes") {
     return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><header><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p>${meta}</p></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
@@ -3092,7 +3109,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>archive</h1>${model.months.map((month) => `<section class="builder-notes-section"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "studio-index") {
-    const months = model.months.map((month, index) => renderStudioIndexTextRow(month.label, `#${slugify(month.label)}`, `${month.posts.length} posts`, month.key, index)).join("");
+    const months = model.months.map((month, index) => renderStudioIndexTextRow(month.label, `#${slugify(month.label)}`, `${month.posts.length} ${month.posts.length === 1 ? "post" : "posts"}`, month.key, index)).join("");
     const records = model.months.map((month) => `<section id="${slugify(month.label)}" class="studio-index-month"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post, index) => renderStudioIndexTextRow(post.title, post.href, post.date, post.readTime || "Post", index)).join("")}</section>`).join("");
     return `<section class="studio-index">${renderStudioIndexHeader(ctx, `${model.totalPosts} entries across ${model.months.length} months.`, "Index")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Months", "Posts", "Chronology"])}<div class="studio-index-content"><div class="studio-index-list">${months}</div>${records}</div></div></section>`;
   }
@@ -3125,9 +3142,9 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="art-library">${renderArtLibraryHeader(ctx, "Archive", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`)}${renderArtLibraryCategories(model.months.slice(0, 8).map((month) => month.label))}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.months.flatMap((month) => month.posts.map((post) => [`<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(month.label), escapeHtml(post.date), "Archive"])))}</section>`;
   }
   if (ctx.family === "cargo-cv") {
-    const items = model.months.map((month) => `<a href="#${slugify(month.label)}">${escapeHtml(month.label)}</a> <span>${month.posts.length} entries</span>`);
+    const items = model.months.map((month) => `<a href="#${slugify(month.label)}">${escapeHtml(month.label)}</a> <span>${month.posts.length} ${month.posts.length === 1 ? "entry" : "entries"}</span>`);
     const months = model.months.map((month) => `<section id="${slugify(month.label)}" class="cargo-cv-month"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("");
-    return renderCargoCvPage(ctx, "Archive", `<h2>Lifeworks:</h2>${renderCargoCvList(items)}<div class="cargo-cv-small-list">${months}</div>`);
+    return renderCargoCvPage(ctx, "Archive", `<h2>Archive:</h2>${renderCargoCvList(items)}<div class="cargo-cv-small-list">${months}</div>`);
   }
   if (["fragment-journal", "writer-ledger", "experimental-loop", "briefing", "taste-directory", "bookmaker-card", "uncertainty"].includes(ctx.family)) {
     if (ctx.family === "fragment-journal") {
@@ -3374,13 +3391,22 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
     return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>guestbook</h2><section class="guestbook-header art-index-action">${button}</section><div class="art-index-chronology">${rows}</div></section>${guestbookModalScript()}`;
   }
   if (ctx.family === "studio-index") {
-    return `<section class="studio-index">${renderStudioIndexHeader(ctx, `<p>${model.entries.length} entries</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Guestbook", "Messages"])}<div class="studio-index-content"><section class="guestbook-header">${button}</section><div class="studio-index-list">${entries}</div></div></div></section>${guestbookModalScript()}`;
+    return `<section class="studio-index">${renderStudioIndexHeader(ctx, "", "Guestbook")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Guestbook", "Messages"])}<div class="studio-index-content"><header class="studio-index-article-head"><h2>Guestbook</h2></header><section class="guestbook-header">${button}</section><div class="studio-index-list studio-index-entries">${entries}</div></div></div></section>${guestbookModalScript()}`;
   }
   if (ctx.family === "cargo-cv") {
     const cargoEntries = model.entries.length
-      ? model.entries.map((entry) => `<span><strong>${escapeHtml(entry.name)}</strong> ${escapeHtml(entry.message)} <span>${escapeHtml(entry.date)}</span></span>`)
+      ? model.entries.map((entry) => `<strong>${escapeHtml(entry.name)}</strong> ${escapeHtml(entry.message)} <span>${escapeHtml(entry.date)}</span>`)
       : [`<span>No entries yet. Be the first to sign the guestbook!</span>`];
-    return `${renderCargoCvPage(ctx, "Guestbook", `<h2>Lifeworks:</h2>${renderCargoCvList(cargoEntries)}<section class="guestbook-header">${button}</section>`)}${guestbookModalScript()}`;
+    return `${renderCargoCvPage(ctx, "Guestbook", `<h2>Guestbook:</h2>${renderCargoCvList(cargoEntries)}<section class="guestbook-header">${button}</section>`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "artist-ledger") {
+    const rows = model.entries.length
+      ? model.entries.map((entry) => `<article class="artist-ledger-row artist-ledger-entry"><time>${escapeHtml(entry.date)}</time><div><p>${escapeHtml(entry.message)}</p></div><span>${escapeHtml(entry.name)}</span></article>`).join("")
+      : `<p class="text-muted">No entries yet. Be the first to sign the guestbook!</p>`;
+    return `<section class="artist-ledger artist-ledger-page">${renderArtistLedgerHeader(ctx)}<section class="artist-ledger-section"><h2>Guestbook</h2><section class="guestbook-header">${button}</section><div class="artist-ledger-list">${rows}</div></section></section>${guestbookModalScript()}`;
+  }
+  if (ctx.family === "fragment-journal") {
+    return `${renderFragmentPage(ctx, `<header class="fragment-page-head"><h1>guestbook</h1></header><section class="guestbook-header">${button}</section><div class="fragment-entries">${entries}</div>`)}${guestbookModalScript()}`;
   }
   if (ctx.family === "garden-notebook") {
     return `${renderGardenPage(ctx, `<h1>Guestbook</h1><section class="guestbook-header">${button}</section><div class="garden-entries">${entries}</div>`)}${guestbookModalScript()}`;
@@ -4013,25 +4039,27 @@ function renderArtLibraryGeneric(model: GenericPageModel, ctx: RenderContext): s
 }
 
 function renderStudioIndexHeader(ctx: RenderContext, introHtml: string, activeTab: string): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
   const tabs = [
     ["/", "Index"],
+    ["/links", "Links"],
     ["/blog", "Studies"],
-    ["/contact", "Information"],
     ["/photos", "Objects"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Information"],
   ] as Array<[string, string]>;
-  return `<header class="studio-index-header"><div class="studio-index-brand"><a href="/">Ryan Prendergast</a><div>${introHtml}</div></div><div class="studio-index-mode">Studio</div><nav class="studio-index-tabs" aria-label="Core site areas">${tabs.map(([href, label]) => `<a class="${active(href)} ${label === activeTab ? "is-current" : ""}" href="${href}">${label === activeTab ? `[ ${label} ]` : label}</a>`).join("")}<a class="${active("/archives")}" href="/archives">Archive</a><a class="${active("/guestbook")}" href="/guestbook">Guestbook</a><a href="/rss.xml">RSS</a><a class="${active("/themes")}" href="/themes">Themes</a></nav></header>`;
+  const current = tabs.some(([href]) => href === ctx.currentPage)
+    ? ctx.currentPage
+    : (tabs.find(([, label]) => label === activeTab) || tabs[0])[0];
+  return `<header class="studio-index-header"><div class="studio-index-brand"><a href="/">Ryan Prendergast</a></div><div class="studio-index-intro">${introHtml}</div><nav class="studio-index-tabs" aria-label="Core site areas">${tabs.map(([href, label]) => `<a class="${href === current ? "is-current" : ""}" href="${href}">${href === current ? `[ ${label} ]` : label}</a>`).join("")}</nav></header>`;
 }
 
-function renderStudioIndexFilters(filters: string[]): string {
-  return `<aside class="studio-index-filters"><span>Type</span>${filters.map((filter, index) => `<a class="${index === 0 ? "is-active" : ""}" href="#">${index === 0 ? `[ ${escapeHtml(filter)} ]` : escapeHtml(filter)}</a>`).join("")}</aside>`;
+function renderStudioIndexFilters(_filters: string[]): string {
+  return "";
 }
 
-function renderStudioIndexProject(title: string, href: string, source: string, date: string, image: string | null, index: number): string {
-  const media = image
-    ? `<img src="${image}" alt="" loading="lazy">`
-    : `<div class="studio-index-placeholder" aria-hidden="true"><span>${String(index + 1).padStart(2, "0")}</span></div>`;
-  return `<article class="studio-index-project"><a href="${href}">${media}<span>${escapeHtml(title)}</span></a><p>${escapeHtml(source)}</p><time>${escapeHtml(date)}</time></article>`;
+function renderStudioIndexProject(link: LinkEntryModel): string {
+  const media = link.image ? `<a class="studio-index-project-media" href="${link.url}"><img src="${link.image}" alt="" loading="lazy"></a>` : "";
+  return `<article class="studio-index-project">${media}<h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><p class="studio-index-project-meta"><span>${escapeHtml(link.domain)}</span><time>${escapeHtml(link.date)}</time></p><div class="studio-index-project-note">${link.contentHtml}</div></article>`;
 }
 
 function renderStudioIndexTextRow(title: string, href: string, date: string, type: string, index: number): string {
@@ -4039,15 +4067,21 @@ function renderStudioIndexTextRow(title: string, href: string, date: string, typ
 }
 
 function renderStudioIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return `<article class="studio-index studio-index-article">${renderStudioIndexHeader(ctx, `<p>${escapeHtml(ctx.currentPage || "/")}</p>`, "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Information", "Contact", "Pages"])}<div class="studio-index-content"><header class="studio-index-article-head"><h2>${escapeHtml(model.heading)}</h2></header><div class="blog-post-content studio-index-copy">${model.contentHtml}</div></div></div></article>`;
+  return `<article class="studio-index studio-index-article">${renderStudioIndexHeader(ctx, "", "Information")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Information", "Contact", "Pages"])}<div class="studio-index-content"><header class="studio-index-article-head"><h2>${escapeHtml(model.heading)}</h2></header><div class="blog-post-content studio-index-copy">${model.contentHtml}</div></div></div></article>`;
 }
 
-function renderCargoCvPage(ctx: RenderContext, section: string, contentHtml: string): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
-  const nav = ctx.navItems
-    .map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`)
-    .join("");
-  return `<section class="cargo-cv"><aside><a class="cargo-cv-title" href="/">Ryan Prendergast</a><a class="${active("/")}" href="/">Info</a><span>${escapeHtml(section)}</span><nav aria-label="Core site areas">${nav}<a class="${active("/themes")}" href="/themes">Themes</a></nav></aside><main>${contentHtml}</main></section>`;
+function renderCargoCvPage(ctx: RenderContext, _section: string, contentHtml: string): string {
+  const items = [
+    ["/", "Info"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
+    ["/photos", "Photos"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+  ] as Array<[string, string]>;
+  const current = ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage;
+  const nav = items.map(([href, label]) => `<a class="${href === current ? "is-active" : ""}" href="${href}">${label}</a>`).join("");
+  return `<section class="cargo-cv"><aside><a class="cargo-cv-title" href="/">Ryan Prendergast</a><nav aria-label="Core site areas">${nav}</nav></aside><main>${contentHtml}</main></section>`;
 }
 
 function renderCargoCvList(items: string[]): string {
@@ -4059,24 +4093,20 @@ function renderCargoCvGeneric(model: GenericPageModel, ctx: RenderContext): stri
 }
 
 function renderArtistLedgerHeader(ctx: RenderContext): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
-  const primary = [
-    ["/contact", "About"],
-    ["/blog", "News"],
-    ["/", "Work"],
-    ["/archives", "Archive"],
-  ] as Array<[string, string]>;
-  const utility = [
+  const items = [
+    ["/", "Home"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
     ["/photos", "Photos"],
     ["/guestbook", "Guestbook"],
-    ["/rss.xml", "RSS"],
-    ["/themes", "Themes"],
+    ["/contact", "Contact"],
   ] as Array<[string, string]>;
-  return `<header class="artist-ledger-header"><a class="artist-ledger-name" href="/">Ryan<br>Prendergast</a><nav class="artist-ledger-primary" aria-label="Primary">${primary.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}</nav><nav class="artist-ledger-utility" aria-label="Core site areas">${utility.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}</nav></header>`;
+  const current = ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage;
+  return `<header class="artist-ledger-header"><a class="artist-ledger-name" href="/">Ryan<br>Prendergast</a><nav class="artist-ledger-primary" aria-label="Primary">${items.map(([href, label]) => `<a class="${href === current ? "is-active" : ""}" href="${href}">${label}</a>`).join("")}</nav></header>`;
 }
 
-function renderArtistLedgerRow(date: string, href: string, title: string, type: string, detail = ""): string {
-  const detailText = detail ? `<p>${escapeHtml(detail)}</p>` : "";
+function renderArtistLedgerRow(date: string, href: string, title: string, type: string, detail = "", detailHtml = ""): string {
+  const detailText = detailHtml ? `<div class="artist-ledger-detail">${detailHtml}</div>` : detail ? `<p>${escapeHtml(detail)}</p>` : "";
   return `<article class="artist-ledger-row"><time>${escapeHtml(date)}</time><div><a href="${href}">${escapeHtml(title)}</a>${detailText}</div><span>${escapeHtml(type)}</span></article>`;
 }
 
@@ -4113,19 +4143,17 @@ function renderWriterLedgerGeneric(model: GenericPageModel, ctx: RenderContext):
 }
 
 function renderFragmentNav(ctx: RenderContext): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
   const items = [
-    ["/contact", "about"],
-    ["/photos", "playlists"],
-    ["/blog", "journal"],
-    ["/", "notes"],
-    ["/archives", "library"],
-    ["/guestbook", "poetry"],
-    ["/archives", "archive"],
-    ["/rss.xml", "rss"],
-    ["/themes", "themes"],
+    ["/", "home"],
+    ["/links", "links"],
+    ["/blog", "essays"],
+    ["/photos", "photos"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
   ] as Array<[string, string]>;
-  return `<nav class="fragment-menu" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}</nav>`;
+  const current = ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage;
+  const name = ctx.currentPage === "/" || ctx.currentPage === "/links" ? "" : `<a class="fragment-menu-name" href="/">Ryan Prendergast</a>`;
+  return `<nav class="fragment-menu" aria-label="Core site areas">${name}${items.map(([href, label]) => `<a class="${href === current ? "is-active" : ""}" href="${href}">${label}</a>`).join("")}</nav>`;
 }
 
 function renderFragmentPage(ctx: RenderContext, contentHtml: string): string {
