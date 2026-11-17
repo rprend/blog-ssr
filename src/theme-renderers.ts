@@ -1752,104 +1752,152 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "writer-ledger") {
+    const isLinksPage = ctx.currentPage === "/links";
     const recent = [
-      ...model.recentPosts.slice(0, 3).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`),
-      ...model.links.slice(0, 3).map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`),
-    ].join(" ");
-    const rows = [
-      ...model.recentPosts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime || "Essay", post.date)),
-      ...model.links.map((link) => renderWriterLedgerRow(link.title, link.url, link.domain, link.date)),
-    ].join("");
-    return `<section class="writer-ledger">${renderWriterLedgerRecent(recent)}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info">${model.introHtml}${model.aboutHtml}</section><section class="writer-ledger-work"><h2>Title <span>Medium</span> <span>Year</span> <span>↓</span></h2><div class="writer-ledger-table">${rows}</div></section></section>`;
+      ...model.recentPosts.slice(0, 2).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`),
+      ...model.links.slice(0, 1).map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`),
+    ].join(", ");
+    const postRows = model.recentPosts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime ? `Essay, ${post.readTime}` : "Essay", post.date)).join("");
+    const linkRows = model.links.map((link) => renderWriterLedgerRow(link.title, link.url, link.domain, link.date)).join("");
+    const essays = `<section class="writer-ledger-work"><h2><span>Essays</span> <span>Medium</span> <span>Date ↓</span></h2><div class="writer-ledger-table">${postRows}</div><p class="writer-ledger-more">( <a href="/blog">all essays</a> )</p></section>`;
+    const links = `<section class="writer-ledger-work"><h2><span>Links</span> <span>Source</span> <span>Date ↓</span></h2><div class="writer-ledger-table">${linkRows}</div></section>`;
+    if (isLinksPage) {
+      return `<section class="writer-ledger">${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><h1>Links</h1><p>${model.aboutHtml}</p></section>${links}</section>`;
+    }
+    return `<section class="writer-ledger">${renderWriterLedgerHeader(ctx)}${renderWriterLedgerRecent(recent)}<section class="writer-ledger-info">${model.introHtml}</section>${essays}${links}</section>`;
   }
 
   if (ctx.family === "artist-menu") {
-    const works = [
-      ...model.links.map((link) => renderArtistMenuWork(link.url, link.title)),
-      ...model.recentPosts.map((post) => renderArtistMenuWork(post.href, post.title)),
-    ].join("");
+    const isLinksPage = ctx.currentPage === "/links";
+    const essays = model.recentPosts.map((post) => renderArtistMenuWork(post.href, post.title, post.date)).join("");
+    const links = model.links.map((link) => renderArtistMenuWork(link.url, link.title, link.domain)).join("");
+    const linksSection = `<section class="artist-menu-works" aria-labelledby="artist-menu-links-title">
+        <h2 id="artist-menu-links-title">Links</h2>
+        <div class="works-list works-list-columns">${links}</div>
+      </section>`;
+    if (isLinksPage) {
+      return renderArtistMenuPage(
+        ctx,
+        `<section class="artist-menu-works artist-menu-index"><h1>Links</h1><p>${model.aboutHtml}</p><div class="works-list works-list-columns">${links}</div></section>`,
+      );
+    }
     return renderArtistMenuPage(
       ctx,
       `<header class="artist-menu-home">
-        <h1><a href="/">Ryan Prendergast</a></h1>
         <div class="artist-menu-intro">${model.introHtml}</div>
       </header>
-      <section class="artist-menu-statement">${model.aboutHtml}</section>
       <section class="artist-menu-works" aria-labelledby="artist-menu-works-title">
-        <h2 id="artist-menu-works-title">Works</h2>
-        <div class="works-list">${works}</div>
-      </section>`,
+        <h2 id="artist-menu-works-title">Essays</h2>
+        <div class="works-list">${essays}</div>
+        <p class="artist-menu-more"><a href="/blog">All essays</a></p>
+      </section>
+      ${linksSection}`,
     );
   }
+
   if (ctx.family === "friendly-hub") {
     const writing = model.recentPosts
-      .map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, post.excerpt || post.readTime || ""))
+      .map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, escapeHtml(post.excerpt || post.readTime || "")))
       .join("");
     const linklog = model.links
-      .map((link) => renderFriendlyHubEntry(link.url, link.title, `${link.domain} - ${link.date}`, stripHtml(link.contentHtml)))
+      .map((link) => renderFriendlyHubEntry(link.url, link.title, `${link.domain}, ${link.date}`, stripHtml(link.contentHtml)))
       .join("");
+    if (ctx.currentPage === "/links") {
+      return renderFriendlyHubPage(
+        ctx,
+        `<article class="friendly-hub-intro">
+        <h1>🔗 Links</h1>
+        <div class="friendly-hub-copy"><p>${model.aboutHtml}</p></div>
+        <div class="friendly-hub-list">${linklog}</div>
+      </article>`,
+      );
+    }
     return renderFriendlyHubPage(
       ctx,
       `<article class="friendly-hub-intro">
-        <h1>Ryan Prendergast ▲*▣</h1>
-        <div class="friendly-hub-portrait" aria-hidden="true">RP</div>
+        <h1>Hi, I’m Ryan! ▲✱▣</h1>
         <div class="friendly-hub-copy">${model.introHtml}</div>
-        <h3>About</h3>
-        <div class="friendly-hub-copy">${model.aboutHtml}</div>
-        <h3>Blog</h3>
+        <h3>✍️ Essays</h3>
         <div class="friendly-hub-list">${writing}</div>
-        <h3>Links</h3>
+        <p class="friendly-hub-more"><a href="/blog">All essays →</a></p>
+        <h3>🔗 Links</h3>
+        <div class="friendly-hub-copy"><p>${model.aboutHtml}</p></div>
         <div class="friendly-hub-list">${linklog}</div>
       </article>`,
     );
   }
   if (ctx.family === "games-cabinet") {
-    const works = model.links.map((link, index) => renderGamesCabinetWork(link.url, link.title, `${link.domain} - ${link.date}`, link.contentHtml, link.image, index, true)).join("");
-    const writing = model.recentPosts.map((post, index) => renderGamesCabinetWork(post.href, post.title, post.date, post.excerpt || post.readTime || "", null, index + model.links.length)).join("");
+    const works = model.links.map((link, index) => renderGamesCabinetWork(link.url, link.title, link.date, link.contentHtml, null, index, true)).join("");
+    const writing = model.recentPosts.map((post, index) => renderGamesCabinetWork(post.href, post.title, [post.date, post.readTime].filter(Boolean).join(", "), post.excerpt || "", null, index + model.links.length)).join("");
+    const linksShelf = `<section class="games-cabinet-shelf" aria-labelledby="games-cabinet-links-title">
+        <h2 id="games-cabinet-links-title">${renderGamesCabinetWavyText("Links")}</h2>
+        <p class="games-cabinet-note">${model.aboutHtml}</p>
+        <div class="games-cabinet-list">${works}</div>
+      </section>`;
+    if (ctx.currentPage === "/links") return renderGamesCabinetPage(ctx, linksShelf);
     return renderGamesCabinetPage(
       ctx,
       `<section class="games-cabinet-intro">
-        <h1>${renderGamesCabinetWavyText("Ryan Prendergast")}</h1>
         <div class="games-cabinet-deck">${model.introHtml}</div>
       </section>
       <section class="games-cabinet-shelf" aria-labelledby="games-cabinet-work-title">
-        <h2 id="games-cabinet-work-title">${renderGamesCabinetWavyText("Here's what's here")}</h2>
-        <div class="games-cabinet-list">${works}${writing}</div>
-      </section>`,
+        <h2 id="games-cabinet-work-title">${renderGamesCabinetWavyText("Essays")}</h2>
+        <div class="games-cabinet-list">${writing}</div>
+        <p class="games-cabinet-more"><a href="/blog">all essays</a></p>
+      </section>
+      ${linksShelf}`,
     );
   }
   if (ctx.family === "portal-gallery") {
-    const links = model.links.map((link, index) => renderPortalTile(link.url, link.title, link.domain, link.date, stripHtml(link.contentHtml), index)).join("");
-    const posts = model.recentPosts.map((post, index) => renderPortalTile(post.href, post.title, "Ryan Prendergast", post.date, post.excerpt || post.readTime || "", index + model.links.length)).join("");
+    const links = model.links.map((link, index) => renderPortalTile(link.url, link.title, link.domain, link.date, stripHtml(link.contentHtml), index, true)).join("");
+    const posts = model.recentPosts.map((post, index) => renderPortalTile(post.href, post.title, post.readTime || "essay", post.date, post.excerpt || "", index + 2)).join("");
+    if (ctx.currentPage === "/links") {
+      return renderPortalPage(ctx, `<header class="portal-section-head"><h1>Links</h1><p>${model.aboutHtml}</p></header><section class="portal-gallery-wall" aria-label="Links">${links}</section>`);
+    }
     return renderPortalPage(
       ctx,
       `<header class="portal-landing">
-        <h1>Ryan Prendergast</h1>
         <div class="portal-intro">${model.introHtml}</div>
       </header>
-      <section class="portal-gallery-wall" aria-label="Gallery">${links}${posts}</section>
-      <section class="portal-about">${model.aboutHtml}</section>`,
+      <h2 class="portal-wall-title"><a href="/blog">Essays</a></h2>
+      <section class="portal-gallery-wall" aria-label="Essays">${posts}</section>
+      <h2 class="portal-wall-title"><a href="/links">Links</a></h2>
+      <section class="portal-gallery-wall" aria-label="Links">${links}</section>`,
     );
   }
   if (ctx.family === "design-repository") {
-    const records = [
-      ...model.links.map((link, index) => renderDesignRepositoryRecord(index + 1, link.title, link.url, link.domain, link.date, stripHtml(link.contentHtml), link.image, "Link")),
-      ...model.recentPosts.map((post, index) => renderDesignRepositoryRecord(model.links.length + index + 1, post.title, post.href, "Ryan Prendergast", post.date, post.excerpt || post.readTime || "", null, "Writing")),
-    ].join("");
+    const linkRecords = model.links.map((link, index) => renderDesignRepositoryRecord(index + 1, link.title, link.url, link.domain, link.date, stripHtml(link.contentHtml), null, "Link", true)).join("");
+    const postRecords = model.recentPosts.map((post, index) => renderDesignRepositoryRecord(index + 1, post.title, post.href, post.readTime || "", post.date, post.excerpt || "", null, "Essay")).join("");
+    if (ctx.currentPage === "/links") {
+      return renderDesignRepositoryPage(
+        ctx,
+        `<header class="design-repository-section-head"><h1>Links</h1><p>${model.aboutHtml}</p><span>${model.links.length} records</span></header>
+        <ol class="design-repository-records">${linkRecords}</ol>`,
+      );
+    }
     return renderDesignRepositoryPage(
       ctx,
-      `<header class="design-repository-intro">
-        <h1><a href="/">Ryan Prendergast</a></h1>
-        <div class="design-repository-description">${model.introHtml}</div>
-      </header>
-      ${renderDesignRepositoryAvailability(["always_available", "borrow_only", "stream_only"])}
+      `<h2 class="design-repository-shelf" id="essays"><a href="/blog">§essays</a></h2>
+      <ol class="design-repository-records">${postRecords}</ol>
+      <h2 class="design-repository-shelf" id="links"><a href="/links">§links</a></h2>
       <section class="design-repository-note">${model.aboutHtml}</section>
-      ${renderDesignRepositoryCategoryMenu(["Links", "Writing", "Photos", "Archives", "Guestbook", "Contact"])}
-      <ol class="design-repository-records">${records}</ol>
-      <nav class="design-repository-pages" aria-label="Pages"><span>1 of 1</span><a href="/archives">Next »</a></nav>`,
+      <ol class="design-repository-records">${linkRecords}</ol>`,
+      model.introHtml,
     );
   }
   if (ctx.family === "weblog-facets") {
+    if (ctx.currentPage === "/links") {
+      return renderWeblogFacetsPage(
+        ctx,
+        `<section class="weblog-facets-index">
+          <header class="weblog-facets-section-head"><h1>Links</h1><p>${model.aboutHtml}</p></header>
+          <div class="weblog-facets-main">
+            <section class="weblog-facets-feed" aria-label="Links">${model.links.map((link) => renderWeblogFacetsLink(link)).join("")}</section>
+            ${renderWeblogFacetsSidebar(model.links, [])}
+          </div>
+        </section>`,
+      );
+    }
     const entries = [
       ...model.recentPosts.map((post) => renderWeblogFacetsPost(post)),
       ...model.links.slice(0, 10).map((link) => renderWeblogFacetsLink(link)),
@@ -1857,10 +1905,10 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return renderWeblogFacetsPage(
       ctx,
       `<section class="weblog-facets-home">
-        <div class="weblog-facets-intro">${homeHeader}</div>
+        <div class="weblog-facets-intro">${model.introHtml}</div>
         <div class="weblog-facets-main">
-          <section class="weblog-facets-feed" aria-label="Recent entries">${entries}</section>
-          ${renderWeblogFacetsSidebar(model.links, model.recentPosts)}
+          <section class="weblog-facets-feed" aria-label="Recent entries">${entries}<p class="weblog-facets-more"><a href="/links">All ${model.links.length} links</a> · <a href="/blog">All essays</a></p></section>
+          ${renderWeblogFacetsSidebar(model.links, [])}
         </div>
       </section>`,
     );
@@ -2383,7 +2431,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       const entries = model.postsByYear.flatMap((group) => group.posts.map((post) => renderExperimentalLoopUnit(post.href, post.title, post.readTime || "text", group.year, post.date, post.excerpt || ""))).join("");
       return renderExperimentalLoopPage(ctx, `<header class="experimental-loop-section-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p></header><h2 class="experimental-loop-contents">Contents ↓</h2><div class="experimental-loop-units">${entries}</div>`);
     }
-    return `<section class="writer-ledger">${renderWriterLedgerRecent(model.postsByYear.flatMap((group) => group.posts).slice(0, 3).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" "))}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><p>${escapeHtml(model.description)}</p></section><section class="writer-ledger-work"><h2>Title <span>Medium</span> <span>Year</span> <span>↓</span></h2><div class="writer-ledger-table">${model.postsByYear.flatMap((group) => group.posts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime || "Essay", group.year))).join("")}</div></section></section>`;
+    return `<section class="writer-ledger">${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><h1>Essays</h1><p>${escapeHtml(model.description)}</p></section><section class="writer-ledger-work"><h2><span>Title</span> <span>Medium</span> <span>Date ↓</span></h2><div class="writer-ledger-table">${model.postsByYear.flatMap((group) => group.posts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime ? `Essay, ${post.readTime}` : "Essay", post.date || group.year))).join("")}</div></section></section>`;
   }
   if (ctx.family === "ucoz-archive") {
     return renderUcozPage(
@@ -2421,34 +2469,35 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "design-repository") {
     const records = model.postsByYear
-      .flatMap((group) => group.posts.map((post, index) => renderDesignRepositoryRecord(index + 1, post.title, post.href, group.year, post.date, post.excerpt || post.readTime || "", null, "Writing")))
+      .flatMap((group) => group.posts.map((post, index) => renderDesignRepositoryRecord(index + 1, post.title, post.href, post.readTime || "", post.date || group.year, post.excerpt || "", null, "Essay", false, index === 0 ? `y-${slugify(group.year)}` : "")))
       .join("");
+    const years = model.postsByYear.map((group) => `<a href="#y-${slugify(group.year)}">§${escapeHtml(group.year)}</a>`).join("");
     return renderDesignRepositoryPage(
       ctx,
-      `<header class="design-repository-section-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p><span>${model.totalPosts} records</span></header>${renderDesignRepositoryAvailability(model.postsByYear.map((group) => group.year))}<ol class="design-repository-records">${records}</ol>`,
+      `<header class="design-repository-section-head"><h1>Essays</h1><p>${escapeHtml(model.description)}</p><span>${model.totalPosts} records</span></header><nav class="design-repository-availability" aria-label="Years">${years}</nav><ol class="design-repository-records">${records}</ol>`,
     );
   }
   if (ctx.family === "artist-menu") {
     const works = model.postsByYear
-      .flatMap((group) => group.posts.map((post) => renderArtistMenuWork(post.href, post.title, group.year)))
+      .flatMap((group) => group.posts.map((post) => renderArtistMenuWork(post.href, post.title, post.date || group.year)))
       .join("");
-    return renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Works</h1><p>${escapeHtml(model.description)}</p><div class="works-list">${works}</div></section>`);
+    return renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Essays</h1><p>${escapeHtml(model.description)}</p><div class="works-list">${works}</div></section>`);
   }
   if (ctx.family === "friendly-hub") {
     const groups = model.postsByYear
-      .map((group) => `<section class="friendly-hub-year"><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, post.excerpt || post.readTime || "")).join("")}</section>`)
+      .map((group) => `<section class="friendly-hub-year"><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, escapeHtml(post.excerpt || post.readTime || ""))).join("")}</section>`)
       .join("");
-    return renderFriendlyHubPage(ctx, `<article><h1>Blog</h1><p>${escapeHtml(model.description)}</p>${groups}</article>`);
+    return renderFriendlyHubPage(ctx, `<article><h1>✍️ Essays</h1><p>${escapeHtml(model.description)}</p>${groups}</article>`);
   }
   if (ctx.family === "games-cabinet") {
-    const entries = model.postsByYear.flatMap((group, groupIndex) => group.posts.map((post, postIndex) => renderGamesCabinetWork(post.href, post.title, `${group.year} - ${post.date}`, post.excerpt || post.readTime || "", null, groupIndex + postIndex))).join("");
-    return renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p></section><div class="games-cabinet-list">${entries}</div>`);
+    const entries = model.postsByYear.flatMap((group, groupIndex) => group.posts.map((post, postIndex) => renderGamesCabinetWork(post.href, post.title, [post.date || group.year, post.readTime].filter(Boolean).join(", "), post.excerpt || "", null, groupIndex + postIndex))).join("");
+    return renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>${renderGamesCabinetWavyText("Essays")}</h1><p>${escapeHtml(model.description)}</p></section><div class="games-cabinet-list">${entries}</div>`);
   }
   if (ctx.family === "portal-gallery") {
     const entries = model.postsByYear
-      .flatMap((group, groupIndex) => group.posts.map((post, postIndex) => renderPortalTile(post.href, post.title, group.year, post.date, post.excerpt || post.readTime || "", groupIndex + postIndex)))
+      .flatMap((group, groupIndex) => group.posts.map((post, postIndex) => renderPortalTile(post.href, post.title, post.readTime || "", post.date || group.year, post.excerpt || "", groupIndex + postIndex)))
       .join("");
-    return renderPortalPage(ctx, `<header class="portal-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Gallery"}</h1><p>${escapeHtml(model.description)}</p></header><section class="portal-gallery-wall">${entries}</section>`);
+    return renderPortalPage(ctx, `<header class="portal-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Essays"}</h1><p>${escapeHtml(model.description)}</p></header><section class="portal-gallery-wall">${entries}</section>`);
   }
   if (ctx.family === "research-lab") {
     return renderResearchLabIndex(model, ctx);
@@ -2552,7 +2601,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       return renderWeblogFacetsPage(
         ctx,
         `<section class="weblog-facets-index">
-          <header class="weblog-facets-section-head"><h1>Blog</h1><p>${escapeHtml(model.description)}</p></header>
+          <header class="weblog-facets-section-head"><h1>Essays</h1><p>${escapeHtml(model.description)}</p></header>
           <div class="weblog-facets-main">
             <section class="weblog-facets-feed" aria-label="Posts">${posts.map((post) => renderWeblogFacetsPost(post)).join("")}</section>
             ${renderWeblogFacetsSidebar([], posts)}
@@ -2939,7 +2988,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "writer-ledger") {
-    return `<article class="writer-ledger writer-ledger-article">${renderWriterLedgerRecent(`<a href="${model.backHref}">${escapeHtml(model.backLabel)}</a>`)}${renderWriterLedgerHeader(ctx)}<header class="writer-ledger-article-head"><p>( <a href="${model.backHref}">${escapeHtml(model.backLabel)}</a> )</p><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<time>${meta}</time></header><div class="blog-post-content writer-ledger-copy">${model.contentHtml}</div></article>`;
+    return `<article class="writer-ledger writer-ledger-article">${renderWriterLedgerHeader(ctx)}<header class="writer-ledger-article-head"><p>( <a href="${model.backHref}">${escapeHtml(model.backLabel)}</a> )</p><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<time>${meta}</time></header><div class="blog-post-content writer-ledger-copy">${model.contentHtml}</div></article>`;
   }
   if (ctx.family === "portal-gallery") {
     return renderPortalPage(
@@ -3148,7 +3197,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
         .join("");
       return renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Archive", `${model.totalPosts} entries across ${model.months.length} months.`, "All Recs")}<div class="taste-archive">${cards}</div>`, "Browse");
     }
-    return `<section class="writer-ledger">${renderWriterLedgerRecent(`${model.totalPosts} entries across ${model.months.length} months.`)}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-work"><h2>Title <span>Medium</span> <span>Year</span> <span>↓</span></h2><div class="writer-ledger-table">${model.months.flatMap((month) => month.posts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime || "Entry", month.label))).join("")}</div></section></section>`;
+    return `<section class="writer-ledger">${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><h1>Archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></section><section class="writer-ledger-work"><h2><span>Title</span> <span>Medium</span> <span>Month ↓</span></h2><div class="writer-ledger-table">${model.months.flatMap((month) => month.posts.map((post) => renderWriterLedgerRow(post.title, post.href, post.readTime || "Entry", month.label))).join("")}</div></section></section>`;
   }
   if (ctx.family === "ucoz-archive") {
     return renderUcozPage(
@@ -3170,26 +3219,27 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
   if (ctx.family === "friendly-hub") {
     return renderFriendlyHubPage(
       ctx,
-      `<article><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${model.months.map((month) => `<section class="friendly-hub-year"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, post.readTime || "")).join("")}</section>`).join("")}</article>`,
+      `<article><h1>🗂 Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p>${model.months.map((month) => `<section class="friendly-hub-year"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderFriendlyHubEntry(post.href, post.title, post.date, escapeHtml(post.readTime || ""))).join("")}</section>`).join("")}</article>`,
     );
   }
   if (ctx.family === "games-cabinet") {
-    const entries = model.months.flatMap((month, monthIndex) => month.posts.map((post, postIndex) => renderGamesCabinetWork(post.href, post.title, month.label, post.readTime || post.date, null, monthIndex + postIndex))).join("");
-    return renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></section><div class="games-cabinet-list">${entries}</div>`);
+    const entries = model.months.flatMap((month, monthIndex) => month.posts.map((post, postIndex) => renderGamesCabinetWork(post.href, post.title, [month.label, post.readTime].filter(Boolean).join(", "), "", null, monthIndex + postIndex))).join("");
+    return renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>${renderGamesCabinetWavyText("Archives")}</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></section><div class="games-cabinet-list">${entries}</div>`);
   }
   if (ctx.family === "portal-gallery") {
     const entries = model.months
-      .flatMap((month, monthIndex) => month.posts.map((post, postIndex) => renderPortalTile(post.href, post.title, month.label, post.date, post.readTime || "", monthIndex + postIndex)))
+      .flatMap((month, monthIndex) => month.posts.map((post, postIndex) => renderPortalTile(post.href, post.title, post.readTime || "", post.date || month.label, "", monthIndex + postIndex)))
       .join("");
-    return renderPortalPage(ctx, `<header class="portal-section-head"><h1>Uncovered</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header><section class="portal-gallery-wall">${entries}</section>`);
+    return renderPortalPage(ctx, `<header class="portal-section-head"><h1>Archive</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header><section class="portal-gallery-wall">${entries}</section>`);
   }
   if (ctx.family === "design-repository") {
     const records = model.months
-      .flatMap((month) => month.posts.map((post, index) => renderDesignRepositoryRecord(index + 1, post.title, post.href, month.label, post.date || month.key, post.readTime || "", null, "Archive")))
+      .flatMap((month) => month.posts.map((post, index) => renderDesignRepositoryRecord(index + 1, post.title, post.href, post.readTime || "", post.date || month.label, "", null, "Essay", false, index === 0 ? `m-${slugify(month.key)}` : "")))
       .join("");
+    const months = model.months.map((month) => `<a href="#m-${slugify(month.key)}">§${escapeHtml(month.label)}</a>`).join("");
     return renderDesignRepositoryPage(
       ctx,
-      `<header class="design-repository-section-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header>${renderDesignRepositoryCategoryMenu(model.months.slice(0, 10).map((month) => month.label))}<ol class="design-repository-records">${records}</ol>`,
+      `<header class="design-repository-section-head"><h1>Archives</h1><p>${model.totalPosts} entries across ${model.months.length} months.</p></header><nav class="design-repository-availability" aria-label="Months">${months}</nav><ol class="design-repository-records">${records}</ol>`,
     );
   }
   if (ctx.family === "research-lab") {
@@ -3389,23 +3439,47 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<article class="taste-card"><div class="taste-card-body"><p>No entries yet. Be the first to sign the guestbook!</p></div></article>`;
     return `${renderTasteDirectoryPage(ctx, `${renderTasteSectionHead("Guestbook", `${model.entries.length} entries.`, "All Asks")}<section class="guestbook-header taste-signup">${button}</section><div class="taste-feed">${tasteEntries}</div>`, "Browse")}${guestbookModalScript()}`;
   }
+  if (ctx.family === "writer-ledger") {
+    const ledgerEntries = model.entries.length
+      ? model.entries.map((entry) => `<div class="writer-ledger-row writer-ledger-entry"><span>${escapeHtml(entry.message)}</span><span>${escapeHtml(entry.name)}</span><span>${escapeHtml(entry.date)}</span></div>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `<section class="writer-ledger">${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><h1>Guestbook</h1>${model.canSign ? `<p class="writer-ledger-sign">( ${button} )</p>` : ""}</section><section class="writer-ledger-work"><h2><span>Message</span> <span>From</span> <span>Date ↓</span></h2><div class="writer-ledger-table">${ledgerEntries}</div></section></section>${guestbookModalScript()}`;
+  }
+  if (ctx.family === "friendly-hub") {
+    const hubEntries = model.entries.length
+      ? model.entries.map((entry) => `<p class="friendly-hub-entry friendly-hub-guest"><strong>${escapeHtml(entry.name)}</strong> – ${escapeHtml(entry.message)} <span>${escapeHtml(entry.date)}</span></p>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderFriendlyHubPage(ctx, `<article><h1>📖 Guestbook</h1><p class="friendly-hub-action">${button}</p><div class="friendly-hub-list">${hubEntries}</div></article>`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "design-repository") {
+    const repositoryEntries = model.entries.length
+      ? model.entries.map((entry, index) => renderDesignRepositoryRecord(index + 1, entry.name, "", "", entry.date, entry.message, null, "Guestbook")).join("")
+      : `<li class="design-repository-record"><p class="design-repository-meta"></p><div><p>No entries yet. Be the first to sign the guestbook!</p></div></li>`;
+    return `${renderDesignRepositoryPage(ctx, `<header class="design-repository-section-head"><h1>Guestbook</h1><span>${model.entries.length} records</span>${model.canSign ? `<p class="design-repository-action">${button}</p>` : ""}</header><ol class="design-repository-records">${repositoryEntries}</ol>`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "weblog-facets") {
+    const weblogEntries = model.entries.length
+      ? model.entries.map((entry) => `<article class="weblog-facets-entry weblog-facets-guest"><h2>${escapeHtml(entry.name)}</h2><p class="weblog-facets-date">${escapeHtml(entry.date)}</p><p>${escapeHtml(entry.message)}</p></article>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderWeblogFacetsPage(ctx, `<section class="weblog-facets-index"><header class="weblog-facets-section-head"><h1>Guestbook</h1><p>${model.entries.length} entries.</p>${model.canSign ? `<p class="weblog-facets-action">${button}</p>` : ""}</header><section class="weblog-facets-feed" aria-label="Guestbook entries">${weblogEntries}</section></section>`)}${guestbookModalScript()}`;
+  }
   if (ctx.family === "games-cabinet") {
     const cabinetEntries = model.entries.length
-      ? model.entries.map((entry, index) => renderGamesCabinetWork("/guestbook", entry.name, entry.date, entry.message, null, index)).join("")
-      : renderGamesCabinetWork("/guestbook", "No entries yet. Be the first to sign the guestbook!", "guestbook", "", null, 0);
-    return `${renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>Guestbook</h1><p>${model.entries.length} entries.</p>${button}</section><div class="games-cabinet-list">${cabinetEntries}</div>`)}${guestbookModalScript()}`;
+      ? model.entries.map((entry) => `<article class="games-cabinet-item games-cabinet-guest"><div><h3>${escapeHtml(entry.name)}</h3><div class="games-cabinet-detail">${escapeHtml(entry.message)}</div><ul><li>${escapeHtml(entry.date)}</li></ul></div></article>`).join("")
+      : `<p class="games-cabinet-note">No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderGamesCabinetPage(ctx, `<section class="games-cabinet-page-head"><h1>${renderGamesCabinetWavyText("Guestbook")}</h1><p>${model.entries.length} entries.</p>${button}</section><div class="games-cabinet-list">${cabinetEntries}</div>`)}${guestbookModalScript()}`;
   }
   if (ctx.family === "artist-menu") {
     const artistEntries = model.entries.length
-      ? model.entries.map((entry) => renderArtistMenuWork("#guestbook", entry.name, entry.date)).join("")
-      : renderArtistMenuWork("#guestbook", "No entries yet. Be the first to sign the guestbook!");
-    return `${renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Guestbook</h1><div class="artist-menu-action">${button}</div><div class="works-list">${artistEntries}</div></section>`)}${guestbookModalScript()}`;
+      ? model.entries.map((entry) => `<article class="artist-menu-entry"><p>${escapeHtml(entry.message)}</p><small>${escapeHtml(entry.name)}, ${escapeHtml(entry.date)}</small></article>`).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderArtistMenuPage(ctx, `<section class="artist-menu-works artist-menu-index"><h1>Guestbook</h1><div class="artist-menu-action">${button}</div><div class="artist-menu-entries">${artistEntries}</div></section>`)}${guestbookModalScript()}`;
   }
   if (ctx.family === "portal-gallery") {
     const portalEntries = model.entries.length
-      ? model.entries.map((entry, index) => renderPortalTile("/guestbook", entry.name, entry.date, "guestbook", entry.message, index)).join("")
-      : renderPortalTile("/guestbook", "No entries yet. Be the first to sign the guestbook!", "guestbook", "", "", 0);
-    return `${renderPortalPage(ctx, `<header class="portal-section-head"><h1>Curate Together</h1><p>${model.entries.length} entries.</p>${button}</header><section class="portal-gallery-wall">${portalEntries}</section>`)}${guestbookModalScript()}`;
+      ? model.entries.map((entry, index) => renderPortalTile("", entry.name, entry.date, "", entry.message, index)).join("")
+      : `<p class="portal-empty">No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderPortalPage(ctx, `<header class="portal-section-head"><h1>Guestbook</h1><p>${model.entries.length} entries.</p>${button}</header><section class="portal-gallery-wall">${portalEntries}</section>`)}${guestbookModalScript()}`;
   }
   if (ctx.family === "visual-index") {
     const records = model.entries.length
@@ -4071,23 +4145,22 @@ function renderArtistLedgerGeneric(model: GenericPageModel, ctx: RenderContext):
 }
 
 function renderWriterLedgerRecent(contentHtml: string): string {
-  const line = contentHtml || `<a href="/blog">Ryan Prendergast</a>`;
-  return `<div class="writer-ledger-recent" aria-label="Recently"><p>recently... ${line}</p><p>recently... ${line}</p><p>recently... ${line}</p></div>`;
+  if (!contentHtml) return "";
+  return `<div class="writer-ledger-recent" aria-label="Recently"><p>recently... ${contentHtml}</p></div>`;
 }
 
 function renderWriterLedgerHeader(ctx: RenderContext): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const current = ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage;
+  const active = (href: string) => (current === href ? "is-active" : "");
   const nav = [
     ["/", "home"],
-    ["/blog", "writing"],
-    ["/archives", "archive"],
+    ["/links", "links"],
+    ["/blog", "essays"],
     ["/photos", "photos"],
     ["/guestbook", "guestbook"],
-    ["/contact", "info"],
-    ["/themes", "themes"],
-    ["/rss.xml", "rss"],
+    ["/contact", "contact"],
   ] as Array<[string, string]>;
-  return `<header class="writer-ledger-header"><p><a href="/">Ryan Prendergast</a></p><nav aria-label="Core site areas">( ${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join(" ")} )</nav></header>`;
+  return `<header class="writer-ledger-header"><p class="writer-ledger-name"><a href="/">Ryan Prendergast</a></p><nav aria-label="Site">( ${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join(" ")} )</nav></header>`;
 }
 
 function renderWriterLedgerRow(title: string, href: string, medium: string, year: string): string {
@@ -4095,7 +4168,7 @@ function renderWriterLedgerRow(title: string, href: string, medium: string, year
 }
 
 function renderWriterLedgerGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return `<article class="writer-ledger writer-ledger-page">${renderWriterLedgerRecent(`<a href="/">${escapeHtml(model.heading)}</a>`)}${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><h1>${escapeHtml(model.heading)}</h1><div class="writer-ledger-copy">${model.contentHtml}</div></section></article>`;
+  return `<article class="writer-ledger writer-ledger-page">${renderWriterLedgerHeader(ctx)}<section class="writer-ledger-info"><h1>${escapeHtml(model.heading)}</h1><div class="writer-ledger-copy">${model.contentHtml}</div></section></article>`;
 }
 
 function renderFragmentNav(ctx: RenderContext): string {
@@ -4404,20 +4477,20 @@ function renderForumFrontpageHome(model: HomeModel, ctx: RenderContext): string 
 }
 
 function renderWeblogFacetsPage(ctx: RenderContext, contentHtml: string): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const current = ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage;
+  const active = (href: string) => (current === href ? "is-active" : "");
   const nav = [
-    ["/contact", "About"],
-    ["/rss.xml", "Subscribe"],
-    ["/blog", "TILs"],
-    ["/archives", "Tools"],
+    ["/", "Home"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
     ["/photos", "Photos"],
     ["/guestbook", "Guestbook"],
-    ["/themes", "Themes"],
+    ["/contact", "Contact"],
   ] as Array<[string, string]>;
   return `<section class="weblog-facets">
     <header class="weblog-facets-header">
-      <h1><a href="/">Ryan Prendergast</a></h1>
-      <nav aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>
+      <p class="weblog-facets-title"><a href="/">Ryan Prendergast</a></p>
+      <nav aria-label="Site">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>
     </header>
     ${contentHtml}
   </section>`;
@@ -4552,21 +4625,23 @@ function renderVisualIndexGeneric(model: GenericPageModel, ctx: RenderContext): 
 }
 
 function renderWeblogFacetsSidebar(links: LinkEntryModel[], posts: PostSummaryModel[]): string {
-  const topicCounts = [
-    ["ai", links.filter((link) => /ai|openai|generative|model/i.test(`${link.title} ${link.domain} ${stripHtml(link.contentHtml)}`)).length + 47],
-    ["tools", links.filter((link) => /tool|cli|software|dev|interface|web/i.test(`${link.title} ${link.domain}`)).length + 39],
-    ["links", links.length + 28],
-    ["books", links.filter((link) => /book|essay|review|library/i.test(`${link.title} ${stripHtml(link.contentHtml)}`)).length + 21],
-    ["photos", posts.filter((post) => /photo|raw/i.test(post.title)).length + 14],
-    ["web", links.filter((link) => /web|html|site|internet/i.test(`${link.title} ${link.domain}`)).length + 11],
-  ];
-  return `<aside class="weblog-facets-sidebar" aria-label="Topic facets">
-    <h2>Topics</h2>
-    <div class="weblog-facets-tags">${topicCounts.map(([tag, count]) => `<a href="/blog"><span>${escapeHtml(String(tag))}</span><em>${escapeHtml(String(count))}</em></a>`).join("")}</div>
-    <h2>Utilities</h2>
+  const tally = (values: string[]) => {
+    const counts = new Map<string, number>();
+    values.filter(Boolean).forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+    return Array.from(counts.entries());
+  };
+  const facet = (title: string, href: string, rows: Array<[string, number]>) =>
+    rows.length ? `<h2>${title}</h2><div class="weblog-facets-tags">${rows.map(([tag, count]) => `<a href="${href}"><span>${escapeHtml(tag)}</span><em>${count}</em></a>`).join("")}</div>` : "";
+  const sources = tally(links.map((link) => link.domain)).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const linkYears = tally(links.map((link) => (link.rawDate || link.date).match(/\d{4}/)?.[0] || "")).sort((a, b) => b[0].localeCompare(a[0]));
+  const postYears = tally(posts.map((post) => (post.rawDate || post.date).match(/\d{4}/)?.[0] || "")).sort((a, b) => b[0].localeCompare(a[0]));
+  return `<aside class="weblog-facets-sidebar" aria-label="Facets">
+    ${facet("Essays by year", "/archives", postYears)}
+    ${facet("Links by year", "/links", linkYears)}
+    ${facet("Link sources", "/links", sources)}
+    <h2>Elsewhere</h2>
+    <a href="/archives">Archive</a>
     <a href="/rss.xml">RSS feed</a>
-    <a href="/archives">Archives</a>
-    <a href="/themes">Theme picker</a>
   </aside>`;
 }
 
@@ -4589,7 +4664,6 @@ function renderWeblogFacetsLink(link: LinkEntryModel): string {
 function renderWeblogFacetsGeneric(model: GenericPageModel, ctx: RenderContext): string {
   return `<article class="weblog-facets-article">
     <h1>${escapeHtml(model.heading)}</h1>
-    <p class="weblog-facets-date">${escapeHtml(ctx.currentPage || "/")}</p>
     <div class="blog-post-content weblog-facets-copy">${model.contentHtml}</div>
   </article>`;
 }
@@ -4725,32 +4799,26 @@ function renderPostSummary(post: PostSummaryModel, index: number, ctx: RenderCon
 }
 
 function renderArtistMenuNav(ctx: RenderContext, className = "artist-menu-nav"): string {
-  const item = (href: string, label: string) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`;
-  return `<nav class="${className}" aria-label="Core site areas">
-    ${item("/", "Projects & Collaborations")}
-    ${item("/blog", "Publications")}
-    ${item("/archives", "Works")}
+  const current = ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage;
+  const item = (href: string, label: string) => `<a class="${current === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`;
+  return `<nav class="${className}" aria-label="Site">
+    ${item("/", "Home")}
+    ${item("/links", "Links")}
+    ${item("/blog", "Essays")}
     ${item("/photos", "Photos")}
     ${item("/guestbook", "Guestbook")}
-    ${item("/contact", "About")}
-    ${item("/themes", "Themes")}
+    ${item("/contact", "Contact")}
   </nav>`;
 }
 
 function renderArtistMenuPage(ctx: RenderContext, contentHtml: string): string {
   return `<section class="artist-menu">
-    <input class="artist-menu-toggle" id="artist-menu-toggle" type="checkbox" aria-hidden="true">
-    <label class="artist-menu-open" for="artist-menu-toggle">Menu</label>
-    <aside class="artist-menu-overlay" aria-label="Menu">
-      <div class="artist-menu-overlay-head">
-        <a href="/">Ryan Prendergast</a>
-        <label for="artist-menu-toggle">Close</label>
-      </div>
+    <input class="artist-menu-toggle" id="artist-menu-toggle" type="checkbox" aria-label="Menu">
+    <header class="artist-menu-head">
+      <a class="artist-menu-name" href="/">Ryan Prendergast</a>
+      <label class="artist-menu-open" for="artist-menu-toggle"><span class="artist-menu-open-label">Menu</span><span class="artist-menu-close-label">Close</span></label>
       ${renderArtistMenuNav(ctx)}
-      <h2>Works</h2>
-      ${renderArtistMenuNav(ctx, "artist-menu-work-nav")}
-      <div class="artist-menu-legal"><a href="/rss.xml">RSS</a><a href="/contact">Contact</a></div>
-    </aside>
+    </header>
     ${contentHtml}
   </section>`;
 }
@@ -4764,31 +4832,30 @@ function renderArtistMenuGeneric(model: GenericPageModel, ctx: RenderContext): s
 }
 
 function renderFriendlyHubNav(ctx: RenderContext): string {
+  const current = ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage;
   const links = [
-    ["/", "Home ▲*▣"],
-    ["/blog", "Blog"],
-    ["/photos", "Photos"],
-    ["/archives", "archives"],
-    ["/contact", "Contact"],
-    ["/guestbook", "Guestbook"],
-    ["/themes", "Themes"],
+    ["/", "🏠 home"],
+    ["/links", "🔗 links"],
+    ["/blog", "✍️ essays"],
+    ["/photos", "📷 photos"],
+    ["/guestbook", "📖 guestbook"],
+    ["/contact", "📧 contact"],
   ] as Array<[string, string]>;
-  return `<nav class="friendly-hub-menu" aria-label="Core site areas"><span>Menu</span><ul>${links.map(([href, label]) => `<li><a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a></li>`).join("")}<li><a href="/rss.xml">RSS</a></li></ul></nav>`;
+  return `<nav class="friendly-hub-menu" aria-label="Site"><ul>${links.map(([href, label]) => `<li><a class="${current === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ul></nav>`;
 }
 
 function renderFriendlyHubPage(ctx: RenderContext, contentHtml: string): string {
   return `<section class="friendly-hub">
     <header class="friendly-hub-site-head">
       <h2><a href="/">Ryan Prendergast</a></h2>
-      <p>${escapeHtml(ctx.theme.name)}</p>
     </header>
     ${renderFriendlyHubNav(ctx)}
     ${contentHtml}
   </section>`;
 }
 
-function renderFriendlyHubEntry(href: string, title: string, meta: string, detail = ""): string {
-  return `<p class="friendly-hub-entry"><a href="${href}">${escapeHtml(title)}</a>${meta ? ` <span>${escapeHtml(meta)}</span>` : ""}${detail ? ` - ${escapeHtml(detail)}` : ""}</p>`;
+function renderFriendlyHubEntry(href: string, title: string, meta: string, detailHtml = ""): string {
+  return `<p class="friendly-hub-entry"><a href="${href}">${escapeHtml(title)}</a>${detailHtml ? ` – ${detailHtml}` : ""}${meta ? ` <span>${escapeHtml(meta)}</span>` : ""}</p>`;
 }
 
 function renderFriendlyHubGeneric(model: GenericPageModel, ctx: RenderContext): string {
@@ -4796,20 +4863,19 @@ function renderFriendlyHubGeneric(model: GenericPageModel, ctx: RenderContext): 
 }
 
 function renderGamesCabinetNav(ctx: RenderContext): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const current = ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage;
+  const active = (href: string) => (current === href ? "is-active" : "");
   const nav = [
-    ["/photos", "media & photos"],
-    ["/blog", "blog & all work"],
-    ["/contact", "what's my deal"],
-    ["/archives", "archive"],
+    ["/", "home"],
+    ["/links", "links"],
+    ["/blog", "essays"],
+    ["/photos", "photos"],
     ["/guestbook", "guestbook"],
-    ["/themes", "themes"],
+    ["/contact", "contact"],
   ] as const;
   return `<header class="games-cabinet-header">
-    <div class="games-cabinet-controls" aria-hidden="true"><span>Meta Controls</span><span>Controls</span></div>
     <a class="games-cabinet-brand" href="/">Ryan Prendergast</a>
-    <p>by Ryan Prendergast</p>
-    <nav aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}<a href="/rss.xml">rss</a></nav>
+    <nav aria-label="Site">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>
   </header>`;
 }
 
@@ -4825,16 +4891,18 @@ function renderGamesCabinetWavyText(text: string): string {
 }
 
 function renderGamesCabinetWork(href: string, title: string, meta: string, detail: string, image: string | null, index: number, detailIsHtml = false): string {
-  const thumbnail = image ? `<img src="${escapeHtml(image)}" alt="">` : `<span>${String(index + 1).padStart(2, "0")}</span>`;
+  const thumbnail = image ? `<a class="games-cabinet-thumb" href="${href}" aria-hidden="true" tabindex="-1"><img src="${escapeHtml(image)}" alt="" loading="lazy"></a>` : "";
   const detailHtml = detailIsHtml ? detail : escapeHtml(detail);
-  return `<article class="games-cabinet-item">
-    <a class="games-cabinet-thumb" href="${href}" aria-label="${escapeHtml(title)}">${thumbnail}</a>
+  const external = /^https?:/.test(href);
+  const linkLabel = external ? href.replace(/^https?:\/\/(www\.)?/, "").replace(/\/.*$/, "") : "Read";
+  return `<article class="games-cabinet-item${image ? " has-thumb" : ""}">
+    ${thumbnail}
     <div>
       <h3><a href="${href}">${escapeHtml(title)}</a></h3>
       ${detail ? `<div class="games-cabinet-detail">${detailHtml}</div>` : ""}
       <ul>
-        <li><a href="${href}">Site</a></li>
-        <li>${escapeHtml(meta)}</li>
+        <li><a href="${href}">${escapeHtml(linkLabel)}</a></li>
+        ${meta ? `<li>${escapeHtml(meta)}</li>` : ""}
       </ul>
     </div>
   </article>`;
@@ -4845,27 +4913,29 @@ function renderGamesCabinetGeneric(model: GenericPageModel, ctx: RenderContext):
 }
 
 function renderPortalNav(ctx: RenderContext): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const current = ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage;
+  const active = (href: string) => (current === href ? "is-active" : "");
   const links = [
-    ["/", "gallery"],
-    ["/archives", "uncovered"],
-    ["/guestbook", "curate together"],
-    ["/blog", "writing"],
+    ["/", "home"],
+    ["/links", "links"],
+    ["/blog", "essays"],
     ["/photos", "photos"],
-    ["/contact", "about"],
-    ["/themes", "themes"],
+    ["/guestbook", "guestbook"],
+    ["/contact", "contact"],
   ] as Array<[string, string]>;
-  return `<nav class="portal-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}<a href="/rss.xml">rss</a></nav>`;
+  return `<header class="portal-head"><a class="portal-brand" href="/">Ryan Prendergast</a><nav class="portal-nav" aria-label="Site">${links.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav></header>`;
 }
 
 function renderPortalPage(ctx: RenderContext, contentHtml: string): string {
-  return `<section class="portal-gallery">${renderPortalNav(ctx)}${contentHtml}<footer class="portal-footer"><a href="/contact">Contact</a><span>·</span><a href="/rss.xml">RSS</a></footer></section>`;
+  return `<section class="portal-gallery">${renderPortalNav(ctx)}${contentHtml}</section>`;
 }
 
-function renderPortalTile(href: string, title: string, meta: string, date: string, detail: string, index: number): string {
+function renderPortalTile(href: string, title: string, meta: string, date: string, detail: string, index: number, detailIsHtml = false): string {
   const tone = ["sage", "rose", "sky", "paper", "moss", "clay"][index % 6];
-  const safeDetail = detail ? `<p>${escapeHtml(detail)}</p>` : "";
-  return `<article class="portal-tile portal-tone-${tone}"><a href="${href}"><span>${escapeHtml(meta)}</span><strong>${escapeHtml(title)}</strong><em>${escapeHtml(date)}</em>${safeDetail}</a></article>`;
+  const safeDetail = detail ? `<p>${detailIsHtml ? detail : escapeHtml(detail)}</p>` : "";
+  const metaLine = [meta, date].filter(Boolean).map((part) => escapeHtml(part)).join(" · ");
+  const inner = `<strong>${escapeHtml(title)}</strong>${safeDetail}${metaLine ? `<span>${metaLine}</span>` : ""}`;
+  return `<article class="portal-tile portal-tone-${tone}">${href ? `<a href="${href}">${inner}</a>` : `<div>${inner}</div>`}</article>`;
 }
 
 function renderPortalGeneric(model: GenericPageModel, ctx: RenderContext): string {
@@ -4873,44 +4943,39 @@ function renderPortalGeneric(model: GenericPageModel, ctx: RenderContext): strin
 }
 
 function renderDesignRepositoryNav(ctx: RenderContext): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
+  const current = ctx.currentPage.startsWith("/photos") ? "/photos" : ctx.currentPage.startsWith("/blog") ? "/blog" : ctx.currentPage;
+  const active = (href: string) => (current === href ? "is-active" : "");
   const items = [
     ["/", "Home"],
-    ["/blog", "Blog"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
     ["/photos", "Photos"],
-    ["/archives", "Archives"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
-    ["/themes", "Themes"],
-    ["/rss.xml", "RSS"],
   ] as Array<[string, string]>;
-  return `<nav class="design-repository-core" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+  return `<nav class="design-repository-categories" aria-label="Site">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("<span>::</span>")}</nav>`;
 }
 
-function renderDesignRepositoryPage(ctx: RenderContext, contentHtml: string): string {
-  return `<section class="design-repository">${renderDesignRepositoryNav(ctx)}${contentHtml}</section>`;
+function renderDesignRepositoryPage(ctx: RenderContext, contentHtml: string, descriptionHtml = ""): string {
+  return `<section class="design-repository">
+    <header class="design-repository-intro${descriptionHtml ? " is-home" : ""}">
+      <p class="design-repository-name"><a href="/">Ryan Prendergast</a></p>
+      ${descriptionHtml ? `<div class="design-repository-description">${descriptionHtml}</div>` : ""}
+    </header>
+    ${renderDesignRepositoryNav(ctx)}
+    ${contentHtml}
+  </section>`;
 }
 
-function renderDesignRepositoryAvailability(labels: string[]): string {
-  const safeLabels = labels.length ? labels : ["always_available", "borrow_only", "stream_only"];
-  return `<nav class="design-repository-availability" aria-label="Availability filters">${safeLabels.map((label, index) => `<a class="${index === 0 ? "is-active" : ""}" href="#">§${escapeHtml(slugify(label).replace(/-/g, "_"))}</a>`).join("")}</nav>`;
-}
-
-function renderDesignRepositoryCategoryMenu(labels: string[]): string {
-  const unique = Array.from(new Set(labels.filter(Boolean)));
-  return `<nav class="design-repository-categories" aria-label="Repository categories">${unique.map((label) => `<a href="#">${escapeHtml(label)}</a>`).join("<span>::</span>")}</nav>`;
-}
-
-function renderDesignRepositoryRecord(index: number, title: string, href: string, source: string, date: string, detail: string, image: string | null, kind: string): string {
-  const thumbnail = image ? `<img src="${image}" alt="" loading="lazy">` : `<span>${escapeHtml(title.slice(0, 1) || "R")}</span>`;
-  const description = detail ? `<p>${escapeHtml(detail)}</p>` : "";
-  return `<li class="design-repository-record">
-    <a class="design-repository-thumb" href="${href}">${thumbnail}</a>
+function renderDesignRepositoryRecord(index: number, title: string, href: string, source: string, date: string, detail: string, image: string | null, kind: string, detailIsHtml = false, id = ""): string {
+  const description = detail ? `<p>${detailIsHtml ? detail : escapeHtml(detail)}</p>` : "";
+  const meta = [date, source, kind].filter(Boolean).map((part) => escapeHtml(part)).join(" :: ");
+  const heading = href ? `<a href="${href}">${escapeHtml(title)}</a>` : escapeHtml(title);
+  return `<li class="design-repository-record"${id ? ` id="${escapeHtml(id)}"` : ""}>
+    <p class="design-repository-meta">${meta}</p>
     <div>
-      <h2><a href="${href}">${escapeHtml(title)}</a></h2>
-      <p class="design-repository-meta">${escapeHtml(date)} :: ${escapeHtml(source)} :: ${escapeHtml(kind)}</p>
+      <h2>${heading}</h2>
       ${description}
-      <p class="design-repository-language">Language: English</p>
     </div>
   </li>`;
 }
@@ -4919,7 +4984,7 @@ function renderDesignRepositoryGeneric(model: GenericPageModel, ctx: RenderConte
   return renderDesignRepositoryPage(
     ctx,
     `<article class="design-repository-article">
-      <header><h1>${escapeHtml(model.heading)}</h1><p>${escapeHtml(ctx.currentPage || "/")} :: Ryan Prendergast</p></header>
+      <header><h1>${escapeHtml(model.heading)}</h1></header>
       <div class="design-repository-copy">${model.contentHtml}</div>
     </article>`,
   );
