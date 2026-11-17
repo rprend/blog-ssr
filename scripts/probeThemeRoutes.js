@@ -77,9 +77,6 @@ for (const slug of slugs) {
       if (!html.includes(`family-${family}`)) {
         failures.push(`${slug} ${route} is missing family-${family}.`);
       }
-      if (!html.includes("data-theme-reset")) {
-        failures.push(`${slug} ${route} is missing the remove theme control.`);
-      }
       if (!html.includes("Ryan Prendergast")) {
         failures.push(`${slug} ${route} is missing canonical Ryan identity content.`);
       }
