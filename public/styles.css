@@ -13624,6 +13624,542 @@ body {
   font: 14px Georgia, "Times New Roman", Times, serif;
 }
 
+/* --- theme repairs: now-directory, conversational-minimal, founder-index, grant-page --- */
+body.site-shell.theme-layout.family-now-directory,
+body.site-shell.theme-layout.family-conversational-minimal,
+body.site-shell.theme-layout.family-founder-index,
+body.site-shell.theme-layout.family-grant-page {
+  background: #fff;
+  color: #111;
+  overflow-x: hidden;
+}
+
+.family-now-directory .homepage-intro,
+.family-conversational-minimal .homepage-intro,
+.family-founder-index .homepage-intro,
+.family-grant-page .homepage-intro {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.family-now-directory .raw-canvas,
+.family-conversational-minimal .raw-canvas,
+.family-founder-index .raw-canvas,
+.family-grant-page .raw-canvas {
+  min-height: 0;
+  overflow: visible;
+  background: none;
+}
+
+.family-now-directory .raw-canvas::after,
+.family-conversational-minimal .raw-canvas::after,
+.family-founder-index .raw-canvas::after,
+.family-grant-page .raw-canvas::after,
+.family-now-directory .raw-title,
+.family-conversational-minimal .raw-title,
+.family-founder-index .raw-title,
+.family-grant-page .raw-title,
+.family-now-directory .raw-back,
+.family-conversational-minimal .raw-back,
+.family-founder-index .raw-back,
+.family-grant-page .raw-back {
+  display: none;
+}
+
+.family-now-directory .raw-canvas .raw-photo,
+.family-conversational-minimal .raw-canvas .raw-photo,
+.family-founder-index .raw-canvas .raw-photo,
+.family-grant-page .raw-canvas .raw-photo {
+  position: static;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  height: auto;
+  margin: 0 0 1.2em;
+  transform: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.family-now-directory .nav-list,
+.family-conversational-minimal .nav-list,
+.family-founder-index .nav-list,
+.family-grant-page .nav-list {
+  display: block;
+  margin: 0 0 1em;
+  padding: 0 0 0 1.4em;
+  list-style: disc;
+}
+
+.family-now-directory .nav-list li,
+.family-conversational-minimal .nav-list li,
+.family-founder-index .nav-list li,
+.family-grant-page .nav-list li {
+  display: list-item;
+  margin: 0 0 .3em;
+  font: inherit;
+}
+
+.family-now-directory .sidebar-header,
+.family-conversational-minimal .sidebar-header,
+.family-founder-index .sidebar-header,
+.family-grant-page .sidebar-header {
+  font-family: inherit;
+  font-weight: 700;
+  color: inherit;
+}
+
+.family-now-directory .blog-post-content,
+.family-conversational-minimal .blog-post-content,
+.family-founder-index .blog-post-content,
+.family-grant-page .blog-post-content {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* now-directory */
+body.site-shell.theme-layout.family-now-directory {
+  padding: 0 16px 96px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.family-now-directory .theme-shell-frame {
+  margin: 0 auto;
+}
+
+.family-now-directory .now-directory header {
+  margin-bottom: 2.5em;
+  padding-top: .75em;
+}
+
+body.site-shell.theme-layout.family-now-directory .now-directory h1 a,
+body.site-shell.theme-layout.family-now-directory .now-directory h1 a:visited,
+body.site-shell.theme-layout.family-now-directory .now-directory-nav a,
+body.site-shell.theme-layout.family-now-directory .now-directory-nav a:visited {
+  color: #900;
+}
+
+.family-now-directory .now-directory h1 a {
+  text-decoration: none;
+}
+
+.family-now-directory .now-directory-nav {
+  margin: 0;
+  font-size: 1em;
+}
+
+.family-now-directory .now-directory-nav a {
+  margin-right: .7em;
+  white-space: nowrap;
+}
+
+body.site-shell.theme-layout.family-now-directory .now-directory article a {
+  color: #00e;
+}
+
+body.site-shell.theme-layout.family-now-directory .now-directory article a:visited {
+  color: #551a8b;
+}
+
+.family-now-directory .now-directory article > h2:first-child,
+.family-now-directory .now-directory article > p:first-child + h2 {
+  margin-top: 0;
+  font-size: 2em;
+}
+
+.family-now-directory .now-directory-lead {
+  margin: 0 0 2.5em;
+}
+
+.family-now-directory .now-directory-lead p {
+  font-size: 1.25em;
+}
+
+.family-now-directory .now-directory li h3 {
+  font-size: 1.1em;
+}
+
+.family-now-directory .now-directory small {
+  color: #555;
+  font-size: 14px;
+}
+
+.family-now-directory .now-directory li > div p {
+  margin: 0;
+  font-size: 1em;
+}
+
+.family-now-directory .now-directory .blog-post-content {
+  margin-top: 1.5em;
+}
+
+.family-now-directory .now-directory .blog-post-content ul,
+.family-now-directory .now-directory .blog-post-content ol,
+.family-now-directory .now-directory .nav-list {
+  margin: 0 0 1em;
+  padding-left: 1.5em;
+  list-style: disc;
+}
+
+.family-now-directory .now-directory .blog-post-content ol {
+  list-style: decimal;
+}
+
+.family-now-directory .now-directory .blog-post-content li,
+.family-now-directory .now-directory .nav-list li {
+  margin-bottom: .35em;
+  font-family: Georgia, serif;
+  font-size: 1.1em;
+}
+
+.family-now-directory .now-directory .blog-post-content li li,
+.family-now-directory .now-directory .blog-post-content li p {
+  font-size: 1em;
+}
+
+.family-now-directory .now-directory .blog-post-content h2,
+.family-now-directory .now-directory .blog-post-content h3,
+.family-now-directory .now-directory .sidebar-header {
+  margin: 1.6em 0 .6em;
+  color: #900;
+  font-family: inherit;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.family-now-directory .now-directory img {
+  max-width: 100%;
+  height: auto;
+}
+
+body.site-shell.theme-layout.family-now-directory .now-directory button {
+  padding: 7px 16px;
+  border: 1px solid #900;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: none;
+  color: #900;
+  font: 600 15px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.family-now-directory .now-directory-guestbook li {
+  margin-bottom: 1.5em;
+}
+
+.family-now-directory .now-directory-guestbook li p {
+  margin: 0;
+}
+
+/* conversational-minimal */
+body.site-shell.theme-layout.family-conversational-minimal {
+  padding: 0 0 96px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+  line-height: 1.48;
+}
+
+.family-conversational-minimal .conversational-minimal-site-head {
+  margin: .5em 0 2em;
+  text-align: center;
+}
+
+.family-conversational-minimal .conversational-minimal-site-head h1 {
+  margin-bottom: .15em;
+  font-size: 2.1em;
+}
+
+body.site-shell.theme-layout.family-conversational-minimal .conversational-minimal-site-head h1 a,
+body.site-shell.theme-layout.family-conversational-minimal .conversational-minimal-site-head h1 a:visited {
+  color: #111;
+  text-decoration: none;
+}
+
+.family-conversational-minimal .conversational-minimal-nav {
+  margin: 0;
+}
+
+.family-conversational-minimal .conversational-minimal-nav a {
+  margin: 0 .3em;
+  white-space: nowrap;
+}
+
+.family-conversational-minimal .conversational-minimal > section:first-of-type > h2:first-child,
+.family-conversational-minimal .conversational-minimal > h2:first-of-type,
+.family-conversational-minimal .conversational-minimal > article > h2 {
+  margin-top: .6em;
+}
+
+.family-conversational-minimal .conversational-minimal .blog-post-content {
+  margin-top: 1em;
+}
+
+body.site-shell.theme-layout.family-conversational-minimal .conversational-minimal .blog-post-content h2,
+body.site-shell.theme-layout.family-conversational-minimal .conversational-minimal .blog-post-content h3,
+.family-conversational-minimal .conversational-minimal .sidebar-header {
+  margin: 1.3em 0 .5em;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 1.15em;
+  font-weight: 700;
+}
+
+.family-conversational-minimal .conversational-minimal-projects dt span {
+  margin-left: .25em;
+}
+
+body.site-shell.theme-layout.family-conversational-minimal .conversational-minimal button {
+  padding: 6px 14px;
+  border: 1px solid #888;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  color: #111;
+  font: 16px Georgia, "Times New Roman", Times, serif;
+}
+
+.family-conversational-minimal .conversational-minimal-guestbook li p {
+  margin: .15em 0 .8em;
+}
+
+/* founder-index */
+body.site-shell.theme-layout.family-founder-index {
+  padding: 0 0 96px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 16px;
+  line-height: 1.42;
+}
+
+.family-founder-index .theme-shell-frame {
+  max-width: 940px;
+}
+
+.family-founder-index .founder-index {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+  max-width: none;
+}
+
+.family-founder-index .founder-index-site-head {
+  margin: 0;
+}
+
+.family-founder-index .founder-index-site-head h1 {
+  margin-bottom: 14px;
+}
+
+body.site-shell.theme-layout.family-founder-index .founder-index-site-head h1 a,
+body.site-shell.theme-layout.family-founder-index .founder-index-site-head h1 a:visited {
+  color: #111;
+  text-decoration: none;
+}
+
+.family-founder-index .founder-index-nav a {
+  display: block;
+  margin: 0;
+}
+
+.family-founder-index .founder-index-columns {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 36px;
+}
+
+.family-founder-index .founder-index-columns h2 {
+  margin-top: 0;
+}
+
+.family-founder-index .founder-index-intro {
+  margin-bottom: 28px;
+}
+
+.family-founder-index .founder-index small {
+  white-space: normal;
+}
+
+.family-founder-index .founder-index-copy,
+.family-founder-index .founder-index .blog-post-content {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+body.site-shell.theme-layout.family-founder-index .founder-index .blog-post-content h2,
+body.site-shell.theme-layout.family-founder-index .founder-index .blog-post-content h3,
+.family-founder-index .founder-index .sidebar-header {
+  margin: 22px 0 8px;
+  font: 700 16px/1.2 Georgia, "Times New Roman", Times, serif;
+}
+
+.family-founder-index .founder-index-article > p:first-child {
+  margin-bottom: 18px;
+}
+
+.family-founder-index .founder-index-article > p:first-child + h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+body.site-shell.theme-layout.family-founder-index .founder-index button {
+  padding: 4px 12px;
+  border: 1px solid #888;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  color: #111;
+  font: 14px Georgia, "Times New Roman", Times, serif;
+}
+
+@media (max-width: 760px) {
+  .family-founder-index .founder-index {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .family-founder-index .founder-index-site-head h1 {
+    margin-bottom: 6px;
+  }
+
+  .family-founder-index .founder-index-nav a {
+    display: inline;
+    margin-right: 10px;
+  }
+
+  .family-founder-index .founder-index-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .family-founder-index .founder-index-columns h2 {
+    margin-top: 14px;
+  }
+}
+
+body.site-shell.theme-layout.family-conversational-minimal .conversational-minimal-nav a[aria-current="page"],
+body.site-shell.theme-layout.family-founder-index .founder-index-nav a[aria-current="page"] {
+  color: #111;
+}
+
+.family-founder-index .founder-index-article > h2:first-child {
+  font-size: 20px;
+}
+
+body.site-shell.theme-layout.family-grant-page .grant-page a,
+body.site-shell.theme-layout.family-grant-page .grant-page a:visited {
+  color: #1653ff;
+}
+
+/* grant-page */
+body.site-shell.theme-layout.family-grant-page {
+  padding: 0 0 96px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+  line-height: 1.42;
+}
+
+.family-grant-page .theme-shell-frame {
+  margin-bottom: 0;
+}
+
+body.site-shell.theme-layout.family-grant-page .grant-site-head h1 a,
+body.site-shell.theme-layout.family-grant-page .grant-site-head h1 a:visited {
+  color: #1653ff;
+  text-decoration: none;
+}
+
+.family-grant-page .grant-site-head {
+  padding: 30px 0 26px;
+}
+
+.family-grant-page .grant-site-head h1 {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: clamp(30px, 6vw, 48px);
+}
+
+.family-grant-page .grant-site-head.is-hero {
+  padding: 48px 0 6px;
+}
+
+.family-grant-page .grant-site-head.is-hero h1 {
+  margin: 0 auto 28px;
+  font-size: clamp(36px, 12.5vw, 142px);
+  line-height: .88;
+}
+
+.family-grant-page .grant-hero {
+  max-width: 720px;
+  margin: 0 auto 22px;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.family-grant-page .grant-hero p {
+  margin: 0;
+}
+
+.family-grant-page .grant-nav {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.family-grant-page .grant-nav a {
+  margin: 0 .4em;
+  white-space: nowrap;
+}
+
+.family-grant-page .grant-section > p {
+  margin-bottom: 12px;
+}
+
+.family-grant-page .grant-copy,
+.family-grant-page .grant-page .blog-post-content {
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+body.site-shell.theme-layout.family-grant-page .grant-page .blog-post-content h2,
+body.site-shell.theme-layout.family-grant-page .grant-page .blog-post-content h3,
+.family-grant-page .grant-page .sidebar-header {
+  margin: 24px 0 10px;
+  color: #1653ff;
+  font: 700 22px/1.15 Georgia, "Times New Roman", Times, serif;
+}
+
+.family-grant-page .grant-article small {
+  color: #555;
+  font-size: 15px;
+}
+
+.family-grant-page .grant-page img {
+  max-width: 100%;
+  height: auto;
+}
+
+body.site-shell.theme-layout.family-grant-page .grant-page button {
+  padding: 6px 16px;
+  border: 1px solid #1653ff;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  color: #1653ff;
+  font: 700 16px Georgia, "Times New Roman", Times, serif;
+}
+
+@media (max-width: 640px) {
+  .family-grant-page .grant-hero {
+    font-size: 17px;
+  }
+
+  .family-grant-page .grant-site-head.is-hero {
+    padding-top: 32px;
+  }
+}
+
 @media (max-width: 640px) {
   .family-grant-page .theme-shell-frame {
     width: min(100% - 24px, 940px);

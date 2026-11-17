@@ -2167,81 +2167,89 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "now-directory") {
+    const isLinks = ctx.currentPage === "/links";
+    const linkList = `<ul>${model.links.map((link) => `<li><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><small>${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</small><div>${link.contentHtml}</div></li>`).join("")}</ul>`;
+    if (isLinks) {
+      return renderNowDirectoryPage(ctx, `<article><h2>Links</h2><p>${model.aboutHtml}</p>${linkList}</article>`);
+    }
     return renderNowDirectoryPage(
       ctx,
       `<article>
-        ${homeHeader}
-        <h2>Links</h2>
-        <ul>${model.links.map((link) => `<li><h3><a href="${link.url}">${escapeHtml(link.title)}</a></h3><small>${escapeHtml(link.domain)} / ${escapeHtml(link.date)}</small><div>${link.contentHtml}</div></li>`).join("")}</ul>
+        <div class="now-directory-lead">${model.introHtml}</div>
         <h2>Recent Essays</h2>
         <ul>${model.recentPosts.map((post) => `<li><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>
+        <p><a href="/blog">All essays</a></p>
+        <h2>Links</h2>
+        ${linkList}
       </article>`,
     );
   }
   if (ctx.family === "conversational-minimal") {
+    const isLinks = ctx.currentPage === "/links";
+    const linkList = `<dl class="conversational-minimal-projects">${model.links.map((link) => `<dt><a href="${link.url}">${escapeHtml(link.title)}</a> <span>${escapeHtml(link.domain)}</span></dt><dd>${link.contentHtml}</dd>`).join("")}</dl>`;
+    if (isLinks) {
+      return renderConversationalMinimalPage(ctx, `<section><h2>links</h2><p>${model.aboutHtml}</p>${linkList}</section>`);
+    }
     return renderConversationalMinimalPage(
       ctx,
-      `<header class="conversational-minimal-home">
-        ${homeHeader}
-      </header>
-      <section>
+      `<section>
         <h2>me in 10 seconds</h2>
-        <div class="conversational-minimal-copy">${model.introHtml}${model.aboutHtml}</div>
+        <div class="conversational-minimal-copy">${model.introHtml}</div>
       </section>
       <section>
-        <h2><a href="/blog">newest articles</a></h2>
+        <h2>newest articles</h2>
         <ul class="conversational-minimal-list">${model.recentPosts.map((post) => `<li>${post.date ? `<time>${escapeHtml(post.date)}</time> ` : ""}<a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>
         <p>... and <a href="/blog">more here</a>.</p>
       </section>
       <section>
-        <h2>projects</h2>
-        <dl class="conversational-minimal-projects">${model.links.map((link) => `<dt><a href="${link.url}">${escapeHtml(link.title)}</a></dt><dd><span>${escapeHtml(link.domain)}</span>${link.contentHtml}</dd>`).join("")}</dl>
+        <h2>links</h2>
+        <p>${model.aboutHtml}</p>
+        ${linkList}
       </section>`,
     );
   }
   if (ctx.family === "founder-index") {
+    const isLinks = ctx.currentPage === "/links";
+    const linkList = `<ul>${model.links.map((link) => renderFounderIndexLink(link)).join("")}</ul>`;
+    if (isLinks) {
+      return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2>Links</h2><p>${model.aboutHtml}</p>${linkList}</article>`);
+    }
     return renderFounderIndexPage(
       ctx,
       `<section class="founder-index-home">
         <div class="founder-index-intro">${model.introHtml}</div>
         <div class="founder-index-columns">
           <section>
-            <h2><a href="/blog">Blog</a></h2>
+            <h2><a href="/blog">Essays</a></h2>
             <ul>${model.recentPosts.map((post) => renderFounderIndexPost(post)).join("")}</ul>
           </section>
           <section>
-            <h2><a href="/">Links</a></h2>
-            <ul>${model.links.map((link) => renderFounderIndexLink(link)).join("")}</ul>
-          </section>
-          <section>
-            <h2><a href="/contact">About</a></h2>
-            <div class="founder-index-copy">${model.aboutHtml}</div>
+            <h2><a href="/links">Links</a></h2>
+            ${linkList}
           </section>
         </div>
       </section>`,
     );
   }
   if (ctx.family === "grant-page") {
+    const isLinks = ctx.currentPage === "/links";
+    const linkSection = `<section class="grant-section">
+        <h2>Links</h2>
+        ${isLinks ? `<p>${model.aboutHtml}</p>` : ""}
+        <ul>${model.links.map((link) => renderGrantLinkItem(link)).join("")}</ul>
+      </section>`;
+    if (isLinks) {
+      return renderGrantPage(ctx, linkSection);
+    }
     return renderGrantPage(
       ctx,
-      `<section class="grant-hero">
-        ${homeHeader}
-        <ul class="grant-hero-list">
-          <li><strong><a href="/contact">Contact Ryan Prendergast</a></strong></li>
-          <li><a href="/blog">Recent essays</a> and <a href="/archives">archives</a></li>
-          <li><a href="/themes">Theme index</a>, <a href="/photos">photos</a>, and <a href="/rss.xml">RSS</a></li>
-        </ul>
-      </section>
-      ${renderGrantRule()}
-      <section class="grant-section">
+      `<section class="grant-section">
         <h2>Recent Essays</h2>
         <ul>${model.recentPosts.map((post) => renderGrantPostItem(post)).join("")}</ul>
       </section>
       ${renderGrantRule()}
-      <section class="grant-section">
-        <h2>Links</h2>
-        <ul>${model.links.map((link) => renderGrantLinkItem(link)).join("")}</ul>
-      </section>`,
+      ${linkSection}`,
+      `<div class="grant-hero">${model.introHtml}</div>`,
     );
   }
 
@@ -2291,25 +2299,25 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const entries = model.postsByYear
       .map((group) => `<h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => `<li><h3><a href="${post.href}">${escapeHtml(post.title)}</a></h3><small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>`)
       .join("");
-    return renderNowDirectoryPage(ctx, `<article><h2>Blog</h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${entries}</article>`);
+    return renderNowDirectoryPage(ctx, `<article><h2>Essays</h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}. <a href="/archives">Browse by month</a>.</p>${entries}</article>`);
   }
   if (ctx.family === "conversational-minimal") {
     const groups = model.postsByYear
       .map((group) => `<section><h2>${escapeHtml(group.year)}</h2><ul class="conversational-minimal-list">${group.posts.map((post) => `<li>${post.date ? `<time>${escapeHtml(post.date)}</time> ` : ""}<a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul></section>`)
       .join("");
-    return renderConversationalMinimalPage(ctx, `<h2><a href="/blog">articles</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${groups}`);
+    return renderConversationalMinimalPage(ctx, `<h2>articles</h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}. <a href="/archives">Browse by month</a>.</p>${groups}`);
   }
   if (ctx.family === "founder-index") {
     const groups = model.postsByYear
       .map((group) => `<section class="founder-index-year"><h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => renderFounderIndexPost(post)).join("")}</ul></section>`)
       .join("");
-    return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/blog">Blog</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>${groups}</article>`);
+    return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2>Essays</h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}. <a href="/archives">Browse by month</a>.</p>${groups}</article>`);
   }
   if (ctx.family === "grant-page") {
     const groups = model.postsByYear
-      .map((group) => `<section class="grant-section"><h2>Essays — ${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => renderGrantPostItem(post)).join("")}</ul></section>`)
+      .map((group) => `<section class="grant-section"><h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => renderGrantPostItem(post)).join("")}</ul></section>`)
       .join(renderGrantRule());
-    return renderGrantPage(ctx, `<article class="grant-article"><h2><a href="/blog">Blog</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p></article>${renderGrantRule()}${groups}`);
+    return renderGrantPage(ctx, `<article class="grant-article"><h2>Essays</h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}. <a href="/archives">Browse by month</a>.</p></article>${renderGrantRule()}${groups}`);
   }
   if (ctx.family === "no-css") {
     return `<section>
@@ -3046,19 +3054,19 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     const months = model.months
       .map((month) => `<section id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2><ul class="conversational-minimal-list">${month.posts.map((post) => `<li>${post.date ? `<time>${escapeHtml(post.date)}</time> ` : ""}<a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` <small>${escapeHtml(post.readTime)}</small>` : ""}</li>`).join("")}</ul></section>`)
       .join("");
-    return renderConversationalMinimalPage(ctx, `<h2><a href="/archives">archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
+    return renderConversationalMinimalPage(ctx, `<h2>archives</h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}`);
   }
   if (ctx.family === "founder-index") {
     const months = model.months
       .map((month) => `<section class="founder-index-year" id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2><ul>${month.posts.map((post) => renderFounderIndexPost(post)).join("")}</ul></section>`)
       .join("");
-    return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/archives">Archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}</article>`);
+    return renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2>Archives</h2><p>${model.totalPosts} entries across ${model.months.length} months.</p>${months}</article>`);
   }
   if (ctx.family === "grant-page") {
     const months = model.months
       .map((month) => `<section class="grant-section" id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2><ul>${month.posts.map((post) => renderGrantPostItem(post)).join("")}</ul></section>`)
       .join(renderGrantRule());
-    return renderGrantPage(ctx, `<article class="grant-article"><h2><a href="/archives">Archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p></article>${renderGrantRule()}${months}`);
+    return renderGrantPage(ctx, `<article class="grant-article"><h2>Archives</h2><p>${model.totalPosts} entries across ${model.months.length} months.</p></article>${renderGrantRule()}${months}`);
   }
   if (ctx.family === "archive-index") {
     const monthCounts = new Map(model.months.map((month) => [month.label, month.posts.length]));
@@ -3461,11 +3469,17 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
     return `${renderForecastReportPage(ctx, "Discuss", `<section class="forecast-report-summary"><p>${model.entries.length} entries.</p>${button}</section><section class="forecast-report-panel">${reportEntries}</section>`, { kicker: "Public Comment", meta: "Guestbook" })}${guestbookModalScript()}`;
   }
+  if (ctx.family === "now-directory") {
+    return `${renderNowDirectoryPage(ctx, `<article class="now-directory-guestbook"><h2>Guestbook</h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><h3>${escapeHtml(entry.name)}</h3><small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li><p>No entries yet. Be the first to sign the guestbook!</p></li>`}</ul></article>`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "conversational-minimal") {
+    return `${renderConversationalMinimalPage(ctx, `<section class="conversational-minimal-guestbook"><h2>guestbook</h2><p>${model.entries.length} entries.</p><p>${button}</p><ul class="conversational-minimal-list">${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <time>${escapeHtml(entry.date)}</time><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></section>`)}${guestbookModalScript()}`;
+  }
   if (ctx.family === "founder-index") {
-    return `${renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/guestbook">Guestbook</a></h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></article>`)}${guestbookModalScript()}`;
+    return `${renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2>Guestbook</h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></article>`)}${guestbookModalScript()}`;
   }
   if (ctx.family === "grant-page") {
-    return `${renderGrantPage(ctx, `<article class="grant-article"><h2><a href="/guestbook">Guestbook</a></h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></article>`)}${guestbookModalScript()}`;
+    return `${renderGrantPage(ctx, `<article class="grant-article"><h2>Guestbook</h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></article>`)}${guestbookModalScript()}`;
   }
   return `<section class="guestbook-header"><h2>Guestbook</h2>${button}</section>${entries}${guestbookModalScript()}`;
 }
@@ -4134,12 +4148,11 @@ function renderNowDirectoryNav(ctx: RenderContext): string {
   const active = (href: string) => (ctx.currentPage === href ? ` aria-current="page"` : "");
   const items = [
     ["/", "home"],
-    ["/blog", "blog"],
+    ["/links", "links"],
+    ["/blog", "essays"],
     ["/photos", "photos"],
-    ["/archives", "archives"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
-    ["/themes", "themes"],
   ] as Array<[string, string]>;
   return `<nav class="now-directory-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a${active(href)} href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
 }
@@ -4152,49 +4165,46 @@ function renderConversationalMinimalNav(ctx: RenderContext): string {
   const active = (href: string) => (ctx.currentPage === href ? ` aria-current="page"` : "");
   const items = [
     ["/", "me"],
+    ["/links", "links"],
     ["/blog", "articles"],
     ["/photos", "photos"],
-    ["/archives", "archives"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
-    ["/themes", "themes"],
   ] as Array<[string, string]>;
   return `<nav class="conversational-minimal-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a${active(href)} href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
 }
 
 function renderConversationalMinimalPage(ctx: RenderContext, contentHtml: string): string {
-  return `<main class="conversational-minimal">
+  return `<div class="conversational-minimal">
     <header class="conversational-minimal-site-head">
       <h1><a href="/">Ryan Prendergast</a></h1>
       ${renderConversationalMinimalNav(ctx)}
     </header>
     ${contentHtml}
-  </main>`;
+  </div>`;
 }
 
 function renderFounderIndexNav(ctx: RenderContext): string {
   const active = (href: string) => (ctx.currentPage === href ? ` aria-current="page"` : "");
   const items = [
-    ["/", "home"],
-    ["/blog", "blog"],
-    ["/photos", "photos"],
-    ["/archives", "archives"],
-    ["/guestbook", "guestbook"],
-    ["/contact", "contact"],
-    ["/themes", "themes"],
-    ["/rss.xml", "rss"],
+    ["/", "Home"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
+    ["/photos", "Photos"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
   ] as Array<[string, string]>;
   return `<nav class="founder-index-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a${active(href)} href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
 }
 
 function renderFounderIndexPage(ctx: RenderContext, contentHtml: string): string {
-  return `<main class="founder-index">
+  return `<div class="founder-index">
     <header class="founder-index-site-head">
       <h1><a href="/">Ryan Prendergast</a></h1>
       ${renderFounderIndexNav(ctx)}
     </header>
     ${contentHtml}
-  </main>`;
+  </div>`;
 }
 
 function renderFounderIndexPost(post: PostSummaryModel): string {
@@ -4209,24 +4219,25 @@ function renderGrantNav(ctx: RenderContext): string {
   const active = (href: string) => (ctx.currentPage === href ? ` aria-current="page"` : "");
   const items = [
     ["/", "Home"],
+    ["/links", "Links"],
     ["/blog", "Essays"],
-    ["/archives", "Archives"],
     ["/photos", "Photos"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
-    ["/themes", "Themes"],
   ] as Array<[string, string]>;
   return `<nav class="grant-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a${active(href)} href="${href}">${escapeHtml(label)}</a>`).join(" ")}</nav>`;
 }
 
-function renderGrantPage(ctx: RenderContext, contentHtml: string): string {
-  return `<main class="grant-page">
-    <header class="grant-site-head">
+function renderGrantPage(ctx: RenderContext, contentHtml: string, heroHtml = ""): string {
+  return `<div class="grant-page">
+    <header class="grant-site-head${heroHtml ? " is-hero" : ""}">
       <h1><a href="/">Ryan Prendergast</a></h1>
+      ${heroHtml}
       ${renderGrantNav(ctx)}
     </header>
+    ${heroHtml ? renderGrantRule() : ""}
     ${contentHtml}
-  </main>`;
+  </div>`;
 }
 
 function renderGrantRule(): string {
