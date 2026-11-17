@@ -419,6 +419,8 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   if (ctx.family === "builder-notes") return renderBuilderNotesGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "manual") return renderManualGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "art-library") return renderArtLibraryGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "scoreboard") return renderScoreboardGeneric(model as GenericPageModel, ctx);
+  if (ctx.family === "research-tools") return renderResearchToolsGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "studio-index") return renderStudioIndexGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "cargo-cv") return renderCargoCvGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "artist-ledger") return renderArtistLedgerGeneric(model as GenericPageModel, ctx);
@@ -1405,18 +1407,9 @@ function renderGardenGeneric(model: GenericPageModel, ctx: RenderContext): strin
   return renderGardenPage(ctx, `<h1>${escapeHtml(model.heading)}</h1><div class="garden-copy">${model.contentHtml}</div>`);
 }
 
-function renderManualHeader(ctx: RenderContext, title: string, description: string, rows: Array<[string, string]> = []): string {
-  const nav = ctx.navItems
-    .map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`)
-    .join("");
-  const metaRows = [
-    ["Title", escapeHtml(title)],
-    ["Author", "Ryan Prendergast"],
-    ["Section", escapeHtml(ctx.currentPage || "/")],
-    ...rows,
-  ];
-  const descriptionHtml = description ? `<p>${escapeHtml(description)}</p>` : "";
-  return `<header class="manual-header"><h1>${escapeHtml(title)}</h1>${descriptionHtml}<table class="manual-meta"><tbody>${metaRows.map(([key, value]) => `<tr><th>${escapeHtml(key)}</th><td>${value}</td></tr>`).join("")}</tbody></table><label class="manual-debug-toggle"><input type="checkbox" disabled> Debug mode</label><nav class="manual-nav" aria-label="Core site areas">${nav}<a class="${ctx.currentPage === "/themes" ? "is-active" : ""}" href="/themes">Themes</a></nav></header>`;
+function renderManualHeader(ctx: RenderContext, title: string, descriptionHtml: string, rows: Array<[string, string]> = []): string {
+  const meta = rows.length ? `<table class="manual-meta"><tbody>${rows.map(([key, value]) => `<tr><th>${escapeHtml(key)}</th><td>${value}</td></tr>`).join("")}</tbody></table>` : "";
+  return `<header class="manual-header"><h1>${escapeHtml(title)}</h1>${descriptionHtml ? `<div class="manual-lede">${descriptionHtml}</div>` : ""}${meta}<nav class="manual-nav" aria-label="Site">${b1Nav(ctx)}</nav></header>`;
 }
 
 function renderManualRule(): string {
@@ -1428,29 +1421,18 @@ function renderManualToc(items: Array<[string, string]>): string {
 }
 
 function renderScoreboardHeader(ctx: RenderContext, title: string, state = ""): string {
-  const loaded = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", second: "2-digit", timeZoneName: "short" });
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
-  const nav = [
-    ["/", "Home"],
-    ["/blog", "Blog"],
-    ["/photos", "Photos"],
-    ["/archives", "Archives"],
-    ["/guestbook", "Guestbook"],
-    ["/contact", "Contact"],
-    ["/rss.xml", "RSS"],
-  ] as Array<[string, string]>;
-  return `<header class="scoreboard-header" id="top"><p>Page loaded: ${escapeHtml(loaded)}</p><p>Data loaded: ${escapeHtml(loaded)}</p><h1><a href="/">Ryan Prendergast</a></h1><div class="scoreboard-modes"><span>Dark Mode</span> <span>Light Mode</span></div><nav class="scoreboard-pager" aria-label="Date pager"><a href="/archives">&lt; Archives</a><strong>${escapeHtml(title)}</strong><a href="/blog">Blog &gt;</a></nav><nav class="scoreboard-leagues" aria-label="Core site areas"><span>Leagues:</span>${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav>${state ? `<p class="scoreboard-state">${escapeHtml(state)}</p>` : ""}</header>`;
+  return `<header class="scoreboard-header" id="top"><h1><a href="/">Ryan Prendergast</a></h1><nav class="scoreboard-leagues" aria-label="Site">${b1Nav(ctx)}</nav><p class="scoreboard-pager"><strong>${escapeHtml(title)}</strong></p>${state ? `<p class="scoreboard-state">${escapeHtml(state)}</p>` : ""}</header>`;
 }
 
 function renderScoreboardBox(lines: string[], href: string): string {
-  const width = Math.max(14, ...lines.map((line) => line.length));
+  const width = 24;
   const top = `+-${"-".repeat(width)}-+`;
-  const body = lines.map((line) => `| ${line.padEnd(width, " ")} |`);
+  const body = lines.map((line) => `| ${line.slice(0, width).padEnd(width, " ")} |`);
   return `<a class="scoreboard-box" href="${href}"><pre>${[top, ...body, top].map(escapeHtml).join("\n")}</pre></a>`;
 }
 
-function renderScoreboardTable(headers: string[], rows: string[][]): string {
-  return `<table class="scoreboard-table"><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+function renderScoreboardTable(headers: string[], rows: string[][], extraClass = ""): string {
+  return `<table class="scoreboard-table ${extraClass}"><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
 function renderManualLinkEntry(link: LinkEntryModel, index: number): string {
@@ -1472,20 +1454,11 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "manual") {
-    return `<article class="manual-page">${renderManualHeader(ctx, "Ryan Prendergast", stripHtml(model.introHtml), [["Version", "linklog"], ["Links", String(model.links.length)], ["Recent essays", String(model.recentPosts.length)]])}${renderManualToc([["#links", "Links"], ["#essays", "Recent Essays"], ["#navigation", "Navigation"]])}${renderManualRule()}<section id="links"><h2>Links</h2>${model.links.map((link, index) => renderManualLinkEntry(link, index)).join("")}</section>${renderManualRule()}<section id="essays"><h2>Recent Essays</h2>${model.recentPosts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section><figure id="navigation" class="manual-ascii"><pre>Ryan Prendergast
--- Home
--- Blog
--- Photos
--- Archives
--- Guestbook
--- Contact
--- RSS</pre></figure></article>`;
+    return b1ManualHome(model, ctx);
   }
 
   if (ctx.family === "scoreboard") {
-    const boxes = model.links.slice(0, 8).map((link, index) => renderScoreboardBox([`${String(index + 1).padStart(2, "0")} ${link.date}`, link.title.slice(0, 18), link.domain.slice(0, 18)], link.url)).join("");
-    const rows = model.links.map((link, index) => [String(index + 1), escapeHtml(link.date), `<a href="${link.url}">${escapeHtml(link.title)}</a>`, escapeHtml(link.domain)]);
-    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Monday, June 15", `${model.links.length} link entries · ${model.recentPosts.length} recent essays`)}<section class="scoreboard-identity"><h2>Ryan Prendergast</h2><div>${model.introHtml}</div></section><h3>Linkblog</h3><nav class="scoreboard-subnav"><a href="/">Schedule</a><a href="/archives">Standings</a><a href="/blog">Teams</a></nav><div class="scoreboard-box-grid">${boxes}</div><h3>Entries</h3>${renderScoreboardTable(["#", "Date", "Entry", "Source"], rows)}<h3>Recent Essays</h3>${renderScoreboardTable(["Date", "Essay", "Status"], model.recentPosts.map((post) => [escapeHtml(post.date), `<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(post.readTime || "Final")]))}</section>`;
+    return b1ScoreboardHome(model, ctx);
   }
 
   if (ctx.family === "no-css") {
@@ -1507,10 +1480,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "archive-index") {
-    const sourceCounts = countBy(model.links.map((link) => link.domain));
-    const linkRows = model.links.map((link) => renderArchiveIndexRow(link.title, link.url, link.domain, link.date, stripHtml(link.contentHtml))).join("");
-    const postRows = model.recentPosts.map((post) => renderArchiveIndexRow(post.title, post.href, "Ryan Prendergast", post.date, post.readTime || "")).join("");
-    return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Ryan Prendergast", model.introHtml, `${model.links.length} links / ${model.recentPosts.length} essays`)}${renderArchiveIndexFilters("All")}<section class="archive-index-directory"><div><h2>All Sources</h2>${renderArchiveIndexNames(sourceCounts)}</div><div><h2>Recent Posts</h2><div class="archive-index-list">${postRows}</div></div></section><section class="archive-index-feed"><h2>All Entries</h2><div class="archive-index-list">${linkRows}</div></section></section>`;
+    return b1ArchiveIndexHome(model, ctx);
   }
 
   if (ctx.family === "scrapbook") {
@@ -1556,25 +1526,19 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   if (ctx.family === "wordmark-studio") {
-    const linkProjects = model.links
-      .map((link) => `<a class="wordmark-project" href="${link.url}"><span>${escapeHtml(link.title)}</span><small>${escapeHtml(link.domain)}</small></a>`)
-      .join("");
-    const writingProjects = model.recentPosts
-      .map((post) => `<a class="wordmark-project" href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(post.date)}${post.readTime ? ` · ${escapeHtml(post.readTime)}` : ""}</small></a>`)
-      .join("");
-    return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}${renderWordmarkHero(model.introHtml)}<section id="work" class="wordmark-panel wordmark-overview"><div><p>${model.links.length} links</p><p>${model.recentPosts.length} recent posts</p></div><div>${model.aboutHtml}</div><a href="/contact">Inquiries</a></section><section id="grid" class="wordmark-section"><div class="wordmark-section-head"><h2>Grid</h2><a href="/archives">Archive</a></div><div class="wordmark-grid">${linkProjects}</div></section><section class="wordmark-section"><div class="wordmark-section-head"><h2>Writing</h2><a href="/blog">All writing</a></div><div class="wordmark-grid">${writingProjects}</div></section></section>`;
+    return b1WordmarkHome(model, ctx);
   }
 
   if (ctx.family === "builder-notes") {
-    return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<header class="builder-notes-intro"><h1>Ryan Prendergast</h1><div class="builder-notes-lede">${model.introHtml}</div></header><section class="builder-notes-now">${model.aboutHtml}</section><section class="builder-notes-section"><h2>writing</h2>${model.recentPosts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section><section class="builder-notes-section"><h2>links</h2>${model.links.map((link) => renderBuilderNotesLinkLine(link)).join("")}</section></section>`;
+    return b1BuilderHome(model, ctx);
   }
 
   if (ctx.family === "research-tools") {
-    return `<section class="research-tools">${renderResearchToolsHeader(ctx, model.introHtml)}<div class="research-tools-practice">${model.aboutHtml}</div><section class="research-tools-section"><h2>tools</h2><ul class="research-tools-list">${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> <span>${escapeHtml(stripHtml(link.contentHtml))}</span></li>`).join("")}</ul></section><section class="research-tools-section"><h2>articles</h2><ul class="research-tools-articles">${model.recentPosts.map((post) => `<li><a href="${post.href}"><time>${escapeHtml(post.rawDate || post.date)}</time> ${escapeHtml(post.title)}${post.excerpt ? ` <span>${escapeHtml(post.excerpt)}</span>` : ""}</a></li>`).join("")}</ul></section></section>`;
+    return b1ResearchToolsHome(model, ctx);
   }
 
   if (ctx.family === "art-library") {
-    return `<section class="art-library">${renderArtLibraryHeader(ctx, "Library", model.introHtml)}${renderArtLibraryCategories(["Links", "Writing", "Archive", "Photos", "Contact"])}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.links.map((link) => [`<a href="${link.url}">${escapeHtml(link.title)}</a>`, escapeHtml(link.domain), escapeHtml(link.date), "Link"]))}<section class="art-library-info">${model.aboutHtml}</section></section>`;
+    return b1ArtLibraryHome(model, ctx);
   }
 
   if (ctx.family === "studio-index") {
@@ -2300,7 +2264,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<table class="pg-home pg-essay-list" border="0" cellspacing="0" cellpadding="0" width="410"><tbody><tr><td><h2>Essays</h2>${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a><br><font size="1" color="#666666">${escapeHtml(post.date)}</font></p>`)).join("")}</td></tr></tbody></table>`;
   }
   if (ctx.family === "manual") {
-    return `<article class="manual-page">${renderManualHeader(ctx, "Blog Index", model.description, [["Entries", String(model.totalPosts)], ["Years", model.yearRange ? `${model.yearRange[0]}-${model.yearRange[1]}` : ""]])}${renderManualToc(model.postsByYear.map((group) => [`#year-${group.year}`, group.year]))}${renderManualRule()}<pre>find ./essays -type f</pre>${model.postsByYear.map((group) => `<section id="year-${group.year}" class="manual-year"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
+    return b1ManualBlog(model, ctx);
   }
   if (ctx.family === "essay-blogroll") {
     const posts = model.postsByYear
@@ -2344,18 +2308,13 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     </section>`;
   }
   if (ctx.family === "scoreboard") {
-    const yearTables = model.postsByYear
-      .map((group) => {
-        const rows = group.posts.map((post) => [escapeHtml(post.date), `<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(post.readTime || "Final")]);
-        return `<h3>${escapeHtml(group.year)}</h3>${renderScoreboardTable(["Date", "Title", "Read"], rows)}`;
-      })
-      .join("");
-    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Blog", `${model.totalPosts} entries`)}<h2>Blog League Schedule</h2><nav class="scoreboard-subnav"><a href="/blog">Schedule</a><a href="/archives">Standings</a><a href="/rss.xml">Teams</a></nav>${yearTables}</section>`;
+    return b1ScoreboardBlog(model, ctx);
+  }
+  if ((ctx.family as string) === "research-tools") {
+    return b1ResearchToolsBlog(model, ctx);
   }
   if (ctx.family === "archive-index") {
-    const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
-    const yearCounts = countBy(posts.map((post) => post.year));
-    return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "All Posts", `<p>${escapeHtml(model.description)}</p>`, `${model.totalPosts} posts`)}${renderArchiveIndexFilters("Authors")}<section class="archive-index-directory"><div><h2>Years</h2>${renderArchiveIndexNames(yearCounts)}</div><div><h2>Titles</h2><div class="archive-index-list">${posts.map((post) => renderArchiveIndexRow(post.title, post.href, post.year, post.date, post.readTime || "")).join("")}</div></div></section></section>`;
+    return b1ArchiveIndexBlog(model, ctx);
   }
   if (ctx.family === "art-index") {
     return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>selected text</h2><div class="art-index-chronology">${model.postsByYear.map((group) => `<div class="art-index-year">${escapeHtml(group.year)}</div>${group.posts.map((post) => renderArtIndexRow(group.year, post.href, post.title, [post.date, post.readTime].filter(Boolean).join(" - "))).join("")}`).join("")}</div>${renderArtIndexFooter(`<p>${escapeHtml(model.description)}</p>`)}</section>`;
@@ -2372,7 +2331,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "wordmark-studio" || ctx.family === "studio-index") {
     if (ctx.family === "wordmark-studio") {
-      return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Grid</p><h2>Writing</h2><span>${escapeHtml(model.description)}</span></header><div class="wordmark-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(group.year)} · ${escapeHtml(post.date)}</small></a>`)).join("")}</div></section>`;
+      return b1WordmarkBlog(model, ctx);
     }
     const studyRows = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ ...post, year: group.year })));
     const posts = studyRows.map((post, index) => renderStudioIndexTextRow(post.title, post.href, post.date, post.year, index)).join("");
@@ -2380,7 +2339,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "builder-notes" || ctx.family === "garden-notebook") {
     if (ctx.family === "builder-notes") {
-      return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>writing</h1>${model.postsByYear.map((group) => `<section class="builder-notes-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
+      return b1BuilderBlog(model, ctx);
     }
     return renderGardenPage(ctx, `<h1>Essays</h1><p>${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section class="garden-year"><h2>${escapeHtml(group.year)}</h2>${renderGardenPostList(group.posts)}</section>`).join("")}`);
   }
@@ -2391,7 +2350,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     return `<section class="${ctx.family}"><h2>Publications</h2><div class="ledger-list">${model.postsByYear.flatMap((group) => group.posts.map((post) => `<p><time>${escapeHtml(post.date)}</time> <a href="${post.href}">${escapeHtml(post.title)}</a></p>`)).join("")}</div></section>`;
   }
   if (ctx.family === "art-library") {
-    return `<section class="art-library">${renderArtLibraryHeader(ctx, "Blog", model.description)}${renderArtLibraryCategories(model.postsByYear.map((group) => group.year))}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.postsByYear.flatMap((group) => group.posts.map((post) => [`<a href="${post.href}">${escapeHtml(post.title)}</a>`, "Ryan Prendergast", escapeHtml(post.date), escapeHtml(group.year)])))}</section>`;
+    return b1ArtLibraryBlog(model, ctx);
   }
   if (ctx.family === "cargo-cv") {
     const items = model.postsByYear.flatMap((group) => group.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a> <span>${escapeHtml(post.date)}</span>`));
@@ -2731,16 +2690,16 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "manual") {
-    return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.title, model.subtitle || "Ryan Prendergast essay", [["Date", meta], ["Path", escapeHtml(model.backHref)]])}${renderManualToc([["#document", "Document"]])}${renderManualRule()}<section id="document" class="manual-entry-body"><h2>Document</h2>${model.contentHtml}</section><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p></article>`;
+    return b1ManualPost(model, ctx);
   }
   if (ctx.family === "scoreboard") {
-    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Box Score", meta)}<h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="scoreboard-state">${escapeHtml(model.subtitle)}</p>` : ""}${renderScoreboardTable(["Field", "Value"], [["Title", escapeHtml(model.title)], ["Date", meta], ["Back", `<a href="${model.backHref}">${escapeHtml(model.backLabel)}</a>`]])}<article class="scoreboard-article">${model.contentHtml}</article></section>`;
+    return b1ScoreboardPost(model, ctx);
   }
   if (ctx.family === "art-index") {
     return `<article class="art-index art-index-record">${renderArtIndexHeader(ctx)}<p class="art-index-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><h2>${escapeHtml(model.title)}</h2><p class="art-index-meta">${meta}</p>${model.subtitle ? `<p class="art-index-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<div class="blog-post-content">${model.contentHtml}</div></article>`;
   }
   if (ctx.family === "archive-index") {
-    return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.title, model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : `<p>${meta}</p>`, meta)}${renderArchiveIndexFilters("Authors")}<div class="archive-index-record-meta"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a><span>Ryan Prendergast</span><time>${escapeHtml(model.date)}</time></div><div class="blog-post-content archive-index-copy">${model.contentHtml}</div></article>`;
+    return b1ArchiveIndexPost(model, ctx);
   }
   if (ctx.family === "weblog-facets") {
     return renderWeblogFacetsPage(
@@ -2907,16 +2866,19 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "wordmark-studio") {
-    return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="wordmark-page-header"><p>${meta}</p><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<span>${escapeHtml(model.subtitle)}</span>` : ""}</header><div class="blog-post-content">${model.contentHtml}</div></article>`;
+    return b1WordmarkPost(model, ctx);
   }
   if (ctx.family === "studio-index") {
     return `<article class="studio-index studio-index-article">${renderStudioIndexHeader(ctx, "", "Studies")}<div class="studio-index-layout">${renderStudioIndexFilters(["All", "Essays", "Notes", "Archive"])}<div class="studio-index-content"><a class="studio-index-back" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header class="studio-index-article-head"><h2>${escapeHtml(model.title)}</h2><p>${meta}</p></header><div class="blog-post-content studio-index-copy">${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}${model.contentHtml}</div></div></div></article>`;
   }
   if (ctx.family === "builder-notes") {
-    return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><header><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p>${meta}</p></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
+    return b1BuilderPost(model, ctx);
+  }
+  if (ctx.family === "research-tools") {
+    return b1ResearchToolsPost(model, ctx);
   }
   if (ctx.family === "art-library") {
-    return `<article class="art-library art-library-record">${renderArtLibraryHeader(ctx, "Record", `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`)}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], [[escapeHtml(model.title), "Ryan Prendergast", meta, "Essay"]])}<div class="blog-post-content">${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}${model.contentHtml}</div></article>`;
+    return b1ArtLibraryPost(model, ctx);
   }
   if (ctx.family === "publishing") {
     return `<article class="publishing-article"><a class="back-link" href="${model.backHref}">${escapeHtml(model.backLabel)}</a><header><h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="article-meta">${meta}</p></header><div class="article-body">${model.contentHtml}</div></article>`;
@@ -3093,10 +3055,10 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<h2>Archives</h2>${model.months.map((month) => `<h3>${escapeHtml(month.label)}</h3><ul>${month.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a></li>`).join("")}</ul>`).join("")}`;
   }
   if (ctx.family === "manual") {
-    return `<article class="manual-page">${renderManualHeader(ctx, "Archive Tree", "", [["Entries", String(model.totalPosts)], ["Months", String(model.months.length)]])}${renderManualToc(model.months.map((month) => [`#${month.key}`, month.label]))}${renderManualRule()}<pre>${model.months.map((month) => `${month.key}/\\n${month.posts.map((post) => `  ${post.slug}.html`).join("\\n")}`).join("\\n")}</pre>${model.months.map((month) => `<section id="${month.key}" class="manual-year"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`).join("")}</article>`;
+    return b1ManualArchives(model, ctx);
   }
   if (ctx.family === "scoreboard") {
-    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Archives", `${model.totalPosts} archived posts`)}<h2>Archive Standings</h2><nav class="scoreboard-subnav"><a href="/archives">Schedule</a><a href="/blog">Standings</a><a href="/rss.xml">Teams</a></nav>${renderScoreboardTable(["Month", "Posts", "Entries"], model.months.map((month) => [escapeHtml(month.label), String(month.posts.length), month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join(" ")]))}</section>`;
+    return b1ScoreboardArchives(model, ctx);
   }
   if (ctx.family === "now-directory") {
     const months = model.months
@@ -3123,8 +3085,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return renderGrantPage(ctx, `<article class="grant-article"><h2>Archives</h2><p>${model.totalPosts} entries across ${model.months.length} months.</p></article>${renderGrantRule()}${months}`);
   }
   if (ctx.family === "archive-index") {
-    const monthCounts = new Map(model.months.map((month) => [month.label, month.posts.length]));
-    return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Archive", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`, `${model.totalPosts} records`)}${renderArchiveIndexFilters("All")}<section class="archive-index-directory"><div><h2>Months</h2>${renderArchiveIndexNames(monthCounts, (label) => `#${slugify(label)}`)}</div><div><h2>Records</h2>${model.months.map((month) => `<section id="${slugify(month.label)}" class="archive-index-month"><h3>${escapeHtml(month.label)}</h3><div class="archive-index-list">${month.posts.map((post) => renderArchiveIndexRow(post.title, post.href, month.label, post.date, post.readTime || "")).join("")}</div></section>`).join("")}</div></section></section>`;
+    return b1ArchiveIndexArchives(model, ctx);
   }
   if (ctx.family === "art-index") {
     return `<section class="art-index">${renderArtIndexHeader(ctx)}<h2>archive</h2><div class="art-index-chronology">${model.months.map((month) => `<div class="art-index-year" id="${slugify(month.label)}">${escapeHtml(month.label)}</div>${month.posts.map((post) => renderArtIndexRow(getArtIndexYearLabel(month.label), post.href, post.title, post.date || "")).join("")}`).join("")}</div>${renderArtIndexFooter(`<p>${model.totalPosts} entries across ${model.months.length} months.</p>`)}</section>`;
@@ -3139,11 +3100,14 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       `<p>${model.months.length} months</p><p>${model.totalPosts} entries</p>`,
     );
   }
+  if (ctx.family === "research-tools") {
+    return b1ResearchToolsArchives(model, ctx);
+  }
   if (ctx.family === "wordmark-studio") {
-    return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Archive</p><h2>Chronology</h2><span>${model.totalPosts} entries across ${model.months.length} months</span></header><div class="wordmark-archive">${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</section>`).join("")}</div></section>`;
+    return b1WordmarkArchives(model, ctx);
   }
   if (ctx.family === "builder-notes") {
-    return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>archive</h1>${model.months.map((month) => `<section class="builder-notes-section"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
+    return b1BuilderArchives(model, ctx);
   }
   if (ctx.family === "studio-index") {
     const months = model.months.map((month, index) => renderStudioIndexTextRow(month.label, `#${slugify(month.label)}`, `${month.posts.length} ${month.posts.length === 1 ? "post" : "posts"}`, month.key, index)).join("");
@@ -3176,7 +3140,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return `<section class="${ctx.family}"><h2>Archive</h2>${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a></p>`).join("")}</section>`).join("")}</section>`;
   }
   if (ctx.family === "art-library") {
-    return `<section class="art-library">${renderArtLibraryHeader(ctx, "Archive", `<p>${model.totalPosts} entries across ${model.months.length} months.</p>`)}${renderArtLibraryCategories(model.months.slice(0, 8).map((month) => month.label))}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.months.flatMap((month) => month.posts.map((post) => [`<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(month.label), escapeHtml(post.date), "Archive"])))}</section>`;
+    return b1ArtLibraryArchives(model, ctx);
   }
   if (ctx.family === "cargo-cv") {
     const items = model.months.map((month) => `<a href="#${slugify(month.label)}">${escapeHtml(month.label)}</a> <span>${month.posts.length} ${month.posts.length === 1 ? "entry" : "entries"}</span>`);
@@ -3442,16 +3406,25 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
     : `<p class="text-muted">No entries yet. Be the first to sign the guestbook!</p>`;
   const button = model.canSign ? `<button onclick="showGuestbookModal()">Sign Guestbook</button>` : "";
   if (ctx.family === "manual") {
-    const manualEntries = model.entries.length
-      ? model.entries.map((entry, index) => `<article class="manual-entry"><h3 id="entry-${index + 1}">${escapeHtml(entry.name)}</h3><table><tbody><tr><th>Date</th><td>${escapeHtml(entry.date)}</td></tr><tr><th>Name</th><td>${escapeHtml(entry.name)}</td></tr></tbody></table><p>${escapeHtml(entry.message)}</p></article>`).join("")
-      : `<p class="text-muted">No entries yet. Be the first to sign the guestbook!</p>`;
-    return `<article class="manual-page">${renderManualHeader(ctx, "Guestbook", "", [["Entries", String(model.entries.length)]])}${renderManualToc([["#entries", "Entries"], ["#sign", "Sign"]])}${renderManualRule()}<section id="entries"><h2>Entries</h2>${manualEntries}</section><section id="sign" class="manual-form"><h2>Sign</h2>${button}</section></article>${guestbookModalScript()}`;
+    return b1ManualGuestbook(model, ctx);
+  }
+  if (ctx.family === "scoreboard") {
+    return b1ScoreboardGuestbook(model, ctx);
+  }
+  if (ctx.family === "archive-index") {
+    return b1ArchiveIndexGuestbook(model, ctx);
+  }
+  if (ctx.family === "builder-notes") {
+    return b1BuilderGuestbook(model, ctx);
+  }
+  if (ctx.family === "research-tools") {
+    return b1ResearchToolsGuestbook(model, ctx);
   }
   if (ctx.family === "wordmark-studio") {
-    return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Inquiries</p><h2>Guestbook</h2></header><section class="guestbook-header">${button}</section><div class="wordmark-entries">${entries}</div></section>${guestbookModalScript()}`;
+    return b1WordmarkGuestbook(model, ctx);
   }
   if (ctx.family === "art-library") {
-    return `<section class="art-library">${renderArtLibraryHeader(ctx, "Guestbook", "")}<section class="guestbook-header">${button}</section>${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], model.entries.map((entry) => [escapeHtml(entry.message), escapeHtml(entry.name), escapeHtml(entry.date), "Guestbook"]))}</section>${guestbookModalScript()}`;
+    return b1ArtLibraryGuestbook(model, ctx);
   }
   if (ctx.family === "art-index") {
     const rows = model.entries.length
@@ -4061,23 +4034,9 @@ function renderThemes(model: ThemesModel, ctx: RenderContext): string {
   return `<section class="themes-hero"><div><p class="themes-eyebrow">Supplied Site Mimics</p><h2>${model.themes.length} direct layouts from Ryan's reference list.</h2><p>The content stays stable while each theme mimics one supplied target site. ${builtCount} themes are currently built with dedicated layout treatment; planned themes remain visible as implementation targets.</p></div><div class="themes-console"><label for="theme-select">Current theme</label><select id="theme-select" data-theme-select>${model.selectOptionsHtml}</select><div class="theme-picker-controls"><button type="button" data-theme-prev>Previous</button><button type="button" data-theme-random>Random</button><button type="button" data-theme-next>Next</button></div><p>Selected: <strong data-theme-current>${escapeHtml(ctx.theme.name)}</strong></p></div></section><div class="theme-filters">${model.categoryControlsHtml}</div>${model.themeSectionsHtml}`;
 }
 
-function renderArchiveIndexHeader(ctx: RenderContext, title: string, detailHtml: string, countLabel: string): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
-  const nav = [
-    ["/", "All"],
-    ["/blog", "Authors"],
-    ["/photos", "Photographers"],
-    ["/archives", "Stylists"],
-    ["/guestbook", "Talent"],
-    ["/contact", "Contact"],
-    ["/rss.xml", "RSS"],
-  ] as Array<[string, string]>;
-  return `<header class="archive-index-header"><div class="archive-index-topline"><a class="archive-index-brand" href="/">Ryan Prendergast</a><span>${escapeHtml(countLabel)}</span></div><nav class="archive-index-nav" aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav><div class="archive-index-title"><h1>${escapeHtml(title)}</h1><div>${detailHtml}</div></div></header>`;
-}
-
-function renderArchiveIndexFilters(activeLabel: string): string {
-  const filters = ["All", "Authors", "Photographers", "Stylists", "Talent"];
-  return `<nav class="archive-index-filters" aria-label="Archive filters">${filters.map((filter) => `<a class="${filter === activeLabel ? "is-active" : ""}" href="/archives">${filter}</a>`).join("")}</nav>`;
+function renderArchiveIndexHeader(ctx: RenderContext, title: string, detailHtml: string, countLabel: string, titleClass = ""): string {
+  const brand = title === "Ryan Prendergast" ? "" : `<a class="archive-index-brand" href="/">Ryan Prendergast</a>`;
+  return `<header class="archive-index-header"><div class="archive-index-topline">${brand}<nav class="archive-index-nav" aria-label="Site">${b1Nav(ctx)}</nav>${countLabel ? `<span class="archive-index-count">${escapeHtml(countLabel)}</span>` : ""}</div><div class="archive-index-title ${titleClass}"><h1>${escapeHtml(title)}</h1>${detailHtml ? `<div class="archive-index-detail">${detailHtml}</div>` : ""}</div></header>`;
 }
 
 function renderArchiveIndexNames(counts: Map<string, number>, hrefFor: (label: string) => string = () => "/"): string {
@@ -4135,7 +4094,7 @@ function renderArchiveIndexRow(title: string, href: string, source: string, date
 }
 
 function renderArchiveIndexGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.heading, `<p>${escapeHtml(ctx.currentPage || "/")}</p>`, "page record")}${renderArchiveIndexFilters("All")}<div class="archive-index-copy">${model.contentHtml}</div></article>`;
+  return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.heading, "", "")}<div class="archive-index-copy">${model.contentHtml}</div></article>`;
 }
 
 function renderArtIndexHeader(ctx: RenderContext, introHtml = ""): string {
@@ -4187,36 +4146,25 @@ function countBy(values: string[]): Map<string, number> {
 }
 
 function renderWordmarkNav(ctx: RenderContext): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
-  return `<header class="wordmark-top"><nav class="wordmark-primary" aria-label="Primary"><a class="${active("/")}" href="/">Work</a><a class="${active("/blog")}" href="/blog">Grid</a><a class="${active("/contact")}" href="/contact">Inquiries</a></nav><nav class="wordmark-secondary" aria-label="Core site areas">${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav></header>`;
+  const brand = ctx.currentPage === "/" ? "" : `<a class="wordmark-brand" href="/">Ryan Prendergast</a>`;
+  return `<header class="wordmark-top">${brand}<nav class="wordmark-primary" aria-label="Site">${b1Nav(ctx)}</nav></header>`;
 }
 
 function renderResearchToolsHeader(ctx: RenderContext, introHtml = ""): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
-  return `<header class="research-tools-header"><a class="research-tools-mark" href="/" aria-label="Ryan Prendergast">rp</a><nav class="research-tools-contact" aria-label="Contact and feeds"><a class="${active("/contact")}" href="/contact">@ Contact</a><a href="/rss.xml">RSS</a></nav><div class="research-tools-copy">${introHtml}</div><nav class="research-tools-nav" aria-label="Core site areas">${ctx.navItems.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}<a class="${active("/themes")}" href="/themes">Themes</a></nav></header>`;
+  return `<header class="research-tools-header"><a class="research-tools-mark" href="/">Ryan Prendergast</a><nav class="research-tools-nav" aria-label="Site">${b1Nav(ctx, true)}</nav>${introHtml ? `<div class="research-tools-copy">${introHtml}</div>` : ""}</header>`;
 }
 
 function renderBuilderNotesNav(ctx: RenderContext): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
-  return `<nav class="builder-notes-nav" aria-label="Primary"><a class="${active("/")}" href="/">Ryan Prendergast</a><a class="${active("/contact")}" href="/contact">about</a><a class="${active("/blog")}" href="/blog">writing</a><a class="${active("/")}" href="/">links</a><a class="${active("/photos")}" href="/photos">photos</a><a class="${active("/archives")}" href="/archives">archive</a><a class="${active("/guestbook")}" href="/guestbook">guestbook</a><a href="/rss.xml">rss</a></nav>`;
+  const home = ctx.currentPage === "/" ? `<a class="is-active" href="/" aria-current="page">home</a>` : `<a class="builder-notes-name" href="/">Ryan Prendergast</a>`;
+  return `<nav class="builder-notes-nav" aria-label="Site">${home}${b1Nav(ctx, true, true)}</nav>`;
 }
 
 function renderArtLibraryHeader(ctx: RenderContext, section: string, detailHtml: string): string {
-  const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
-  const nav = [
-    ["/", "Linkblog"],
-    ["/blog", "Blog"],
-    ["/photos", "Photos"],
-    ["/archives", "Archives"],
-    ["/guestbook", "Guestbook"],
-    ["/contact", "Contact"],
-  ] as Array<[string, string]>;
-  return `<header class="art-library-header"><a class="art-library-brand" href="/">Ryan Prendergast</a><nav class="art-library-primary" aria-label="Core site areas">${nav.map(([href, label]) => `<a class="${active(href)}" href="${href}">${label}</a>`).join("")}<a href="/rss.xml">RSS</a></nav><nav class="art-library-hours" aria-label="Utility"><a class="${active("/contact")}" href="/contact">Contact</a><a href="/rss.xml">RSS</a><a class="${active("/themes")}" href="/themes">Themes</a></nav><div class="art-library-section"><h2>${escapeHtml(section)}</h2>${detailHtml}</div></header>`;
+  return `<header class="art-library-header"><a class="art-library-brand" href="/">Ryan Prendergast</a><nav class="art-library-primary" aria-label="Site">${b1Nav(ctx)}</nav><nav class="art-library-hours" aria-label="Catalogue"><span>Catalogue</span><a class="${ctx.currentPage === "/archives" ? "is-active" : ""}" href="/archives">Archive by month</a><a href="/rss.xml">RSS feed</a></nav><div class="art-library-section"><h1>${escapeHtml(section)}</h1>${detailHtml ? `<div class="art-library-detail">${detailHtml}</div>` : ""}</div></header>`;
 }
 
-function renderArtLibraryCategories(categories: string[]): string {
-  const unique = Array.from(new Set(categories.filter(Boolean)));
-  return `<div class="art-library-categories" aria-label="Catalog categories">${unique.map((category, index) => `<span class="${index === 0 ? "is-active" : ""}">${escapeHtml(category)}</span>`).join("")}</div>`;
+function renderArtLibraryCategories(categories: Array<[string, string, boolean]>): string {
+  return `<nav class="art-library-categories" aria-label="Catalogue sections">${categories.map(([label, href, active]) => `<a class="${active ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
 }
 
 function renderArtLibraryTable(headers: string[], rows: string[][]): string {
@@ -4227,7 +4175,7 @@ function renderArtLibraryTable(headers: string[], rows: string[][]): string {
 }
 
 function renderBuilderNotesPostLine(post: PostSummaryModel): string {
-  return `<p class="builder-note-line"><a href="${post.href}">${escapeHtml(post.title)}</a>${post.readTime ? ` <small>${escapeHtml(post.readTime)}</small>` : ""}<br><small>${escapeHtml(post.date)}</small></p>`;
+  return `<p class="builder-note-line"><a href="${post.href}">${escapeHtml(post.title)}</a><br><small>${escapeHtml(post.date)}${post.readTime ? ` · ${escapeHtml(post.readTime)}` : ""}</small></p>`;
 }
 
 function renderBuilderNotesLinkLine(link: LinkEntryModel): string {
@@ -4235,23 +4183,391 @@ function renderBuilderNotesLinkLine(link: LinkEntryModel): string {
 }
 
 function renderWordmarkHero(introHtml: string): string {
-  return `<header class="wordmark-hero"><div class="wordmark-hero-copy"><h1>Ryan Prendergast</h1><div>${introHtml}</div><div aria-hidden="true">${introHtml}</div></div></header>`;
+  return `<header class="wordmark-hero"><h1><span>Ryan</span> <span>Prendergast</span></h1><div class="wordmark-hero-copy">${introHtml}</div></header>`;
 }
 
 function renderWordmarkGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}<header class="wordmark-page-header"><p>Inquiries</p><h2>${escapeHtml(model.heading)}</h2></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
+  return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}${b1WordmarkPageHeader("", model.heading)}<div class="wordmark-copy">${model.contentHtml}</div></article>`;
 }
 
 function renderBuilderNotesGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<header><h1>${escapeHtml(model.heading)}</h1></header><div class="blog-post-content">${model.contentHtml}</div></article>`;
+  return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<header><h1>${escapeHtml(model.heading.toLowerCase())}</h1></header><div class="builder-notes-copy">${model.contentHtml}</div></article>`;
 }
 
 function renderManualGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.heading, "")}${renderManualToc([["#document", "Document"]])}${renderManualRule()}<section id="document" class="manual-entry-body"><h2>Document</h2>${model.contentHtml}</section></article>`;
+  return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.heading, "", [])}${renderManualRule()}<section class="manual-entry-body manual-copy">${model.contentHtml}</section></article>`;
 }
 
 function renderArtLibraryGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return `<article class="art-library art-library-record">${renderArtLibraryHeader(ctx, model.heading, "")}${renderArtLibraryTable(["Title", "Name", "Publisher", "Category"], [[escapeHtml(model.heading), "Ryan Prendergast", escapeHtml(ctx.currentPage || "/"), "Page"]])}<div class="blog-post-content">${model.contentHtml}</div></article>`;
+  return `<article class="art-library art-library-record">${renderArtLibraryHeader(ctx, model.heading, "")}<div class="art-library-copy">${model.contentHtml}</div></article>`;
+}
+
+// ===== Batch 1 families: manual, scoreboard, archive-index, wordmark-studio, builder-notes, research-tools, art-library =====
+
+const b1NavLinks: Array<[string, string]> = [
+  ["/", "Home"],
+  ["/links", "Links"],
+  ["/blog", "Essays"],
+  ["/photos", "Photos"],
+  ["/guestbook", "Guestbook"],
+  ["/contact", "Contact"],
+];
+
+function b1Nav(ctx: RenderContext, lowercase = false, skipHome = false): string {
+  return b1NavLinks
+    .filter(([href]) => !(skipHome && href === "/"))
+    .map(([href, label]) => {
+      const current = ctx.currentPage === href;
+      return `<a class="${current ? "is-active" : ""}" href="${href}"${current ? ' aria-current="page"' : ""}>${lowercase ? label.toLowerCase() : label}</a>`;
+    })
+    .join("");
+}
+
+// Plain text of an HTML fragment with entities decoded, so it can be escaped exactly once.
+function b1Text(html: string): string {
+  return stripHtml(html)
+    .replace(/&#(\d+);/g, (_match, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_match, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+
+function b1Plain(html: string): string {
+  return escapeHtml(b1Text(html));
+}
+
+function b1ShortDate(date: string): string {
+  const match = date.match(/^([A-Za-z]{3})[a-z]* (\d{1,2}), (\d{4})$/);
+  return match ? `${match[1]} ${match[2].padStart(2, "0")}, ${match[3]}` : date;
+}
+
+function b1IndexTitle(ctx: RenderContext): string {
+  return ctx.currentPage === "/photos" ? "Photos" : "Essays";
+}
+
+function b1SignButton(model: GuestbookModel): string {
+  return model.canSign ? `<button type="button" onclick="showGuestbookModal()">Sign Guestbook</button>` : "";
+}
+
+function b1Wrap(text: string, width: number, maxLines: number): string[] {
+  const lines: string[] = [];
+  let line = "";
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    const next = line ? `${line} ${word}` : word;
+    if (next.length <= width) {
+      line = next;
+    } else {
+      if (line) lines.push(line);
+      line = word.length > width ? `${word.slice(0, width - 1)}…` : word;
+    }
+  }
+  if (line) lines.push(line);
+  if (lines.length > maxLines) {
+    const kept = lines.slice(0, maxLines);
+    const last = kept[maxLines - 1];
+    kept[maxLines - 1] = `${last.length > width - 1 ? last.slice(0, width - 1) : last}…`;
+    return kept;
+  }
+  while (lines.length < maxLines) lines.push("");
+  return lines;
+}
+
+// ----- manual -----
+
+function b1ManualHome(model: HomeModel, ctx: RenderContext): string {
+  const links = `<section id="links"><h2>Links</h2>${model.links.map((link, index) => renderManualLinkEntry(link, index)).join("")}</section>`;
+  const updated = escapeHtml(model.links[0]?.date || "");
+  if (ctx.currentPage === "/links") {
+    return `<article class="manual-page">${renderManualHeader(ctx, "Links", `<p>${model.aboutHtml}</p>`, [["Author", "Ryan Prendergast"], ["Entries", String(model.links.length)], ["Updated", updated]])}${renderManualRule()}${links}</article>`;
+  }
+  const essayRows = model.recentPosts
+    .map((post) => `<tr><td>${escapeHtml(b1ShortDate(post.date))}</td><td><a href="${post.href}">${escapeHtml(post.title)}</a></td><td>${escapeHtml(post.readTime || "")}</td></tr>`)
+    .join("");
+  const essays = `<section id="essays"><h2>Recent Essays</h2><table class="manual-list"><thead><tr><th>Date</th><th>Title</th><th>Length</th></tr></thead><tbody>${essayRows}</tbody></table><p><a href="/blog">All essays</a></p></section>`;
+  return `<article class="manual-page">${renderManualHeader(ctx, "Ryan Prendergast", model.introHtml, [["Links", String(model.links.length)], ["Recent essays", String(model.recentPosts.length)], ["Updated", updated]])}${renderManualToc([["#essays", "Recent Essays"], ["#links", "Links"]])}${renderManualRule()}${essays}${renderManualRule()}${links}</article>`;
+}
+
+function b1ManualBlog(model: BlogIndexModel, ctx: RenderContext): string {
+  const title = b1IndexTitle(ctx);
+  const rows: Array<[string, string]> = [["Author", "Ryan Prendergast"], ["Entries", String(model.totalPosts)]];
+  if (model.yearRange) rows.push(["Years", `${model.yearRange[0]}-${model.yearRange[1]}`]);
+  const sections = model.postsByYear
+    .map((group) => `<section id="year-${slugify(group.year)}" class="manual-year"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`)
+    .join("");
+  const seeAlso = ctx.currentPage === "/blog" ? `<p>See also: <a href="/archives">archive tree</a>.</p>` : "";
+  return `<article class="manual-page">${renderManualHeader(ctx, title, `<p>${escapeHtml(model.description)}</p>`, rows)}${renderManualToc(model.postsByYear.map((group) => [`#year-${slugify(group.year)}`, group.year]))}${renderManualRule()}${sections}${seeAlso}</article>`;
+}
+
+function b1ManualPost(model: BlogPostModel, ctx: RenderContext): string {
+  const rows: Array<[string, string]> = [["Author", escapeHtml(model.author || "Ryan Prendergast")], ["Date", escapeHtml(model.date)], ["Back", `<a href="${model.backHref}">${escapeHtml(model.backLabel)}</a>`]];
+  return `<article class="manual-page manual-document">${renderManualHeader(ctx, model.title, model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : "", rows)}${renderManualRule()}<section class="manual-entry-body manual-copy">${model.contentHtml}</section></article>`;
+}
+
+function b1ManualArchives(model: ArchiveModel, ctx: RenderContext): string {
+  const tree = model.months
+    .map((month) => `${escapeHtml(month.key)}/\n${month.posts.map((post) => `  <a href="${post.href}">${escapeHtml(post.slug)}</a>`).join("\n")}`)
+    .join("\n");
+  const sections = model.months
+    .map((month) => `<section id="month-${slugify(month.key)}" class="manual-year"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderManualPostSummary(post, index)).join("")}</section>`)
+    .join("");
+  return `<article class="manual-page">${renderManualHeader(ctx, "Archive Tree", "", [["Author", "Ryan Prendergast"], ["Entries", String(model.totalPosts)], ["Months", String(model.months.length)]])}${renderManualToc(model.months.map((month) => [`#month-${slugify(month.key)}`, month.label]))}${renderManualRule()}<pre>${tree}</pre>${sections}</article>`;
+}
+
+function b1ManualGuestbook(model: GuestbookModel, ctx: RenderContext): string {
+  const entries = model.entries.length
+    ? model.entries.map((entry) => `<article class="manual-entry"><table><tbody><tr><th>Name</th><td>${escapeHtml(entry.name)}</td></tr><tr><th>Date</th><td>${escapeHtml(entry.date)}</td></tr></tbody></table><p>${escapeHtml(entry.message)}</p></article>`).join("")
+    : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+  return `<article class="manual-page">${renderManualHeader(ctx, "Guestbook", "", [["Site", "Ryan Prendergast"], ["Entries", String(model.entries.length)]])}${renderManualRule()}<section id="sign" class="manual-form">${b1SignButton(model)}</section><section id="entries"><h2>Entries</h2>${entries}</section></article>${guestbookModalScript()}`;
+}
+
+// ----- scoreboard -----
+
+function b1ScoreboardHome(model: HomeModel, ctx: RenderContext): string {
+  const linksOnly = ctx.currentPage === "/links";
+  const rows = model.links.map((link, index) => [
+    String(index + 1),
+    escapeHtml(b1ShortDate(link.date)),
+    `<a href="${link.url}">${escapeHtml(link.title)}</a><span class="scoreboard-note">${b1Plain(link.contentHtml)}</span>`,
+    escapeHtml(link.domain),
+  ]);
+  const table = renderScoreboardTable(["#", "Date", "Entry", "Source"], rows, "scoreboard-links");
+  if (linksOnly) {
+    return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Links", `${model.links.length} entries`)}<p class="scoreboard-identity">${model.aboutHtml}</p>${table}</section>`;
+  }
+  const boxes = model.recentPosts
+    .map((post) => renderScoreboardBox([b1ShortDate(post.date), ...b1Wrap(post.title, 24, 2), post.readTime || ""], post.href))
+    .join("");
+  return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Home", `${model.links.length} links · ${model.recentPosts.length} recent essays`)}<section class="scoreboard-identity">${model.introHtml}</section><h2>Recent Essays</h2><div class="scoreboard-box-grid">${boxes}</div><p><a href="/blog">All essays &gt;</a></p><h2>Links</h2>${table}</section>`;
+}
+
+function b1ScoreboardBlog(model: BlogIndexModel, ctx: RenderContext): string {
+  const yearTables = model.postsByYear
+    .map((group) => {
+      const rows = group.posts.map((post) => [escapeHtml(b1ShortDate(post.date)), `<a href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(post.readTime || "")]);
+      return `<h2>${escapeHtml(group.year)}</h2>${renderScoreboardTable(["Date", "Title", "Length"], rows, "scoreboard-posts")}`;
+    })
+    .join("");
+  const byMonth = ctx.currentPage === "/blog" ? `<p><a href="/archives">By month &gt;</a></p>` : "";
+  return `<section class="scoreboard">${renderScoreboardHeader(ctx, b1IndexTitle(ctx), `${model.totalPosts} entries`)}<p class="scoreboard-identity">${escapeHtml(model.description)}</p>${yearTables}${byMonth}</section>`;
+}
+
+function b1ScoreboardPost(model: BlogPostModel, ctx: RenderContext): string {
+  const isPhotos = ctx.currentPage === "/photos";
+  const fields = [["Date", escapeHtml(model.date)], ["Back", `<a href="${model.backHref}">&lt; ${escapeHtml(model.backLabel)}</a>`]];
+  return `<section class="scoreboard">${renderScoreboardHeader(ctx, isPhotos ? "Photos" : "Essay", "")}<h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="scoreboard-state">${escapeHtml(model.subtitle)}</p>` : ""}${renderScoreboardTable(["Field", "Value"], fields, "scoreboard-fields")}<article class="scoreboard-article">${model.contentHtml}</article></section>`;
+}
+
+function b1ScoreboardArchives(model: ArchiveModel, ctx: RenderContext): string {
+  const rows = model.months.map((month) => [escapeHtml(month.label), String(month.posts.length), month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("<br>")]);
+  return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Archive", `${model.totalPosts} essays · ${model.months.length} months`)}${renderScoreboardTable(["Month", "#", "Essays"], rows, "scoreboard-months")}<p><a href="/blog">&lt; Essays</a></p></section>`;
+}
+
+function b1ScoreboardGuestbook(model: GuestbookModel, ctx: RenderContext): string {
+  const rows = model.entries.map((entry) => [escapeHtml(b1ShortDate(entry.date)), escapeHtml(entry.name), escapeHtml(entry.message)]);
+  const table = rows.length ? renderScoreboardTable(["Date", "Name", "Message"], rows, "scoreboard-guestbook") : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+  return `<section class="scoreboard">${renderScoreboardHeader(ctx, "Guestbook", `${model.entries.length} entries`)}<p class="scoreboard-action">${b1SignButton(model)}</p>${table}</section>${guestbookModalScript()}`;
+}
+
+function renderScoreboardGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return `<section class="scoreboard">${renderScoreboardHeader(ctx, model.heading, "")}<article class="scoreboard-article">${model.contentHtml}</article></section>`;
+}
+
+// ----- archive-index -----
+
+function b1ArchiveIndexSection(title: string, count: number, bodyHtml: string, moreHtml = ""): string {
+  return `<section class="archive-index-feed"><h2>${escapeHtml(title)}<sup>${count}</sup></h2><div class="archive-index-list">${bodyHtml}</div>${moreHtml}</section>`;
+}
+
+function b1ArchiveIndexHome(model: HomeModel, ctx: RenderContext): string {
+  const linkRows = model.links.map((link) => renderArchiveIndexRow(link.title, link.url, link.domain, link.date, b1Text(link.contentHtml))).join("");
+  const links = b1ArchiveIndexSection("Links", model.links.length, linkRows);
+  if (ctx.currentPage === "/links") {
+    return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Links", `<p>${model.aboutHtml}</p>`, `${model.links.length} entries`)}<section class="archive-index-feed"><div class="archive-index-list">${linkRows}</div></section></section>`;
+  }
+  const postRows = model.recentPosts.map((post) => renderArchiveIndexRow(post.title, post.href, post.readTime || "", post.date, "")).join("");
+  const essays = b1ArchiveIndexSection("Essays", model.recentPosts.length, postRows, `<p class="archive-index-more"><a href="/blog">All essays</a></p>`);
+  return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Ryan Prendergast", model.introHtml, `${model.links.length} links / ${model.recentPosts.length} essays`)}${essays}${links}</section>`;
+}
+
+function b1ArchiveIndexBlog(model: BlogIndexModel, ctx: RenderContext): string {
+  const yearCounts = new Map(model.postsByYear.map((group) => [group.year, group.posts.length] as [string, number]));
+  const records = model.postsByYear
+    .map((group) => `<section id="y-${slugify(group.year)}" class="archive-index-month"><h3>${escapeHtml(group.year)}</h3><div class="archive-index-list">${group.posts.map((post) => renderArchiveIndexRow(post.title, post.href, post.readTime || "", post.date, post.excerpt || "")).join("")}</div></section>`)
+    .join("");
+  const more = ctx.currentPage === "/blog" ? `<p class="archive-index-more"><a href="/archives">By month</a></p>` : "";
+  return `<section class="archive-index">${renderArchiveIndexHeader(ctx, b1IndexTitle(ctx), `<p>${escapeHtml(model.description)}</p>`, `${model.totalPosts} entries`)}<section class="archive-index-directory"><div><h2>Years</h2>${renderArchiveIndexNames(yearCounts, (label) => `#y-${slugify(label)}`)}${more}</div><div><h2>Titles</h2>${records}</div></section></section>`;
+}
+
+function b1ArchiveIndexPost(model: BlogPostModel, ctx: RenderContext): string {
+  return `<article class="archive-index archive-index-article">${renderArchiveIndexHeader(ctx, model.title, model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : "", model.date, "is-long")}<div class="archive-index-record-meta"><a href="${model.backHref}">&larr; ${escapeHtml(model.backLabel)}</a></div><div class="archive-index-copy">${model.contentHtml}</div></article>`;
+}
+
+function b1ArchiveIndexArchives(model: ArchiveModel, ctx: RenderContext): string {
+  const monthCounts = new Map(model.months.map((month) => [month.label, month.posts.length] as [string, number]));
+  const records = model.months
+    .map((month) => `<section id="${slugify(month.label)}" class="archive-index-month"><h3>${escapeHtml(month.label)}</h3><div class="archive-index-list">${month.posts.map((post) => renderArchiveIndexRow(post.title, post.href, post.readTime || "", post.date, "")).join("")}</div></section>`)
+    .join("");
+  return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Archive", `<p>${model.totalPosts} essays across ${model.months.length} months.</p>`, `${model.totalPosts} records`)}<section class="archive-index-directory"><div><h2>Months</h2>${renderArchiveIndexNames(monthCounts, (label) => `#${slugify(label)}`)}</div><div><h2>Records</h2>${records}</div></section></section>`;
+}
+
+function b1ArchiveIndexGuestbook(model: GuestbookModel, ctx: RenderContext): string {
+  const rows = model.entries.length
+    ? model.entries.map((entry) => `<div class="archive-index-row"><strong>${escapeHtml(entry.name)}</strong><span></span><time>${escapeHtml(entry.date)}</time><small>${escapeHtml(entry.message)}</small></div>`).join("")
+    : `<p class="archive-index-empty">No entries yet. Be the first to sign the guestbook!</p>`;
+  return `<section class="archive-index">${renderArchiveIndexHeader(ctx, "Guestbook", b1SignButton(model), `${model.entries.length} entries`)}<section class="archive-index-feed"><div class="archive-index-list">${rows}</div></section></section>${guestbookModalScript()}`;
+}
+
+// ----- wordmark-studio -----
+
+function b1WordmarkPageHeader(label: string, title: string, detail = ""): string {
+  return `<header class="wordmark-page-header">${label ? `<p>${label}</p>` : ""}<h1>${escapeHtml(title)}</h1>${detail ? `<span>${detail}</span>` : ""}</header>`;
+}
+
+function b1WordmarkHome(model: HomeModel, ctx: RenderContext): string {
+  const linkProjects = model.links
+    .map((link) => `<a class="wordmark-project" href="${link.url}"><small>${escapeHtml(link.domain)} · ${escapeHtml(b1ShortDate(link.date))}</small><span>${escapeHtml(link.title)}</span><em>${b1Plain(link.contentHtml)}</em></a>`)
+    .join("");
+  const linkSection = `<section class="wordmark-section"><div class="wordmark-section-head"><h2>Links</h2><span>${model.links.length} entries</span></div><div class="wordmark-grid">${linkProjects}</div></section>`;
+  if (ctx.currentPage === "/links") {
+    return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}${b1WordmarkPageHeader(`${model.links.length} entries`, "Links", model.aboutHtml)}<section class="wordmark-section"><div class="wordmark-grid">${linkProjects}</div></section></section>`;
+  }
+  const writingProjects = model.recentPosts
+    .map((post) => `<a class="wordmark-project" href="${post.href}"><small>${escapeHtml(b1ShortDate(post.date))}${post.readTime ? ` · ${escapeHtml(post.readTime)}` : ""}</small><span>${escapeHtml(post.title)}</span>${post.excerpt ? `<em>${escapeHtml(post.excerpt)}</em>` : ""}</a>`)
+    .join("");
+  return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}${renderWordmarkHero(model.introHtml)}<section class="wordmark-section"><div class="wordmark-section-head"><h2>Essays</h2><a href="/blog">All essays</a></div><div class="wordmark-grid">${writingProjects}</div></section>${linkSection}</section>`;
+}
+
+function b1WordmarkBlog(model: BlogIndexModel, ctx: RenderContext): string {
+  const rows = model.postsByYear
+    .flatMap((group) => group.posts.map((post) => `<a href="${post.href}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(b1ShortDate(post.date))}${post.readTime ? ` · ${escapeHtml(post.readTime)}` : ""}</small></a>`))
+    .join("");
+  const more = ctx.currentPage === "/blog" ? `<p class="wordmark-more"><a href="/archives">By month</a></p>` : "";
+  return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}${b1WordmarkPageHeader(`${model.totalPosts} entries`, b1IndexTitle(ctx), escapeHtml(model.description))}<div class="wordmark-list">${rows}</div>${more}</section>`;
+}
+
+function b1WordmarkPost(model: BlogPostModel, ctx: RenderContext): string {
+  return `<article class="wordmark-studio wordmark-article">${renderWordmarkNav(ctx)}${b1WordmarkPageHeader(`<a href="${model.backHref}">&larr; ${escapeHtml(model.backLabel)}</a> · ${escapeHtml(model.date)}`, model.title, model.subtitle ? escapeHtml(model.subtitle) : "")}<div class="wordmark-copy">${model.contentHtml}</div></article>`;
+}
+
+function b1WordmarkArchives(model: ArchiveModel, ctx: RenderContext): string {
+  return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}${b1WordmarkPageHeader(`${model.totalPosts} entries`, "Archive", `Essays across ${model.months.length} months`)}<div class="wordmark-archive">${model.months.map((month) => `<section><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</section>`).join("")}</div></section>`;
+}
+
+function b1WordmarkGuestbook(model: GuestbookModel, ctx: RenderContext): string {
+  const entries = model.entries.length
+    ? model.entries.map((entry) => `<article class="wordmark-entry"><small>${escapeHtml(entry.name)} · ${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></article>`).join("")
+    : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+  return `<section class="wordmark-studio">${renderWordmarkNav(ctx)}${b1WordmarkPageHeader(`${model.entries.length} entries`, "Guestbook", b1SignButton(model))}<div class="wordmark-entries">${entries}</div></section>${guestbookModalScript()}`;
+}
+
+// ----- builder-notes -----
+
+function b1BuilderHome(model: HomeModel, ctx: RenderContext): string {
+  const links = model.links.map((link) => renderBuilderNotesLinkLine(link)).join("");
+  if (ctx.currentPage === "/links") {
+    return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>links</h1><p class="builder-notes-now">${model.aboutHtml}</p><section class="builder-notes-section">${links}</section></section>`;
+  }
+  return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<header class="builder-notes-intro"><h1>Ryan Prendergast</h1><div class="builder-notes-lede">${model.introHtml}</div></header><section class="builder-notes-section"><h2>essays</h2>${model.recentPosts.map((post) => renderBuilderNotesPostLine(post)).join("")}<p class="builder-note-more"><a href="/blog">all essays</a></p></section><section class="builder-notes-section"><h2>links</h2>${links}</section></section>`;
+}
+
+function b1BuilderBlog(model: BlogIndexModel, ctx: RenderContext): string {
+  const more = ctx.currentPage === "/blog" ? `<p class="builder-note-more"><a href="/archives">by month</a></p>` : "";
+  return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>${b1IndexTitle(ctx).toLowerCase()}</h1><p class="builder-notes-now">${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section class="builder-notes-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}${more}</section>`;
+}
+
+function b1BuilderPost(model: BlogPostModel, ctx: RenderContext): string {
+  return `<article class="builder-notes builder-notes-article">${renderBuilderNotesNav(ctx)}<header><h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="builder-notes-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="builder-notes-meta">${escapeHtml(model.date)} · <a href="${model.backHref}">${escapeHtml(model.backLabel.toLowerCase())}</a></p></header><div class="builder-notes-copy">${model.contentHtml}</div></article>`;
+}
+
+function b1BuilderArchives(model: ArchiveModel, ctx: RenderContext): string {
+  return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>archive</h1>${model.months.map((month) => `<section class="builder-notes-section"><h2>${escapeHtml(month.label.toLowerCase())}</h2>${month.posts.map((post) => renderBuilderNotesPostLine(post)).join("")}</section>`).join("")}</section>`;
+}
+
+function b1BuilderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
+  const entries = model.entries.length
+    ? model.entries.map((entry) => `<article class="builder-note-line"><p>${escapeHtml(entry.message)}</p><small>${escapeHtml(entry.name)} · ${escapeHtml(entry.date)}</small></article>`).join("")
+    : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+  return `<section class="builder-notes">${renderBuilderNotesNav(ctx)}<h1>guestbook</h1><p class="builder-notes-action">${b1SignButton(model)}</p><section class="builder-notes-section">${entries}</section></section>${guestbookModalScript()}`;
+}
+
+// ----- research-tools -----
+
+function b1ResearchToolsPage(ctx: RenderContext, title: string, bodyHtml: string, extraClass = ""): string {
+  return `<section class="research-tools ${extraClass}">${renderResearchToolsHeader(ctx)}<h1>${escapeHtml(title)}</h1>${bodyHtml}</section>`;
+}
+
+function b1ResearchToolsLinks(model: HomeModel): string {
+  return `<ul class="research-tools-list">${model.links.map((link) => `<li><a href="${link.url}">${escapeHtml(link.title)}</a> <span>${b1Plain(link.contentHtml)}</span> <small>${escapeHtml(link.domain)}, ${escapeHtml(b1ShortDate(link.date))}</small></li>`).join("")}</ul>`;
+}
+
+function b1ResearchToolsPosts(posts: PostSummaryModel[]): string {
+  return `<ul class="research-tools-articles">${posts.map((post) => `<li><time>${escapeHtml(b1ShortDate(post.date))}</time> <a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? ` <span>${escapeHtml(post.excerpt)}</span>` : ""}</li>`).join("")}</ul>`;
+}
+
+function b1ResearchToolsHome(model: HomeModel, ctx: RenderContext): string {
+  if (ctx.currentPage === "/links") {
+    return b1ResearchToolsPage(ctx, "links", `<p class="research-tools-practice">${model.aboutHtml}</p>${b1ResearchToolsLinks(model)}`);
+  }
+  return `<section class="research-tools">${renderResearchToolsHeader(ctx, model.introHtml)}<section class="research-tools-section"><h2>essays</h2>${b1ResearchToolsPosts(model.recentPosts)}<p class="research-tools-more"><a href="/blog">all essays</a></p></section><section class="research-tools-section"><h2>links</h2><p class="research-tools-practice">${model.aboutHtml}</p>${b1ResearchToolsLinks(model)}</section></section>`;
+}
+
+function b1ResearchToolsBlog(model: BlogIndexModel, ctx: RenderContext): string {
+  const more = ctx.currentPage === "/blog" ? `<p class="research-tools-more"><a href="/archives">by month</a></p>` : "";
+  return b1ResearchToolsPage(ctx, b1IndexTitle(ctx).toLowerCase(), `<p class="research-tools-practice">${escapeHtml(model.description)}</p>${model.postsByYear.map((group) => `<section class="research-tools-section"><h2>${escapeHtml(group.year)}</h2>${b1ResearchToolsPosts(group.posts)}</section>`).join("")}${more}`);
+}
+
+function b1ResearchToolsPost(model: BlogPostModel, ctx: RenderContext): string {
+  return `<article class="research-tools research-tools-article">${renderResearchToolsHeader(ctx)}<h1>${escapeHtml(model.title)}</h1>${model.subtitle ? `<p class="research-tools-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<p class="research-tools-meta">${escapeHtml(model.date)} · <a href="${model.backHref}">${escapeHtml(model.backLabel.toLowerCase())}</a></p><div class="research-tools-body">${model.contentHtml}</div></article>`;
+}
+
+function b1ResearchToolsArchives(model: ArchiveModel, ctx: RenderContext): string {
+  return b1ResearchToolsPage(ctx, "archive", model.months.map((month) => `<section class="research-tools-section"><h2>${escapeHtml(month.label.toLowerCase())}</h2>${b1ResearchToolsPosts(month.posts)}</section>`).join(""));
+}
+
+function b1ResearchToolsGuestbook(model: GuestbookModel, ctx: RenderContext): string {
+  const entries = model.entries.length
+    ? `<ul class="research-tools-list">${model.entries.map((entry) => `<li><span>${escapeHtml(entry.message)}</span> <small>${escapeHtml(entry.name)}, ${escapeHtml(entry.date)}</small></li>`).join("")}</ul>`
+    : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+  return `${b1ResearchToolsPage(ctx, "guestbook", `<p class="research-tools-action">${b1SignButton(model)}</p>${entries}`)}${guestbookModalScript()}`;
+}
+
+function renderResearchToolsGeneric(model: GenericPageModel, ctx: RenderContext): string {
+  return b1ResearchToolsPage(ctx, model.heading.toLowerCase(), `<div class="research-tools-body">${model.contentHtml}</div>`, "research-tools-article");
+}
+
+// ----- art-library -----
+
+function b1ArtLibraryHome(model: HomeModel, ctx: RenderContext): string {
+  const linksOnly = ctx.currentPage === "/links";
+  const categories: Array<[string, string, boolean]> = [["All", "/", !linksOnly], ["Links", "/links", linksOnly], ["Essays", "/blog", false], ["Archive", "/archives", false]];
+  const linkRows = model.links.map((link) => [`<a href="${link.url}">${escapeHtml(link.title)}</a><small>${b1Plain(link.contentHtml)}</small>`, escapeHtml(link.domain), escapeHtml(b1ShortDate(link.date)), "Link"]);
+  const postRows = model.recentPosts.map((post) => [`<a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<small>${escapeHtml(post.excerpt)}</small>` : ""}`, escapeHtml(post.readTime || ""), escapeHtml(b1ShortDate(post.date)), "Essay"]);
+  const header = linksOnly ? renderArtLibraryHeader(ctx, "Links", `<p>${model.aboutHtml}</p>`) : renderArtLibraryHeader(ctx, "Library", model.introHtml);
+  return `<section class="art-library">${header}${renderArtLibraryCategories(categories)}${renderArtLibraryTable(["Title", "Source", "Date", "Category"], linksOnly ? linkRows : [...postRows, ...linkRows])}</section>`;
+}
+
+function b1ArtLibraryBlog(model: BlogIndexModel, ctx: RenderContext): string {
+  const categories: Array<[string, string, boolean]> = model.postsByYear.map((group) => [group.year, `#y-${slugify(group.year)}`, false]);
+  const rows = model.postsByYear.flatMap((group) => group.posts.map((post, index) => [`<a${index === 0 ? ` id="y-${slugify(group.year)}"` : ""} href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<small>${escapeHtml(post.excerpt)}</small>` : ""}`, escapeHtml(post.readTime || ""), escapeHtml(b1ShortDate(post.date)), escapeHtml(group.year)]));
+  return `<section class="art-library">${renderArtLibraryHeader(ctx, b1IndexTitle(ctx), `<p>${escapeHtml(model.description)}</p>`)}${renderArtLibraryCategories(categories)}${renderArtLibraryTable(["Title", "Length", "Date", "Year"], rows)}</section>`;
+}
+
+function b1ArtLibraryPost(model: BlogPostModel, ctx: RenderContext): string {
+  return `<article class="art-library art-library-record">${renderArtLibraryHeader(ctx, model.title, `${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}<p>${escapeHtml(model.date)} · <a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`)}<div class="art-library-copy">${model.contentHtml}</div></article>`;
+}
+
+function b1ArtLibraryArchives(model: ArchiveModel, ctx: RenderContext): string {
+  const categories: Array<[string, string, boolean]> = model.months.map((month) => [month.label, `#m-${slugify(month.key)}`, false]);
+  const rows = model.months.flatMap((month) => month.posts.map((post, index) => [`<a${index === 0 ? ` id="m-${slugify(month.key)}"` : ""} href="${post.href}">${escapeHtml(post.title)}</a>`, escapeHtml(post.readTime || ""), escapeHtml(b1ShortDate(post.date)), escapeHtml(month.label)]));
+  return `<section class="art-library">${renderArtLibraryHeader(ctx, "Archive", `<p>${model.totalPosts} essays across ${model.months.length} months.</p>`)}${renderArtLibraryCategories(categories)}${renderArtLibraryTable(["Title", "Length", "Date", "Month"], rows)}</section>`;
+}
+
+function b1ArtLibraryGuestbook(model: GuestbookModel, ctx: RenderContext): string {
+  return `<section class="art-library">${renderArtLibraryHeader(ctx, "Guestbook", b1SignButton(model))}${renderArtLibraryTable(["Message", "Name", "Date"], model.entries.map((entry) => [escapeHtml(entry.message), escapeHtml(entry.name), escapeHtml(b1ShortDate(entry.date))]))}</section>${guestbookModalScript()}`;
 }
 
 function renderStudioIndexHeader(ctx: RenderContext, introHtml: string, activeTab: string): string {
