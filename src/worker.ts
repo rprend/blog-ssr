@@ -263,7 +263,7 @@ app.get("/photos", async (c) => {
   const posts = (await getBlogPosts()).filter((post) => post.section === "photos");
 
   // With a single photo page, the Photos tab opens it directly.
-  if (posts.length === 1) return c.redirect(`/photos/${posts[0].slug}`, 302);
+  if (posts.length === 1) return c.redirect(`/photos/${posts[0].slug}${new URL(c.req.url).search}`, 302);
 
   const model: BlogIndexModel = {
     description: "Photos by Ryan Prendergast",

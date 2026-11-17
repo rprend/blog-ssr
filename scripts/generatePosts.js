@@ -18,6 +18,8 @@ function calculateReadTime(content) {
 function extractExcerpt(content, maxLength = 150) {
   // Remove markdown formatting
   const plainText = content
+    .replace(/<[^>]+>/g, " ") // Remove HTML tags
+    .replace(/!\[[^\]]*\]\([^\)]*\)/g, "") // Remove images
     .replace(/^#+\s+/gm, "") // Remove headers
     .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1") // Remove links
     .replace(/[*_~`]/g, "") // Remove emphasis
