@@ -724,7 +724,8 @@ export const memory = (data: Record<string, string> = {}): string => {
 export const nav = (data: Record<string, string> = {}): string => {
   let html = `<ul class="nav-list">
   <li><a href="/" class="{{homeActive}}">Home</a></li>
-  <li><a href="/blog" class="{{blogActive}}">Blog</a></li>
+  <li><a href="/links" class="{{linksActive}}">Links</a></li>
+  <li><a href="/blog" class="{{blogActive}}">Essays</a></li>
   <li><a href="/guestbook" class="{{guestbookActive}}">Guestbook</a></li>
   <li><a href="/contact" class="{{contactActive}}">Contact</a></li>
 </ul>

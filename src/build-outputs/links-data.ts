@@ -16,15 +16,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.repertory.nyc/",
     "date": "10-24-2026",
     "image": null,
-    "content": "<p>every movie at every theater in nyc</p>\n"
-  },
-  {
-    "slug": "pickleballIsAPsyOp",
-    "title": "Pickleball Is a Psy-Op",
-    "url": "https://www.gawkerarchives.com/culture/pickleball-is-a-psy-op",
-    "date": "10-04-2026",
-    "image": null,
-    "content": "<p>oh. pickleball is a psy op?</p>\n"
+    "content": "<p>Every movie at every theater in NYC.</p>\n"
   },
   {
     "slug": "radioheadInRainbowsFromTheBasement",
@@ -32,7 +24,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.youtube.com/watch?v=sWqDIZxO-nU",
     "date": "09-15-2026",
     "image": null,
-    "content": "<p>Radiohead in rainbows</p>\n"
+    "content": "<p>Radiohead playing the whole album live in a studio.</p>\n"
   },
   {
     "slug": "simplifiedTechnicalEnglish",
@@ -40,7 +32,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://en.wikipedia.org/wiki/Simplified_Technical_English",
     "date": "07-27-2026",
     "image": null,
-    "content": "<p>controlled natural languages</p>\n"
+    "content": "<p>A controlled subset of English used for aircraft maintenance manuals.</p>\n"
   },
   {
     "slug": "newYorkEarthRoom",
@@ -48,7 +40,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://en.wikipedia.org/wiki/The_New_York_Earth_Room",
     "date": "07-15-2026",
     "image": null,
-    "content": "<p>yea</p>\n"
+    "content": "<p>Walter De Maria&#39;s SoHo loft, filled with earth since 1977.</p>\n"
   },
   {
     "slug": "cellphonesInY2kMusicVideos",
@@ -56,7 +48,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.are.na/terezie-stindlova/cellphones-in-late-90s-early-00s-pop-music-videos",
     "date": "06-22-2026",
     "image": null,
-    "content": "<p>Cellphones in y2k music videos</p>\n"
+    "content": "<p>An Are.na channel collecting exactly that.</p>\n"
   },
   {
     "slug": "diagramWebsite",
@@ -64,7 +56,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://diagram.website/",
     "date": "06-15-2026",
     "image": null,
-    "content": "<p>Sites of sites</p>\n"
+    "content": "<p>A hand-drawn map of the small web.</p>\n"
   },
   {
     "slug": "bebeAndLouisBarron",
@@ -72,7 +64,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://en.wikipedia.org/wiki/Bebe_and_Louis_Barron",
     "date": "06-04-2026",
     "image": null,
-    "content": "<p>cybernetics and electronic music</p>\n"
+    "content": "<p>They made the first all-electronic film score, for Forbidden Planet.</p>\n"
   },
   {
     "slug": "nyc1940s",
@@ -80,15 +72,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://1940s.nyc/",
     "date": "05-26-2026",
     "image": null,
-    "content": "<p>i look at this regularly</p>\n"
-  },
-  {
-    "slug": "mouldTreesChairs",
-    "title": "We mould trees to grow into shape of chairs",
-    "url": "https://www.bbc.com/news/articles/cvg0yy3gp71o",
-    "date": "05-18-2026",
-    "image": null,
-    "content": "<p>i have a friend working on something like this</p>\n"
+    "content": "<p>A street photo of every building in New York from the 1939–40 tax survey.</p>\n"
   },
   {
     "slug": "realHampshireCollege",
@@ -96,63 +80,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.mod171.com/p/real-hampshire-college-has-never",
     "date": "05-16-2026",
     "image": null,
-    "content": "<p>I wish i knew about Hampshire college when i was 17</p>\n"
-  },
-  {
-    "slug": "idog",
-    "title": "iDog",
-    "url": "https://en.wikipedia.org/wiki/IDog",
-    "date": "05-10-2026",
-    "image": null,
-    "content": "<p>I used to have this</p>\n"
-  },
-  {
-    "slug": "openaiSupplyCo",
-    "title": "OpenAI Supply Co.",
-    "url": "https://supply.openai.com/",
-    "date": "05-10-2026",
-    "image": null,
-    "content": "<p>OpenAI merch</p>\n"
-  },
-  {
-    "slug": "flick",
-    "title": "Flick",
-    "url": "https://flick.art/projects",
-    "date": "05-07-2026",
-    "image": null,
-    "content": "<p>The best for making artistic images</p>\n"
-  },
-  {
-    "slug": "printingpress",
-    "title": "printingpress.dev",
-    "url": "https://printingpress.dev/",
-    "date": "05-07-2026",
-    "image": null,
-    "content": "<p>In my notes as something to do , they launched</p>\n"
-  },
-  {
-    "slug": "recurseCenterFaq",
-    "title": "Recurse Center FAQ",
-    "url": "https://www.recurse.com/faq",
-    "date": "05-07-2026",
-    "image": null,
-    "content": "<p>Creative coding. Nolan (eieio) type people</p>\n"
-  },
-  {
-    "slug": "corner",
-    "title": "Corner",
-    "url": "https://www.corner.inc/",
-    "date": "05-05-2026",
-    "image": null,
-    "content": "<p>google maps but social</p>\n"
-  },
-  {
-    "slug": "psychosisNyc",
-    "title": "AI Psychosis Summit",
-    "url": "https://psychosis.nyc/",
-    "date": "05-01-2026",
-    "image": null,
-    "content": "<p>AI psychosis summit</p>\n"
+    "content": "<p>An essay on Hampshire College and its experiment in self-directed education.</p>\n"
   },
   {
     "slug": "sereneIndustriesCleaver",
@@ -168,7 +96,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.hiddenhydrology.org/atlas-of-oblique-maps/",
     "date": "04-15-2026",
     "image": null,
-    "content": "<p>Atlas of oblique maps. beautiful</p>\n"
+    "content": "<p>A collection of oblique, bird&#39;s-eye-view maps. Beautiful.</p>\n"
   },
   {
     "slug": "algebrica",
@@ -184,7 +112,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.makingsoftware.com/",
     "date": "04-09-2026",
     "image": null,
-    "content": "<p>Design eng at cursor. Beautiful looking book</p>\n"
+    "content": "<p>A beautiful-looking book by a design engineer at Cursor.</p>\n"
   },
   {
     "slug": "galleryJessyinWorld",
@@ -201,14 +129,6 @@ export const linkEntries: LinkEntry[] = [
     "date": "04-01-2026",
     "image": null,
     "content": "<p>Smiths fan site. Interviews, magazine covers, photos.</p>\n"
-  },
-  {
-    "slug": "rlmCli",
-    "title": "RLM CLI",
-    "url": "https://github.com/viplismism/rlm-cli",
-    "date": "03-30-2026",
-    "image": null,
-    "content": "<p>RLM CLI. I had the thought to make this myself two weeks ago and thought id do it later. Goes to show that being quick is important</p>\n"
   },
   {
     "slug": "asterismBooks",
@@ -232,15 +152,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://tylercowen.com/marginal-revolution-generative-book/app/",
     "date": "03-26-2026",
     "image": null,
-    "content": "<p>Tyler Cowen gets the direction. Book on the left, corpus-aware question answerer on the right.</p>\n"
-  },
-  {
-    "slug": "projectsDev",
-    "title": "Projects",
-    "url": "https://projects.dev/",
-    "date": "03-26-2026",
-    "image": null,
-    "content": "<p>By far the biggest pain for a no-code or bipoding system is the integrations. Cool to see Stripe is tackling this.</p>\n"
+    "content": "<p>Tyler Cowen&#39;s book on the left, a corpus-aware question answerer on the right.</p>\n"
   },
   {
     "slug": "p5Brush",
@@ -248,7 +160,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://github.com/acamposuribe/p5.brush",
     "date": "03-15-2026",
     "image": null,
-    "content": "<p>Brushes and fill effects on JavaScript canvases. Feels Tyler Hobbes-y.</p>\n"
+    "content": "<p>Brushes and fill effects on JavaScript canvases. Feels Tyler Hobbs-y.</p>\n"
   },
   {
     "slug": "poeticJustice",
@@ -256,7 +168,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://casualarchivist.substack.com/p/poetic-justice",
     "date": "03-11-2026",
     "image": null,
-    "content": "<p>Ottoman-era data visualizations from Cerîde-i Adliyye, “The Justice Gazette,”</p>\n"
+    "content": "<p>Ottoman-era data visualizations from Cerîde-i Adliyye, “The Justice Gazette.”</p>\n"
   },
   {
     "slug": "busundreu",
@@ -272,23 +184,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.khaledeltokhy.com/cranes",
     "date": "03-10-2026",
     "image": null,
-    "content": "<p>Single-purpose websites. This one shows a map of every crane in New York City.</p>\n"
-  },
-  {
-    "slug": "fontofweb",
-    "title": "Font of Web",
-    "url": "https://fontofweb.com/",
-    "date": "03-10-2026",
-    "image": null,
-    "content": "<p>Consistently, the most annoying thing about coding agents is the atrocious design they use. I haven&#39;t found a good system for getting consistently good design.</p>\n"
-  },
-  {
-    "slug": "reve",
-    "title": "Reve",
-    "url": "https://app.reve.com",
-    "date": "03-09-2026",
-    "image": null,
-    "content": "<p>Finally a good &quot;draw your changes here&quot; editor. What GAUGan always promised to be.</p>\n"
+    "content": "<p>A map of every crane in New York City.</p>\n"
   },
   {
     "slug": "startupsRip",
@@ -296,15 +192,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://startups.rip/",
     "date": "03-09-2026",
     "image": null,
-    "content": "<p>failed startups</p>\n"
-  },
-  {
-    "slug": "terminaluse",
-    "title": "Terminal Use",
-    "url": "https://www.terminaluse.com/",
-    "date": "03-09-2026",
-    "image": null,
-    "content": "<p>Sometimes you see a company and wish you got there first. I had half of this infra (Vercel for agents) set up for myself. Why didn&#39;t I productize???</p>\n"
+    "content": "<p>An archive of dead YC startups and what they were building.</p>\n"
   },
   {
     "slug": "searchableWholeEarth",
@@ -312,7 +200,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://searchwhole.earth/",
     "date": "03-06-2026",
     "image": null,
-    "content": "<p>somebody needs to do this for every magazine</p>\n"
+    "content": "<p>Full-text search across the Whole Earth Catalog.</p>\n"
   },
   {
     "slug": "citytracker",
@@ -323,20 +211,12 @@ export const linkEntries: LinkEntry[] = [
     "content": "<p>A search engine for NYC real estate using the city&#39;s unusually rich public data.</p>\n"
   },
   {
-    "slug": "aiunderwriting",
-    "title": "AI Underwriting",
-    "url": "https://x.com/aiunderwriting",
-    "date": "03-03-2026",
-    "image": null,
-    "content": "<p>Future is self-service agents: Agents that sign up for themselves, have their own insurance, and operate entirely autonomously.</p>\n"
-  },
-  {
     "slug": "otherNetworks",
     "title": "Other Networks",
     "url": "https://othernetworks.net/",
     "date": "02-25-2026",
     "image": null,
-    "content": "<p>Other networks outside what&#39;s now called the internet.</p>\n"
+    "content": "<p>A catalog of networks that exist outside what&#39;s now called the internet.</p>\n"
   },
   {
     "slug": "walzr",
@@ -345,14 +225,6 @@ export const linkEntries: LinkEntry[] = [
     "date": "02-25-2026",
     "image": null,
     "content": "<p>Riley Walz on the labs team at OpenAI has a personal site with my favorite kind of niche single-purpose projects. Route shuffle generates random routes for runners and cyclists, and so on.</p>\n"
-  },
-  {
-    "slug": "sceneData",
-    "title": "Scene Data",
-    "url": "https://www.scene-data.com/explore",
-    "date": "02-24-2025",
-    "image": null,
-    "content": "<p>Seems like OpenClaw is opening up a lot of breadth-based internet searches, scraping so many things. Way more people are making way more scrapers, and I expect this to continue.</p>\n"
   },
   {
     "slug": "hypercardSimulator",

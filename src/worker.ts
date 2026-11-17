@@ -186,6 +186,7 @@ function renderPage(
 ) {
   const navData = {
     homeActive: currentPage === "/" ? "active" : "",
+    linksActive: currentPage === "/links" ? "active" : "",
     blogActive: currentPage === "/blog" ? "active" : "",
     photosActive: currentPage === "/photos" ? "active" : "",
     archivesActive: currentPage === "/archives" ? "active" : "",
@@ -213,8 +214,8 @@ function renderPage(
   });
 }
 
-// Home Page (Linklog)
-app.get("/", async (c) => {
+// Home page and Links page share one model; the default theme shows the bio on "/" and the links on "/links".
+async function renderHomeOrLinks(c: any, currentPage: "/" | "/links") {
   const links = await getLinkEntries();
   const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
   const model: HomeModel = {
@@ -233,7 +234,7 @@ app.get("/", async (c) => {
     {
       "@context": "https://schema.org",
       "@type": "Blog",
-      "name": "Ryan Prendergast's Linklog",
+      "name": "Ryan Prendergast",
       "url": "https://ryan-prendergast.com",
       "author": {
         "@type": "Person",
@@ -243,15 +244,20 @@ app.get("/", async (c) => {
     </script>
   `;
 
+  const isLinks = currentPage === "/links";
   return c.html(
-    renderThemePage(c.req.raw, "Ryan Prendergast", model, "/", "home", {
-      pageSubtitle: "Linklog",
-      description:
-        "Links, commentary, and things I find interesting. A linklog by Ryan Prendergast.",
+    renderThemePage(c.req.raw, isLinks ? "Links - Ryan Prendergast" : "Ryan Prendergast", model, currentPage, "home", {
+      pageSubtitle: isLinks ? "Links" : "",
+      description: isLinks
+        ? "Links Ryan Prendergast found interesting."
+        : "Ryan Prendergast is a startup founder building Method.",
       structuredData,
     })
   );
-});
+}
+
+app.get("/", (c) => renderHomeOrLinks(c, "/"));
+app.get("/links", (c) => renderHomeOrLinks(c, "/links"));
 
 // Photos List Page
 app.get("/photos", async (c) => {
@@ -740,6 +746,7 @@ app.get("/sitemap.xml", async (c) => {
 
   const staticPages = [
     { url: "", changefreq: "weekly", priority: "1.0" },
+    { url: "/links", changefreq: "weekly", priority: "0.9" },
     { url: "/blog", changefreq: "weekly", priority: "0.9" },
     { url: "/archives", changefreq: "weekly", priority: "0.8" },
     { url: "/contact", changefreq: "monthly", priority: "0.7" },

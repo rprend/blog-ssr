@@ -14605,7 +14605,25 @@ button:active, .btn:active {
   }
 
   .sidebar {
+    order: -1;
     padding-left: 0;
+    padding-top: 12px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .main-content-area {
+    border-bottom: none;
+  }
+
+  .nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin: 0 0 12px 0;
+  }
+
+  .nav-list li {
+    margin-bottom: 0;
   }
 
   header.site-header {

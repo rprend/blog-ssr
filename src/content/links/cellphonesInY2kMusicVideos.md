@@ -4,4 +4,4 @@ url: "https://www.are.na/terezie-stindlova/cellphones-in-late-90s-early-00s-pop-
 date: "06-22-2026"
 ---
 
-Cellphones in y2k music videos
+An Are.na channel collecting exactly that.

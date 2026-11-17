@@ -4,4 +4,4 @@ url: "https://www.hiddenhydrology.org/atlas-of-oblique-maps/"
 date: "04-15-2026"
 ---
 
-Atlas of oblique maps. beautiful
+A collection of oblique, bird's-eye-view maps. Beautiful.

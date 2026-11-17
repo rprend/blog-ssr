@@ -4,4 +4,4 @@ url: "https://diagram.website/"
 date: "06-15-2026"
 ---
 
-Sites of sites
+A hand-drawn map of the small web.

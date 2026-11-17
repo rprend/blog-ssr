@@ -4,4 +4,4 @@ url: "https://searchwhole.earth/"
 date: "03-06-2026"
 ---
 
-somebody needs to do this for every magazine
+Full-text search across the Whole Earth Catalog.

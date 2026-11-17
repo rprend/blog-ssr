@@ -4,4 +4,4 @@ url: "https://www.mod171.com/p/real-hampshire-college-has-never"
 date: "05-16-2026"
 ---
 
-I wish i knew about Hampshire college when i was 17
+An essay on Hampshire College and its experiment in self-directed education.
