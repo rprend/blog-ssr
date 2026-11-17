@@ -567,6 +567,11 @@ app.get("/colophon", (c) => {
   );
 });
 
+// Guestbook spam guard: real visitors leave a short note; spam carries a link.
+function looksLikeSpam(name: string, message: string): boolean {
+  return /https?:\/\/|www\.|<\s*a\b|\.(com|org|net|ru|xyz|top|info)\b/i.test(`${name} ${message}`);
+}
+
 // Guestbook API endpoints
 app.get("/api/guestbook", async (c) => {
   try {
@@ -574,7 +579,7 @@ app.get("/api/guestbook", async (c) => {
       "SELECT * FROM guestbook_entries ORDER BY created_at DESC LIMIT 100"
     ).all();
 
-    return c.json(results);
+    return c.json((results || []).filter((entry: any) => !looksLikeSpam(entry.name || "", entry.message || "")));
   } catch (error) {
     console.error("Error fetching guestbook entries:", error);
     return c.json({ error: "Failed to fetch entries" }, 500);
@@ -588,6 +593,10 @@ app.post("/api/guestbook", async (c) => {
 
     if (!name || !message) {
       return c.json({ error: "Name and message are required" }, 400);
+    }
+
+    if (looksLikeSpam(String(name), String(message))) {
+      return c.json({ error: "Links are not allowed in guestbook entries" }, 400);
     }
 
     const result = await c.env.GUESTBOOK_DB.prepare(
@@ -613,7 +622,7 @@ app.get("/guestbook", async (c) => {
     };
 
     const model = {
-      entries: (results || []).map((entry) => ({
+      entries: (results || []).filter((entry) => !looksLikeSpam(entry.name, entry.message)).map((entry) => ({
         name: entry.name,
         message: entry.message,
         rawDate: entry.created_at,
