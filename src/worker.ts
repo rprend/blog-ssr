@@ -322,7 +322,7 @@ app.get("/photos/:slug", async (c) => {
 
 // Blog List Page
 app.get("/blog", async (c) => {
-  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
+  const posts = await getBlogPosts();
 
   // Group posts by year
   const postsByYear: { [year: string]: typeof posts } = {};
@@ -337,10 +337,10 @@ app.get("/blog", async (c) => {
     .sort((a, b) => b.localeCompare(a))
   const yearsAscending = Object.keys(postsByYear).sort();
   const model: BlogIndexModel = {
-    description: "Ryan's mailbag: Essays and book reviews",
+    description: "Essays and book reviews",
     postsByYear: sortedYears.map((year) => ({
       year,
-      posts: postsByYear[year].map((post) => toPostSummary(post)),
+      posts: postsByYear[year].map((post) => toPostSummary(post, post.section === "photos" ? "/photos" : "/blog")),
     })),
     totalPosts: posts.length,
     yearRange: yearsAscending.length
@@ -353,7 +353,7 @@ app.get("/blog", async (c) => {
     {
       "@context": "https://schema.org",
       "@type": "Blog",
-      "name": "Ryan's Mailbag",
+      "name": "Essays",
       "description": "Essays and book reviews",
       "url": "https://ryan-prendergast.com/blog",
       "author": {
@@ -529,8 +529,8 @@ app.get("/colophon", (c) => {
     <article class="colophon-page">
       <h2 class="blog-post-title">Colophon</h2>
       <p>This site is built as a small Cloudflare Worker that renders semantic HTML templates and serves static assets from the repository.</p>
-      <p>The visual layer is now a 100-theme layout renderer system. A shared content model feeds different shells and route renderers, so a theme can act like Hacker News, Windows 98, a terminal, a wiki, or a portfolio without changing the underlying content.</p>
-      <p>Theme selection is stored locally and in a cookie, can be shared with a URL parameter such as <code>?theme=win98</code>, and can be changed from the picker or the full theme gallery.</p>
+      <p>The visual layer is a theme system. A shared content model feeds different shells and route renderers, so a theme can act like Hacker News, Windows 98, a terminal, a wiki, or a portfolio without changing the underlying content.</p>
+      <p>Theme selection is stored locally and in a cookie, can be shared with a URL parameter such as <code>?theme=win98</code>, and can be changed from the picker at the bottom of each page.</p>
       <p>The default skin is <strong>Aqua</strong>, preserving the early-2000s Apple-inspired design that was already here before the theme system was added.</p>
     </article>
   `;
@@ -555,7 +555,7 @@ app.get("/colophon", (c) => {
   return c.html(
     renderThemePage(c.req.raw, "Colophon - Ryan Prendergast", model, "/colophon", "generic", {
       pageSubtitle: "Colophon",
-      description: "How Ryan Prendergast's personal site is built, including the 100-theme system.",
+      description: "How Ryan Prendergast's personal site is built, including the theme system.",
       structuredData,
     })
   );

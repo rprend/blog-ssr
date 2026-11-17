@@ -150,12 +150,7 @@ export const layout = (data: Record<string, string> = {}): string => {
   {{structuredData}}
 </head>
 <body class="site-shell {{bodyClass}}">
-  <div class="aqua-bar">
-    <a href="/" class="aqua-pill">Ryan's Blog</a>
-    <a href="/blog" class="aqua-pill">Blog</a>
-    <a href="/archives" class="aqua-pill">Archives</a>
-    <a href="/rss.xml" class="aqua-pill">RSS Feed</a>
-  </div>
+  <div class="aqua-bar" aria-hidden="true"></div>
   <div class="main-container">
     <header class="site-header">
       <h1 class="site-title">Ryan Prendergast</h1>
@@ -170,12 +165,10 @@ export const layout = (data: Record<string, string> = {}): string => {
       </aside>
     </div>
     <footer class="site-footer">
-      <a href="/">Ryan Prendergast Worldwide</a>
-      <a href="/contact">Contact</a>
       <a href="/colophon">Colophon</a>
       <a href="/rss.xml">RSS</a>
       <br><br>
-      Copyright &copy; 2025 Ryan Prendergast. All rights reserved.
+      &copy; 2026 Ryan Prendergast
     </footer>
   </div>
   <script src="/theme-system.js" defer></script>
@@ -732,22 +725,9 @@ export const nav = (data: Record<string, string> = {}): string => {
   let html = `<ul class="nav-list">
   <li><a href="/" class="{{homeActive}}">Home</a></li>
   <li><a href="/blog" class="{{blogActive}}">Blog</a></li>
-  <li><a href="/photos" class="{{photosActive}}">Photos</a></li>
-  <li><a href="/archives" class="{{archivesActive}}">Archives</a></li>
   <li><a href="/guestbook" class="{{guestbookActive}}">Guestbook</a></li>
   <li><a href="/contact" class="{{contactActive}}">Contact</a></li>
 </ul>
-<div class="sidebar-box theme-picker" aria-label="Theme picker">
-  <h3 class="sidebar-header">Theme</h3>
-  <div class="sidebar-text theme-picker-summary">
-    <span data-theme-current>Aqua</span>
-  </div>
-  <div class="theme-picker-controls">
-    <button type="button" class="theme-picker-button" data-theme-prev aria-label="Previous theme">&lsaquo;</button>
-    <button type="button" class="theme-picker-button" data-theme-random>Random</button>
-    <button type="button" class="theme-picker-button" data-theme-next aria-label="Next theme">&rsaquo;</button>
-  </div>
-</div>
 {{sidebarExtra}}
 `;
   
