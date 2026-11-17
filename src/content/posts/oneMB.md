@@ -26,7 +26,7 @@ I finally found a working solution, though not ideal, in Stripe Marketplace. In 
 
 Such a setup through API has only become possible in the past few years with something like Stripe Marketplace. The setup still leaves a lot to be desired.
 
-- KYC requires a manual form submission through Stripe (~10-20minutes). The friction prevents this site from growing organically, as a 20 minute onboarding is unworkable. This could be fixed by a payment rail which is KYC compliant ON THE RAIL itself. Payment senders / receivers both have IDs attached, and any 3rd party simply has to embed a "Pay with XYZ" and know all senders will
+- KYC requires a manual form submission through Stripe (~10-20minutes). The friction prevents this site from growing organically, as a 20 minute onboarding is unworkable. This could be fixed by a payment rail which is KYC compliant ON THE RAIL itself. Payment senders / receivers both have IDs attached, and any 3rd party simply has to embed a "Pay with XYZ" button.
 - Long settlement times for card payments open abuse vectors for cancelled payments. This could be fixed by using bank transfers instead of card networks.
 - Card fees are diabolical. 3%+ $.30 is insanity.
 - Conditional flows and custom logic. The whole setup of "both parties click pay and then the server only captures one" is not ideal. It's confusing— you're not really "paying" but "authorizing payment". Customers will see a "pending" transaction on their bank statement for the next week before the authorized payment expires.

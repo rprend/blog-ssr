@@ -2262,7 +2262,7 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
   }
 
   // Default theme: links live on their own page, the home page is the bio alone.
-  if (ctx.currentPage === "/links") return `<section class="theme-link-list">${links}</section>`;
+  if (ctx.currentPage === "/links") return `<p class="links-description">Sometimes, I save the link of an interesting institution, project, company, essay, or other website on the internet that I recommend.</p><section class="theme-link-list">${links}</section>`;
   return `<section class="theme-home-intro">${model.introHtml}</section>`;
 }
 

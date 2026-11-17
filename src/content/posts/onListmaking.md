@@ -15,21 +15,21 @@ Here's a section.
 
 - Nonfiction
   - Topic: Physics and Math
-    - [Elements of Mathematics: From Euclid to Gödel](https://www.amazon.com/dp/0691178542/?coliid=INA2PDARJHVHL&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [The Weil Conjectures: On Math and the Pursuit of the Unknown](https://www.amazon.com/dp/1250619572/?coliid=I3L1342JHQ0IS6&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [Bourbaki: A Secret Society of Mathematicians](https://www.amazon.com/dp/0821839675/?coliid=I1B5DDMOI9D3HF&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [The Shape of a Life: One Mathematician's Search for the Universe's Hidden Geometry](https://www.amazon.com/dp/0300235909/?coliid=I27A36WXE5TV6N&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [Physics from Finance: A gentle introduction to gauge theories, fundamental interactions and fiber bundles](https://www.amazon.com/dp/1795882417/?coliid=I6T0DX6WSNTQG&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [Structures: Or Why Things Don't Fall Down](https://www.amazon.com/dp/0306812835/?coliid=I1QHJWYR2O1OIM&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [The Pleasure of Finding Things Out: The Best Short Works of Richard P. Feynman (Helix Books)](https://www.amazon.com/dp/0465023959/?coliid=I2TIIXXF41NXE6&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [A History of Mathematics](https://www.amazon.com/dp/0470525487/?coliid=I3HP5SUFPQZOKN&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
+    - [Elements of Mathematics: From Euclid to Gödel](https://www.amazon.com/dp/0691178542)
+    - [The Weil Conjectures: On Math and the Pursuit of the Unknown](https://www.amazon.com/dp/1250619572)
+    - [Bourbaki: A Secret Society of Mathematicians](https://www.amazon.com/dp/0821839675)
+    - [The Shape of a Life: One Mathematician's Search for the Universe's Hidden Geometry](https://www.amazon.com/dp/0300235909)
+    - [Physics from Finance: A gentle introduction to gauge theories, fundamental interactions and fiber bundles](https://www.amazon.com/dp/1795882417)
+    - [Structures: Or Why Things Don't Fall Down](https://www.amazon.com/dp/0306812835)
+    - [The Pleasure of Finding Things Out: The Best Short Works of Richard P. Feynman (Helix Books)](https://www.amazon.com/dp/0465023959)
+    - [A History of Mathematics](https://www.amazon.com/dp/0470525487)
   - Misc
-    - [Practical Lock Picking: A Physical Penetration Tester's Training Guide](https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/1597499897/?coliid=I3SKFGD2C3D838&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
+    - [Practical Lock Picking: A Physical Penetration Tester's Training Guide](https://www.amazon.com/dp/1597499897)
   - Behavioral Psychology / Philosophy
-    - [Finite and Infinite Games](https://web.archive.org/web/20220122220306/https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games?ac=1&from_search=true&qid=3qFg4FiTJQ&rank=1)
-    - [The Moral Animal: Why We Are, the Way We Are: The New Science of Evolutionary Psychology](https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/0679763996/?coliid=I2PIOAGQ1TPKY2&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [Moral Mazes: The World of Corporate Managers](https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/0199729883/?coliid=I2J169LM65505D&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-    - [Man's Search for Meaning](https://web.archive.org/web/20220122220306/https://www.amazon.com/gp/product/0807014273/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0807014273&linkCode=as2&tag=stephsmith05-20&linkId=087de4a56a3e33707ab2939836e4cc08)
+    - [Finite and Infinite Games](https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games)
+    - [The Moral Animal: Why We Are, the Way We Are: The New Science of Evolutionary Psychology](https://www.amazon.com/dp/0679763996)
+    - [Moral Mazes: The World of Corporate Managers](https://www.amazon.com/dp/0199729883)
+    - [Man's Search for Meaning](https://www.amazon.com/dp/0807014273)
 
 This list is incredibly boring. It isn't very useful, because after I create it, I ignore it. It is a chore to make, and I never bother to add new books to it.
 
@@ -77,13 +77,13 @@ A few months after making the original categorical list and ignoring it, I added
 
 - Tech Bro canon, the rationalist world
   - [Sapiens: A Brief History of Humankind](https://www.goodreads.com/book/show/23692271-sapiens)
-  - [Superintelligence: Paths, Dangers, Strategies](https://www.amazon.com/dp/0198739834/?coliid=I2YUE2K811SG9Q&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
-  - [Gödel, Escher, Bach: An Eternal Golden Braid](https://www.amazon.com/dp/0465026567/?coliid=I1114C3TRXYYJO&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it)
+  - [Superintelligence: Paths, Dangers, Strategies](https://www.amazon.com/dp/0198739834)
+  - [Gödel, Escher, Bach: An Eternal Golden Braid](https://www.amazon.com/dp/0465026567)
   - Thinking, Fast and Slow by Daniel Kahneman
   - Gang Leader for A Day by Sudhir Venkatesh
   - Andy Weir: the Egg
-  - [Finite and Infinite Games](https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games?ac=1&from_search=true&qid=3qFg4FiTJQ&rank=1)
-  - [Zero to One](https://www.amazon.com/gp/product/0804139296/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0804139296&linkCode=as2&tag=stephsmith05-20&linkId=9c862da80a2bfacf1a1f94a1cc3dca06)
+  - [Finite and Infinite Games](https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games)
+  - [Zero to One](https://www.amazon.com/dp/0804139296)
   - Beginning of Infinity
 
 It's not well grouped by genre. There's mostly nonfiction here, but of different types, and there's even some fiction.

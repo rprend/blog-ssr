@@ -1,5 +1,5 @@
 ---
-title: "Book Review- Lacan by Lionel Bailey"
+title: "Book Review- Lacan by Lionel Bailly"
 date: "12-08-2024"
 author: "Ryan Prendergast"
 slug: "lacan-book-review"
@@ -41,7 +41,7 @@ However, Mother doesn't always take care of Baby. Every baby pushes its limits t
 
 This is tension; this is torture. It demands resolution. If mother is all powerful, and I am what Mother wants, then why would she not give me what I want? Is she some arbitrary and capricious tyrant? Resolution comes in accepting what Lacan calls the Paternal Metaphor, whereby the name of the Father comes to stand for "Mother must". Mother and Father here don't have to literally be the mother and father, as they are used metaphorically. "Mother" is the primary caretaker of the baby, and Father is the primary excuse the mother has for leaving the baby (could be the father, work, etc). The baby accepts that Mother is not all-powerful, that Mother must submit to the rules and demands of some other authority, and the demands of this other authority can be symbolized by the name of the Father. That is to say, that the father's name stands-in as a symbol for the rules and laws mother must abide by.
 
-The acceptance of the paternal metaphor introduces the first **symbol**, a term Lacan borrows from Saussarian Linguistics, meaning "phrase-image". The distinction between signal and signified is commonly explained as "the map is not the territory": a map of St Louis is not literally St Louis, while simultaneously representing it.
+The acceptance of the paternal metaphor introduces the first **symbol**, a term Lacan borrows from Saussurean Linguistics, meaning "phrase-image". The distinction between signal and signified is commonly explained as "the map is not the territory": a map of St Louis is not literally St Louis, while simultaneously representing it.
 
 It's at this moment, when the child acquires language by "crossing the bar of metaphor" between signifier and signified, that he becomes fully conscious. He understands an intangible set of rules and norms which he symbolizes with the Name of the Father. And in that moment of symbolization, something is split in his consciousness, what Lacan call his Subject. There is something missing in the map's symbolization of the territory, and likewise there is something missing in the paternal metaphor's articulation of "what the mother wants".
 
@@ -89,4 +89,4 @@ I suspect that there are hundreds of interesting low-hanging results from applyi
 - Movie or TV show writers: would love to see movie or TV show writers incorporate "what are this character's master signifiers? Does he think in the symbolic or the imaginary realm?" into their process.
 - Whoever synthesizes the Lacanian unconscious with **considerations** in "The Nature and Origins of Mass Opinion" deserves a Nobel prize.
 - LLMs and metaphor. Attention is all you need, and language is the foundation of the unconscious. Define metaphor and substitution for an LLM (token for token? or token-phrase)
-- Imagine the paper "Environment and the shape of The Other" which examines the relationship between TV / Internet usage, and what a survey determines to be the structure of The Other for that person. For example, see my essay on "Comment Section Superego"
+- Imagine the paper "Environment and the shape of The Other" which examines the relationship between TV / Internet usage, and what a survey determines to be the structure of The Other for that person.

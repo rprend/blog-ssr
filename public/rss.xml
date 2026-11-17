@@ -5,7 +5,7 @@
     <link>https://ryan-prendergast.com/blog</link>
     <description>Essays and book reviews</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Nov 2026 22:26:49 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 17 Nov 2026 22:33:33 GMT</lastBuildDate>
     <atom:link href="https://ryan-prendergast.com/rss.xml" rel="self" type="application/rss+xml" />
     <generator>Custom RSS Generator</generator>
     <webMaster>rprendergast1121@gmail.com (Ryan Prendergast)</webMaster>
@@ -16,10 +16,10 @@
       <guid isPermaLink="true">https://ryan-prendergast.com/blog/gilgamesh-and-half-movies</guid>
       <description>I read the Epic of Gilgamesh— the world&apos;s oldest story. There are different angles to approach an old story like this. You can analyze its themes: individualism, friendship, the relationships of man and god. You can reflect on broader questions: this...</description>
       <content:encoded><![CDATA[<p>I read the Epic of Gilgamesh— the world&#39;s oldest story. There are different angles to approach an old story like this. You can analyze its themes: individualism, friendship, the relationships of man and god. You can reflect on broader questions: this story as an instance of growing up and maturing, for example.</p>
-<p>I don&#39;t enjoy thematic analysis about art and literature. There is no generalizable, absolute knowledge independent from the particular: doing an integral teaches you how to do an integral. Curricula which emphasize &quot;problem solving&quot; and similar universal concepts inevitably produce students who pattern match universal language; they&#39;ve never actually solved any problems!</p>
+<p>I don&#39;t enjoy thematic analysis about art and literature. There is no generalizable, absolute knowledge independent from the particular: doing an integral teaches you how to do an integral.</p>
 <p>I want applications. Applied classicism, if you will.</p>
 <p>The simplest applications are snippets of language to memorize. The eloquent eulogy: &quot;Your funeral is a precious gesture to hide my own guilt&quot;, or the cutting insults: &quot;May all and any who can hurt you now often cross the paths you take&quot;. The applied classicist might memorize Gilgamesh, and then memorize the Odyssey, and then memorize Plato, and then… You&#39;ll run out of memory soon. The next step is to throw this story at other things in your life, and see how it would stick. What would it mean to Gilgamesh-ify?</p>
-<p>Gilgameshification might work for screenwriting. Consider the traditional 3 part Hollywood screenplay. Act 1 introduces the world and the inciting incident, Act 2 rises the action until we hit an all-is-lost moment, until AHA!, Act 3, the Climax and the denouncement. The Hollywood narrative structure is a framework for describing movies. It&#39;s descriptive, not perscriptive: it works because that&#39;s a shape that good stories share, all the way back to Homeric epics and Greek tragedies.</p>
+<p>Gilgameshification might work for screenwriting. Consider the traditional 3 part Hollywood screenplay. Act 1 introduces the world and the inciting incident, Act 2 rises the action until we hit an all-is-lost moment, until AHA!, Act 3, the Climax and the denouement. The Hollywood narrative structure is a framework for describing movies. It&#39;s descriptive, not prescriptive: it works because that&#39;s a shape that good stories share, all the way back to Homeric epics and Greek tragedies.</p>
 <p>Gilgamesh doesn&#39;t fit the 3 part story mold. Rather than an inciting action, we start with the introduction of a best friend, followed by episodic heroics, such as the killing of Humbaba. The death of Enkidu, the climax of the story, happens quickly. For the rest of the tale, we follow Gilgamesh moping, coming to terms with the loss of his friend. He listens to the story of the flood by Utnapishtim, resolves to live forever, but, having the life-plant stolen by a snake, returns home to Uruk, his problems unresolved.</p>
 <h2>To Gilgamesh-ify a story:</h2>
 <ol>
@@ -117,7 +117,7 @@
 </ul>
 <p>Such a setup through API has only become possible in the past few years with something like Stripe Marketplace. The setup still leaves a lot to be desired.</p>
 <ul>
-<li>KYC requires a manual form submission through Stripe (~10-20minutes). The friction prevents this site from growing organically, as a 20 minute onboarding is unworkable. This could be fixed by a payment rail which is KYC compliant ON THE RAIL itself. Payment senders / receivers both have IDs attached, and any 3rd party simply has to embed a &quot;Pay with XYZ&quot; and know all senders will</li>
+<li>KYC requires a manual form submission through Stripe (~10-20minutes). The friction prevents this site from growing organically, as a 20 minute onboarding is unworkable. This could be fixed by a payment rail which is KYC compliant ON THE RAIL itself. Payment senders / receivers both have IDs attached, and any 3rd party simply has to embed a &quot;Pay with XYZ&quot; button.</li>
 <li>Long settlement times for card payments open abuse vectors for cancelled payments. This could be fixed by using bank transfers instead of card networks.</li>
 <li>Card fees are diabolical. 3%+ $.30 is insanity.</li>
 <li>Conditional flows and custom logic. The whole setup of &quot;both parties click pay and then the server only captures one&quot; is not ideal. It&#39;s confusing— you&#39;re not really &quot;paying&quot; but &quot;authorizing payment&quot;. Customers will see a &quot;pending&quot; transaction on their bank statement for the next week before the authorized payment expires.</li>
@@ -135,7 +135,7 @@
       <pubDate>Tue, 31 Dec 2024 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Book Review- Lacan by Lionel Bailey</title>
+      <title>Book Review- Lacan by Lionel Bailly</title>
       <link>https://ryan-prendergast.com/blog/lacan-book-review</link>
       <guid isPermaLink="true">https://ryan-prendergast.com/blog/lacan-book-review</guid>
       <description>There is a contradiction in human desire, which prevents a simple answer to the simple question: &quot;What do you want&quot;? From apathy over what to eat for dinner to torturous dissatisfaction on what to do with one&apos;s life, uncertainty plagues humanity. It...</description>
@@ -161,7 +161,7 @@
 <p><strong><em>Mother is all-powerful, and I am what Mother wants. But Mother doesn&#39;t always give me what I want. Mother does other things.</em></strong></p>
 </blockquote>
 <p>This is tension; this is torture. It demands resolution. If mother is all powerful, and I am what Mother wants, then why would she not give me what I want? Is she some arbitrary and capricious tyrant? Resolution comes in accepting what Lacan calls the Paternal Metaphor, whereby the name of the Father comes to stand for &quot;Mother must&quot;. Mother and Father here don&#39;t have to literally be the mother and father, as they are used metaphorically. &quot;Mother&quot; is the primary caretaker of the baby, and Father is the primary excuse the mother has for leaving the baby (could be the father, work, etc). The baby accepts that Mother is not all-powerful, that Mother must submit to the rules and demands of some other authority, and the demands of this other authority can be symbolized by the name of the Father. That is to say, that the father&#39;s name stands-in as a symbol for the rules and laws mother must abide by.</p>
-<p>The acceptance of the paternal metaphor introduces the first <strong>symbol</strong>, a term Lacan borrows from Saussarian Linguistics, meaning &quot;phrase-image&quot;. The distinction between signal and signified is commonly explained as &quot;the map is not the territory&quot;: a map of St Louis is not literally St Louis, while simultaneously representing it.</p>
+<p>The acceptance of the paternal metaphor introduces the first <strong>symbol</strong>, a term Lacan borrows from Saussurean Linguistics, meaning &quot;phrase-image&quot;. The distinction between signal and signified is commonly explained as &quot;the map is not the territory&quot;: a map of St Louis is not literally St Louis, while simultaneously representing it.</p>
 <p>It&#39;s at this moment, when the child acquires language by &quot;crossing the bar of metaphor&quot; between signifier and signified, that he becomes fully conscious. He understands an intangible set of rules and norms which he symbolizes with the Name of the Father. And in that moment of symbolization, something is split in his consciousness, what Lacan call his Subject. There is something missing in the map&#39;s symbolization of the territory, and likewise there is something missing in the paternal metaphor&#39;s articulation of &quot;what the mother wants&quot;.</p>
 <p>This moment is a tremendous loss for the child, who previously understood himself to be the object of his mother&#39;s desire. The quality of being wholly desired, Lacan calls the Phallus (again, this is metaphorical). The child who once believed himself to possess the phallus now understands himself to have lost it. He lost it (although really he never had it), and for the rest of his life he will chase its fragments in things he think might give it back to him. He sees fragments of the phallus in the world-- maybe if he masters electric guitar, maybe if he can run the fastest marathon, maybe then he will be whole again.</p>
 <p>This is the genesis of desire. The introduction of language causes his subject to split, and he loses the fantasy of omnipotence he enjoyed in the phallus. This moment, the loss of the phallus, lays the foundation for desire. As the child&#39;s world expands, he meets and talks with new people and the paternal metaphor grows into a set of phrases and symbols called The Other. His understanding of himself and others is governed by language, symbols, and social rules.</p>
@@ -186,7 +186,7 @@
 <li>Movie or TV show writers: would love to see movie or TV show writers incorporate &quot;what are this character&#39;s master signifiers? Does he think in the symbolic or the imaginary realm?&quot; into their process.</li>
 <li>Whoever synthesizes the Lacanian unconscious with <strong>considerations</strong> in &quot;The Nature and Origins of Mass Opinion&quot; deserves a Nobel prize.</li>
 <li>LLMs and metaphor. Attention is all you need, and language is the foundation of the unconscious. Define metaphor and substitution for an LLM (token for token? or token-phrase)</li>
-<li>Imagine the paper &quot;Environment and the shape of The Other&quot; which examines the relationship between TV / Internet usage, and what a survey determines to be the structure of The Other for that person. For example, see my essay on &quot;Comment Section Superego&quot;</li>
+<li>Imagine the paper &quot;Environment and the shape of The Other&quot; which examines the relationship between TV / Internet usage, and what a survey determines to be the structure of The Other for that person.</li>
 </ul>
 ]]></content:encoded>
       <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
@@ -210,25 +210,6 @@
       <pubDate>Sat, 20 Apr 2024 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Coffee shops for all</title>
-      <link>https://ryan-prendergast.com/blog/coffee-shops-for-all</link>
-      <guid isPermaLink="true">https://ryan-prendergast.com/blog/coffee-shops-for-all</guid>
-      <description>The law is extremely complicated, requiring years of schooling and hard tests to enter the field. &quot;I hand you coffee you hand me money&quot; is a simple enough concept, but there are many laws dictating the proper conduct of how to lay out a coffee shop a...</description>
-      <content:encoded><![CDATA[<p>The law is extremely complicated, requiring years of schooling and hard tests to enter the field. &quot;I hand you coffee you hand me money&quot; is a simple enough concept, but there are many laws dictating the proper conduct of how to lay out a coffee shop according to code, how to serve food, how to lend something to somebody, how to know who is liable when something goes wrong, etc.</p>
-<p>The complexity of the system reflects the complicated nature of reality. There really ARE that many edge cases. Complex rules are too complex to apply to normal interactions, meaning there is a de facto line in the sand at which you jump from no legal process to a ton of legal process. A party with your friends doesn&#39;t comply to any kind of code, because that would overcomplicate a simple thing beyond the capabilities of a normal person. But if you are having strangers attend a conference at a venue, you must account for all legal considerations.</p>
-<p>The limitation is intelligence. The vast majority of the time we simply don&#39;t have enough brain power to spend the attention and focus required for a court case. We don&#39;t have enough brain power to apply the law thoroughly in, well, the law. Ninety-four percent of state and 97% of federal cases are resolved by a plea deal, NOT in court.</p>
-<p>The complexity barrier kicks in right at the point where legal considerations become necessary. It kicks in where you can&#39;t just do it-- you need to pay for event space rental, you need insurance, you need waivers, you need to put limits on people&#39;s behaviors. it becomes very expensive very quickly, because of course you are just a normal person, not a lawyer. The jump from &quot;just doing whatever with your friends&quot; to &quot;legal-compliance levels of organization&quot; is massive, so it acts as a de-facto limit on the capacity of most people. Most people never organize a public event, or open a coffee shop or a store, because the barrier to entry is 300 years of legal compliance intuition they probably don&#39;t have.</p>
-<p>Over time the threshold for legal intervention has dropped. I&#39;m sure you&#39;ve heard a story from your grandparents or some elder, how they used to be able to buy guns without paperwork, walk into airports without security, how randomly one day they started a restaurant or a retail store or other business without much thought, and other tidbits of life before the legal considerations ratcheted downward.</p>
-<p>This ratchet has made life worse. The set of possible actions has declined for the median person without lawyer-grade domain knowledge, or the money to purchase it.</p>
-<p>What is the limit of this? What would it look like if the threshold for legal intervention declined to zero? Micro-lawyers in your pockets.</p>
-<p>Imagine a world with way more lawsuits and way more arbitration. When your friend drops your mug accidentally, your lawyer in your phone automatically sues his lawyer in his phone. They enter a binding arbitration, simulate the bickering and argument you might have in real life, and in the end his lawyer sends $10 for a new mug.</p>
-<p>This might sound like hell. I imagine quite the contrary-- it will free us. By lowering the complexity threshold, you increase exposure to the legal system, and there becomes no difference between organizing a party with your friends and opening a coffee shop. THAT is powerful. It is complexity bankruptcy, and like bankruptcy in real life it&#39;s the only way to stop an insolvency problem. It&#39;s the difference between doing research in a university library in 1975, and Googling the answer.</p>
-<p>In my ideal future, every household has a store, has a business, and it&#39;s as easy and intuitive as hosting a couple friends for dinner. Coffee shops for all.</p>
-]]></content:encoded>
-      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
-      <pubDate>Sat, 30 Mar 2024 00:00:00 GMT</pubDate>
-    </item>
-    <item>
       <title>Generative art</title>
       <link>https://ryan-prendergast.com/blog/generative-art</link>
       <guid isPermaLink="true">https://ryan-prendergast.com/blog/generative-art</guid>
@@ -236,32 +217,11 @@
       <content:encoded><![CDATA[<p><img src="/GenArt2.png" alt="Generative art example 1">
 <img src="/GenArt4.png" alt="Generative art example 2">
 For a while in 2022, I got really into generative art, which is where you procedurally define a texture or a pattern in javascript. Usually, there&#39;s a random seed that goes into the algorithm, so every time you load the page the result is slightly different.</p>
-<p>The master at this is <a href="https://www.tylerxhobbs.com/">Tyler Hobbes</a>. His geometries have been painted as murals, printed to be hung on walls, and sold in books. He also <a href="https://www.tylerxhobbs.com/words">writes essays</a> on his process, which is how I got into trying it myself. Everything uses p5.js, a simple canvas rendering tool for the web. It&#39;s a fun exercise to try to mimic him, and in the future I&#39;d like to go back in this direction. Web design these days lacks texture and complex geometry. The tool defines the appearance--the dominant tools are tailwind css in react components, and their the result is flat design. I&#39;m hoping for a future where websites look more like tyler hobbes prints, and less like jira.</p>
+<p>The master at this is <a href="https://www.tylerxhobbs.com/">Tyler Hobbs</a>. His geometries have been painted as murals, printed to be hung on walls, and sold in books. He also <a href="https://www.tylerxhobbs.com/words">writes essays</a> on his process, which is how I got into trying it myself. Everything uses p5.js, a simple canvas rendering tool for the web. It&#39;s a fun exercise to try to mimic him, and in the future I&#39;d like to go back in this direction. Web design these days lacks texture and complex geometry. The tool defines the appearance--the dominant tools are tailwind css in react components, and the result is flat design. I&#39;m hoping for a future where websites look more like Tyler Hobbs prints, and less like jira.</p>
 <p>You can see the 10 sketches I attempted here: <a href="https://generative-art-chi.vercel.app/">https://generative-art-chi.vercel.app/</a></p>
 ]]></content:encoded>
       <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
       <pubDate>Thu, 01 Dec 2022 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>Reducing Problems to Impossibilities</title>
-      <link>https://ryan-prendergast.com/blog/reducing-problems-to-impossibilities</link>
-      <guid isPermaLink="true">https://ryan-prendergast.com/blog/reducing-problems-to-impossibilities</guid>
-      <description>Originally written February 19, 2022. Edited May 15, 2025. Certain society-wide problems are impossible. &quot;People are stupid&quot;, &quot;People are selfish&quot;, &quot;People are not good people&quot;. However, other society-wide problems are solvable. &quot;Minimize snow remova...</description>
-      <content:encoded><![CDATA[<p><em>Originally written February 19, 2022. Edited May 15, 2025.</em></p>
-<p>Certain society-wide problems are impossible. &quot;People are stupid&quot;, &quot;People are selfish&quot;, &quot;People are not good people&quot;. However, other society-wide problems are solvable. &quot;Minimize snow removal response time given this much money&quot;. The difference is how well specced they are. Sometimes, specifications are based on sentiments and not metrics. &quot;Make the city clean, make it safe, make it functional&quot;. These can be somewhat, but not fully, rationalized. Some problems like &quot;human selfishness&quot; can never be summarized by a metric, and are an impossible problem.</p>
-<p>In algorithms class in school, I was taught the concept of a Hard problem for computers.</p>
-<p>Certain problems are really hard for a computer to solve. They take exponentially more time as you increase the size of the problem. There&#39;s no easier way to solve them than &quot;try every single possibility&quot;. You need to brute force a solution. Hence, we call this problem Hard. At large scales, hard problems become impossible. Like, &quot;all the computers in the world would take a million years to crack this&quot; hard.</p>
-<p>Hard Math Problems are like Hard Society Problems in that they are basically impossible to solve. &quot;Make people less selfish&quot; is about as difficult to solve as &quot;find the unique prime factorization of this extremely large number&quot;. Theoretically possible, but not practically.</p>
-<p>What&#39;s interesting about Hard Society Problems is that since they are succinct, they sound easy. They sound so easy that people prepend a &quot;just&quot; to it. &quot;We just need people to be less selfish!&quot; &quot;We just need people to be a little bit more empathetic!&quot;. As if solving it is as simple as writing the sentence!</p>
-<p>People seem drawn to Hard Society Problems. So much so, that when presented with a non-impossible problem, they propose solving it by ditching the problem entirely and instead solving impossible, Hard Society Problem! Say your city has potholes. I can&#39;t tell you how many people will say &quot;well maybe if these politicians just weren&#39;t so corrupt, we&#39;d have smooth roads!&quot;</p>
-<p>What? You&#39;ve reduced a problem into an impossibility!</p>
-<p>Road pavement is a relatively straightforward problem with engineering and budget constraints that can be optimized. You know what can&#39;t be optimized? The depth and breadth of human corruption! So why would you propose solving a (relatively speaking) easy problem, by throwing your hands in the air and saying &quot;Well, this easy problem wouldn&#39;t exist if we solved this impossible problem, so I guess there&#39;s nothing we can do&quot;. Seems idiotic, yet this kind of commentary is by far the most common attitude of citizens towards government online.</p>
-<p>We see this with regards to Covid, with something along the lines of &quot;if people weren&#39;t so selfish then we wouldn&#39;t still be in this mess.&quot; What does that mean? How do we measure selfishness, what is the acceptable level? Of course asking such questions would be foolish, because it&#39;s not meant to be precise. It&#39;s a platitude. Similar common platitudes abound. &quot;The administration doesn&#39;t care about our mental health&quot;. &quot;The admin only cares about money.&quot; &quot;Greedy corps are ruining society for selfish gains.&quot; These are statements that don&#39;t really mean anything precise.</p>
-<p>Does that mean solving Covid is impossible? No! It&#39;s a dumb reductionist way to look at things. What is the use of reducing a problem to an impossibility? You prove something is Math-Hard by reducing an impossibility to a problem, NOT by reducing a problem to an impossibility!</p>
-<p>Why do so many people do this?</p>
-]]></content:encoded>
-      <author>rprendergast1121@gmail.com (Ryan Prendergast)</author>
-      <pubDate>Sat, 19 Feb 2022 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Playlists</title>
@@ -275,25 +235,25 @@ For a while in 2022, I got really into generative art, which is where you proced
 <ul>
 <li>Nonfiction<ul>
 <li>Topic: Physics and Math<ul>
-<li><a href="https://www.amazon.com/dp/0691178542/?coliid=INA2PDARJHVHL&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Elements of Mathematics: From Euclid to Gödel</a></li>
-<li><a href="https://www.amazon.com/dp/1250619572/?coliid=I3L1342JHQ0IS6&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">The Weil Conjectures: On Math and the Pursuit of the Unknown</a></li>
-<li><a href="https://www.amazon.com/dp/0821839675/?coliid=I1B5DDMOI9D3HF&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Bourbaki: A Secret Society of Mathematicians</a></li>
-<li><a href="https://www.amazon.com/dp/0300235909/?coliid=I27A36WXE5TV6N&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">The Shape of a Life: One Mathematician&#39;s Search for the Universe&#39;s Hidden Geometry</a></li>
-<li><a href="https://www.amazon.com/dp/1795882417/?coliid=I6T0DX6WSNTQG&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Physics from Finance: A gentle introduction to gauge theories, fundamental interactions and fiber bundles</a></li>
-<li><a href="https://www.amazon.com/dp/0306812835/?coliid=I1QHJWYR2O1OIM&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Structures: Or Why Things Don&#39;t Fall Down</a></li>
-<li><a href="https://www.amazon.com/dp/0465023959/?coliid=I2TIIXXF41NXE6&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">The Pleasure of Finding Things Out: The Best Short Works of Richard P. Feynman (Helix Books)</a></li>
-<li><a href="https://www.amazon.com/dp/0470525487/?coliid=I3HP5SUFPQZOKN&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">A History of Mathematics</a></li>
+<li><a href="https://www.amazon.com/dp/0691178542">Elements of Mathematics: From Euclid to Gödel</a></li>
+<li><a href="https://www.amazon.com/dp/1250619572">The Weil Conjectures: On Math and the Pursuit of the Unknown</a></li>
+<li><a href="https://www.amazon.com/dp/0821839675">Bourbaki: A Secret Society of Mathematicians</a></li>
+<li><a href="https://www.amazon.com/dp/0300235909">The Shape of a Life: One Mathematician&#39;s Search for the Universe&#39;s Hidden Geometry</a></li>
+<li><a href="https://www.amazon.com/dp/1795882417">Physics from Finance: A gentle introduction to gauge theories, fundamental interactions and fiber bundles</a></li>
+<li><a href="https://www.amazon.com/dp/0306812835">Structures: Or Why Things Don&#39;t Fall Down</a></li>
+<li><a href="https://www.amazon.com/dp/0465023959">The Pleasure of Finding Things Out: The Best Short Works of Richard P. Feynman (Helix Books)</a></li>
+<li><a href="https://www.amazon.com/dp/0470525487">A History of Mathematics</a></li>
 </ul>
 </li>
 <li>Misc<ul>
-<li><a href="https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/1597499897/?coliid=I3SKFGD2C3D838&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Practical Lock Picking: A Physical Penetration Tester&#39;s Training Guide</a></li>
+<li><a href="https://www.amazon.com/dp/1597499897">Practical Lock Picking: A Physical Penetration Tester&#39;s Training Guide</a></li>
 </ul>
 </li>
 <li>Behavioral Psychology / Philosophy<ul>
-<li><a href="https://web.archive.org/web/20220122220306/https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games?ac=1&from_search=true&qid=3qFg4FiTJQ&rank=1">Finite and Infinite Games</a></li>
-<li><a href="https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/0679763996/?coliid=I2PIOAGQ1TPKY2&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">The Moral Animal: Why We Are, the Way We Are: The New Science of Evolutionary Psychology</a></li>
-<li><a href="https://web.archive.org/web/20220122220306/https://www.amazon.com/dp/0199729883/?coliid=I2J169LM65505D&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Moral Mazes: The World of Corporate Managers</a></li>
-<li><a href="https://web.archive.org/web/20220122220306/https://www.amazon.com/gp/product/0807014273/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0807014273&linkCode=as2&tag=stephsmith05-20&linkId=087de4a56a3e33707ab2939836e4cc08">Man&#39;s Search for Meaning</a></li>
+<li><a href="https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games">Finite and Infinite Games</a></li>
+<li><a href="https://www.amazon.com/dp/0679763996">The Moral Animal: Why We Are, the Way We Are: The New Science of Evolutionary Psychology</a></li>
+<li><a href="https://www.amazon.com/dp/0199729883">Moral Mazes: The World of Corporate Managers</a></li>
+<li><a href="https://www.amazon.com/dp/0807014273">Man&#39;s Search for Meaning</a></li>
 </ul>
 </li>
 </ul>
@@ -324,13 +284,13 @@ For a while in 2022, I got really into generative art, which is where you proced
 <ul>
 <li>Tech Bro canon, the rationalist world<ul>
 <li><a href="https://www.goodreads.com/book/show/23692271-sapiens">Sapiens: A Brief History of Humankind</a></li>
-<li><a href="https://www.amazon.com/dp/0198739834/?coliid=I2YUE2K811SG9Q&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Superintelligence: Paths, Dangers, Strategies</a></li>
-<li><a href="https://www.amazon.com/dp/0465026567/?coliid=I1114C3TRXYYJO&colid=39T68Z42672L1&psc=1&ref_=lv_ov_lig_dp_it">Gödel, Escher, Bach: An Eternal Golden Braid</a></li>
+<li><a href="https://www.amazon.com/dp/0198739834">Superintelligence: Paths, Dangers, Strategies</a></li>
+<li><a href="https://www.amazon.com/dp/0465026567">Gödel, Escher, Bach: An Eternal Golden Braid</a></li>
 <li>Thinking, Fast and Slow by Daniel Kahneman</li>
 <li>Gang Leader for A Day by Sudhir Venkatesh</li>
 <li>Andy Weir: the Egg</li>
-<li><a href="https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games?ac=1&from_search=true&qid=3qFg4FiTJQ&rank=1">Finite and Infinite Games</a></li>
-<li><a href="https://www.amazon.com/gp/product/0804139296/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0804139296&linkCode=as2&tag=stephsmith05-20&linkId=9c862da80a2bfacf1a1f94a1cc3dca06">Zero to One</a></li>
+<li><a href="https://www.goodreads.com/book/show/189989.Finite_and_Infinite_Games">Finite and Infinite Games</a></li>
+<li><a href="https://www.amazon.com/dp/0804139296">Zero to One</a></li>
 <li>Beginning of Infinity</li>
 </ul>
 </li>
