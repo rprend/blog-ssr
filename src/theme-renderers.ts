@@ -463,7 +463,7 @@ function renderRoute(routeType: RouteType, model: PageModel, ctx: RenderContext)
   }
   if (ctx.family === "recurse-joy") {
     const generic = model as GenericPageModel;
-    return renderRecurseJoyPage(ctx, `<article class="recurse-joy-page"><h2>${escapeHtml(generic.heading)}</h2><div class="recurse-joy-copy">${generic.contentHtml}</div></article>`, "Page");
+    return renderRecurseJoyPage(ctx, `<article class="recurse-joy-page"><header class="recurse-joy-page-head"><h2>${escapeHtml(generic.heading)}</h2></header><div class="recurse-joy-copy">${generic.contentHtml}</div></article>`, "Page");
   }
   if (ctx.family === "forecast-report") return renderForecastReportGeneric(model as GenericPageModel, ctx);
   if (ctx.family === "poetic-article") return renderPoeticArticlePage(ctx, (model as GenericPageModel).heading, `<div class="poetic-copy">${(model as GenericPageModel).contentHtml}</div>`, "page");
@@ -824,13 +824,11 @@ function renderCheapManifestoGeneric(model: GenericPageModel, ctx: RenderContext
 function renderPerformanceClubNav(ctx: RenderContext): string {
   const links = [
     ["/", "Home"],
-    ["/blog", "Blog"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
     ["/photos", "Photos"],
-    ["/archives", "Archives"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
-    ["/themes", "Themes"],
-    ["/rss.xml", "RSS"],
   ] as Array<[string, string]>;
   return `<nav class="performance-club-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
 }
@@ -857,24 +855,20 @@ function renderPerformanceClubRow(cells: string[]): string {
 }
 
 function renderPerformanceClubLinkRow(link: LinkEntryModel, index: number): string {
-  const weight = Math.max(17, 250 - index * 3);
   return renderPerformanceClubRow([
     `<span class="performance-club-rank">${index + 1}.</span>`,
     `<a href="${link.url}">${escapeHtml(link.domain)}</a>`,
     `<a href="${link.url}">${escapeHtml(link.title)}</a><div class="performance-club-note">${link.contentHtml}</div>`,
     `${escapeHtml(link.date)}`,
-    `${weight}kb`,
   ]);
 }
 
 function renderPerformanceClubPostRow(post: PostSummaryModel, label: string, index: number): string {
-  const weight = Math.max(18, 125 - index * 2);
   return renderPerformanceClubRow([
     `<span class="performance-club-rank">${index + 1}.</span>`,
-    escapeHtml(label),
+    ...(label ? [escapeHtml(label)] : []),
     `<a href="${post.href}">${escapeHtml(post.title)}</a>${post.excerpt ? `<div class="performance-club-note">${escapeHtml(post.excerpt)}</div>` : ""}`,
     escapeHtml(post.date),
-    `${weight}kb`,
   ]);
 }
 
@@ -895,22 +889,19 @@ function renderPerformanceClubGeneric(model: GenericPageModel, ctx: RenderContex
 function renderRecurseJoyNav(ctx: RenderContext): string {
   const items = [
     ["/", "Home"],
-    ["/contact", "About"],
-    ["/rss.xml", "Subscribe"],
-    ["/photos", "RC"],
-    ["/blog", "Blog"],
-    ["/archives", "Archive"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
+    ["/photos", "Photos"],
     ["/guestbook", "Guestbook"],
-    ["/themes", "Themes"],
+    ["/contact", "Contact"],
   ] as Array<[string, string]>;
   return `<nav class="recurse-joy-nav" aria-label="Primary">${items.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
 }
 
-function renderRecurseJoyPage(ctx: RenderContext, bodyHtml: string, eyebrow = "Joy of Computing"): string {
+function renderRecurseJoyPage(ctx: RenderContext, bodyHtml: string, _eyebrow = ""): string {
   return `<section class="recurse-joy">
     <header class="recurse-joy-masthead">
       <div>
-        <p class="recurse-joy-kicker">${escapeHtml(eyebrow)}</p>
         <h1><a href="/">Ryan Prendergast</a></h1>
       </div>
       ${renderRecurseJoyNav(ctx)}
@@ -919,63 +910,43 @@ function renderRecurseJoyPage(ctx: RenderContext, bodyHtml: string, eyebrow = "J
   </section>`;
 }
 
-function renderRecurseJoyEntry(href: string, title: string, date: string, source: string, summary = ""): string {
+function renderRecurseJoyEntry(href: string, title: string, date: string, source: string, summaryHtml = ""): string {
   return `<article class="recurse-joy-entry">
     <time>${escapeHtml(date)}</time>
     <div>
       <h2><a href="${href}">${escapeHtml(title)}</a></h2>
-      <p class="recurse-joy-source">${escapeHtml(source)}</p>
-      ${summary ? `<p>${escapeHtml(summary)}</p>` : ""}
+      ${source ? `<p class="recurse-joy-source">${escapeHtml(source)}</p>` : ""}
+      ${summaryHtml ? `<div class="recurse-joy-summary">${summaryHtml}</div>` : ""}
     </div>
   </article>`;
 }
 
 function renderForecastReportNav(ctx: RenderContext): string {
   const sectionLinks = [
-    ["/", "Summary"],
-    ["/blog", "Research"],
-    ["/archives", "Forecast"],
-    ["/photos", "Charts"],
-  ] as Array<[string, string]>;
-  const utilityLinks = [
-    ["/guestbook", "Discuss"],
-    ["/contact", "About"],
-    ["/themes", "Themes"],
-    ["/rss.xml", "RSS"],
+    ["/", "Home"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
+    ["/photos", "Photos"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
   ] as Array<[string, string]>;
   const link = ([href, label]: [string, string]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`;
   return `<header class="forecast-report-top">
-    <a class="forecast-report-brand" href="/">Ryan Prendergast</a>
-    <nav class="forecast-report-sections" aria-label="Report sections">${sectionLinks.map(link).join("")}</nav>
-    <nav class="forecast-report-utils" aria-label="Core site areas">${utilityLinks.map(link).join("")}</nav>
+    ${ctx.currentPage === "/" ? "" : `<a class="forecast-report-brand" href="/">Ryan Prendergast</a>`}
+    <nav class="forecast-report-sections" aria-label="Core site areas">${sectionLinks.map(link).join("")}</nav>
   </header>`;
-}
-
-function renderForecastReportActions(): string {
-  return `<div class="forecast-report-actions" aria-label="Report formats">
-    <a href="/rss.xml">PDF</a>
-    <a href="/rss.xml">Listen</a>
-    <a href="/photos">Watch</a>
-  </div>`;
 }
 
 function renderForecastReportPage(ctx: RenderContext, title: string, bodyHtml: string, options: { kicker?: string; meta?: string; subtitleHtml?: string; tocHtml?: string } = {}): string {
   return `<section class="forecast-report">
     ${renderForecastReportNav(ctx)}
-    <div class="forecast-report-layout">
-      <aside class="forecast-report-rail">
-        <p>Contents</p>
-        ${options.tocHtml || `<a href="/">Summary</a><a href="/blog">Research</a><a href="/archives">Forecast</a><a href="/contact">Author</a>`}
-      </aside>
+    <div class="forecast-report-layout${options.tocHtml ? "" : " forecast-report-layout-plain"}">
+      ${options.tocHtml ? `<aside class="forecast-report-rail"><p>Contents</p>${options.tocHtml}</aside>` : ""}
       <article class="forecast-report-document">
-        <div class="forecast-report-kicker">${escapeHtml(options.kicker || "Scenario Forecast Report")}</div>
+        ${options.kicker ? `<div class="forecast-report-kicker">${escapeHtml(options.kicker)}</div>` : ""}
         <h1>${escapeHtml(title)}</h1>
         ${options.subtitleHtml ? `<div class="forecast-report-dek">${options.subtitleHtml}</div>` : ""}
-        <div class="forecast-report-meta">
-          <span>Ryan Prendergast</span>
-          <span>${escapeHtml(options.meta || "Personal website and blog")}</span>
-        </div>
-        ${renderForecastReportActions()}
+        ${options.meta ? `<div class="forecast-report-meta"><span>${escapeHtml(options.meta)}</span></div>` : `<div class="forecast-report-rule"></div>`}
         ${bodyHtml}
       </article>
     </div>
@@ -986,15 +957,15 @@ function renderForecastReportEntry(href: string, title: string, label: string, s
   return `<article class="forecast-report-entry">
     <span>${String(index + 1).padStart(2, "0")}</span>
     <div>
-      <p>${escapeHtml(label)}</p>
-      <h2><a href="${href}">${escapeHtml(title)}</a></h2>
+      ${label ? `<p>${escapeHtml(label)}</p>` : ""}
+      <h2>${href ? `<a href="${href}">${escapeHtml(title)}</a>` : escapeHtml(title)}</h2>
       ${summary ? `<div class="forecast-report-entry-summary">${summary}</div>` : ""}
     </div>
   </article>`;
 }
 
 function renderForecastReportGeneric(model: GenericPageModel, ctx: RenderContext): string {
-  return renderForecastReportPage(ctx, model.heading, `<div class="blog-post-content forecast-report-copy">${model.contentHtml}</div>`, { kicker: "Report Appendix", meta: ctx.theme.name });
+  return renderForecastReportPage(ctx, model.heading, `<div class="forecast-report-copy">${model.contentHtml}</div>`);
 }
 
 function renderPoeticNav(ctx: RenderContext): string {
@@ -1067,12 +1038,11 @@ function renderPoeticPost(post: PostSummaryModel): string {
 function renderFeralNav(ctx: RenderContext): string {
   const links = [
     ["/", "Home"],
-    ["/blog", "Blog"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
     ["/photos", "Photos"],
-    ["/archives", "Archives"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
-    ["/rss.xml", "RSS"],
   ] as Array<[string, string]>;
   return `<nav class="feral-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
 }
@@ -1082,18 +1052,11 @@ function renderFeralPage(ctx: RenderContext, title: string, bodyHtml: string, se
     <header class="feral-topbar">
       <a class="feral-publication" href="/">Ryan Prendergast</a>
       ${renderFeralNav(ctx)}
-      <div class="feral-actions"><a href="/themes">Subscribe</a><a href="/contact">Sign in</a></div>
     </header>
     <div class="feral-layout">
-      <aside class="feral-author-card" aria-label="Publication">
-        <a class="feral-avatar" href="/">RP</a>
-        <strong>Ryan Prendergast</strong>
-        <span>Personal website and blog</span>
-        <a class="feral-subscribe" href="/themes">Subscribe</a>
-      </aside>
       <article class="feral-article">
-        <p class="feral-kicker">${escapeHtml(section)}</p>
-        <h1>${escapeHtml(title)}</h1>
+        ${section ? `<p class="feral-kicker">${escapeHtml(section)}</p>` : ""}
+        ${title ? `<h1>${escapeHtml(title)}</h1>` : ""}
         ${metaHtml}
         ${bodyHtml}
       </article>
@@ -1603,26 +1566,23 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
 
   if (ctx.family === "research-sidenotes") {
     const newest = model.recentPosts.map((post) => renderResearchSidenoteListItem(post.href, post.title, post.date, post.readTime || "")).join("");
-    const links = model.links.map((link) => renderResearchSidenoteListItem(link.url, link.title, link.domain, link.date, stripHtml(link.contentHtml))).join("");
-    const topics = [
-      ["#newest", "Newest"],
-      ["#links", "Links"],
-      ["/blog", "Essays"],
-      ["/archives", "Archive"],
-      ["/photos", "Photos"],
-      ["/guestbook", "Guestbook"],
-      ["/contact", "Contact"],
-    ];
+    const links = model.links.map((link) => renderResearchSidenoteListItem(link.url, link.title, link.domain, link.date, link.contentHtml)).join("");
+    if (ctx.currentPage === "/links") {
+      return renderResearchSidenotePage(
+        ctx,
+        "Links",
+        `<section class="research-abstract"><p>${model.aboutHtml}</p></section>
+        <section id="links" class="research-section"><ul>${links}</ul></section>`,
+        `<p><strong>${model.links.length}</strong> links</p>`,
+      );
+    }
     return renderResearchSidenotePage(
       ctx,
       "Ryan Prendergast",
-      `<section class="research-warning"><strong>Warning:</strong> ${escapeHtml(ctx.theme.description)}</section>
-      <nav class="research-topic-index" aria-label="Annotated site index">${topics.map(([href, label]) => `<a href="${href}">${label}</a>`).join("")}</nav>
-      <section class="research-abstract">${model.introHtml}</section>
-      <section id="newest" class="research-section"><h2><a href="/blog">Newest</a></h2><ul>${newest}</ul></section>
-      <section id="links" class="research-section"><h2><a href="/">Links</a></h2><ul>${links}</ul></section>
-      <section class="research-section research-note-block"><h2>Notes</h2>${model.aboutHtml}</section>`,
-      `<p><strong>${model.links.length}</strong> annotated links</p><p><strong>${model.recentPosts.length}</strong> recent essays</p>`,
+      `<section class="research-abstract">${model.introHtml}</section>
+      <section id="newest" class="research-section"><h2><a href="/blog">Essays</a></h2><ul>${newest}</ul></section>
+      <section id="links" class="research-section"><h2><a href="/links">Links</a></h2><ul>${links}</ul></section>`,
+      `<p><strong>${model.recentPosts.length}</strong> recent essays</p><p><strong>${model.links.length}</strong> links</p>`,
     );
   }
 
@@ -2079,50 +2039,71 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     );
   }
   if (ctx.family === "feral-essay") {
+    if (ctx.currentPage === "/links") {
+      return renderFeralPage(
+        ctx,
+        "Links",
+        `<p class="feral-lede">${model.aboutHtml}</p>
+        <section class="feral-section">${model.links.map(renderFeralLink).join("")}</section>`,
+        "Linklog",
+        `<p class="feral-byline">${model.links.length} links</p>`,
+      );
+    }
     return renderFeralPage(
       ctx,
-      "Ryan Prendergast",
-      `<div class="feral-lede">${model.introHtml}</div>
-      <section class="feral-section"><h2>Recent writing</h2>${model.recentPosts.map(renderFeralPost).join("")}</section>
-      <section class="feral-section"><h2>Linkblog</h2>${model.links.map(renderFeralLink).join("")}</section>
-      <section class="feral-about">${model.aboutHtml}</section>`,
-      "Publication",
-      `<p class="feral-byline">By Ryan Prendergast</p>`,
+      "",
+      `<div class="feral-lede feral-home-lede">${model.introHtml}</div>
+      <section class="feral-section"><h2><a href="/blog">Recent essays</a></h2>${model.recentPosts.map(renderFeralPost).join("")}</section>
+      <section class="feral-section"><h2><a href="/links">Links</a></h2>${model.links.map(renderFeralLink).join("")}</section>`,
+      "",
     );
   }
   if (ctx.family === "performance-club") {
     const linkRows = model.links.map(renderPerformanceClubLinkRow).join("");
-    const postRows = model.recentPosts.map((post, index) => renderPerformanceClubPostRow(post, "essay", index)).join("");
+    const postRows = model.recentPosts.map((post, index) => renderPerformanceClubPostRow(post, "", index)).join("");
+    const linkTable = renderPerformanceClubTable(["#", "site", "entry", "date"], linkRows, "Links");
+    if (ctx.currentPage === "/links") {
+      return renderPerformanceClubPage(
+        ctx,
+        `${renderPerformanceClubBlock("Links", `<p class="performance-club-lede">${model.aboutHtml}</p><p class="performance-club-count">${model.links.length} entries.</p>`, "performance-club-manifesto")}
+        ${renderPerformanceClubBlock("All links", linkTable)}`,
+      );
+    }
     return renderPerformanceClubPage(
       ctx,
       `<section class="performance-club-hero">
-        <h2>Ryan Prendergast</h2>
         <div class="performance-club-intro">${model.introHtml}</div>
       </section>
-      ${renderPerformanceClubBlock("The site", `<div class="performance-club-copy">${model.aboutHtml}</div>`, "performance-club-manifesto")}
-      ${renderPerformanceClubBlock("Linkblog", renderPerformanceClubTable(["#", "site", "entry", "date", "weight"], linkRows, "Linkblog entries"))}
-      ${renderPerformanceClubBlock("Recent writing", renderPerformanceClubTable(["#", "type", "entry", "date", "weight"], postRows, "Recent writing"))}`,
+      ${renderPerformanceClubBlock("Recent essays", renderPerformanceClubTable(["#", "entry", "date"], postRows, "Recent essays"))}
+      ${renderPerformanceClubBlock("Links", linkTable)}`,
     );
   }
   if (ctx.family === "recurse-joy") {
     const linkFeed = model.links
-      .map((link) => renderRecurseJoyEntry(link.url, link.title, link.date, link.domain, stripHtml(link.contentHtml)))
+      .map((link) => renderRecurseJoyEntry(link.url, link.title, link.date, link.domain, link.contentHtml))
       .join("");
     const writing = model.recentPosts
-      .map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "Ryan Prendergast", post.excerpt || ""))
+      .map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "", escapeHtml(post.excerpt || "")))
       .join("");
+    if (ctx.currentPage === "/links") {
+      return renderRecurseJoyPage(
+        ctx,
+        `<header class="recurse-joy-page-head"><h2>Links</h2><p>${model.aboutHtml}</p><p><a href="/rss.xml">RSS feed</a> · ${model.links.length} links</p></header>
+        <div class="recurse-joy-stream">${linkFeed}</div>`,
+      );
+    }
     return renderRecurseJoyPage(
       ctx,
-      `<section class="recurse-joy-intro">${model.introHtml}<div class="recurse-joy-about">${model.aboutHtml}</div></section>
+      `<section class="recurse-joy-intro">${model.introHtml}</section>
       <div class="recurse-joy-feed-head">
-        <h2>Weekday links</h2>
-        <a href="/rss.xml">Atom feed</a>
+        <h2><a href="/blog">Recent essays</a></h2>
+        <a href="/rss.xml">RSS feed</a>
       </div>
-      <div class="recurse-joy-stream">${linkFeed}</div>
-      <section class="recurse-joy-writing">
-        <h2>Recent writing</h2>
-        <div class="recurse-joy-stream">${writing}</div>
-      </section>`,
+      <div class="recurse-joy-stream">${writing}</div>
+      <div class="recurse-joy-feed-head">
+        <h2><a href="/links">Links</a></h2>
+      </div>
+      <div class="recurse-joy-stream">${linkFeed}</div>`,
     );
   }
   if (ctx.family === "forecast-report") {
@@ -2130,17 +2111,20 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     const writing = model.recentPosts
       .map((post, index) => renderForecastReportEntry(post.href, post.title, post.date, post.excerpt ? escapeHtml(post.excerpt) : post.readTime || "", index))
       .join("");
+    if (ctx.currentPage === "/links") {
+      return renderForecastReportPage(ctx, "Links", `<section class="forecast-report-panel">${linkEntries}</section>`, {
+        meta: `${model.links.length} links`,
+        subtitleHtml: `<p>${model.aboutHtml}</p>`,
+      });
+    }
     return renderForecastReportPage(
       ctx,
       "Ryan Prendergast",
-      `<section class="forecast-report-summary">${model.introHtml}</section>
-      <section class="forecast-report-panel"><h2>Summary</h2><div class="forecast-report-copy">${model.aboutHtml}</div></section>
-      <section class="forecast-report-panel"><h2>Research</h2>${linkEntries}</section>
-      <section class="forecast-report-panel"><h2>Forecast</h2>${writing}</section>`,
+      `<section class="forecast-report-panel" id="essays"><h2><a href="/blog">Recent essays</a></h2>${writing}</section>
+      <section class="forecast-report-panel" id="links"><h2><a href="/links">Links</a></h2>${linkEntries}</section>`,
       {
-        kicker: "Personal Scenario",
-        meta: "Updated continuously",
-        subtitleHtml: `<p>${escapeHtml(ctx.pageSubtitle)}</p>`,
+        subtitleHtml: model.introHtml,
+        tocHtml: `<a href="#essays">Recent essays</a><a href="#links">Links</a>`,
       },
     );
   }
@@ -2148,22 +2132,31 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
     return renderForumFrontpageHome(model, ctx);
   }
   if (ctx.family === "essay-blogroll") {
-    const recentPosts = model.recentPosts.map((post) => renderEssayBlogrollEntry(post.href, post.title, post.date, post.excerpt || post.readTime || "")).join("");
-    const linkPosts = model.links.map((link) => renderEssayBlogrollEntry(link.url, link.title, `${link.date} - ${link.domain}`, stripHtml(link.contentHtml))).join("");
+    const recentPosts = model.recentPosts.map(renderEssayBlogrollSummary).join("");
+    const linkPosts = model.links.map((link) => renderEssayBlogrollEntry(link.url, link.title, `${link.date} · ${link.domain}`, link.contentHtml)).join("");
+    const sidebar = renderEssayBlogrollHomeSidebar(model.links, model.recentPosts);
+    if (ctx.currentPage === "/links") {
+      return renderEssayBlogrollPage(
+        ctx,
+        `<section class="essay-blogroll-posts">
+          <article class="essay-blogroll-entry essay-blogroll-pagehead"><h2>Links</h2><p>${model.aboutHtml}</p><p class="essay-blogroll-meta">${model.links.length} links</p></article>
+          ${linkPosts}
+        </section>`,
+        sidebar,
+      );
+    }
     return renderEssayBlogrollPage(
       ctx,
       `<section class="essay-blogroll-posts">
         <article class="essay-blogroll-entry essay-blogroll-home">
-          <h2><a href="/">Ryan Prendergast</a></h2>
           <div class="essay-blogroll-copy">${model.introHtml}</div>
-          <div class="essay-blogroll-copy">${model.aboutHtml}</div>
         </article>
-        <h3 class="essay-blogroll-section-title">Recent Essays</h3>
+        <h3 class="essay-blogroll-section-title"><a href="/blog">Recent Essays</a></h3>
         ${recentPosts}
-        <h3 class="essay-blogroll-section-title">Linkblog</h3>
+        <h3 class="essay-blogroll-section-title"><a href="/links">Links</a></h3>
         ${linkPosts}
       </section>`,
-      renderEssayBlogrollSidebar(ctx, model.links, model.recentPosts),
+      sidebar,
     );
   }
   if (ctx.family === "now-directory") {
@@ -2280,11 +2273,12 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "essay-blogroll") {
     const posts = model.postsByYear
-      .map((group) => `<section class="essay-blogroll-year"><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => renderEssayBlogrollEntry(post.href, post.title, post.date, post.excerpt || post.readTime || "")).join("")}</section>`)
+      .map((group) => `<section class="essay-blogroll-year" id="year-${escapeHtml(group.year)}"><h3>${escapeHtml(group.year)}</h3>${group.posts.map(renderEssayBlogrollSummary).join("")}</section>`)
       .join("");
     return renderEssayBlogrollPage(
       ctx,
-      `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry"><h2><a href="/blog">Blog</a></h2><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p></article>${posts}</section>`,
+      `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry essay-blogroll-pagehead"><h2>${ctx.currentPage === "/photos" ? "Photos" : "Essays"}</h2><p>${escapeHtml(model.description)}</p><p class="essay-blogroll-meta">${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}</p></article>${posts}</section>`,
+      renderEssayBlogrollSidebar([["Archives", model.postsByYear.map((group) => [`#year-${group.year}`, `${group.year} (${group.posts.length})`] as [string, string])]]),
     );
   }
   if (ctx.family === "now-directory") {
@@ -2504,7 +2498,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const groups = model.postsByYear
       .map((group) => `<section class="feral-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map(renderFeralPost).join("")}</section>`)
       .join("");
-    return renderFeralPage(ctx, "Blog", `<p class="feral-lede">${escapeHtml(model.description)}</p>${groups}`, "Archive", `<p class="feral-byline">${model.totalPosts} posts</p>`);
+    return renderFeralPage(ctx, "Essays", `<p class="feral-lede">${escapeHtml(model.description)}</p>${groups}`, "Archive", `<p class="feral-byline">${model.totalPosts} posts</p>`);
   }
   if (ctx.family === "performance-club") {
     let rowIndex = 0;
@@ -2513,17 +2507,17 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderPerformanceClubPage(
       ctx,
-      `${renderPerformanceClubBlock("Blog", `<p class="performance-club-lede">${escapeHtml(model.description)}</p><p class="performance-club-count">${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>`, "performance-club-manifesto")}
-      ${renderPerformanceClubBlock("Members", renderPerformanceClubTable(["#", "year", "entry", "date", "weight"], rows, "Blog posts"))}`,
+      `${renderPerformanceClubBlock(ctx.currentPage === "/photos" ? "Photos" : "Essays", `<p class="performance-club-lede">${escapeHtml(model.description)}</p><p class="performance-club-count">${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>`, "performance-club-manifesto")}
+      ${renderPerformanceClubBlock("All entries", renderPerformanceClubTable(["#", "year", "entry", "date"], rows, "Essays"))}`,
     );
   }
   if (ctx.family === "recurse-joy") {
     const entries = model.postsByYear
-      .map((group) => `<section class="recurse-joy-year"><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "Writing", post.excerpt || "")).join("")}</section>`)
+      .map((group) => `<section class="recurse-joy-year"><h3>${escapeHtml(group.year)}</h3>${group.posts.map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "", escapeHtml(post.excerpt || ""))).join("")}</section>`)
       .join("");
     return renderRecurseJoyPage(
       ctx,
-      `<header class="recurse-joy-page-head"><h2>Blog</h2><p>${escapeHtml(model.description)}</p><p><a href="/rss.xml">Atom feed</a> · ${model.totalPosts} posts${model.yearRange ? `, ${model.yearRange[0]}-${model.yearRange[1]}` : ""}</p></header>${entries}`,
+      `<header class="recurse-joy-page-head"><h2>${ctx.currentPage === "/photos" ? "Photos" : "Essays"}</h2><p>${escapeHtml(model.description)}</p><p><a href="/rss.xml">RSS feed</a> · ${model.totalPosts} posts${model.yearRange ? `, ${model.yearRange[0]}-${model.yearRange[1]}` : ""}</p></header>${entries}`,
       "Writing",
     );
   }
@@ -2531,11 +2525,20 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const entries = model.postsByYear
       .map((group) => `<section class="forecast-report-panel" id="year-${escapeHtml(group.year)}"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderForecastReportEntry(post.href, post.title, post.date, post.excerpt ? escapeHtml(post.excerpt) : post.readTime || "", index)).join("")}</section>`)
       .join("");
-    return renderForecastReportPage(
+    return renderForecastReportPage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Essays", entries, {
+      meta: `${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}`,
+      subtitleHtml: `<p>${escapeHtml(model.description)}</p>`,
+      tocHtml: model.postsByYear.map((group) => `<a href="#year-${escapeHtml(group.year)}">${escapeHtml(group.year)}</a>`).join(""),
+    });
+  }
+  if (ctx.family === "forum-frontpage") {
+    const years = model.postsByYear
+      .map((group) => `<h2 class="forum-frontpage-heading">${escapeHtml(group.year)}</h2><section class="forum-frontpage-feed">${group.posts.map(renderForumFrontpageSummary).join("")}</section>`)
+      .join("");
+    return renderForumFrontpageShell(
       ctx,
-      "Research",
-      `<section class="forecast-report-summary"><p>${escapeHtml(model.description)}</p><p>${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p></section>${entries}`,
-      { kicker: "Report Section", meta: "Writing index" },
+      `${renderForumFrontpageHead(ctx.currentPage === "/photos" ? "Photos" : "Essays", `<p>${escapeHtml(model.description)}</p><p class="forum-frontpage-meta">${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}</p>`)}${years}`,
+      "Essays",
     );
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
@@ -2673,8 +2676,8 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       `${model.subtitle ? `<p class="feral-lede">${escapeHtml(model.subtitle)}</p>` : ""}
       <div class="feral-copy blog-post-content">${model.contentHtml}</div>
       <p class="feral-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
-      "Essay",
-      `<p class="feral-byline">By ${escapeHtml(model.author || "Ryan Prendergast")}</p><p class="feral-date">${escapeHtml(model.date)}</p>`,
+      ctx.currentPage === "/photos" ? "" : "Essay",
+      `<p class="feral-date">${escapeHtml(model.date)}</p>`,
     );
   }
   if (ctx.family === "artist-menu") {
@@ -2789,7 +2792,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
   if (ctx.family === "performance-club") {
     return renderPerformanceClubPage(
       ctx,
-      `${renderPerformanceClubBlock(model.title, `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><p class="performance-club-count">${meta}</p>${model.subtitle ? `<p class="performance-club-lede">${escapeHtml(model.subtitle)}</p>` : ""}`, "performance-club-manifesto")}
+      `${renderPerformanceClubBlock(model.title, `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><p class="performance-club-count">${escapeHtml(model.date)}</p>${model.subtitle ? `<p class="performance-club-lede">${escapeHtml(model.subtitle)}</p>` : ""}`, "performance-club-manifesto")}
       <article class="blog-post-content performance-club-copy performance-club-article">${model.contentHtml}</article>`,
     );
   }
@@ -2799,7 +2802,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       `<article class="recurse-joy-post">
         <p class="recurse-joy-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
         <header>
-          <time>${meta}</time>
+          <time>${escapeHtml(model.date)}</time>
           <h2>${escapeHtml(model.title)}</h2>
           ${model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : ""}
         </header>
@@ -2812,13 +2815,26 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     return renderForecastReportPage(
       ctx,
       model.title,
-      `<p class="forecast-report-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
-      <div class="blog-post-content forecast-report-copy">${model.contentHtml}</div>`,
+      `<div class="blog-post-content forecast-report-copy">${model.contentHtml}</div>
+      <p class="forecast-report-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
       {
-        kicker: "Research Note",
-        meta,
+        kicker: ctx.currentPage === "/photos" ? "" : "Essay",
+        meta: model.date,
         subtitleHtml: model.subtitle ? `<p>${escapeHtml(model.subtitle)}</p>` : "",
       },
+    );
+  }
+  if (ctx.family === "forum-frontpage") {
+    return renderForumFrontpageShell(
+      ctx,
+      `<article class="forum-frontpage-page forum-frontpage-article">
+        <h1>${escapeHtml(model.title)}</h1>
+        <p class="forum-frontpage-meta">${escapeHtml(model.date)}</p>
+        ${model.subtitle ? `<p class="forum-frontpage-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}
+        <div class="blog-post-content forum-frontpage-copy">${model.contentHtml}</div>
+        <p class="forum-frontpage-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
+      </article>`,
+      model.title,
     );
   }
   if (ctx.family === "essay-blogroll") {
@@ -2826,8 +2842,8 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       ctx,
       `<article class="essay-blogroll-entry essay-blogroll-article">
         <p class="essay-blogroll-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>
-        <h2><a href="${model.backHref}">${escapeHtml(model.title)}</a></h2>
-        <p class="essay-blogroll-meta">${meta}</p>
+        <h2>${escapeHtml(model.title)}</h2>
+        <p class="essay-blogroll-meta">${escapeHtml(model.date)}</p>
         ${model.subtitle ? `<p class="essay-blogroll-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}
         <div class="blog-post-content essay-blogroll-copy">${model.contentHtml}</div>
       </article>`,
@@ -2840,8 +2856,8 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
     return renderResearchSidenotePage(
       ctx,
       model.title,
-      `<article class="research-article"><p class="research-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p><p class="research-meta">${meta}</p>${model.subtitle ? `<p class="research-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<div class="blog-post-content research-copy">${model.contentHtml}</div></article>`,
-      `<p>${model.subtitle ? escapeHtml(model.subtitle) : "Ryan Prendergast essay"}</p><p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
+      `<article class="research-article"><p class="research-meta">${escapeHtml(model.date)}</p>${model.subtitle ? `<p class="research-subtitle">${escapeHtml(model.subtitle)}</p>` : ""}<div class="blog-post-content research-copy">${model.contentHtml}</div></article>`,
+      `<p><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
     );
   }
   if (ctx.family === "wordmark-studio") {
@@ -3072,7 +3088,7 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
       ctx,
       "Archive",
       `<section class="research-abstract"><p>${model.totalPosts} entries across ${model.months.length} months.</p></section>${model.months
-        .map((month) => `<section class="research-section"><h2 id="${slugify(month.label)}"><a href="#${slugify(month.label)}">${escapeHtml(month.label)}</a></h2><ul>${month.posts.map((post) => renderResearchSidenoteListItem(post.href, post.title, month.key, post.date || "")).join("")}</ul></section>`)
+        .map((month) => `<section class="research-section"><h2 id="${slugify(month.label)}"><a href="#${slugify(month.label)}">${escapeHtml(month.label)}</a></h2><ul>${month.posts.map((post) => renderResearchSidenoteListItem(post.href, post.title, post.date, post.readTime || "")).join("")}</ul></section>`)
         .join("")}`,
       `<p>${model.months.length} months</p><p>${model.totalPosts} entries</p>`,
     );
@@ -3256,36 +3272,44 @@ function renderArchives(model: ArchiveModel, ctx: RenderContext): string {
     return renderPerformanceClubPage(
       ctx,
       `${renderPerformanceClubBlock("Archives", `<p class="performance-club-lede">${model.totalPosts} entries across ${model.months.length} months.</p>`, "performance-club-manifesto")}
-      ${renderPerformanceClubBlock("Directory", renderPerformanceClubTable(["#", "month", "entry", "date", "weight"], rows, "Archive entries"))}`,
+      ${renderPerformanceClubBlock("By month", renderPerformanceClubTable(["#", "month", "entry", "date"], rows, "Archive entries"))}`,
     );
   }
   if (ctx.family === "recurse-joy") {
     const months = model.months
-      .map((month) => `<section class="recurse-joy-month" id="${slugify(month.label)}"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "Archive")).join("")}</section>`)
+      .map((month) => `<section class="recurse-joy-month" id="${slugify(month.label)}"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderRecurseJoyEntry(post.href, post.title, post.date, post.readTime || "")).join("")}</section>`)
       .join("");
     return renderRecurseJoyPage(
       ctx,
-      `<header class="recurse-joy-page-head"><h2>Archive</h2><p>${model.totalPosts} entries across ${model.months.length} months. <a href="/rss.xml">Atom feed</a></p></header>${months}`,
+      `<header class="recurse-joy-page-head"><h2>Archive</h2><p>${model.totalPosts} entries across ${model.months.length} months. <a href="/rss.xml">RSS feed</a></p></header>${months}`,
       "Archive",
     );
   }
   if (ctx.family === "forecast-report") {
     const months = model.months
-      .map((month) => `<section class="forecast-report-panel" id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderForecastReportEntry(post.href, post.title, post.date, post.readTime || "Archive entry", index)).join("")}</section>`)
+      .map((month) => `<section class="forecast-report-panel" id="${slugify(month.label)}"><h2>${escapeHtml(month.label)}</h2>${month.posts.map((post, index) => renderForecastReportEntry(post.href, post.title, post.date, post.readTime || "", index)).join("")}</section>`)
       .join("");
-    return renderForecastReportPage(
-      ctx,
-      "Forecast",
-      `<section class="forecast-report-summary"><p>${model.totalPosts} entries across ${model.months.length} months.</p></section>${months}`,
-      { kicker: "Chronology", meta: "Archive index" },
-    );
+    return renderForecastReportPage(ctx, "Archives", months, {
+      meta: `${model.totalPosts} entries across ${model.months.length} months`,
+      tocHtml: model.months.map((month) => `<a href="#${slugify(month.label)}">${escapeHtml(month.label)}</a>`).join(""),
+    });
+  }
+  if (ctx.family === "forum-frontpage") {
+    const months = model.months
+      .map((month) => `<h2 class="forum-frontpage-heading" id="${slugify(month.label)}">${escapeHtml(month.label)}</h2><section class="forum-frontpage-feed">${month.posts.map(renderForumFrontpageSummary).join("")}</section>`)
+      .join("");
+    return renderForumFrontpageShell(ctx, `${renderForumFrontpageHead("Archives", `<p class="forum-frontpage-meta">${model.totalPosts} entries across ${model.months.length} months</p>`)}${months}`, "Archives");
   }
   if (["artist-menu", "friendly-hub", "games-cabinet", "portal-gallery", "design-repository", "weblog-facets", "research-lab", "visual-culture", "room-wall", "book-microsite", "download-index", "visual-index", "html-bulletin", "consumption-digest", "data-portfolio", "internet-diagram", "vernacular-essay", "cheap-manifesto", "poetic-article", "feral-essay", "performance-club", "recurse-joy", "forecast-report", "forum-frontpage", "essay-blogroll", "now-directory", "conversational-minimal", "founder-index", "grant-page"].includes(ctx.family)) {
     if (ctx.family === "essay-blogroll") {
       const months = model.months
-        .map((month) => `<section class="essay-blogroll-year"><h3>${escapeHtml(month.label)}</h3>${month.posts.map((post) => renderEssayBlogrollEntry(post.href, post.title, post.date, post.readTime || "")).join("")}</section>`)
+        .map((month) => `<section class="essay-blogroll-year" id="${slugify(month.label)}"><h3>${escapeHtml(month.label)}</h3>${month.posts.map(renderEssayBlogrollSummary).join("")}</section>`)
         .join("");
-      return renderEssayBlogrollPage(ctx, `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry"><h2><a href="/archives">Archives</a></h2><p>${model.totalPosts} entries across ${model.months.length} months.</p></article>${months}</section>`);
+      return renderEssayBlogrollPage(
+        ctx,
+        `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry essay-blogroll-pagehead"><h2>Archives</h2><p class="essay-blogroll-meta">${model.totalPosts} entries across ${model.months.length} months</p></article>${months}</section>`,
+        renderEssayBlogrollSidebar([["Archives", model.months.map((month) => [`#${slugify(month.label)}`, `${month.label} (${month.posts.length})`] as [string, string])]]),
+      );
     }
     if (ctx.family === "book-microsite") {
       const months = model.months.map((month) => ({ href: `#${slugify(month.label)}`, label: month.key, title: `${month.label} (${month.posts.length})` }));
@@ -3453,13 +3477,41 @@ function renderGuestbook(model: GuestbookModel, ctx: RenderContext): string {
     return `${renderFeralPage(ctx, "Guestbook", `<p class="feral-guestbook-action">${button}</p><section class="feral-section">${feralEntries}</section>`, "Community")}${guestbookModalScript()}`;
   }
   if (ctx.family === "recurse-joy") {
-    return `${renderRecurseJoyPage(ctx, `<header class="recurse-joy-page-head"><h2>Guestbook</h2><p>${model.entries.length} entries.</p>${button}</header><div class="recurse-joy-stream">${entries}</div>`, "Community")}${guestbookModalScript()}`;
+    return `${renderRecurseJoyPage(ctx, `<header class="recurse-joy-page-head"><h2>Guestbook</h2><p>${model.entries.length} entries.</p>${button ? `<p class="recurse-joy-sign">${button}</p>` : ""}</header><div class="recurse-joy-stream">${model.entries.length ? model.entries.map((entry) => `<article class="recurse-joy-entry"><time>${escapeHtml(entry.date)}</time><div><h2>${escapeHtml(entry.name)}</h2><div class="recurse-joy-summary"><p>${escapeHtml(entry.message)}</p></div></div></article>`).join("") : entries}</div>`, "Community")}${guestbookModalScript()}`;
   }
   if (ctx.family === "forecast-report") {
     const reportEntries = model.entries.length
-      ? model.entries.map((entry, index) => renderForecastReportEntry("/guestbook", entry.name, entry.date, escapeHtml(entry.message), index)).join("")
+      ? model.entries.map((entry, index) => renderForecastReportEntry("", entry.name, entry.date, `<p>${escapeHtml(entry.message)}</p>`, index)).join("")
       : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
-    return `${renderForecastReportPage(ctx, "Discuss", `<section class="forecast-report-summary"><p>${model.entries.length} entries.</p>${button}</section><section class="forecast-report-panel">${reportEntries}</section>`, { kicker: "Public Comment", meta: "Guestbook" })}${guestbookModalScript()}`;
+    return `${renderForecastReportPage(ctx, "Guestbook", `${button ? `<p class="forecast-report-sign">${button}</p>` : ""}<section class="forecast-report-panel">${reportEntries}</section>`, { meta: `${model.entries.length} entries` })}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "research-sidenotes") {
+    const noteEntries = model.entries.length
+      ? `<ul>${model.entries.map((entry) => renderResearchSidenoteListItem("", entry.name, entry.date, "", `<p>${escapeHtml(entry.message)}</p>`)).join("")}</ul>`
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderResearchSidenotePage(ctx, "Guestbook", `${button ? `<p class="research-sign">${button}</p>` : ""}<section class="research-section research-guestbook">${noteEntries}</section>`, `<p><strong>${model.entries.length}</strong> entries</p>`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "essay-blogroll") {
+    const blogrollEntries = model.entries.length
+      ? model.entries.map((entry) => renderEssayBlogrollEntry("", entry.name, entry.date, `<p>${escapeHtml(entry.message)}</p>`)).join("")
+      : `<p>No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderEssayBlogrollPage(ctx, `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry essay-blogroll-pagehead"><h2>Guestbook</h2><p class="essay-blogroll-meta">${model.entries.length} entries</p>${button ? `<p class="essay-blogroll-sign">${button}</p>` : ""}</article>${blogrollEntries}</section>`)}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "forum-frontpage") {
+    const forumEntries = model.entries.length
+      ? model.entries.map((entry) => renderForumFrontpagePost("", entry.name, entry.date, `<p>${escapeHtml(entry.message)}</p>`)).join("")
+      : `<p class="forum-frontpage-meta">No entries yet. Be the first to sign the guestbook!</p>`;
+    return `${renderForumFrontpageShell(ctx, `${renderForumFrontpageHead("Guestbook", `<p class="forum-frontpage-meta">${model.entries.length} entries</p>${button ? `<p class="forum-frontpage-sign">${button}</p>` : ""}`)}<section class="forum-frontpage-feed">${forumEntries}</section>`, "Guestbook")}${guestbookModalScript()}`;
+  }
+  if (ctx.family === "performance-club") {
+    const rows = model.entries
+      .map((entry, index) => renderPerformanceClubRow([`<span class="performance-club-rank">${index + 1}.</span>`, escapeHtml(entry.name), escapeHtml(entry.message), escapeHtml(entry.date)]))
+      .join("");
+    return `${renderPerformanceClubPage(
+      ctx,
+      `${renderPerformanceClubBlock("Guestbook", `<p class="performance-club-count">${model.entries.length} entries.</p>${button ? `<p class="performance-club-sign">${button}</p>` : ""}`, "performance-club-manifesto")}
+      ${model.entries.length ? renderPerformanceClubBlock("Entries", renderPerformanceClubTable(["#", "name", "message", "date"], rows, "Guestbook entries")) : `<p class="performance-club-lede">No entries yet. Be the first to sign the guestbook!</p>`}`,
+    )}${guestbookModalScript()}`;
   }
   if (ctx.family === "founder-index") {
     return `${renderFounderIndexPage(ctx, `<article class="founder-index-article"><h2><a href="/guestbook">Guestbook</a></h2><p>${model.entries.length} entries.</p><p>${button}</p><ul>${model.entries.length ? model.entries.map((entry) => `<li><strong>${escapeHtml(entry.name)}</strong> <small>${escapeHtml(entry.date)}</small><p>${escapeHtml(entry.message)}</p></li>`).join("") : `<li>No entries yet. Be the first to sign the guestbook!</li>`}</ul></article>`)}${guestbookModalScript()}`;
@@ -3842,10 +3894,17 @@ function renderArchiveIndexNames(counts: Map<string, number>, hrefFor: (label: s
 }
 
 function renderResearchSidenoteNav(ctx: RenderContext): string {
-  const navigation = [...ctx.navItems, { href: "/themes", label: "Themes", active: ctx.currentPage === "/themes" }];
+  const navigation = [
+    ["/", "Home"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
+    ["/photos", "Photos"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
+  ] as Array<[string, string]>;
   return `<header class="research-masthead">
-    <a class="research-wordmark" href="/">Ryan Prendergast</a>
-    <nav aria-label="Core site areas">${navigation.map((item) => `<a class="${item.active ? "is-active" : ""}" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}</nav>
+    ${ctx.currentPage === "/" ? "" : `<a class="research-wordmark" href="/">Ryan Prendergast</a>`}
+    <nav aria-label="Core site areas">${navigation.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>
   </header>`;
 }
 
@@ -3857,21 +3916,17 @@ function renderResearchSidenotePage(ctx: RenderContext, title: string, contentHt
         <h1>${escapeHtml(title)}</h1>
         ${contentHtml}
       </main>
-      <aside class="research-margin" aria-label="Page notes">
-        <p><a href="${escapeHtml(ctx.theme.targetUrl || "https://gwern.net/")}">Canonical reference</a></p>
-        <p>${escapeHtml(ctx.theme.vibe)}</p>
-        ${marginHtml}
-      </aside>
+      ${marginHtml ? `<aside class="research-margin" aria-label="Page notes">${marginHtml}</aside>` : ""}
     </div>
   </article>`;
 }
 
-function renderResearchSidenoteListItem(href: string, title: string, meta: string, note = "", detail = ""): string {
+function renderResearchSidenoteListItem(href: string, title: string, meta: string, note = "", detailHtml = ""): string {
   const annotation = [meta, note].filter(Boolean).join(" · ");
   return `<li>
-    <a href="${href}">${escapeHtml(title)}</a>
+    ${href ? `<a href="${href}">${escapeHtml(title)}</a>` : `<strong>${escapeHtml(title)}</strong>`}
     ${annotation ? `<span class="sidenote">${escapeHtml(annotation)}</span>` : ""}
-    ${detail ? `<p>${escapeHtml(detail)}</p>` : ""}
+    ${detailHtml ? `<div class="research-detail">${detailHtml}</div>` : ""}
   </li>`;
 }
 
@@ -3879,8 +3934,7 @@ function renderResearchSidenoteGeneric(model: GenericPageModel, ctx: RenderConte
   return renderResearchSidenotePage(
     ctx,
     model.heading,
-    `<section class="research-section research-note-block">${model.contentHtml}</section>`,
-    `<p>${escapeHtml(ctx.currentPage || "page")}</p>`,
+    `<section class="research-section research-generic">${model.contentHtml}</section>`,
   );
 }
 
@@ -4330,76 +4384,63 @@ function renderBriefingHome(model: HomeModel, ctx: RenderContext): string {
 function renderForumFrontpageNav(ctx: RenderContext): string {
   const active = (href: string) => (ctx.currentPage === href ? "is-active" : "");
   const items = [
-    ["/", "Frontpage"],
-    ["/blog", "Recent"],
-    ["/archives", "Archive"],
+    ["/", "Home"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
     ["/photos", "Photos"],
-    ["/guestbook", "Community"],
-    ["/contact", "About"],
-    ["/rss.xml", "RSS"],
-    ["/themes", "Themes"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
   ] as Array<[string, string]>;
-  return `<nav class="forum-frontpage-nav" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+  return `<nav class="forum-frontpage-sidebar" aria-label="Core site areas">${items.map(([href, label]) => `<a class="${active(href)}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
 }
 
-function renderForumFrontpageShell(ctx: RenderContext, contentHtml: string, section = "Frontpage", railHtml = ""): string {
-  const rail =
-    railHtml ||
-    `<section><h2>Navigation</h2><a href="/blog">Recent essays</a><a href="/archives">Archives</a><a href="/photos">Photos</a><a href="/contact">Contact</a></section>
-    <section><h2>Library</h2><a href="/themes">Themes</a><a href="/rss.xml">RSS feed</a><a href="/guestbook">Guestbook</a></section>`;
+function renderForumFrontpageShell(ctx: RenderContext, contentHtml: string, section = "Frontpage"): string {
   return `<section class="forum-frontpage">
     <header class="forum-frontpage-topbar">
       <a class="forum-frontpage-logo" href="/">Ryan Prendergast</a>
-      ${renderForumFrontpageNav(ctx)}
-      <a class="forum-frontpage-login" href="/contact">Contact</a>
     </header>
     <div class="forum-frontpage-layout">
-      <aside class="forum-frontpage-sidebar" aria-label="Forum sections">
-        <a class="${ctx.currentPage === "/" ? "is-active" : ""}" href="/">Featured</a>
-        <a class="${ctx.currentPage === "/blog" ? "is-active" : ""}" href="/blog">Recent</a>
-        <a class="${ctx.currentPage === "/archives" ? "is-active" : ""}" href="/archives">All Posts</a>
-        <a class="${ctx.currentPage === "/photos" ? "is-active" : ""}" href="/photos">Photos</a>
-        <a class="${ctx.currentPage === "/themes" ? "is-active" : ""}" href="/themes">Concepts</a>
-        <a class="${ctx.currentPage === "/guestbook" ? "is-active" : ""}" href="/guestbook">Open Thread</a>
-      </aside>
+      ${renderForumFrontpageNav(ctx)}
       <main class="forum-frontpage-main" aria-label="${escapeHtml(section)}">${contentHtml}</main>
-      <aside class="forum-frontpage-rail" aria-label="Secondary navigation">${rail}</aside>
     </div>
   </section>`;
 }
 
-function renderForumFrontpagePost(href: string, title: string, meta: string, excerpt: string, index: number): string {
-  const score = 42 - (index % 8) * 3;
+function renderForumFrontpagePost(href: string, title: string, meta: string, excerptHtml = ""): string {
   return `<article class="forum-frontpage-post">
-    <div class="forum-frontpage-score"><strong>${score}</strong><span>${index + 1}</span></div>
-    <div>
-      <h3><a href="${href}">${escapeHtml(title)}</a></h3>
-      <p class="forum-frontpage-meta">${escapeHtml(meta)}</p>
-      ${excerpt ? `<p class="forum-frontpage-excerpt">${escapeHtml(stripHtml(excerpt))}</p>` : ""}
-    </div>
+    <h3>${href ? `<a href="${href}">${escapeHtml(title)}</a>` : escapeHtml(title)}</h3>
+    ${meta ? `<p class="forum-frontpage-meta">${escapeHtml(meta)}</p>` : ""}
+    ${excerptHtml ? `<div class="forum-frontpage-excerpt">${excerptHtml}</div>` : ""}
   </article>`;
 }
 
+function renderForumFrontpageSummary(post: PostSummaryModel): string {
+  return renderForumFrontpagePost(post.href, post.title, [post.date, post.readTime].filter(Boolean).join(" · "), post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : "");
+}
+
+function renderForumFrontpageHead(title: string, bodyHtml = ""): string {
+  return `<header class="forum-frontpage-page forum-frontpage-head"><h1>${escapeHtml(title)}</h1>${bodyHtml}</header>`;
+}
+
 function renderForumFrontpageHome(model: HomeModel, ctx: RenderContext): string {
-  const featured = model.recentPosts.slice(0, 4).map((post, index) => renderForumFrontpagePost(post.href, post.title, `${post.date} · ${post.readTime || "Writing"}`, post.excerpt || "", index)).join("");
-  const links = model.links.map((link, index) => renderForumFrontpagePost(link.url, link.title, `${link.domain} · ${link.date}`, link.contentHtml, index + model.recentPosts.length)).join("");
-  const rail = `<section><h2>Quick takes</h2>${model.links.slice(0, 5).map((link) => `<a href="${link.url}">${escapeHtml(link.title)}</a>`).join("")}</section>
-    <section><h2>Recommended</h2>${model.recentPosts.slice(0, 5).map((post) => `<a href="${post.href}">${escapeHtml(post.title)}</a>`).join("")}</section>
-    <section><h2>Concepts</h2><a href="/blog">Writing</a><a href="/archives">Archives</a><a href="/themes">Theme library</a></section>`;
+  const posts = model.recentPosts.map(renderForumFrontpageSummary).join("");
+  const links = model.links.map((link) => renderForumFrontpagePost(link.url, link.title, `${link.domain} · ${link.date}`, link.contentHtml)).join("");
+  if (ctx.currentPage === "/links") {
+    return renderForumFrontpageShell(
+      ctx,
+      `${renderForumFrontpageHead("Links", `<p>${model.aboutHtml}</p><p class="forum-frontpage-meta">${model.links.length} links</p>`)}
+      <section class="forum-frontpage-feed">${links}</section>`,
+      "Links",
+    );
+  }
   return renderForumFrontpageShell(
     ctx,
-    `<section class="forum-frontpage-hero">
-      <div>
-        <p>Frontpage</p>
-        <h1>Ryan Prendergast</h1>
-        <div>${model.introHtml}</div>
-      </div>
-      <div class="forum-frontpage-about">${model.aboutHtml}</div>
-    </section>
-    <nav class="forum-frontpage-tabs" aria-label="Feed tabs"><a class="is-active" href="/">Recommended</a><a href="/blog">Recent</a><a href="/archives">Archive</a><a href="/themes">Library</a></nav>
-    <section class="forum-frontpage-feed">${featured}${links}</section>`,
+    `<section class="forum-frontpage-hero">${model.introHtml}</section>
+    <h2 class="forum-frontpage-heading"><a href="/blog">Recent essays</a></h2>
+    <section class="forum-frontpage-feed">${posts}</section>
+    <h2 class="forum-frontpage-heading"><a href="/links">Links</a></h2>
+    <section class="forum-frontpage-feed">${links}</section>`,
     "Frontpage",
-    rail,
   );
 }
 
@@ -4657,13 +4698,11 @@ function renderBriefingGeneric(model: GenericPageModel, ctx: RenderContext): str
 function renderEssayBlogrollNav(ctx: RenderContext): string {
   const links = [
     ["/", "Home"],
-    ["/blog", "Top Posts"],
-    ["/archives", "Archives"],
-    ["/guestbook", "Comments"],
-    ["/contact", "About"],
+    ["/links", "Links"],
+    ["/blog", "Essays"],
     ["/photos", "Photos"],
-    ["/rss.xml", "Feed"],
-    ["/themes", "Themes"],
+    ["/guestbook", "Guestbook"],
+    ["/contact", "Contact"],
   ] as Array<[string, string]>;
   return `<nav class="essay-blogroll-nav" aria-label="Core site areas">${links.map(([href, label]) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`).join("")}</nav>`;
 }
@@ -4672,41 +4711,48 @@ function renderEssayBlogrollPage(ctx: RenderContext, contentHtml: string, sideba
   return `<section class="essay-blogroll">
     <header class="essay-blogroll-header">
       <h1><a href="/">Ryan Prendergast</a></h1>
-      <p>${escapeHtml(ctx.pageSubtitle || "Personal website and blog")}</p>
       ${renderEssayBlogrollNav(ctx)}
     </header>
-    <div class="essay-blogroll-layout">
+    <div class="essay-blogroll-layout${sidebarHtml ? "" : " essay-blogroll-layout-single"}">
       <main class="essay-blogroll-main">${contentHtml}</main>
-      ${sidebarHtml || renderEssayBlogrollSidebar(ctx)}
+      ${sidebarHtml}
     </div>
   </section>`;
 }
 
-function renderEssayBlogrollSidebar(ctx: RenderContext, links: LinkEntryModel[] = [], posts: PostSummaryModel[] = []): string {
-  const blogroll = links.length ? links.slice(0, 12).map((link) => `<li><a href="${link.url}">${escapeHtml(link.domain || link.title)}</a></li>`).join("") : "";
-  const recent = posts.length ? posts.slice(0, 8).map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a></li>`).join("") : "";
-  const archiveLinks = [
-    ["/blog", "Top Posts"],
-    ["/archives", "Archives"],
-    ["/guestbook", "Comments"],
-    ["/rss.xml", "RSS Feed"],
-    ["/themes", "Theme Index"],
-  ] as Array<[string, string]>;
-  return `<aside class="essay-blogroll-sidebar" aria-label="Blog sidebar">
-    <section><h3>Posts</h3><ul>${archiveLinks.map(([href, label]) => `<li><a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ul></section>
-    ${recent ? `<section><h3>Recent Essays</h3><ul>${recent}</ul></section>` : ""}
-    ${blogroll ? `<section><h3>Blogroll</h3><ul>${blogroll}</ul></section>` : ""}
-    <section><h3>Meta</h3><ul><li><a href="/contact">About Ryan</a></li><li><a href="/">Linkblog</a></li></ul></section>
-  </aside>`;
+function renderEssayBlogrollSidebar(sections: Array<[string, Array<[string, string]>]>): string {
+  const blocks = sections
+    .filter(([, items]) => items.length)
+    .map(([title, items]) => `<section><h3>${escapeHtml(title)}</h3><ul>${items.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join("")}</ul></section>`)
+    .join("");
+  return blocks ? `<aside class="essay-blogroll-sidebar" aria-label="Blog sidebar">${blocks}</aside>` : "";
 }
 
-function renderEssayBlogrollEntry(href: string, title: string, meta: string, body = ""): string {
+function renderEssayBlogrollHomeSidebar(links: LinkEntryModel[], posts: PostSummaryModel[]): string {
+  const seen = new Set<string>();
+  const blogroll: Array<[string, string]> = [];
+  for (const link of links) {
+    const domain = link.domain || link.title;
+    if (seen.has(domain)) continue;
+    seen.add(domain);
+    blogroll.push([link.url, domain]);
+  }
+  return renderEssayBlogrollSidebar([
+    ["Recent Essays", posts.map((post) => [post.href, post.title] as [string, string])],
+    ["Blogroll", blogroll],
+  ]);
+}
+
+function renderEssayBlogrollEntry(href: string, title: string, meta: string, bodyHtml = ""): string {
   return `<article class="essay-blogroll-entry">
-    <h2><a href="${href}">${escapeHtml(title)}</a></h2>
+    <h2>${href ? `<a href="${href}">${escapeHtml(title)}</a>` : escapeHtml(title)}</h2>
     ${meta ? `<p class="essay-blogroll-meta">${escapeHtml(meta)}</p>` : ""}
-    ${body ? `<p>${escapeHtml(body)}</p>` : ""}
-    <p class="essay-blogroll-comments"><a href="${href}">Leave a comment</a></p>
+    ${bodyHtml ? `<div class="essay-blogroll-body">${bodyHtml}</div>` : ""}
   </article>`;
+}
+
+function renderEssayBlogrollSummary(post: PostSummaryModel): string {
+  return renderEssayBlogrollEntry(post.href, post.title, [post.date, post.readTime].filter(Boolean).join(" · "), post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : "");
 }
 
 function renderLinkEntry(link: LinkEntryModel, index: number, ctx: RenderContext): string {
