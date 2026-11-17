@@ -5140,7 +5140,7 @@ function renderTastePostCard(post: PostSummaryModel, index: number, state: strin
 
 function renderTasteLinkCard(link: LinkEntryModel, index: number): string {
   const excerpt = linkCommentaryText(link.contentHtml);
-  const image = link.image ? `<a class="taste-thumb" href="${link.url}"><img src="${link.image}" alt=""></a>` : "";
+  const image = link.image ? `<a class="taste-thumb" href="${link.url}"><img src="${link.image}" alt="" loading="lazy" onerror="this.parentElement.remove()"></a>` : "";
   return `<article class="taste-card taste-link-card"><div class="taste-author"><span class="taste-avatar" aria-hidden="true">${escapeHtml(link.domain.slice(0, 2).toUpperCase())}</span><div><span>${escapeHtml(link.domain)}</span><time>${escapeHtml(link.date)}</time></div><strong>link</strong></div>${image}<div class="taste-card-body"><h2><a href="${link.url}">${escapeHtml(link.title)}</a></h2>${excerpt ? `<p>${escapeHtml(excerpt)}</p>` : ""}</div></article>`;
 }
 
