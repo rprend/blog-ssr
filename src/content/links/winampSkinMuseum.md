@@ -1,7 +1,7 @@
 ---
 title: "Winamp Skin Museum"
 url: "https://skins.webamp.org/"
-date: "02-12-2025"
+date: "02-12-2026"
 image: "https://skins.webamp.org/og-image.png"
 ---
 

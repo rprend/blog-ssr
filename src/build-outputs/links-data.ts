@@ -88,7 +88,7 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://www.makingsoftware.com/",
     "date": "04-09-2026",
     "image": null,
-    "content": "<p>A beautiful-looking book by a design engineer at Cursor.</p>\n"
+    "content": "<p>A beautiful-looking book on how software works.</p>\n"
   },
   {
     "slug": "galleryJessyinWorld",
@@ -200,13 +200,13 @@ export const linkEntries: LinkEntry[] = [
     "url": "https://walzr.com/",
     "date": "02-25-2026",
     "image": null,
-    "content": "<p>Riley Walz on the labs team at OpenAI has a personal site with my favorite kind of niche single-purpose projects. Route shuffle generates random routes for runners and cyclists, and so on.</p>\n"
+    "content": "<p>A personal site full of niche single-purpose projects, like a route shuffler for runners and cyclists.</p>\n"
   },
   {
     "slug": "hypercardSimulator",
     "title": "Hypercard Simulator in JS",
     "url": "https://hcsimulator.com/",
-    "date": "02-22-2025",
+    "date": "02-22-2026",
     "image": "https://hcsimulator.com/og-image.png",
     "content": "<p>HyperCard in the browser. Original programming-for-everyone energy.</p>\n"
   },
@@ -214,7 +214,7 @@ export const linkEntries: LinkEntry[] = [
     "slug": "interfaceHallOfShame",
     "title": "Interface Hall of Shame",
     "url": "http://hallofshame.gp.co.at/shame.htm",
-    "date": "02-20-2025",
+    "date": "02-20-2026",
     "image": null,
     "content": "<p>A late-90s catalog of bad interfaces.</p>\n"
   },
@@ -222,7 +222,7 @@ export const linkEntries: LinkEntry[] = [
     "slug": "usWebDesignStandards",
     "title": "U.S. Web Design Standards",
     "url": "https://designsystem.digital.gov/",
-    "date": "02-15-2025",
+    "date": "02-15-2026",
     "image": null,
     "content": "<p>The U.S. government&#39;s open-source design system. Surprisingly good.</p>\n"
   },
@@ -230,7 +230,7 @@ export const linkEntries: LinkEntry[] = [
     "slug": "winampSkinMuseum",
     "title": "Winamp Skin Museum",
     "url": "https://skins.webamp.org/",
-    "date": "02-12-2025",
+    "date": "02-12-2026",
     "image": "https://skins.webamp.org/og-image.png",
     "content": "<p>An archive of over 90,000 Winamp skins. Internet folk art.</p>\n"
   }

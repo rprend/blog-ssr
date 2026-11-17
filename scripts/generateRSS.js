@@ -99,7 +99,7 @@ function formatDateRFC822(dateStr) {
 let rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ryan's Mailbag</title>
+    <title>Ryan Prendergast: Essays</title>
     <link>https://ryan-prendergast.com/blog</link>
     <description>Essays and book reviews</description>
     <language>en-us</language>

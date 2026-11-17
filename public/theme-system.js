@@ -124,6 +124,7 @@
 
     document.querySelectorAll("[data-theme-select]").forEach((select) => {
       select.addEventListener("change", () => {
+        if (select.value === "original") return resetTheme();
         setTheme(select.value, { updateUrl: true, reload: true });
       });
     });

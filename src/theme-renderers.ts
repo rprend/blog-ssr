@@ -372,11 +372,13 @@ const familyBySlug: Record<string, RendererFamily> = {
 export function resolveThemeFromRequest(request: Request): SiteTheme {
   const url = new URL(request.url);
   const requested = url.searchParams.get("theme");
+  if (requested === "original") return originalTheme;
   if (requested) return getThemeBySlug(requested);
 
   const cookie = request.headers.get("Cookie") || "";
   const match = cookie.match(/(?:^|;\s*)siteTheme=([^;]+)/);
-  return match ? getThemeBySlug(decodeURIComponent(match[1])) : originalTheme;
+  if (!match || decodeURIComponent(match[1]) === "original") return originalTheme;
+  return getThemeBySlug(decodeURIComponent(match[1]));
 }
 
 export function renderThemedPage<T extends PageModel>(options: RenderPageOptions<T>): string {
@@ -713,7 +715,7 @@ function renderMiniThemePicker(theme: SiteTheme): string {
   const options = [`<option value="original"${theme.slug === "original" ? " selected" : ""}>Original</option>`, ...siteThemes
     .map((candidate) => `<option value="${candidate.slug}"${candidate.slug === theme.slug ? " selected" : ""}>${escapeHtml(candidate.name)}</option>`)
   ].join("");
-  return `<div class="mini-theme-picker sticky-theme-picker"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${options}</select><button type="button" data-theme-random>Random</button><button type="button" data-theme-reset>Remove theme</button></div>`;
+  return `<div class="mini-theme-picker sticky-theme-picker"><label for="theme-select">Theme</label><select id="theme-select" data-theme-select>${options}</select><button type="button" data-theme-random>Random</button></div>`;
 }
 
 function renderSpartanSidebar(ctx: RenderContext): string {

@@ -15208,3 +15208,29 @@ body.site-shell:not(.raw-page) {
     padding: 0;
   }
 }
+
+/* Photo page: the canvas carries its own title and Home link, so drop the article chrome around it. */
+.raw-page .theme-post {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.raw-page .theme-post > .back-link,
+.raw-page .theme-post > h2,
+.raw-page .theme-post > .entry-meta {
+  display: none;
+}
+
+.raw-page .blog-post-content {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.raw-page .raw-canvas a.raw-back,
+.raw-page .raw-canvas a.raw-back:visited {
+  color: #f4efe7;
+}

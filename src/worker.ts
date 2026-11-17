@@ -10,7 +10,6 @@ import {
   photosList,
   contact,
   archives,
-  memory,
 } from "./build-outputs/templates";
 import {
   defaultThemeSlug,
@@ -263,6 +262,9 @@ app.get("/links", (c) => renderHomeOrLinks(c, "/links"));
 app.get("/photos", async (c) => {
   const posts = (await getBlogPosts()).filter((post) => post.section === "photos");
 
+  // With a single photo page, the Photos tab opens it directly.
+  if (posts.length === 1) return c.redirect(`/photos/${posts[0].slug}`, 302);
+
   const model: BlogIndexModel = {
     description: "Photos by Ryan Prendergast",
     postsByYear: [
@@ -311,8 +313,8 @@ app.get("/photos/:slug", async (c) => {
     date: formatDateReadable(post.date),
     isoDate: `${parts[2]}-${parts[0]}-${parts[1]}`,
     contentHtml: post.content,
-    backHref: "/photos",
-    backLabel: "Back to Photos",
+    backHref: "/",
+    backLabel: "Back home",
   };
 
   return c.html(
@@ -328,7 +330,7 @@ app.get("/photos/:slug", async (c) => {
 
 // Blog List Page
 app.get("/blog", async (c) => {
-  const posts = await getBlogPosts();
+  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
 
   // Group posts by year
   const postsByYear: { [year: string]: typeof posts } = {};
@@ -346,7 +348,7 @@ app.get("/blog", async (c) => {
     description: "Essays and book reviews",
     postsByYear: sortedYears.map((year) => ({
       year,
-      posts: postsByYear[year].map((post) => toPostSummary(post, post.section === "photos" ? "/photos" : "/blog")),
+      posts: postsByYear[year].map((post) => toPostSummary(post)),
     })),
     totalPosts: posts.length,
     yearRange: yearsAscending.length
@@ -371,8 +373,8 @@ app.get("/blog", async (c) => {
   `;
 
   return c.html(
-    renderThemePage(c.req.raw, "Blog - Ryan Prendergast", model, "/blog", "blog-index", {
-      pageSubtitle: "Blog",
+    renderThemePage(c.req.raw, "Essays - Ryan Prendergast", model, "/blog", "blog-index", {
+      pageSubtitle: "Essays",
       description: "Essays and book reviews",
       structuredData,
     })
@@ -387,14 +389,14 @@ app.get("/blog/:slug", async (c) => {
   if (!post) {
     const content = `
       <div class="blog-post-nav">
-        <a href="/blog">&larr; Back to Blog</a>
+        <a href="/blog">&larr; Back to Essays</a>
       </div>
       <h2 class="blog-post-title">Post Not Found</h2>
       <p>The post you're looking for doesn't exist.</p>
     `;
     return c.html(
       renderPage("Post Not Found - Ryan Prendergast", content, "/blog", {
-        pageSubtitle: "Blog",
+        pageSubtitle: "Essays",
       })
     );
   }
@@ -414,7 +416,7 @@ app.get("/blog/:slug", async (c) => {
     isoDate,
     contentHtml: post.content,
     backHref: "/blog",
-    backLabel: "Back to Blog",
+    backLabel: "Back to Essays",
   };
 
   const structuredData = `
@@ -445,7 +447,7 @@ app.get("/blog/:slug", async (c) => {
 
   return c.html(
     renderThemePage(c.req.raw, `${post.title} - Ryan Prendergast`, model, "/blog", "blog-post", {
-      pageSubtitle: "Blog",
+      pageSubtitle: "Essays",
       description: post.excerpt || `${post.title} by Ryan Prendergast`,
       ogType: "article",
       canonicalUrl: `https://ryan-prendergast.com/blog/${post.slug}`,
@@ -702,36 +704,6 @@ app.get("/contact", (c) => {
   );
 });
 
-// Memory Page (Flashcards with Spaced Repetition)
-app.get("/memory", (c) => {
-  const model: GenericPageModel = { heading: "Memory", contentHtml: memory() };
-  const structuredData = `
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Memory",
-      "description": "Anki-like flashcards with spaced repetition for learning",
-      "url": "https://ryan-prendergast.com/memory",
-      "applicationCategory": "EducationalApplication",
-      "author": {
-        "@type": "Person",
-        "name": "Ryan Prendergast"
-      }
-    }
-    </script>
-  `;
-
-  return c.html(
-    renderThemePage(c.req.raw, "Memory - Ryan Prendergast", model, "/memory", "generic", {
-      pageSubtitle: "Memory",
-      description:
-        "Anki-like flashcards with spaced repetition algorithm for effective learning and memorization.",
-      structuredData,
-    })
-  );
-});
-
 // RSS Feed
 app.get("/rss.xml", async (c) => {
   return c.env.ASSETS.fetch(new Request("https://dummy/rss.xml"));
@@ -757,7 +729,6 @@ app.get("/sitemap.xml", async (c) => {
     { url: "", changefreq: "weekly", priority: "1.0" },
     { url: "/links", changefreq: "weekly", priority: "0.9" },
     { url: "/blog", changefreq: "weekly", priority: "0.9" },
-    { url: "/archives", changefreq: "weekly", priority: "0.8" },
     { url: "/contact", changefreq: "monthly", priority: "0.7" },
     { url: "/colophon", changefreq: "monthly", priority: "0.7" },
     { url: "/guestbook", changefreq: "weekly", priority: "0.6" },
@@ -783,7 +754,7 @@ app.get("/sitemap.xml", async (c) => {
 
     sitemap += `
   <url>
-    <loc>${baseUrl}/blog/${post.slug}</loc>
+    <loc>${baseUrl}/${post.section === "photos" ? "photos" : "blog"}/${post.slug}</loc>
     <lastmod>${isoDate}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -812,7 +783,7 @@ app.get("/*", async (c) => {
       const content = `
         <h2 class="blog-post-title">404 - Page Not Found</h2>
         <p>The page you're looking for doesn't exist.</p>
-        <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the blog</a></p>
+        <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the essays</a></p>
       `;
 
       const structuredData = `
@@ -846,7 +817,7 @@ app.get("/*", async (c) => {
     const content = `
       <h2 class="blog-post-title">404 - Page Not Found</h2>
       <p>The page you're looking for doesn't exist.</p>
-      <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the blog</a></p>
+      <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the essays</a></p>
     `;
 
     const structuredData = `

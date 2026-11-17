@@ -1,7 +1,7 @@
 ---
 title: "Hypercard Simulator in JS"
 url: "https://hcsimulator.com/"
-date: "02-22-2025"
+date: "02-22-2026"
 image: "https://hcsimulator.com/og-image.png"
 ---
 
