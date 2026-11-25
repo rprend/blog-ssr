@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Book review - The Epic of Gilgamesh"
 subtitle: "Gilgamesh and half-movies"
 date: "02-03-2025"

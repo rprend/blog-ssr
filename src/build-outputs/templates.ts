@@ -11,7 +11,7 @@ export const archives = (data: Record<string, string> = {}): string => {
 };
 
 export const blogList = (data: Record<string, string> = {}): string => {
-  let html = `<p class="blog-description">Ryan's mailbag: Essays and book reviews</p>
+  let html = `<p class="blog-description">Writing from my work</p>
 <div class="blog-rss-link">
   <a href="/rss.xml">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
@@ -32,7 +32,7 @@ export const blogList = (data: Record<string, string> = {}): string => {
 
 export const blogPost = (data: Record<string, string> = {}): string => {
   let html = `<div class="blog-post-nav">
-  <a href="/blog">&larr; Back to Essays</a>
+  <a href="/blog">&larr; Back to Writing</a>
 </div>
 <h2 class="blog-post-title">{{title}}</h2>
 {{subtitle}}
@@ -41,7 +41,7 @@ export const blogPost = (data: Record<string, string> = {}): string => {
   {{content}}
 </div>
 <div class="blog-post-footer">
-  <a href="/blog">&larr; Back to Essays</a>
+  <a href="/blog">&larr; Back to Writing</a>
   <span class="footer-separator">|</span>
   <a href="/rss.xml">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
@@ -140,7 +140,7 @@ export const layout = (data: Record<string, string> = {}): string => {
   <link rel="canonical" href="{{canonicalUrl}}">
 
   <!-- RSS Feed -->
-  <link rel="alternate" type="application/rss+xml" title="Ryan Prendergast: Essays" href="/rss.xml">
+  <link rel="alternate" type="application/rss+xml" title="Ryan Prendergast: Writing" href="/rss.xml">
 
   <!-- Additional SEO meta tags -->
   <meta name="robots" content="index, follow">
@@ -187,7 +187,7 @@ export const nav = (data: Record<string, string> = {}): string => {
   let html = `<ul class="nav-list">
   <li><a href="/" class="{{homeActive}}">Home</a></li>
   <li><a href="/links" class="{{linksActive}}">Links</a></li>
-  <li><a href="/blog" class="{{blogActive}}">Essays</a></li>
+  <li><a href="/blog" class="{{blogActive}}">Writing</a></li>
   <li><a href="/photos" class="{{photosActive}}">Photos</a></li>
   <li><a href="/guestbook" class="{{guestbookActive}}">Guestbook</a></li>
   <li><a href="/contact" class="{{contactActive}}">Contact</a></li>

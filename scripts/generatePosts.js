@@ -43,7 +43,15 @@ for (const file of files) {
   const { data, content: markdownContent } = matter(fileContent);
   
   // Convert markdown to HTML
-  const htmlContent = await marked(markdownContent);
+  let htmlContent = await marked(markdownContent);
+
+  // Republished pieces open with where and when they first ran
+  if (data.original) {
+    const [mm, dd, yyyy] = String(data.date).split("-").map(Number);
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const site = data.originalSite || new URL(data.original).hostname;
+    htmlContent = `<p class="originally-published"><em>Originally published on <a href="${data.original}">${site}</a>, ${dd} ${months[mm - 1]} ${yyyy}.</em></p>\n` + htmlContent;
+  }
   
   // Extract filename without extension for slug
   const baseFilename = file.replace('.md', '');
@@ -56,6 +64,9 @@ for (const file of files) {
     author: data.author || null,
     section: data.section || "blog",
     subtitle: data.subtitle || null,
+    original: data.original || null,
+    externalUrl: data.externalUrl || null,
+    unlisted: data.unlisted === true,
     excerpt: data.excerpt || extractExcerpt(markdownContent),
     readTime: calculateReadTime(markdownContent),
     content: htmlContent
@@ -89,6 +100,9 @@ content += '  date: string;\n';
 content += '  author: string | null;\n';
 content += '  section: string;\n';
 content += '  subtitle: string | null;\n';
+content += '  original: string | null;\n';
+content += '  externalUrl: string | null;\n';
+content += '  unlisted: boolean;\n';
 content += '  excerpt: string;\n';
 content += '  readTime: string;\n';
 content += '  content: string;\n';

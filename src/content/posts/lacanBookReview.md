@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Book Review- Lacan by Lionel Bailly"
 date: "12-08-2024"
 author: "Ryan Prendergast"

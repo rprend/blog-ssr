@@ -18,7 +18,15 @@ for (const file of files) {
   const { data, content: markdownContent } = matter(fileContent);
 
   // Convert markdown to HTML
-  const htmlContent = await marked(markdownContent);
+  let htmlContent = await marked(markdownContent);
+
+  // Republished pieces open with where and when they first ran
+  if (data.original) {
+    const [mm, dd, yyyy] = String(data.date).split("-").map(Number);
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const site = data.originalSite || new URL(data.original).hostname;
+    htmlContent = `<p class="originally-published"><em>Originally published on <a href="${data.original}">${site}</a>, ${dd} ${months[mm - 1]} ${yyyy}.</em></p>\n` + htmlContent;
+  }
 
   // Extract filename without extension for slug
   const baseFilename = file.replace(".md", "");
@@ -35,7 +43,7 @@ for (const file of files) {
     content: htmlContent,
   };
 
-  if (post.section !== "photos") {
+  if (post.section !== "photos" && data.unlisted !== true && !data.externalUrl) {
     posts.push(post);
   }
 }
@@ -99,9 +107,9 @@ function formatDateRFC822(dateStr) {
 let rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ryan Prendergast: Essays</title>
+    <title>Ryan Prendergast: Writing</title>
     <link>https://ryan-prendergast.com/blog</link>
-    <description>Essays and book reviews</description>
+    <description>Writing from my work</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="https://ryan-prendergast.com/rss.xml" rel="self" type="application/rss+xml" />

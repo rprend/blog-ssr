@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Applied Semiotics: Psychoanalysis for computers"
 date: "01-07-2025"
 author: "Ryan Prendergast"

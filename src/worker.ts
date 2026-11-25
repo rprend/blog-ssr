@@ -82,7 +82,7 @@ function toPostSummary(post: Awaited<ReturnType<typeof getBlogPosts>>[number], h
   return {
     slug: post.slug,
     title: post.title,
-    href: `${hrefPrefix}/${post.slug}`,
+    href: post.externalUrl || `${hrefPrefix}/${post.slug}`,
     date: formatDateReadable(post.date),
     rawDate: post.date,
     excerpt: post.excerpt,
@@ -216,7 +216,7 @@ function renderPage(
 // Home page and Links page share one model; the default theme shows the bio on "/" and the links on "/links".
 async function renderHomeOrLinks(c: any, currentPage: "/" | "/links") {
   const links = await getLinkEntries();
-  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
+  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos" && !post.unlisted);
   const model: HomeModel = {
     introHtml: `
       <div class="homepage-intro">
@@ -330,7 +330,7 @@ app.get("/photos/:slug", async (c) => {
 
 // Blog List Page
 app.get("/blog", async (c) => {
-  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
+  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos" && !post.unlisted);
 
   // Group posts by year
   const postsByYear: { [year: string]: typeof posts } = {};
@@ -345,7 +345,7 @@ app.get("/blog", async (c) => {
     .sort((a, b) => b.localeCompare(a))
   const yearsAscending = Object.keys(postsByYear).sort();
   const model: BlogIndexModel = {
-    description: "Essays and book reviews",
+    description: "Writing from my work",
     postsByYear: sortedYears.map((year) => ({
       year,
       posts: postsByYear[year].map((post) => toPostSummary(post)),
@@ -361,8 +361,8 @@ app.get("/blog", async (c) => {
     {
       "@context": "https://schema.org",
       "@type": "Blog",
-      "name": "Essays",
-      "description": "Essays and book reviews",
+      "name": "Writing",
+      "description": "Writing from my work",
       "url": "https://ryan-prendergast.com/blog",
       "author": {
         "@type": "Person",
@@ -373,9 +373,9 @@ app.get("/blog", async (c) => {
   `;
 
   return c.html(
-    renderThemePage(c.req.raw, "Essays - Ryan Prendergast", model, "/blog", "blog-index", {
-      pageSubtitle: "Essays",
-      description: "Essays and book reviews",
+    renderThemePage(c.req.raw, "Writing - Ryan Prendergast", model, "/blog", "blog-index", {
+      pageSubtitle: "Writing",
+      description: "Writing from my work",
       structuredData,
     })
   );
@@ -389,20 +389,24 @@ app.get("/blog/:slug", async (c) => {
   if (!post) {
     const content = `
       <div class="blog-post-nav">
-        <a href="/blog">&larr; Back to Essays</a>
+        <a href="/blog">&larr; Back to Writing</a>
       </div>
       <h2 class="blog-post-title">Post Not Found</h2>
       <p>The post you're looking for doesn't exist.</p>
     `;
     return c.html(
       renderPage("Post Not Found - Ryan Prendergast", content, "/blog", {
-        pageSubtitle: "Essays",
+        pageSubtitle: "Writing",
       })
     );
   }
 
   if (post.section === "photos") {
     return c.redirect(`/photos/${post.slug}`);
+  }
+
+  if (post.externalUrl) {
+    return c.redirect(post.externalUrl);
   }
 
   // Parse date for structured data
@@ -416,7 +420,7 @@ app.get("/blog/:slug", async (c) => {
     isoDate,
     contentHtml: post.content,
     backHref: "/blog",
-    backLabel: "Back to Essays",
+    backLabel: "Back to Writing",
   };
 
   const structuredData = `
@@ -447,7 +451,7 @@ app.get("/blog/:slug", async (c) => {
 
   return c.html(
     renderThemePage(c.req.raw, `${post.title} - Ryan Prendergast`, model, "/blog", "blog-post", {
-      pageSubtitle: "Essays",
+      pageSubtitle: "Writing",
       description: post.excerpt || `${post.title} by Ryan Prendergast`,
       ogType: "article",
       canonicalUrl: `https://ryan-prendergast.com/blog/${post.slug}`,
@@ -458,7 +462,7 @@ app.get("/blog/:slug", async (c) => {
 
 // Archives Page
 app.get("/archives", async (c) => {
-  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos");
+  const posts = (await getBlogPosts()).filter((post) => post.section !== "photos" && !post.unlisted);
 
   // Group posts by month-year
   const postsByMonth: {
@@ -722,7 +726,7 @@ Sitemap: https://ryan-prendergast.com/sitemap.xml`;
 });
 
 app.get("/sitemap.xml", async (c) => {
-  const posts = await getBlogPosts();
+  const posts = (await getBlogPosts()).filter((post) => !post.unlisted && !post.externalUrl);
   const baseUrl = "https://ryan-prendergast.com";
 
   const staticPages = [
@@ -783,7 +787,7 @@ app.get("/*", async (c) => {
       const content = `
         <h2 class="blog-post-title">404 - Page Not Found</h2>
         <p>The page you're looking for doesn't exist.</p>
-        <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the essays</a></p>
+        <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the writing</a></p>
       `;
 
       const structuredData = `
@@ -817,7 +821,7 @@ app.get("/*", async (c) => {
     const content = `
       <h2 class="blog-post-title">404 - Page Not Found</h2>
       <p>The page you're looking for doesn't exist.</p>
-      <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the essays</a></p>
+      <p><a href="/">&larr; Go home</a> or <a href="/blog">browse the writing</a></p>
     `;
 
     const structuredData = `
