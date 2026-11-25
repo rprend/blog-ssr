@@ -353,7 +353,7 @@ app.get("/blog", async (c) => {
     .sort((a, b) => b.localeCompare(a))
   const yearsAscending = Object.keys(postsByYear).sort();
   const model: BlogIndexModel = {
-    description: "Writing from my work building software companies. Most of these pieces were first published on the blogs of Zenobia Pay, Dolphin and Method.",
+    description: "Writing from my work building software companies. Most of these pieces were first published on the blogs of Zenobia Pay and Dolphin.",
     postsByYear: sortedYears.map((year) => ({
       year,
       posts: postsByYear[year].map((post) => toPostSummary(post)),
