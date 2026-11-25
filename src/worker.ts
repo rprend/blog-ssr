@@ -266,7 +266,7 @@ app.get("/photos", async (c) => {
   const posts = (await getBlogPosts()).filter((post) => post.section === "photos");
 
   const model: BlogIndexModel = {
-    description: "Photography by Ryan Prendergast",
+    description: "I started taking photos as a teenager, doing street photography around my hometown of Chicago. I shoot on a Panasonic Lumix G7 and a Canon PowerShot SD1200 IS. Lately I love to capture motion and movement.",
     postsByYear: [
       {
         year: "Photography",
@@ -285,7 +285,8 @@ app.get("/photos", async (c) => {
   );
 });
 
-const standalonePhotoPages: Record<string, () => string> = {
+// Collections whose page is an interactive piece: the markup comes from a template and sits inside the normal post layout.
+const photoSetPages: Record<string, (() => string) | undefined> = {
   "light-trails": photoLightTrails,
   "khachkars": photoKhachkars,
 };
@@ -294,10 +295,6 @@ const standalonePhotoPages: Record<string, () => string> = {
 app.get("/photos/:slug", async (c) => {
   const slug = c.req.param("slug");
   const post = await getBlogPost(slug);
-
-  // Collections with their own page design are served as they are, outside the theme system.
-  const standalone = standalonePhotoPages[slug];
-  if (standalone) return c.html(standalone());
 
   if (!post || post.section !== "photos") {
     const content = `
@@ -314,6 +311,7 @@ app.get("/photos/:slug", async (c) => {
     );
   }
 
+  const photoSet = photoSetPages[slug];
   const parts = post.date.split("-");
   const model: BlogPostModel = {
     title: post.title,
@@ -321,9 +319,9 @@ app.get("/photos/:slug", async (c) => {
     author: post.author,
     date: formatDateReadable(post.date),
     isoDate: `${parts[2]}-${parts[0]}-${parts[1]}`,
-    contentHtml: post.content,
-    backHref: "/",
-    backLabel: "Back home",
+    contentHtml: photoSet ? photoSet() : post.content,
+    backHref: "/photos",
+    backLabel: "Photography",
   };
 
   return c.html(
@@ -332,7 +330,8 @@ app.get("/photos/:slug", async (c) => {
       description: post.excerpt || `${post.title} by Ryan Prendergast`,
       ogType: "article",
       canonicalUrl: `https://ryan-prendergast.com/photos/${post.slug}`,
-      bodyClass: "raw-page",
+      ogImage: post.image ? `<meta property="og:image" content="https://ryan-prendergast.com${post.image}">` : undefined,
+      bodyClass: photoSet ? "" : "raw-page",
     })
   );
 });

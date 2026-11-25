@@ -202,43 +202,20 @@ export const nav = (data: Record<string, string> = {}): string => {
 };
 
 export const photoKhachkars = (data: Record<string, string> = {}): string => {
-  let html = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Khachkars - Ryan Prendergast</title>
-<meta name="description" content="Carved cross-stones in Armenia, August 2026.">
-<link rel="canonical" href="https://ryan-prendergast.com/photos/khachkars">
-<link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="Khachkars">
-<meta property="og:description" content="Carved cross-stones in Armenia, August 2026.">
-<meta property="og:image" content="https://ryan-prendergast.com/photos/khachkars/b01.jpg">
-<style>
-*{box-sizing:border-box}html,body{margin:0}body{background:#111;color:#8a8a8a;font:14px/1.4 Georgia,"Times New Roman",serif}
-main{margin:0 auto;padding:24px 16px 72px;max-width:1100px}
-.back{color:#777;text-decoration:underline;text-underline-offset:3px;font-size:13px}
-h1{font-size:18px;font-weight:normal;color:#d2d2d2;margin:18px 0 4px}.premise{margin:0 0 16px}
-#g{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}@media(max-width:700px){#g{grid-template-columns:repeat(3,1fr)}}
-#g button{position:relative;border:0;padding:0;background:#111;cursor:pointer;display:block;aspect-ratio:3/4;overflow:hidden}
-#g img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-#g .co{opacity:0;transition:opacity .35s}#g button.on .co{opacity:1}
-#g button:focus-visible{outline:1px solid #999;outline-offset:-3px}
-@media(prefers-reduced-motion:reduce){#g .co{transition:none}}
+  let html = `<style>
+.kh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:16px 0 8px;background:#111;border:2px solid #111}
+@media(max-width:560px){.kh-grid{grid-template-columns:repeat(3,1fr)}}
+.kh-grid button{position:relative;border:0;padding:0;margin:0;background:#111;cursor:pointer;display:block;width:100%;min-width:0;box-sizing:border-box;box-shadow:none;aspect-ratio:2/3;overflow:hidden;border-radius:0}
+.kh-grid img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;display:block;margin:0;border:0;border-radius:0}
+.kh-grid .co{opacity:0;transition:opacity .35s}.kh-grid button.on .co{opacity:1}
+.kh-grid button:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+@media(prefers-reduced-motion:reduce){.kh-grid .co{transition:none}}
 </style>
-</head>
-<body>
-<main>
-<a class="back" href="/photos">Photography</a>
-<h1>Khachkars</h1>
-<p class="premise">Carved cross-stones in Armenia, August 2026.</p>
-<div id="g"><button type="button" aria-label="Stone 1, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b01.jpg" alt="Carved cross-stone 1" width="576" height="768"><img class="co" src="/photos/khachkars/c01.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 2, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b02.jpg" alt="Carved cross-stone 2" width="576" height="768"><img class="co" src="/photos/khachkars/c02.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 3, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b03.jpg" alt="Carved cross-stone 3" width="576" height="768"><img class="co" src="/photos/khachkars/c03.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 4, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b04.jpg" alt="Carved cross-stone 4" width="576" height="768"><img class="co" src="/photos/khachkars/c04.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 5, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b05.jpg" alt="Carved cross-stone 5" width="576" height="768"><img class="co" src="/photos/khachkars/c05.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 6, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b06.jpg" alt="Carved cross-stone 6" width="576" height="768"><img class="co" src="/photos/khachkars/c06.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 7, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b07.jpg" alt="Carved cross-stone 7" width="576" height="768"><img class="co" src="/photos/khachkars/c07.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 8, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b08.jpg" alt="Carved cross-stone 8" width="576" height="768"><img class="co" src="/photos/khachkars/c08.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 9, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b09.jpg" alt="Carved cross-stone 9" width="576" height="768"><img class="co" src="/photos/khachkars/c09.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 10, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b10.jpg" alt="Carved cross-stone 10" width="576" height="768"><img class="co" src="/photos/khachkars/c10.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 11, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b11.jpg" alt="Carved cross-stone 11" width="576" height="768"><img class="co" src="/photos/khachkars/c11.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 12, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b12.jpg" alt="Carved cross-stone 12" width="576" height="768"><img class="co" src="/photos/khachkars/c12.jpg" alt="" loading="lazy"></button></div>
-</main>
+<p class="photo-premise">Carved cross-stones in Armenia, August 2026.</p>
+<div class="kh-grid"><button type="button" aria-label="Stone 1, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b01.jpg" alt="Carved cross-stone 1" width="400" height="600"><img class="co" src="/photos/khachkars/c01.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 2, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b02.jpg" alt="Carved cross-stone 2" width="400" height="600"><img class="co" src="/photos/khachkars/c02.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 3, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b03.jpg" alt="Carved cross-stone 3" width="400" height="600"><img class="co" src="/photos/khachkars/c03.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 4, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b04.jpg" alt="Carved cross-stone 4" width="400" height="600"><img class="co" src="/photos/khachkars/c04.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 5, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b05.jpg" alt="Carved cross-stone 5" width="400" height="600" loading="lazy"><img class="co" src="/photos/khachkars/c05.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 6, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b06.jpg" alt="Carved cross-stone 6" width="400" height="600" loading="lazy"><img class="co" src="/photos/khachkars/c06.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 7, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b07.jpg" alt="Carved cross-stone 7" width="400" height="600" loading="lazy"><img class="co" src="/photos/khachkars/c07.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 8, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b08.jpg" alt="Carved cross-stone 8" width="400" height="600" loading="lazy"><img class="co" src="/photos/khachkars/c08.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 9, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b09.jpg" alt="Carved cross-stone 9" width="400" height="600" loading="lazy"><img class="co" src="/photos/khachkars/c09.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 10, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b10.jpg" alt="Carved cross-stone 10" width="400" height="600" loading="lazy"><img class="co" src="/photos/khachkars/c10.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 11, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b11.jpg" alt="Carved cross-stone 11" width="400" height="600" loading="lazy"><img class="co" src="/photos/khachkars/c11.jpg" alt="" loading="lazy"></button><button type="button" aria-label="Stone 12, show in colour" aria-pressed="false"><img class="bw" src="/photos/khachkars/b12.jpg" alt="Carved cross-stone 12" width="400" height="600" loading="lazy"><img class="co" src="/photos/khachkars/c12.jpg" alt="" loading="lazy"></button></div>
 <script>
-document.querySelectorAll("#g button").forEach(b=>b.addEventListener("click",()=>{const on=b.classList.toggle("on");b.setAttribute("aria-pressed",String(on))}));
+document.querySelectorAll(".kh-grid button").forEach(b=>b.addEventListener("click",()=>{const on=b.classList.toggle("on");b.setAttribute("aria-pressed",String(on))}));
 </script>
-</body>
-</html>
 `;
   
   // Replace {{variable}} with data.variable
@@ -248,59 +225,39 @@ document.querySelectorAll("#g button").forEach(b=>b.addEventListener("click",()=
 };
 
 export const photoLightTrails = (data: Record<string, string> = {}): string => {
-  let html = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Light trails - Ryan Prendergast</title>
-<meta name="description" content="Slow exposures of street lights and traffic in Los Angeles in May 2026.">
-<link rel="canonical" href="https://ryan-prendergast.com/photos/light-trails">
-<link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="Light trails">
-<meta property="og:description" content="Slow exposures of street lights and traffic in Los Angeles in May 2026.">
-<meta property="og:image" content="https://ryan-prendergast.com/photos/light-trails/05.jpg">
-<style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body { background: #000; color: #8a8a8a; font: 14px/1.4 Georgia, "Times New Roman", serif; }
-  main { max-width: 560px; margin: 0 auto; padding: 24px 16px 72px; }
-  .back { color: #777; text-decoration: underline; text-underline-offset: 3px; font-size: 13px; }
-  h1 { font-size: 18px; font-weight: normal; color: #cfcfcf; margin: 18px 0 4px; }
-  .premise { margin: 0 0 16px; }
-
+  let html = `<style>
+  .lt-set { max-width: 520px; margin: 16px 0 8px; }
+  #lt-strip img { max-width: none; margin: 0; border: 0; border-radius: 0; }
+  #lt-strip button { margin: 0; border-radius: 0; }
   /* The canvas is a little shorter than the frames so the camera's date stamp is cropped off the bottom. */
-  #canvas { position: relative; width: 100%; aspect-ratio: 8 / 9; background: #000; overflow: hidden; cursor: pointer; border: 0; padding: 0; display: block; }
-  #canvas img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; mix-blend-mode: screen; opacity: 0; transition: opacity .9s; pointer-events: none; }
-  #canvas img.on { opacity: 1; }
+  #lt-canvas { position: relative; width: 100%; aspect-ratio: 8 / 9; background: #000; overflow: hidden; cursor: pointer; border: 0; padding: 0; margin: 0; display: block; border-radius: 0; }
+  #lt-canvas img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; max-width: none; margin: 0; border: 0; border-radius: 0; mix-blend-mode: screen; opacity: 0; transition: opacity .9s; pointer-events: none; }
+  #lt-canvas img.on { opacity: 1; }
 
-  #strip { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin-top: 10px; }
-  #strip button { aspect-ratio: 1; padding: 0; border: 0; background: #000; cursor: pointer; overflow: hidden; }
-  #strip img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; opacity: .28; transition: opacity .3s; }
-  #strip button.on img { opacity: 1; }
-  #strip button:focus-visible, #canvas:focus-visible { outline: 1px solid #777; outline-offset: 2px; }
+  #lt-strip { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin-top: 10px; }
+  #lt-strip button { aspect-ratio: 1; padding: 0; border: 0; background: #000; cursor: pointer; overflow: hidden; }
+  #lt-strip img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; opacity: .28; transition: opacity .3s; }
+  #lt-strip button.on img { opacity: 1; }
+  #lt-strip button:focus-visible, #lt-canvas:focus-visible { outline: 1px solid #777; outline-offset: 2px; }
 
-  #clear { margin-top: 12px; background: none; border: 0; padding: 0; color: #777; font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; visibility: hidden; }
-  #clear.show { visibility: visible; }
+  #lt-clear { margin-top: 12px; background: none; border: 0; padding: 0; color: #777; font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; visibility: hidden; }
+  #lt-clear.show { visibility: visible; }
 
-  @media (max-width: 520px) { #strip { grid-template-columns: repeat(6, 1fr); } }
-  @media (prefers-reduced-motion: reduce) { #canvas img, #strip img { transition: none; } }
+  @media (max-width: 520px) { #lt-strip { grid-template-columns: repeat(6, 1fr); } }
+  @media (prefers-reduced-motion: reduce) { #lt-canvas img, #lt-strip img { transition: none; } }
+  #lt-clear { color: inherit; }
 </style>
-</head>
-<body>
-<main>
-  <a class="back" href="/photos">Photography</a>
-  <h1>Light trails</h1>
-  <p class="premise">Slow exposures of street lights and traffic in Los Angeles in May 2026.</p>
-  <button id="canvas" type="button" aria-label="Add the next exposure"></button>
-  <div id="strip"></div>
-  <button id="clear" type="button">clear</button>
-</main>
+<p class="photo-premise">Slow exposures of street lights and traffic in Los Angeles in May 2026.</p>
+<div class="lt-set">
+  <button id="lt-canvas" type="button" aria-label="Add the next exposure"></button>
+  <div id="lt-strip"></div>
+  <button id="lt-clear" type="button">clear</button>
+</div>
 <script>
   const N = 12;
-  const canvas = document.getElementById("canvas");
-  const strip = document.getElementById("strip");
-  const clear = document.getElementById("clear");
+  const canvas = document.getElementById("lt-canvas");
+  const strip = document.getElementById("lt-strip");
+  const clear = document.getElementById("lt-clear");
   const layers = [], thumbs = [];
 
   for (let i = 1; i <= N; i++) {
@@ -332,8 +289,6 @@ export const photoLightTrails = (data: Record<string, string> = {}): string => {
 
   set(0, true);
 </script>
-</body>
-</html>
 `;
   
   // Replace {{variable}} with data.variable

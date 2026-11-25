@@ -2263,7 +2263,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .flatMap((group) => group.posts)
       .map((post) => `<a class="photo-collection" href="${post.href}">${post.image ? `<img src="${escapeHtml(post.image)}" alt="" loading="lazy">` : ""}<span class="photo-collection-text"><span class="photo-collection-title">${escapeHtml(post.title)}</span>${post.excerpt ? `<span class="photo-collection-premise">${escapeHtml(post.excerpt)}</span>` : ""}</span></a>`)
       .join("");
-    return `<section class="photo-collections">${items}</section>`;
+    return `<p class="photo-intro">${escapeHtml(model.description)}</p><section class="photo-collections">${items}</section>`;
   }
   const groups = model.postsByYear
     .map((group) => `<section class="theme-year-group"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderPostSummary(post, index, ctx)).join("")}</section>`)

@@ -18,21 +18,6 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
-    "slug": "five-conversations-with-coding-agents",
-    "title": "Five conversations with coding agents that went wrong",
-    "date": "09-10-2026",
-    "author": "Ryan Prendergast",
-    "section": "blog",
-    "subtitle": null,
-    "image": null,
-    "original": null,
-    "externalUrl": "https://withmethod.ai/blog/what-did-you-actually-change/",
-    "unlisted": false,
-    "excerpt": "Published on the Method blog.",
-    "readTime": "1 min read",
-    "content": "<p>Published on the <a href=\"https://withmethod.ai/blog/what-did-you-actually-change/\">Method blog</a>.</p>\n"
-  },
-  {
     "slug": "khachkars",
     "title": "Khachkars",
     "date": "08-20-2026",

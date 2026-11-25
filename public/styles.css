@@ -20114,3 +20114,6 @@ body.site-shell:not(.raw-page) {
   .photo-collection { grid-template-columns: 1fr; gap: 8px; }
   .photo-collection img { width: 100%; height: auto; aspect-ratio: 3 / 2; }
 }
+
+.photo-intro { margin: 4px 0 28px; max-width: 34em; }
+.photo-premise { margin: 0 0 4px; color: #444; }
