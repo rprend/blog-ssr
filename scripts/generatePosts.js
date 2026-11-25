@@ -64,6 +64,7 @@ for (const file of files) {
     author: data.author || null,
     section: data.section || "blog",
     subtitle: data.subtitle || null,
+    image: data.image || null,
     original: data.original || null,
     externalUrl: data.externalUrl || null,
     unlisted: data.unlisted === true,
@@ -100,6 +101,7 @@ content += '  date: string;\n';
 content += '  author: string | null;\n';
 content += '  section: string;\n';
 content += '  subtitle: string | null;\n';
+content += '  image: string | null;\n';
 content += '  original: string | null;\n';
 content += '  externalUrl: string | null;\n';
 content += '  unlisted: boolean;\n';

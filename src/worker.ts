@@ -8,6 +8,8 @@ import {
   blogList,
   blogPost,
   photosList,
+  photoLightTrails,
+  photoKhachkars,
   contact,
   archives,
 } from "./build-outputs/templates";
@@ -87,6 +89,7 @@ function toPostSummary(post: Awaited<ReturnType<typeof getBlogPosts>>[number], h
     rawDate: post.date,
     excerpt: post.excerpt,
     readTime: post.readTime,
+    image: post.image,
   };
 }
 
@@ -262,14 +265,11 @@ app.get("/links", (c) => renderHomeOrLinks(c, "/links"));
 app.get("/photos", async (c) => {
   const posts = (await getBlogPosts()).filter((post) => post.section === "photos");
 
-  // With a single photo page, the Photos tab opens it directly.
-  if (posts.length === 1) return c.redirect(`/photos/${posts[0].slug}${new URL(c.req.url).search}`, 302);
-
   const model: BlogIndexModel = {
-    description: "Photos by Ryan Prendergast",
+    description: "Photography by Ryan Prendergast",
     postsByYear: [
       {
-        year: "Photos",
+        year: "Photography",
         posts: posts.map((post) => toPostSummary(post, "/photos")),
       },
     ],
@@ -278,29 +278,38 @@ app.get("/photos", async (c) => {
   };
 
   return c.html(
-    renderThemePage(c.req.raw, "Photos - Ryan Prendergast", model, "/photos", "blog-index", {
-      pageSubtitle: "Photos",
-      description: "Photos by Ryan Prendergast",
+    renderThemePage(c.req.raw, "Photography - Ryan Prendergast", model, "/photos", "blog-index", {
+      pageSubtitle: "Photography",
+      description: "Photography by Ryan Prendergast",
     })
   );
 });
+
+const standalonePhotoPages: Record<string, () => string> = {
+  "light-trails": photoLightTrails,
+  "khachkars": photoKhachkars,
+};
 
 // Individual Photo Post Page
 app.get("/photos/:slug", async (c) => {
   const slug = c.req.param("slug");
   const post = await getBlogPost(slug);
 
+  // Collections with their own page design are served as they are, outside the theme system.
+  const standalone = standalonePhotoPages[slug];
+  if (standalone) return c.html(standalone());
+
   if (!post || post.section !== "photos") {
     const content = `
       <div class="blog-post-nav">
-        <a href="/photos">&larr; Back to Photos</a>
+        <a href="/photos">&larr; Back to Photography</a>
       </div>
       <h2 class="blog-post-title">Post Not Found</h2>
       <p>The photo post you're looking for doesn't exist.</p>
     `;
     return c.html(
       renderPage("Post Not Found - Ryan Prendergast", content, "/photos", {
-        pageSubtitle: "Photos",
+        pageSubtitle: "Photography",
       })
     );
   }
@@ -319,7 +328,7 @@ app.get("/photos/:slug", async (c) => {
 
   return c.html(
     renderThemePage(c.req.raw, `${post.title} - Ryan Prendergast`, model, "/photos", "blog-post", {
-      pageSubtitle: "Photos",
+      pageSubtitle: "Photography",
       description: post.excerpt || `${post.title} by Ryan Prendergast`,
       ogType: "article",
       canonicalUrl: `https://ryan-prendergast.com/photos/${post.slug}`,

@@ -25,6 +25,7 @@ export interface PostSummaryModel {
   rawDate: string;
   excerpt?: string;
   readTime?: string;
+  image?: string | null;
 }
 
 export interface HomeModel {
@@ -207,7 +208,7 @@ const navItemsBase: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/links", label: "Links" },
   { href: "/blog", label: "Blog" },
-  { href: "/photos", label: "Photos" },
+  { href: "/photos", label: "Photography" },
   { href: "/archives", label: "Archives" },
   { href: "/guestbook", label: "Guestbook" },
   { href: "/contact", label: "Contact" },
@@ -529,7 +530,7 @@ function renderNoCssShell<T extends PageModel>(options: RenderPageOptions<T>, co
     { href: "/", label: "Home" },
     { href: "/links", label: "Links" },
     { href: "/blog", label: "Writing" },
-    { href: "/photos", label: "Photos" },
+    { href: "/photos", label: "Photography" },
     { href: "/guestbook", label: "Guestbook" },
     { href: "/contact", label: "Contact" },
   ].map((item) => ({ ...item, active: item.href === ctx.currentPage }));
@@ -669,7 +670,7 @@ function renderShellChrome(ctx: RenderContext): { before: string; after: string 
       ["/", "\u{1F3E0} home"],
       ["/links", "\u{1F517} links"],
       ["/blog", "\u{1F4DD} pieces"],
-      ["/photos", "\u{1F4F7} photos"],
+      ["/photos", "\u{1F4F7} photography"],
       ["/guestbook", "\u{1F4D6} guestbook"],
       ["/contact", "\u{2709}\u{FE0F} contact"],
     ] as Array<[string, string]>;
@@ -700,7 +701,7 @@ function renderUcozPage(ctx: RenderContext, title: string, contentHtml: string, 
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as const;
@@ -747,7 +748,7 @@ function renderSpartanSidebar(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -767,7 +768,7 @@ function renderCanonicalHomeHeader(model: HomeModel): string {
 }
 
 function renderHtmlBulletinNav(ctx: RenderContext): string {
-  return `<p class="html-bulletin-nav">${renderIndexBatchNavLinks(ctx, { "/": "home", "/links": "links", "/blog": "writing", "/photos": "photos", "/guestbook": "guestbook", "/contact": "contact" })}</p>`;
+  return `<p class="html-bulletin-nav">${renderIndexBatchNavLinks(ctx, { "/": "home", "/links": "links", "/blog": "writing", "/photos": "photography", "/guestbook": "guestbook", "/contact": "contact" })}</p>`;
 }
 
 function renderHtmlBulletinPage(ctx: RenderContext, title: string, contentHtml: string, introHtml = ""): string {
@@ -789,7 +790,7 @@ function renderCheapManifestoNav(ctx: RenderContext): string {
     ["/", "home = ryan"],
     ["/links", "links ≠ feed"],
     ["/blog", "writing ≠ content"],
-    ["/photos", "photos ≠ polish"],
+    ["/photos", "photography ≠ polish"],
     ["/guestbook", "guestbook = hello"],
     ["/contact", "contact = email"],
   ] as Array<[string, string]>;
@@ -825,7 +826,7 @@ function renderPerformanceClubNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -890,7 +891,7 @@ function renderRecurseJoyNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -925,7 +926,7 @@ function renderForecastReportNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -971,7 +972,7 @@ function renderPoeticNav(ctx: RenderContext): string {
   const item = (href: string, label: string) => `<a class="${ctx.currentPage === href ? "is-active" : ""}" href="${href}">${escapeHtml(label)}</a>`;
   return `<nav class="poetic-menu" aria-label="Core site areas">
     <div>${item("/", "home")}${item("/links", "links")}${item("/blog", "writing")}</div>
-    <div>${item("/photos", "photos")}${item("/guestbook", "guestbook")}${item("/contact", "contact")}</div>
+    <div>${item("/photos", "photography")}${item("/guestbook", "guestbook")}${item("/contact", "contact")}</div>
   </nav>`;
 }
 
@@ -1028,7 +1029,7 @@ function renderFeralNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -1075,7 +1076,7 @@ function renderVernacularNav(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -1109,7 +1110,7 @@ function renderConsumptionDigestNav(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -1164,7 +1165,7 @@ function renderIndexBatchNavLinks(ctx: RenderContext, labels: Record<string, str
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -1213,7 +1214,7 @@ function renderVisualCultureWork(href: string, title: string, meta: string, deta
 function renderRoomWallNav(ctx: RenderContext): string {
   return `<header class="room-wall-top">
     <p><a href="/">Ryan Prendergast</a></p>
-    <nav aria-label="Site">${renderIndexBatchNavLinks(ctx, { "/": "home", "/links": "links", "/blog": "writing", "/photos": "photos", "/guestbook": "guestbook", "/contact": "contact" })}</nav>
+    <nav aria-label="Site">${renderIndexBatchNavLinks(ctx, { "/": "home", "/links": "links", "/blog": "writing", "/photos": "photography", "/guestbook": "guestbook", "/contact": "contact" })}</nav>
   </header>`;
 }
 
@@ -1269,7 +1270,7 @@ function renderResearchLabIndex(model: BlogIndexModel, ctx: RenderContext): stri
     .slice(0, 3)
     .map((post, index) => renderResearchLabCard(post.href, post.title, post.readTime || "Writing", post.date, post.excerpt || "", index === 0))
     .join("");
-  return renderResearchLabPage(ctx, `<section class="research-lab-section-title"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Writing"}</h1><p>${escapeHtml(model.description)}</p></section><section class="research-lab-feature-grid is-short">${cards}</section><section class="research-lab-publications"><h2>All writing</h2><div class="research-lab-publication-head"><span>Date</span><span>Length</span><span>Title</span></div><div class="research-lab-publication-list">${rows}</div></section>`);
+  return renderResearchLabPage(ctx, `<section class="research-lab-section-title"><h1>${ctx.currentPage === "/photos" ? "Photography" : "Writing"}</h1><p>${escapeHtml(model.description)}</p></section><section class="research-lab-feature-grid is-short">${cards}</section><section class="research-lab-publications"><h2>All writing</h2><div class="research-lab-publication-head"><span>Date</span><span>Length</span><span>Title</span></div><div class="research-lab-publication-list">${rows}</div></section>`);
 }
 
 function renderResearchLabArticle(model: BlogPostModel, ctx: RenderContext): string {
@@ -1307,7 +1308,7 @@ function renderGardenNav(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -1324,7 +1325,7 @@ function renderBookmakerNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -1354,7 +1355,7 @@ function renderExperimentalLoopNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -2257,6 +2258,13 @@ function renderHome(model: HomeModel, ctx: RenderContext): string {
 }
 
 function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
+  if (ctx.currentPage === "/photos" && ctx.theme.slug === "original") {
+    const items = model.postsByYear
+      .flatMap((group) => group.posts)
+      .map((post) => `<a class="photo-collection" href="${post.href}">${post.image ? `<img src="${escapeHtml(post.image)}" alt="" loading="lazy">` : ""}<span class="photo-collection-text"><span class="photo-collection-title">${escapeHtml(post.title)}</span>${post.excerpt ? `<span class="photo-collection-premise">${escapeHtml(post.excerpt)}</span>` : ""}</span></a>`)
+      .join("");
+    return `<section class="photo-collections">${items}</section>`;
+  }
   const groups = model.postsByYear
     .map((group) => `<section class="theme-year-group"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderPostSummary(post, index, ctx)).join("")}</section>`)
     .join("");
@@ -2272,7 +2280,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderEssayBlogrollPage(
       ctx,
-      `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry essay-blogroll-pagehead"><h2>${ctx.currentPage === "/photos" ? "Photos" : "Writing"}</h2><p>${escapeHtml(model.description)}</p><p class="essay-blogroll-meta">${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}</p></article>${posts}</section>`,
+      `<section class="essay-blogroll-posts"><article class="essay-blogroll-entry essay-blogroll-pagehead"><h2>${ctx.currentPage === "/photos" ? "Photography" : "Writing"}</h2><p>${escapeHtml(model.description)}</p><p class="essay-blogroll-meta">${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}</p></article>${posts}</section>`,
       renderEssayBlogrollSidebar([["Archives", model.postsByYear.map((group) => [`#year-${group.year}`, `${group.year} (${group.posts.length})`] as [string, string])]]),
     );
   }
@@ -2302,7 +2310,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
   }
   if (ctx.family === "no-css") {
     return `<section>
-      <h2>${ctx.currentPage === "/photos" ? "Photos" : "Writing"}</h2>
+      <h2>${ctx.currentPage === "/photos" ? "Photography" : "Writing"}</h2>
       <p>${escapeHtml(model.description)}</p>
       ${model.postsByYear.map((group) => `<h3>${escapeHtml(group.year)}</h3><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a> <small>${escapeHtml(post.date)}${post.readTime ? ` / ${escapeHtml(post.readTime)}` : ""}</small>${post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : ""}</li>`).join("")}</ul>`).join("")}
     </section>`;
@@ -2433,7 +2441,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const entries = model.postsByYear
       .flatMap((group, groupIndex) => group.posts.map((post, postIndex) => renderPortalTile(post.href, post.title, post.readTime || "", post.date || group.year, post.excerpt || "", groupIndex + postIndex)))
       .join("");
-    return renderPortalPage(ctx, `<header class="portal-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Writing"}</h1><p>${escapeHtml(model.description)}</p></header><section class="portal-gallery-wall">${entries}</section>`);
+    return renderPortalPage(ctx, `<header class="portal-section-head"><h1>${ctx.currentPage === "/photos" ? "Photography" : "Writing"}</h1><p>${escapeHtml(model.description)}</p></header><section class="portal-gallery-wall">${entries}</section>`);
   }
   if (ctx.family === "research-lab") {
     return renderResearchLabIndex(model, ctx);
@@ -2444,7 +2452,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderVisualCulturePage(
       ctx,
-      ctx.currentPage === "/photos" ? "Photos" : "Writing",
+      ctx.currentPage === "/photos" ? "Photography" : "Writing",
       `<div class="visual-culture-intro"><p>${escapeHtml(model.description)}</p></div><div class="visual-culture-contact">${posts}</div>`,
       "visual-culture-index",
     );
@@ -2453,13 +2461,13 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const posts = model.postsByYear
       .flatMap((group) => group.posts.map((post) => renderRoomWallWork(post.href, post.title, post.date, post.readTime || "")))
       .join("");
-    return renderRoomWallPage(ctx, `<h1>${ctx.currentPage === "/photos" ? "photos" : "writing"}</h1><p>${escapeHtml(model.description)}</p><section class="room-wall-works">${posts}</section>`);
+    return renderRoomWallPage(ctx, `<h1>${ctx.currentPage === "/photos" ? "photography" : "writing"}</h1><p>${escapeHtml(model.description)}</p><section class="room-wall-works">${posts}</section>`);
   }
   if (ctx.family === "html-bulletin") {
     const groups = model.postsByYear
       .map((group) => `<h4>${escapeHtml(group.year)}</h4>${group.posts.map((post) => `<p><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? `<br><small>${escapeHtml(post.date)}</small>` : ""}</p>`).join("")}`)
       .join("");
-    return renderHtmlBulletinPage(ctx, ctx.currentPage === "/photos" ? "photos" : "writing", `<p>${escapeHtml(model.description)}</p>${groups}`);
+    return renderHtmlBulletinPage(ctx, ctx.currentPage === "/photos" ? "photography" : "writing", `<p>${escapeHtml(model.description)}</p>${groups}`);
   }
   if (ctx.family === "consumption-digest") {
     const days = model.postsByYear
@@ -2471,19 +2479,19 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const rows = model.postsByYear
       .map((group) => `<h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderVernacularPost(post, index + 1)).join("")}`)
       .join("");
-    return renderVernacularPage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Writing", `<p>${escapeHtml(model.description)}</p><hr>${rows}`);
+    return renderVernacularPage(ctx, ctx.currentPage === "/photos" ? "Photography" : "Writing", `<p>${escapeHtml(model.description)}</p><hr>${rows}`);
   }
   if (ctx.family === "cheap-manifesto") {
     const groups = model.postsByYear
       .map((group) => `<h2>${escapeHtml(group.year)}</h2><ul>${group.posts.map((post) => `<li><a href="${post.href}">${escapeHtml(post.title)}</a>${post.date ? ` <small>${escapeHtml(post.date)}</small>` : ""}${post.excerpt ? `<br><span>${escapeHtml(post.excerpt)}</span>` : ""}</li>`).join("")}</ul>`)
       .join("");
-    return renderCheapManifestoPage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Writing", `<p>${escapeHtml(model.description)}</p>${groups}`);
+    return renderCheapManifestoPage(ctx, ctx.currentPage === "/photos" ? "Photography" : "Writing", `<p>${escapeHtml(model.description)}</p>${groups}`);
   }
   if (ctx.family === "poetic-article") {
     const groups = model.postsByYear
       .map((group) => `<section class="poetic-section"><h2>${escapeHtml(group.year)}</h2>${group.posts.map(renderPoeticPost).join("")}</section>`)
       .join("");
-    return renderPoeticArticlePage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Writing", `<p class="poetic-lede">${escapeHtml(model.description)}</p>${groups}`);
+    return renderPoeticArticlePage(ctx, ctx.currentPage === "/photos" ? "Photography" : "Writing", `<p class="poetic-lede">${escapeHtml(model.description)}</p>${groups}`);
   }
   if (ctx.family === "feral-essay") {
     const groups = model.postsByYear
@@ -2498,7 +2506,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderPerformanceClubPage(
       ctx,
-      `${renderPerformanceClubBlock(ctx.currentPage === "/photos" ? "Photos" : "Writing", `<p class="performance-club-lede">${escapeHtml(model.description)}</p><p class="performance-club-count">${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>`, "performance-club-manifesto")}
+      `${renderPerformanceClubBlock(ctx.currentPage === "/photos" ? "Photography" : "Writing", `<p class="performance-club-lede">${escapeHtml(model.description)}</p><p class="performance-club-count">${model.totalPosts} entries${model.yearRange ? ` from ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}.</p>`, "performance-club-manifesto")}
       ${renderPerformanceClubBlock("All entries", renderPerformanceClubTable(["#", "year", "entry", "date"], rows, "Writing"))}`,
     );
   }
@@ -2508,7 +2516,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderRecurseJoyPage(
       ctx,
-      `<header class="recurse-joy-page-head"><h2>${ctx.currentPage === "/photos" ? "Photos" : "Writing"}</h2><p>${escapeHtml(model.description)}</p><p><a href="/rss.xml">RSS feed</a> · ${model.totalPosts} posts${model.yearRange ? `, ${model.yearRange[0]}-${model.yearRange[1]}` : ""}</p></header>${entries}`,
+      `<header class="recurse-joy-page-head"><h2>${ctx.currentPage === "/photos" ? "Photography" : "Writing"}</h2><p>${escapeHtml(model.description)}</p><p><a href="/rss.xml">RSS feed</a> · ${model.totalPosts} posts${model.yearRange ? `, ${model.yearRange[0]}-${model.yearRange[1]}` : ""}</p></header>${entries}`,
       "Writing",
     );
   }
@@ -2516,7 +2524,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
     const entries = model.postsByYear
       .map((group) => `<section class="forecast-report-panel" id="year-${escapeHtml(group.year)}"><h2>${escapeHtml(group.year)}</h2>${group.posts.map((post, index) => renderForecastReportEntry(post.href, post.title, post.date, post.excerpt ? escapeHtml(post.excerpt) : post.readTime || "", index)).join("")}</section>`)
       .join("");
-    return renderForecastReportPage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Writing", entries, {
+    return renderForecastReportPage(ctx, ctx.currentPage === "/photos" ? "Photography" : "Writing", entries, {
       meta: `${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}`,
       subtitleHtml: `<p>${escapeHtml(model.description)}</p>`,
       tocHtml: model.postsByYear.map((group) => `<a href="#year-${escapeHtml(group.year)}">${escapeHtml(group.year)}</a>`).join(""),
@@ -2528,7 +2536,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       .join("");
     return renderForumFrontpageShell(
       ctx,
-      `${renderForumFrontpageHead(ctx.currentPage === "/photos" ? "Photos" : "Writing", `<p>${escapeHtml(model.description)}</p><p class="forum-frontpage-meta">${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}</p>`)}${years}`,
+      `${renderForumFrontpageHead(ctx.currentPage === "/photos" ? "Photography" : "Writing", `<p>${escapeHtml(model.description)}</p><p class="forum-frontpage-meta">${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]} to ${model.yearRange[1]}` : ""}</p>`)}${years}`,
       "Writing",
     );
   }
@@ -2537,7 +2545,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       const posts = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, label: post.date, title: post.title })));
       return renderBookMicrositePage(
         ctx,
-        `${renderBookMicrositeTitlePage(ctx, `<p>${escapeHtml(model.description)}</p>`, `<p>${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]}-${model.yearRange[1]}` : ""}.</p>`, ctx.currentPage === "/photos" ? "Photos" : "Writing")}${renderBookMicrositeContents(posts)}`,
+        `${renderBookMicrositeTitlePage(ctx, `<p>${escapeHtml(model.description)}</p>`, `<p>${model.totalPosts} entries${model.yearRange ? `, ${model.yearRange[0]}-${model.yearRange[1]}` : ""}.</p>`, ctx.currentPage === "/photos" ? "Photography" : "Writing")}${renderBookMicrositeContents(posts)}`,
         posts[0]?.href || "/photos",
       );
     }
@@ -2559,7 +2567,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
         .flatMap((group) => group.posts)
         .map((post, index) => renderDownloadIndexRow(index + 1, post.title, post.href, post.readTime || "writing", post.date, post.excerpt || ""))
         .join("");
-      return renderDownloadIndexPage(ctx, ctx.currentPage === "/photos" ? "Photos" : "Writing", `<p>${escapeHtml(model.description)}</p>`, `<section class="download-index-table" aria-label="Writing records">${rows}</section>`, `${model.totalPosts} records`);
+      return renderDownloadIndexPage(ctx, ctx.currentPage === "/photos" ? "Photography" : "Writing", `<p>${escapeHtml(model.description)}</p>`, `<section class="download-index-table" aria-label="Writing records">${rows}</section>`, `${model.totalPosts} records`);
     }
     if (ctx.family === "visual-index") {
       const records = model.postsByYear.flatMap((group) => group.posts.map((post) => ({ href: post.href, title: post.title, date: post.rawDate || post.date, label: post.readTime || group.year })));
@@ -2573,7 +2581,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
       const years = model.postsByYear
         .map((group) => `<h2>${escapeHtml(group.year)}</h2>${group.posts.map((post) => renderInternetDiagramIndexRow(post.href, post.title, [post.date, post.readTime].filter(Boolean).join(" / "))).join("")}`)
         .join("");
-      return renderInternetDiagramWindow(ctx, ctx.currentPage === "/photos" ? "Photos" : "Writing", `<p>${escapeHtml(model.description)}</p>${years}`);
+      return renderInternetDiagramWindow(ctx, ctx.currentPage === "/photos" ? "Photography" : "Writing", `<p>${escapeHtml(model.description)}</p>${years}`);
     }
     if (ctx.family === "data-portfolio") {
       const records = model.postsByYear
@@ -2581,7 +2589,7 @@ function renderBlogIndex(model: BlogIndexModel, ctx: RenderContext): string {
         .join("");
       return renderDataPortfolioPage(
         ctx,
-        `<header class="data-portfolio-section-head"><h1>${ctx.currentPage === "/photos" ? "Photos" : "Writing"}</h1><p>${escapeHtml(model.description)}</p></header>
+        `<header class="data-portfolio-section-head"><h1>${ctx.currentPage === "/photos" ? "Photography" : "Writing"}</h1><p>${escapeHtml(model.description)}</p></header>
         <section class="data-portfolio-grid" aria-label="Writing">${records}</section>`,
       );
     }
@@ -2662,7 +2670,7 @@ function renderBlogPost(model: BlogPostModel, ctx: RenderContext): string {
       `${model.subtitle ? `<p class="poetic-lede">${escapeHtml(model.subtitle)}</p>` : ""}
       <div class="poetic-copy blog-post-content">${model.contentHtml}</div>
       <p class="poetic-back"><a href="${model.backHref}">${escapeHtml(model.backLabel)}</a></p>`,
-      ctx.currentPage === "/photos" ? "photos" : "writing",
+      ctx.currentPage === "/photos" ? "photography" : "writing",
       `<p class="poetic-meta">written by ${escapeHtml(model.author || "Ryan Prendergast")}</p><p class="poetic-meta">${escapeHtml(model.date)}</p>`,
     );
   }
@@ -4049,7 +4057,7 @@ function renderResearchSidenoteNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -4103,7 +4111,7 @@ function renderArtIndexHeader(ctx: RenderContext, introHtml = ""): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -4208,7 +4216,7 @@ const b1NavLinks: Array<[string, string]> = [
   ["/", "Home"],
   ["/links", "Links"],
   ["/blog", "Writing"],
-  ["/photos", "Photos"],
+  ["/photos", "Photography"],
   ["/guestbook", "Guestbook"],
   ["/contact", "Contact"],
 ];
@@ -4246,7 +4254,7 @@ function b1ShortDate(date: string): string {
 }
 
 function b1IndexTitle(ctx: RenderContext): string {
-  return ctx.currentPage === "/photos" ? "Photos" : "Writing";
+  return ctx.currentPage === "/photos" ? "Photography" : "Writing";
 }
 
 function b1SignButton(model: GuestbookModel): string {
@@ -4358,7 +4366,7 @@ function b1ScoreboardBlog(model: BlogIndexModel, ctx: RenderContext): string {
 function b1ScoreboardPost(model: BlogPostModel, ctx: RenderContext): string {
   const isPhotos = ctx.currentPage === "/photos";
   const fields = [["Date", escapeHtml(model.date)], ["Back", `<a href="${model.backHref}">&lt; ${escapeHtml(model.backLabel)}</a>`]];
-  return `<section class="scoreboard">${renderScoreboardHeader(ctx, isPhotos ? "Photos" : "Writing", "")}<h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="scoreboard-state">${escapeHtml(model.subtitle)}</p>` : ""}${renderScoreboardTable(["Field", "Value"], fields, "scoreboard-fields")}<article class="scoreboard-article">${model.contentHtml}</article></section>`;
+  return `<section class="scoreboard">${renderScoreboardHeader(ctx, isPhotos ? "Photography" : "Writing", "")}<h2>${escapeHtml(model.title)}</h2>${model.subtitle ? `<p class="scoreboard-state">${escapeHtml(model.subtitle)}</p>` : ""}${renderScoreboardTable(["Field", "Value"], fields, "scoreboard-fields")}<article class="scoreboard-article">${model.contentHtml}</article></section>`;
 }
 
 function b1ScoreboardArchives(model: ArchiveModel, ctx: RenderContext): string {
@@ -4607,7 +4615,7 @@ function renderCargoCvPage(ctx: RenderContext, _section: string, contentHtml: st
     ["/", "Info"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -4629,7 +4637,7 @@ function renderArtistLedgerHeader(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -4658,7 +4666,7 @@ function renderWriterLedgerHeader(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -4678,7 +4686,7 @@ function renderFragmentNav(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -4709,7 +4717,7 @@ function renderNowDirectoryNav(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -4726,7 +4734,7 @@ function renderConversationalMinimalNav(ctx: RenderContext): string {
     ["/", "me"],
     ["/links", "links"],
     ["/blog", "articles"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -4749,7 +4757,7 @@ function renderFounderIndexNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -4780,7 +4788,7 @@ function renderGrantNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -4819,7 +4827,7 @@ function renderUncertaintyNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -4847,7 +4855,7 @@ function renderBriefingNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -4907,7 +4915,7 @@ function renderForumFrontpageNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -4971,7 +4979,7 @@ function renderWeblogFacetsPage(ctx: RenderContext, contentHtml: string): string
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -5045,7 +5053,7 @@ function renderVisualIndexPage(ctx: RenderContext, contentHtml: string): string 
     "/": "Links and writing",
     "/links": "Links and writing",
     "/blog": "Writing",
-    "/photos": "Photos",
+    "/photos": "Photography",
     "/guestbook": "Guestbook",
     "/contact": "Contact",
     "/archives": "Archives",
@@ -5204,7 +5212,7 @@ function renderEssayBlogrollNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -5281,7 +5289,7 @@ function renderArtistMenuNav(ctx: RenderContext, className = "artist-menu-nav"):
     ${item("/", "Home")}
     ${item("/links", "Links")}
     ${item("/blog", "Writing")}
-    ${item("/photos", "Photos")}
+    ${item("/photos", "Photography")}
     ${item("/guestbook", "Guestbook")}
     ${item("/contact", "Contact")}
   </nav>`;
@@ -5313,7 +5321,7 @@ function renderFriendlyHubNav(ctx: RenderContext): string {
     ["/", "🏠 home"],
     ["/links", "🔗 links"],
     ["/blog", "✍️ writing"],
-    ["/photos", "📷 photos"],
+    ["/photos", "📷 photography"],
     ["/guestbook", "📖 guestbook"],
     ["/contact", "📧 contact"],
   ] as Array<[string, string]>;
@@ -5345,7 +5353,7 @@ function renderGamesCabinetNav(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as const;
@@ -5395,7 +5403,7 @@ function renderPortalNav(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -5425,7 +5433,7 @@ function renderDesignRepositoryNav(ctx: RenderContext): string {
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;
@@ -5472,7 +5480,7 @@ function renderDataPortfolioNav(ctx: RenderContext): string {
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -5529,7 +5537,7 @@ function renderInternetDiagramPage(ctx: RenderContext, contentHtml: string): str
     ["/", "home"],
     ["/links", "links"],
     ["/blog", "writing"],
-    ["/photos", "photos"],
+    ["/photos", "photography"],
     ["/guestbook", "guestbook"],
     ["/contact", "contact"],
   ] as Array<[string, string]>;
@@ -5582,7 +5590,7 @@ function renderTasteDirectoryPage(ctx: RenderContext, contentHtml: string, activ
     ["/", "Home"],
     ["/links", "Links"],
     ["/blog", "Writing"],
-    ["/photos", "Photos"],
+    ["/photos", "Photography"],
     ["/guestbook", "Guestbook"],
     ["/contact", "Contact"],
   ] as Array<[string, string]>;

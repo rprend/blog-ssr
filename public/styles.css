@@ -20102,3 +20102,15 @@ body.site-shell:not(.raw-page) {
 .raw-page .raw-canvas a.raw-back:visited {
   color: #f4efe7;
 }
+
+/* Photography list (original theme) */
+.photo-collections { display: grid; gap: 28px; margin: 8px 0 24px; }
+.photo-collection { display: grid; grid-template-columns: 200px 1fr; gap: 18px; align-items: center; text-decoration: none; color: inherit; }
+.photo-collection img { width: 200px; height: 140px; object-fit: cover; display: block; background: #111; }
+.photo-collection-text { display: block; }
+.photo-collection-title { display: block; font-size: 1.15em; text-decoration: underline; color: #0000ee; }
+.photo-collection-premise { display: block; margin-top: 4px; color: #444; }
+@media (max-width: 560px) {
+  .photo-collection { grid-template-columns: 1fr; gap: 8px; }
+  .photo-collection img { width: 100%; height: auto; aspect-ratio: 3 / 2; }
+}
