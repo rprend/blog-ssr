@@ -266,7 +266,7 @@ app.get("/photos", async (c) => {
   const posts = (await getBlogPosts()).filter((post) => post.section === "photos");
 
   const model: BlogIndexModel = {
-    description: "I started taking photos as a teenager, doing street photography around my hometown of Chicago. I shoot on a Panasonic Lumix G7 and a Canon PowerShot SD1200 IS. Lately I love to capture motion and movement.",
+    description: "I started taking photos as a teenager, doing street photography around my hometown of Chicago and when traveling. I was especially interested in capturing a person in the middle of an action on an interesting street. I like typology grids with interesting connections. Lately I love to capture motion and movement from me, the photographer, moving. I shoot on a Panasonic Lumix G7 and a Canon PowerShot SD1200 IS. I take photos to remember. If I stopped I would forget.",
     postsByYear: [
       {
         year: "Photography",
